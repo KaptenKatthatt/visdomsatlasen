@@ -172,9 +172,12 @@ Samma modell som newsAgg:
    `/opt/visdomsatlasen/data` som volym och `/opt/visdomsatlasen/.env` som miljö.
 3. **Privat:** servern nås bara via Tailscale och kräver basic auth. Ingen öppen
    internetexponering.
-4. **Fyll biblioteket:** kör `npm run ingest` (eller `POST /api/ingest` med
-   `INGEST_TOKEN`) en gång på servern; texterna är statiska och behöver inte
-   uppdateras löpande.
+4. **Fyll biblioteket:** sker **automatiskt** — vid varje serverstart ingest:as
+   de verk som saknas i databasen i bakgrunden (`AUTO_INGEST`, på som standard).
+   Så ett nytt verk fylls på av sig självt vid nästa deploy, utan att befintliga
+   verk översätts om. Vill du köra manuellt (eller om-ingesta ett verk) går det
+   fortfarande via `npm run ingest [verk-id]` eller `POST /api/ingest` med
+   `INGEST_TOKEN`. Texterna är statiska och behöver ingen löpande uppdatering.
 
 Nödvändiga GitHub-secrets (som newsAgg): `TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`,
 `HETZNER_TS_IP`, `HETZNER_USER`, `HETZNER_SSH_KEY`.

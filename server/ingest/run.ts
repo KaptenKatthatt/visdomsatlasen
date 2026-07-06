@@ -1,4 +1,5 @@
 import { storeWork } from '../library/store'
+import { presentWorkIds } from '../library/repository'
 import { getbibleBible } from './bible/getbible'
 import { fixtureBible } from './bible/fixture'
 import { suttacentralDhammapada } from './dhammapada/suttacentral'
@@ -30,6 +31,17 @@ const WORK_BUILDERS: WorkBuilder[] = [
   { id: 'sjalvbetraktelser', build: gutenbergMeditations },
   { id: 'tao-te-ching', build: standardebooksTaoTeChing },
 ]
+
+/**
+ * Ingest:ar bara de registrerade verk som ännu saknas i databasen. Körs i
+ * bakgrunden vid serverstart, så ett nyinlagt verk fylls på automatiskt vid
+ * nästa deploy utan att befintliga verk översätts om.
+ */
+export const runMissingIngest = async (): Promise<IngestResult[]> => {
+  const present = presentWorkIds()
+  const missing = WORK_BUILDERS.filter((w) => !present.has(w.id)).map((w) => w.id)
+  return missing.length > 0 ? runIngest(missing) : []
+}
 
 /** Kör ingest för valda verk (eller alla) och skriver dem till databasen. */
 export const runIngest = async (only?: string[]): Promise<IngestResult[]> => {

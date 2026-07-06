@@ -9,6 +9,7 @@ import { SESSION_COOKIE, verifyBasicAuth, verifyIngestToken, verifySessionToken 
 import { loginRouter } from './login'
 import { libraryRouter } from './api/library'
 import { ingestRouter } from './api/ingest'
+import { runMissingIngest } from './ingest/run'
 
 const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
 
@@ -94,3 +95,15 @@ app.get('*', (c) =>
 serve({ fetch: app.fetch, port: config.port, hostname: config.host }, (info) => {
   console.log(`Visdomsatlasen lyssnar på ${info.address}:${info.port}`)
 })
+
+// Fyll på verk som saknas i databasen (t.ex. efter att ett nytt verk lagts till
+// och deployats) i bakgrunden. Blockerar inte uppstarten. AUTO_INGEST=off stänger av.
+if (process.env['AUTO_INGEST'] !== 'off') {
+  void runMissingIngest()
+    .then((results) => {
+      if (results.length > 0) console.log('[auto-ingest]', JSON.stringify(results))
+    })
+    .catch((error: unknown) => {
+      console.error('[auto-ingest] fel:', error instanceof Error ? error.message : String(error))
+    })
+}

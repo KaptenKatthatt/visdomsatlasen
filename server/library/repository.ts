@@ -7,6 +7,10 @@ export type WorkSummary = Work & { bookCount: number }
 // Boken med sina faktiska kapitelnummer, så vyerna inte antar 1..N i följd.
 export type BookWithChapters = Book & { chapters: number[] }
 
+/** Verk-id som redan är lagrade i databasen (används av auto-ingesten). */
+export const presentWorkIds = (): Set<string> =>
+  new Set(db.select({ id: works.id }).from(works).all().map((w) => w.id))
+
 export const listWorks = (): WorkSummary[] => {
   const rows = db.select().from(works).orderBy(asc(works.position), asc(works.title)).all()
   // Räkna böcker per verk i en enda fråga i stället för en per verk.
