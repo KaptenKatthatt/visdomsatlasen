@@ -1,4 +1,5 @@
 import { fetchText } from '../../lib/fetchText'
+import { gutenbergBody } from '../lib/gutenberg'
 import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
@@ -30,7 +31,7 @@ const parseSections = (chunk: string): { num: number; text: string }[] =>
     .map((m) => ({ num: romanToInt(m[1] ?? ''), text: m.input.replace(SECTION, '').replace(/\s+/g, ' ').trim() }))
 
 const parseMeditations = (raw: string): RawChapter[] => {
-  const text = raw.replace(/\r/g, '')
+  const text = gutenbergBody(raw)
   const start = text.indexOf('THE FIRST BOOK')
   const rest = text.slice(start < 0 ? 0 : start)
   // Bok XII följs av APPENDIX/NOTES (Longs noter) — klipp där så de inte tas med.

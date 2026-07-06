@@ -6,6 +6,9 @@ import { suttacentralDhammapada } from './dhammapada/suttacentral'
 import { gutenbergMeditations } from './meditations/gutenberg'
 import { standardebooksTaoTeChing } from './taote/standardebooks'
 import { epictetusEnchiridion } from './epictetus/enchiridion'
+import { gutenbergZhuangzi } from './zhuangzi/gutenberg'
+import { epictetusDiscourses } from './epictetus/discourses'
+import { senecaDialogues } from './seneca/dialogues'
 import type { NormalizedWork } from './model'
 
 export type IngestResult = {
@@ -33,6 +36,9 @@ const WORK_BUILDERS: WorkBuilder[] = [
   { id: 'sjalvbetraktelser', translatable: true, build: gutenbergMeditations },
   { id: 'tao-te-ching', translatable: true, build: standardebooksTaoTeChing },
   { id: 'enchiridion', translatable: true, build: epictetusEnchiridion },
+  { id: 'zhuangzi', translatable: true, build: gutenbergZhuangzi },
+  { id: 'epiktetos-samtal', translatable: true, build: epictetusDiscourses },
+  { id: 'seneca-dialoger', translatable: true, build: senecaDialogues },
 ]
 
 // Ett verk i taget; ett fel på ett verk stjälper inte de andra utan loggas.
