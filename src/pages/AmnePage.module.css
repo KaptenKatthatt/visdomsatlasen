@@ -1,0 +1,34 @@
+.head {
+  margin-top: 34px;
+  text-align: center;
+}
+
+.title {
+  font-size: 33px;
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 12px 0 0;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.intro {
+  font-size: 20.5px;
+  line-height: 1.55;
+  font-style: italic;
+  margin: 26px 0 0;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.dots {
+  margin: 32px 0 0;
+}
+
+.section {
+  margin-top: 44px;
+}
+
+.firstSection {
+  margin-top: 28px;
+}

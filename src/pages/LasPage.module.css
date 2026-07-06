@@ -1,0 +1,74 @@
+.actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.head {
+  margin-top: 38px;
+}
+
+.title {
+  font-size: 29px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 10px 0 0;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.min {
+  font-size: 14.5px;
+  color: var(--soft);
+  font-style: italic;
+  margin-top: 8px;
+}
+
+.body {
+  margin-top: 34px;
+}
+
+.dots {
+  margin: 8px 0 0;
+}
+
+.section {
+  margin-top: 34px;
+}
+
+.sectionWide {
+  margin-top: 40px;
+}
+
+.notesRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 40px;
+  padding: 16px 0 18px;
+  border-top: 1px solid var(--faint);
+  border-bottom: 1px solid var(--faint);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  background: none;
+  border-left: none;
+  border-right: none;
+  width: 100%;
+  text-align: left;
+}
+
+.notesLabel {
+  font-size: 20px;
+}
+
+.notesHint {
+  font-size: 14.5px;
+  color: var(--soft);
+  font-style: italic;
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

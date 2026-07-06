@@ -1,0 +1,106 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.hero {
+  margin-top: 64px;
+}
+
+.date {
+  font-size: 14.5px;
+  color: var(--soft);
+  font-style: italic;
+}
+
+.question {
+  font-size: 35px;
+  font-weight: 500;
+  line-height: 1.16;
+  margin: 10px 0 0;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.lastRead {
+  display: block;
+  margin-top: 38px;
+  padding: 16px 20px 18px;
+  border: 1px solid var(--faint);
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.lastReadTitle {
+  font-size: 21px;
+  margin-top: 6px;
+  line-height: 1.25;
+}
+
+.lastReadSub {
+  font-size: 14.5px;
+  color: var(--soft);
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.ideas {
+  margin-top: 42px;
+}
+
+.idea {
+  display: block;
+  padding: 19px 0 21px;
+  border-top: 1px solid var(--faint);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ideaMeta {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--soft);
+  font-weight: 500;
+}
+
+.ideaTitle {
+  font-size: 23px;
+  line-height: 1.25;
+  margin-top: 6px;
+  text-wrap: balance;
+}
+
+.footer {
+  margin-top: 56px;
+  text-align: center;
+}
+
+.quote {
+  display: block;
+  margin-top: 24px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.quoteText {
+  font-size: 20px;
+  font-style: italic;
+  line-height: 1.5;
+  text-wrap: balance;
+}
+
+.quoteBy {
+  margin-top: 12px;
+}

@@ -1,0 +1,15 @@
+.paragraph {
+  font-size: var(--rs);
+  line-height: 1.72;
+  margin: 0 0 1.35em;
+  text-wrap: pretty;
+}
+
+.link {
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3.5px;
+  text-decoration-color: var(--accsoft);
+}

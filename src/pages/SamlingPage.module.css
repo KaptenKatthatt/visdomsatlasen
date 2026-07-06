@@ -1,0 +1,55 @@
+.title {
+  font-size: 33px;
+  font-weight: 500;
+  line-height: 1.16;
+  margin: 56px 0 0;
+  letter-spacing: -0.01em;
+}
+
+.lede {
+  font-size: 17px;
+  color: var(--soft);
+  font-style: italic;
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+.section {
+  margin-top: 46px;
+}
+
+.sectionLater {
+  margin-top: 48px;
+}
+
+.empty {
+  font-size: 16.5px;
+  color: var(--soft);
+  font-style: italic;
+  line-height: 1.55;
+  margin: 6px 0 0;
+  border-top: 1px solid var(--faint);
+  padding-top: 16px;
+}
+
+.note {
+  display: block;
+  padding: 15px 0 17px;
+  border-top: 1px solid var(--faint);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.noteTitle {
+  font-size: 19px;
+  line-height: 1.3;
+}
+
+.noteExcerpt {
+  font-size: 16px;
+  color: var(--soft);
+  margin-top: 4px;
+  font-style: italic;
+  line-height: 1.5;
+}

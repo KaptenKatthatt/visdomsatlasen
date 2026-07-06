@@ -1,0 +1,45 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 33px;
+  font-weight: 500;
+  line-height: 1.16;
+  margin: 56px 0 0;
+  letter-spacing: -0.01em;
+}
+
+.lede {
+  font-size: 17px;
+  color: var(--soft);
+  font-style: italic;
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+.group {
+  margin-top: 46px;
+}
+
+.groupLine {
+  font-size: 15.5px;
+  color: var(--soft);
+  font-style: italic;
+  margin-top: 5px;
+  line-height: 1.45;
+}
+
+.groupRows {
+  margin-top: 14px;
+}
+
+.register {
+  margin-top: 52px;
+}
+
+.registerRows {
+  margin-top: 12px;
+}

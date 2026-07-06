@@ -1,0 +1,169 @@
+/* Visdomsatlasen — riktning "Folianten" (design handoff) */
+
+:root {
+  --rs: 19px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  font-family: 'EB Garamond', Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(119, 47, 53, 0.16);
+}
+
+input,
+textarea,
+button {
+  font-family: 'EB Garamond', Georgia, serif;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@keyframes vaFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes vaSheet {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Theme tokens */
+
+.desk {
+  --paper: #faf6ed;
+  --desk: #ece4d2;
+  --ink: #2b251b;
+  --soft: #8b7f6a;
+  --faint: rgba(43, 37, 27, 0.16);
+  --accent: #772f35;
+  --accsoft: rgba(119, 47, 53, 0.5);
+  background-color: var(--desk);
+  min-height: 100dvh;
+  transition: background-color 0.5s;
+}
+
+.desk[data-dark='true'] {
+  --paper: #1c1813;
+  --desk: #12100b;
+  --ink: #e9e0cc;
+  --soft: #9a8e7b;
+  --faint: rgba(233, 224, 204, 0.17);
+  --accent: #c4878b;
+  --accsoft: rgba(196, 135, 139, 0.5);
+}
+
+.shell {
+  max-width: 430px;
+  margin: 0 auto;
+  background-color: var(--paper);
+  min-height: 100dvh;
+  box-shadow: 0 0 48px rgba(30, 22, 10, 0.1);
+  position: relative;
+  color: var(--ink);
+  transition:
+    background-color 0.5s,
+    color 0.5s;
+}
+
+/* Screen containers */
+
+.screenTab {
+  animation: vaFade 0.45s ease;
+  padding: 56px 28px 130px;
+}
+
+.screenSub {
+  animation: vaFade 0.45s ease;
+  padding: 0 28px 130px;
+}
+
+.screenReader {
+  animation: vaFade 0.45s ease;
+  padding: 0 28px 90px;
+}
+
+/* Shared primitives */
+
+.kicker {
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--soft);
+  font-weight: 500;
+}
+
+.dots {
+  color: var(--soft);
+  letter-spacing: 0.6em;
+  font-size: 13px;
+  text-align: center;
+  padding-left: 0.6em;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  color: var(--soft);
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.sectionKicker {
+  margin-bottom: 10px;
+}

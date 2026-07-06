@@ -1,0 +1,50 @@
+.title {
+  font-size: 33px;
+  font-weight: 500;
+  line-height: 1.16;
+  margin: 34px 0 0;
+  letter-spacing: -0.01em;
+}
+
+.section {
+  margin-top: 44px;
+}
+
+.sectionLater {
+  margin-top: 48px;
+}
+
+.entry {
+  display: block;
+  padding: 15px 0 17px;
+  border-top: 1px solid var(--faint);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.entryHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.name {
+  font-size: 21px;
+  line-height: 1.3;
+}
+
+.years {
+  font-size: 13px;
+  color: var(--soft);
+  white-space: nowrap;
+}
+
+.epithet {
+  font-size: 14.5px;
+  color: var(--soft);
+  margin-top: 2px;
+  font-style: italic;
+  line-height: 1.4;
+}
