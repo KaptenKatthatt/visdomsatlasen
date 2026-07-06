@@ -2,22 +2,73 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
-import { Hono } from 'hono'
+import { Hono, type Context } from 'hono'
+import { getCookie } from 'hono/cookie'
 import { config } from './config'
-import { verifyBasicAuth, verifyIngestToken } from './auth'
+import { SESSION_COOKIE, verifyBasicAuth, verifyIngestToken, verifySessionToken } from './auth'
+import { loginRouter } from './login'
 import { libraryRouter } from './api/library'
 import { ingestRouter } from './api/ingest'
 
+const MUTATING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
+
+// Webbläsare som laddar en sida (inte fetch/XHR) skickas till inloggnings-
+// formuläret. Sec-Fetch-Dest sätts bara över https/localhost, så Accept är
+// fallback för tailnet-adressen (som newsAgg).
+const isDocumentRequest = (c: Context): boolean => {
+  if (c.req.header('sec-fetch-dest') === 'document') return true
+  return c.req.header('accept')?.includes('text/html') ?? false
+}
+
+const isSameOrigin = (c: Context): boolean => {
+  const origin = c.req.header('origin')
+  if (!origin) return false
+  try {
+    return new URL(origin).host === (c.req.header('host') ?? '')
+  } catch {
+    return false
+  }
+}
+
+// Cron/CLI: bearer-token på POST /api/ingest släpps förbi (utan CSRF-kontroll,
+// eftersom en sådan klient inte skickar Origin), precis som newsAggs /api/update.
+const isIngestTokenCall = (c: Context, authz: string | null): boolean =>
+  c.req.path === '/api/ingest' && c.req.method === 'POST' && verifyIngestToken(authz)
+
+// Svar för oautentiserade anrop: sidladdningar i webbläsare skickas till
+// inloggningsformuläret (som Proton Pass kan autofylla, till skillnad från basic
+// auth-dialogen); övriga får 401 med basic auth-utmaning för curl/cron.
+const rejectUnauthenticated = (c: Context): Response => {
+  if (c.req.method === 'GET' && !c.req.header('Authorization') && isDocumentRequest(c)) {
+    const from = c.req.path + new URL(c.req.url).search
+    const target = from === '/' ? '/login' : `/login?from=${encodeURIComponent(from)}`
+    return c.redirect(target)
+  }
+  return c.text('Unauthorized', 401, { 'WWW-Authenticate': 'Basic realm="Visdomsatlasen"' })
+}
+
 const app = new Hono()
 
-// Allt bakom basic auth (appen körs Tailscale-only, som newsAgg). Ingest får
-// bearer-token-bypass så cron kan köra utan lösenord.
+// Inloggningssidan och dess POST är publika (annars går det aldrig att logga
+// in). Registreras före auth-middlewaren så den släpps förbi.
+app.route('/login', loginRouter)
+
+// Allt annat bakom auth: sessionscookie (satt av formuläret) eller basic auth
+// (curl/cron). Ingest får bearer-token-bypass så cron kan köra utan lösenord.
 app.use('*', async (c, next) => {
   const authz = c.req.header('Authorization') ?? null
-  const isIngest = c.req.path === '/api/ingest' && c.req.method === 'POST'
-  if (isIngest && verifyIngestToken(authz)) return next()
-  if (verifyBasicAuth(authz)) return next()
-  return c.text('Unauthorized', 401, { 'WWW-Authenticate': 'Basic realm="Visdomsatlasen"' })
+  if (isIngestTokenCall(c, authz)) return next()
+
+  if (!verifySessionToken(getCookie(c, SESSION_COOKIE)) && !verifyBasicAuth(authz)) {
+    return rejectUnauthenticated(c)
+  }
+  // CSRF: webbläsaren auto-skickar sessionscookien, så en extern sajt skulle
+  // annars kunna trigga muterande anrop mot tailnet-adressen. Kräv same-origin
+  // för muterande metoder (bearer-token-klienter gick redan förbi ovan).
+  if (MUTATING_METHODS.has(c.req.method) && !isSameOrigin(c)) {
+    return c.text('Forbidden', 403)
+  }
+  return next()
 })
 
 app.route('/api/library', libraryRouter)

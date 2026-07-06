@@ -60,6 +60,13 @@ export type SearchHit = {
 
 const getJson = async <T>(url: string): Promise<T> => {
   const response = await fetch(url, { headers: { Accept: 'application/json' } })
+  if (response.status === 401) {
+    // Sessionen har gått ut — skicka till inloggningsformuläret (som Proton
+    // Pass kan autofylla) och behåll nuvarande sida som återvändo-mål.
+    const from = window.location.pathname + window.location.search
+    window.location.assign(`/login?from=${encodeURIComponent(from)}`)
+    throw new Error('Sessionen har gått ut')
+  }
   if (!response.ok) throw new Error(`Kunde inte hämta (${response.status})`)
   return (await response.json()) as T
 }
