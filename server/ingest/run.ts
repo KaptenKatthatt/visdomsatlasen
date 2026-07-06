@@ -9,6 +9,8 @@ import { epictetusEnchiridion } from './epictetus/enchiridion'
 import { gutenbergZhuangzi } from './zhuangzi/gutenberg'
 import { epictetusDiscourses } from './epictetus/discourses'
 import { senecaDialogues } from './seneca/dialogues'
+import { poeticEdda } from './edda/poetic'
+import { proseEdda } from './edda/prose'
 import type { NormalizedWork } from './model'
 
 export type IngestResult = {
@@ -39,6 +41,8 @@ const WORK_BUILDERS: WorkBuilder[] = [
   { id: 'zhuangzi', translatable: true, build: gutenbergZhuangzi },
   { id: 'epiktetos-samtal', translatable: true, build: epictetusDiscourses },
   { id: 'seneca-dialoger', translatable: true, build: senecaDialogues },
+  { id: 'poetiska-eddan', translatable: true, build: poeticEdda },
+  { id: 'prosaiska-eddan', translatable: true, build: proseEdda },
 ]
 
 // Ett verk i taget; ett fel på ett verk stjälper inte de andra utan loggas.
