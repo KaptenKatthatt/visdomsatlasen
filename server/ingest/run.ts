@@ -1,5 +1,5 @@
 import { storeWork } from '../library/store'
-import { presentWorkIds } from '../library/repository'
+import { workTranslatedById } from '../library/repository'
 import { getbibleBible } from './bible/getbible'
 import { fixtureBible } from './bible/fixture'
 import { suttacentralDhammapada } from './dhammapada/suttacentral'
@@ -16,48 +16,77 @@ export type IngestResult = {
   translated: boolean
   translatedVerses: number | null
 }
-type WorkBuilder = { id: string; build: () => Promise<NormalizedWork> }
+
+// `translatable` = verket ska maskinöversättas (och bör därför ingest:as om det
+// lagrats men inte översatts). Bibeln är redan på svenska och märks false.
+type WorkBuilder = { id: string; translatable: boolean; build: () => Promise<NormalizedWork> }
 
 // Bibeln kan byggas antingen från getbible (VPS, hela bibeln) eller från
 // fixture-filen (lokal verifiering). Styrs av BIBLE_SOURCE=fixture.
 const buildBible = (): Promise<NormalizedWork> =>
   process.env['BIBLE_SOURCE'] === 'fixture' ? fixtureBible() : getbibleBible()
 
-// Registret över verk. Varje verk exponerar en builder som ger normaliserad
-// data. Fler traditioner (stoicism, taoism) läggs till här när de kopplas in.
 const WORK_BUILDERS: WorkBuilder[] = [
-  { id: 'bibel-1917', build: buildBible },
-  { id: 'dhammapada', build: suttacentralDhammapada },
-  { id: 'sjalvbetraktelser', build: gutenbergMeditations },
-  { id: 'tao-te-ching', build: standardebooksTaoTeChing },
+  { id: 'bibel-1917', translatable: false, build: buildBible },
+  { id: 'dhammapada', translatable: true, build: suttacentralDhammapada },
+  { id: 'sjalvbetraktelser', translatable: true, build: gutenbergMeditations },
+  { id: 'tao-te-ching', translatable: true, build: standardebooksTaoTeChing },
 ]
 
-/**
- * Ingest:ar bara de registrerade verk som ännu saknas i databasen. Körs i
- * bakgrunden vid serverstart, så ett nyinlagt verk fylls på automatiskt vid
- * nästa deploy utan att befintliga verk översätts om.
- */
-export const runMissingIngest = async (): Promise<IngestResult[]> => {
-  const present = presentWorkIds()
-  const missing = WORK_BUILDERS.filter((w) => !present.has(w.id)).map((w) => w.id)
-  return missing.length > 0 ? runIngest(missing) : []
-}
-
-/** Kör ingest för valda verk (eller alla) och skriver dem till databasen. */
-export const runIngest = async (only?: string[]): Promise<IngestResult[]> => {
-  const targets =
-    only && only.length > 0 ? WORK_BUILDERS.filter((w) => only.includes(w.id)) : WORK_BUILDERS
-  const results: IngestResult[] = []
-  for (const target of targets) {
-    const work = await target.build()
+// Ett verk i taget; ett fel på ett verk stjälper inte de andra utan loggas.
+const ingestOne = async (builder: WorkBuilder): Promise<IngestResult | null> => {
+  try {
+    const work = await builder.build()
     const verses = storeWork(work)
-    results.push({
+    return {
       id: work.meta.id,
       title: work.meta.title,
       verses,
       translated: work.meta.translated,
       translatedVerses: work.stats ? work.stats.translatedVerses : null,
-    })
+    }
+  } catch (error) {
+    console.error(`[ingest] ${builder.id} misslyckades:`, error instanceof Error ? error.message : String(error))
+    return null
   }
-  return results
+}
+
+// In-process-vakt: bara en ingest åt gången i samma process, så auto-ingest och
+// ett samtidigt POST /api/ingest inte dubbelöversätter samma verk.
+let ingestActive = false
+
+const ingestBuilders = async (builders: WorkBuilder[]): Promise<IngestResult[]> => {
+  if (ingestActive || builders.length === 0) return []
+  ingestActive = true
+  try {
+    const results: IngestResult[] = []
+    for (const builder of builders) {
+      const result = await ingestOne(builder)
+      if (result) results.push(result)
+    }
+    return results
+  } finally {
+    ingestActive = false
+  }
+}
+
+/** Kör ingest för valda verk (eller alla) och skriver dem till databasen. */
+export const runIngest = (only?: string[]): Promise<IngestResult[]> => {
+  const targets =
+    only && only.length > 0 ? WORK_BUILDERS.filter((w) => only.includes(w.id)) : WORK_BUILDERS
+  return ingestBuilders(targets)
+}
+
+/**
+ * Ingest:ar de registrerade verk som saknas i databasen, samt översättbara verk
+ * som lagrats men ännu inte översatts. Körs i bakgrunden vid serverstart, så ett
+ * nyinlagt verk fylls på automatiskt och ett verk som fastnat på källspråket
+ * (Ollama nere) fylls på nästa gång utan att redan översatta verk körs om.
+ */
+export const runMissingIngest = (): Promise<IngestResult[]> => {
+  const status = workTranslatedById()
+  const targets = WORK_BUILDERS.filter(
+    (w) => !status.has(w.id) || (w.translatable && status.get(w.id) === false),
+  )
+  return ingestBuilders(targets)
 }

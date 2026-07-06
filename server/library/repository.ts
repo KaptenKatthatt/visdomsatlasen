@@ -7,9 +7,19 @@ export type WorkSummary = Work & { bookCount: number }
 // Boken med sina faktiska kapitelnummer, så vyerna inte antar 1..N i följd.
 export type BookWithChapters = Book & { chapters: number[] }
 
-/** Verk-id som redan är lagrade i databasen (används av auto-ingesten). */
-export const presentWorkIds = (): Set<string> =>
-  new Set(db.select({ id: works.id }).from(works).all().map((w) => w.id))
+/**
+ * Lagrade verk och om de är översatta (id → translated). Auto-ingesten använder
+ * detta för att avgöra vad som saknas *och* vad som lagrats men ännu inte
+ * översatts (t.ex. om Ollama var nere vid förra försöket).
+ */
+export const workTranslatedById = (): Map<string, boolean> =>
+  new Map(
+    db
+      .select({ id: works.id, translated: works.translated })
+      .from(works)
+      .all()
+      .map((w) => [w.id, w.translated === 1]),
+  )
 
 export const listWorks = (): WorkSummary[] => {
   const rows = db.select().from(works).orderBy(asc(works.position), asc(works.title)).all()
