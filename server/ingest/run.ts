@@ -5,6 +5,7 @@ import { fixtureBible } from './bible/fixture'
 import { suttacentralDhammapada } from './dhammapada/suttacentral'
 import { gutenbergMeditations } from './meditations/gutenberg'
 import { standardebooksTaoTeChing } from './taote/standardebooks'
+import { epictetusEnchiridion } from './epictetus/enchiridion'
 import type { NormalizedWork } from './model'
 
 export type IngestResult = {
@@ -31,6 +32,7 @@ const WORK_BUILDERS: WorkBuilder[] = [
   { id: 'dhammapada', translatable: true, build: suttacentralDhammapada },
   { id: 'sjalvbetraktelser', translatable: true, build: gutenbergMeditations },
   { id: 'tao-te-ching', translatable: true, build: standardebooksTaoTeChing },
+  { id: 'enchiridion', translatable: true, build: epictetusEnchiridion },
 ]
 
 // Ett verk i taget; ett fel på ett verk stjälper inte de andra utan loggas.
