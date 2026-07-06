@@ -51,26 +51,23 @@ const translateBlock = async (lines: string[]): Promise<string[] | null> => {
   }
 }
 
-export type Translation = { lines: string[]; translated: boolean }
+export type Translation = { lines: string[]; translatedCount: number }
 
 /**
  * Översätter rader till svenska i småbatchar (så långa stycken inte spränger
- * modellens tokengräns). Misslyckas en batch behålls dess källtext och
- * `translated` blir false — så engelska aldrig märks som färdig översättning.
- * Med TRANSLATE=off returneras källtexten oförändrad (translated=false).
+ * modellens tokengräns). Misslyckas en batch behålls dess källtext.
+ * `translatedCount` = antal rader som faktiskt ändrades — det fångar både
+ * batchar som föll tillbaka och rader modellen ekade oöversatta, och är
+ * underlaget för översättningsverifieringen. Med TRANSLATE=off översätts inget.
  */
 export const translateMany = async (lines: string[], batchSize = 8): Promise<Translation> => {
-  if (!translationEnabled() || lines.length === 0) return { lines, translated: false }
+  if (!translationEnabled() || lines.length === 0) return { lines, translatedCount: 0 }
   const out: string[] = []
-  let translated = true
   for (let i = 0; i < lines.length; i += batchSize) {
     const batch = lines.slice(i, i + batchSize)
     const done = await translateBlock(batch)
-    if (done) out.push(...done)
-    else {
-      out.push(...batch)
-      translated = false
-    }
+    out.push(...(done ?? batch))
   }
-  return { lines: out, translated }
+  const translatedCount = out.filter((line, i) => line !== lines[i]).length
+  return { lines: out, translatedCount }
 }

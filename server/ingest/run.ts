@@ -6,7 +6,15 @@ import { gutenbergMeditations } from './meditations/gutenberg'
 import { standardebooksTaoTeChing } from './taote/standardebooks'
 import type { NormalizedWork } from './model'
 
-export type IngestResult = { id: string; title: string; verses: number }
+export type IngestResult = {
+  id: string
+  title: string
+  verses: number
+  // Översättningsverifiering. translatedVerses = antal verser som faktiskt fick
+  // svensk text (null för verk som redan är på svenska, t.ex. Bibeln).
+  translated: boolean
+  translatedVerses: number | null
+}
 type WorkBuilder = { id: string; build: () => Promise<NormalizedWork> }
 
 // Bibeln kan byggas antingen från getbible (VPS, hela bibeln) eller från
@@ -31,7 +39,13 @@ export const runIngest = async (only?: string[]): Promise<IngestResult[]> => {
   for (const target of targets) {
     const work = await target.build()
     const verses = storeWork(work)
-    results.push({ id: work.meta.id, title: work.meta.title, verses })
+    results.push({
+      id: work.meta.id,
+      title: work.meta.title,
+      verses,
+      translated: work.meta.translated,
+      translatedVerses: work.stats ? work.stats.translatedVerses : null,
+    })
   }
   return results
 }

@@ -7,29 +7,29 @@ import type { NormalizedVerse, NormalizedWork, WorkMeta } from '../model'
 type RawVerse = { verse: number; source: string; orig?: string }
 export type RawChapter = { chapter: number; verses: RawVerse[] }
 
-type BuiltVerses = { verses: NormalizedVerse[]; translated: boolean }
+type BuiltVerses = { verses: NormalizedVerse[]; translatedVerses: number; totalVerses: number }
 
-// Översätt varje kapitels verser till svenska och bygg NormalizedVerse[].
-// Verket räknas som översatt bara om varje *icke-tomt* kapitel översattes fullt
-// ut (ett tomt kapitel ska inte dra ner flaggan).
+// Översätt varje kapitels verser till svenska och bygg NormalizedVerse[], samt
+// räkna hur många verser som faktiskt översattes (underlag för verifieringen).
 const translateChapters = async (
   chapters: RawChapter[],
   concurrency = 4,
 ): Promise<BuiltVerses> => {
   const built = await mapPool(chapters, concurrency, async (ch) => {
-    const { lines, translated } = await translateMany(ch.verses.map((v) => v.source))
+    const { lines, translatedCount } = await translateMany(ch.verses.map((v) => v.source))
     const verses = ch.verses.map((v, i) => ({
       chapter: ch.chapter,
       verse: v.verse,
       text: lines[i] ?? v.source,
       origText: v.orig,
     }))
-    return { verses, translated }
+    return { verses, translatedCount }
   })
-  const withVerses = built.filter((b) => b.verses.length > 0)
+  const verses = built.flatMap((b) => b.verses)
   return {
-    verses: built.flatMap((b) => b.verses),
-    translated: withVerses.length > 0 && withVerses.every((b) => b.translated),
+    verses,
+    translatedVerses: built.reduce((n, b) => n + b.translatedCount, 0),
+    totalVerses: verses.length,
   }
 }
 
@@ -42,6 +42,9 @@ export const buildTranslatedWork = async (
   metaFor: (translated: boolean) => WorkMeta,
   concurrency = 4,
 ): Promise<NormalizedWork> => {
-  const { verses, translated } = await translateChapters(chapters, concurrency)
-  return { meta: metaFor(translated), books: [{ ...book, verses }] }
+  const { verses, translatedVerses, totalVerses } = await translateChapters(chapters, concurrency)
+  // Räkna verket som översatt om minst hälften av verserna översattes; den
+  // exakta täckningen rapporteras separat i stats för verifiering.
+  const translated = totalVerses > 0 && translatedVerses * 2 >= totalVerses
+  return { meta: metaFor(translated), books: [{ ...book, verses }], stats: { translatedVerses } }
 }

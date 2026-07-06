@@ -33,4 +33,7 @@ export type WorkMeta = {
 export type NormalizedWork = {
   meta: WorkMeta
   books: NormalizedBook[]
+  // Verifieringsunderlag: hur många verser som faktiskt översattes (för
+  // översatta verk). Saknas för verk som redan är på svenska (Bibeln).
+  stats?: { translatedVerses: number }
 }

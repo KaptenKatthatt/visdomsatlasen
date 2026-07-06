@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
+import { useDebounced } from '../../lib/useDebounced'
 import { searchLibrary, slugOfBook, type BookHit, type SearchHit } from '../../lib/api'
 import styles from './Bibliotek.module.css'
 
@@ -54,7 +55,8 @@ const HitRow = ({ hit }: { hit: SearchHit }) => (
 
 export const BibliotekSokPage = () => {
   const [query, setQuery] = useState('')
-  const term = query.trim()
+  // Debounce så vi inte skickar en sökning per tangenttryck.
+  const term = useDebounced(query.trim(), 250)
   const { data } = useAsync(
     () => (term.length >= 2 ? searchLibrary(term) : Promise.resolve({ books: [], hits: [] })),
     [term],
