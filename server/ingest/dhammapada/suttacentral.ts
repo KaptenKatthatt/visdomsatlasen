@@ -1,8 +1,8 @@
 import { fetchJson } from '../../lib/fetchJson'
 import { mapPool } from '../../lib/concurrency'
-import { translateLines } from '../translate'
+import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import { DHAMMAPADA_VAGGAS, type Vagga } from './vaggas'
-import type { NormalizedBook, NormalizedVerse, NormalizedWork, WorkMeta } from '../model'
+import type { NormalizedWork, WorkMeta } from '../model'
 
 // Dhammapada från SuttaCentrals bilara-data (CC0): engelska (Bhikkhu Sujato) +
 // pali (Mahāsaṅgīti). Översätts till svenska via Ollama vid ingest.
@@ -35,9 +35,9 @@ const collectVerses = (seg: Segments): Map<number, string> => {
   return out
 }
 
-type VaggaResult = { verses: NormalizedVerse[]; translated: boolean }
-
-const buildVagga = async (vagga: Vagga): Promise<VaggaResult> => {
+// Hämtar en vagga och bygger dess råkapitel (engelska som källa, pali som
+// originaltext). Versnumren är Dhammapadas globala nummer, inte 1..N.
+const fetchVagga = async (vagga: Vagga): Promise<RawChapter> => {
   const [enSeg, pliSeg] = await Promise.all([
     fetchJson(enUrl(vagga.range)) as Promise<Segments>,
     fetchJson(pliUrl(vagga.range)) as Promise<Segments>,
@@ -45,18 +45,9 @@ const buildVagga = async (vagga: Vagga): Promise<VaggaResult> => {
   const en = collectVerses(enSeg)
   const pli = collectVerses(pliSeg)
   const nums = [...en.keys()].sort((a, b) => a - b)
-  const enTexts = nums.map((n) => en.get(n) ?? '')
-  // null ⇒ ingen översättning skedde (avstängd eller misslyckad) ⇒ behåll engelska.
-  const swedish = await translateLines(enTexts)
-  const text = swedish ?? enTexts
   return {
-    translated: swedish !== null,
-    verses: nums.map((n, i) => ({
-      chapter: vagga.index,
-      verse: n,
-      text: text[i] ?? enTexts[i] ?? '',
-      origText: pli.get(n),
-    })),
+    chapter: vagga.index,
+    verses: nums.map((n) => ({ verse: n, source: en.get(n) ?? '', orig: pli.get(n) })),
   }
 }
 
@@ -75,16 +66,9 @@ const metaFor = (translated: boolean): WorkMeta => ({
   translated,
 })
 
-/** Hämtar hela Dhammapada (26 vaggas) och normaliserar den till ett verk. */
+/** Hämtar hela Dhammapada (26 vaggas), översätter och normaliserar den. */
 export const suttacentralDhammapada = async (): Promise<NormalizedWork> => {
-  const perVagga = await mapPool(DHAMMAPADA_VAGGAS, 4, buildVagga)
-  // Märk som översatt bara om varje vagga faktiskt översattes.
-  const translated = perVagga.length > 0 && perVagga.every((r) => r.translated)
-  const book: NormalizedBook = {
-    slug: 'dhammapada',
-    name: 'Dhammapada',
-    abbrev: 'Dhp',
-    verses: perVagga.flatMap((r) => r.verses),
-  }
-  return { meta: metaFor(translated), books: [book] }
+  const chapters = await mapPool(DHAMMAPADA_VAGGAS, 4, fetchVagga)
+  const book = { slug: 'dhammapada', name: 'Dhammapada', abbrev: 'Dhp' }
+  return buildTranslatedWork(chapters, book, metaFor, 4)
 }

@@ -14,10 +14,11 @@ Appen har två slags innehåll som lever sida vid sida:
 
 - **Atlasen** – kuraterade essäer, personer, tidslinje och citat, skrivna som
   typade TypeScript-moduler i `src/content/`. Små, handskrivna, sammanlänkade.
-- **Biblioteket** – *hela* källtexter. Nu: **Bibeln 1917** (public domain) och
-  **Dhammapada** (SuttaCentral, CC0, svensk översättning via Ollama). På väg in:
-  stoiska och taoistiska verk. De bor i en SQLite-databas som en liten
-  Node-backend serverar, och de cachas i din enhet för läsning offline.
+- **Biblioteket** – *hela* källtexter: **Bibeln 1917**, **Dhammapada**
+  (buddhism), **Självbetraktelser** av Marcus Aurelius (stoicism) och **Tao Te
+  Ching** (taoism). Alla public domain; de icke-svenska översätts till svenska
+  via Ollama. De bor i en SQLite-databas som en liten Node-backend serverar, och
+  de cachas i din enhet för läsning offline.
 
 ## Teknik
 
@@ -100,7 +101,7 @@ inloggning följer automatiskt med SPA:ets anrop.
 | `GET /api/library/works` | alla verk med bok- och versantal |
 | `GET /api/library/works/:id` | ett verk + dess böcker |
 | `GET /api/library/books/:bookId/chapters/:n` | ett kapitels verser (+ föregående/nästa) |
-| `GET /api/library/search?q=` | fritextsök över alla verser (FTS5) |
+| `GET /api/library/search?q=` | söker böcker på namn (t.ex. "matteus") + fritextsök över alla verser (FTS5) |
 | `POST /api/ingest` | kör ingest (skyddad av `INGEST_TOKEN`, som newsAggs `/api/update`) |
 
 ### Ingest och källadaptrar
@@ -129,8 +130,14 @@ Inlagda verk:
 
 - **Bibeln 1917** – `server/ingest/bible/` (getbible, public domain).
 - **Dhammapada** – `server/ingest/dhammapada/` (SuttaCentral bilara-data, CC0):
-  hela 423 verser i 26 vaggas, engelska (Bhikkhu Sujato) + pali som originaltext,
-  översatt till svenska via Ollama.
+  423 verser i 26 vaggas, engelska (Bhikkhu Sujato) + pali som originaltext.
+- **Självbetraktelser** – `server/ingest/meditations/` (Marcus Aurelius, George
+  Longs engelska via Project Gutenberg): 12 böcker, 435 sektioner.
+- **Tao Te Ching** – `server/ingest/taote/` (Laozi, James Legges engelska via
+  Standard Ebooks): 81 kapitel.
+
+De icke-svenska verken översätts till svenska via Ollama vid ingest; den
+engelska källtexten bevaras som originaltext vid sidan av översättningen.
 
 ### Offline
 
@@ -227,8 +234,7 @@ originaltext och sök.
 
 ## Förslag på nästa steg
 
-- Fylla på stoicism och taoism (adaptrar + Ollama-översättning); Bibeln och
-  Dhammapada är inne.
+- Fler verk och traditioner (samma adapter-mönster i `server/ingest/`).
 - Länka atlasens ämnen direkt in i biblioteksverserna.
 - Export/import av anteckningar (JSON).
 - PNG-ikoner och skärmbilder i manifestet för bättre installationsupplevelse.

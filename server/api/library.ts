@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { getChapter, getWork, listWorks } from '../library/repository'
-import { searchVerses } from '../library/search'
+import { searchBooks, searchVerses } from '../library/search'
 
 export const libraryRouter = new Hono()
 
@@ -22,5 +22,5 @@ libraryRouter.get('/books/:bookId/chapters/:n', (c) => {
 
 libraryRouter.get('/search', (c) => {
   const q = c.req.query('q') ?? ''
-  return c.json({ query: q, hits: searchVerses(q) })
+  return c.json({ query: q, books: searchBooks(q), hits: searchVerses(q) })
 })

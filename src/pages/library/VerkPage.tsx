@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
@@ -21,6 +22,7 @@ const BookRow = ({ workId, book }: { workId: string; book: Book }) => (
 
 export const VerkPage = ({ workId }: { workId: string }) => {
   const { data, loading, error } = useAsync(() => fetchWork(workId), [workId])
+  const [filter, setFilter] = useState('')
   if (!data) {
     return (
       <div className="screenSub">
@@ -29,6 +31,10 @@ export const VerkPage = ({ workId }: { workId: string }) => {
       </div>
     )
   }
+  const needle = filter.trim().toLowerCase()
+  const books = needle
+    ? data.books.filter((b) => `${b.name} ${b.abbrev}`.toLowerCase().includes(needle))
+    : data.books
   return (
     <div className="screenSub">
       <TopBar />
@@ -40,10 +46,23 @@ export const VerkPage = ({ workId }: { workId: string }) => {
           {data.work.author} · {data.work.translation} · {data.work.license}
         </p>
       </header>
+      {(data.books.length > 5 || filter.length > 0) && (
+        <input
+          className={styles.searchInput}
+          type="search"
+          value={filter}
+          onChange={(event) => setFilter(event.target.value)}
+          placeholder="Sök bok, t.ex. Matteus …"
+          aria-label="Sök bok"
+        />
+      )}
       <div className={styles.groupRows}>
-        {data.books.map((book) => (
+        {books.map((book) => (
           <BookRow key={book.id} workId={workId} book={book} />
         ))}
+        {needle.length > 0 && books.length === 0 && (
+          <p className={styles.stateNote}>Ingen bok matchar ”{filter}”.</p>
+        )}
       </div>
     </div>
   )

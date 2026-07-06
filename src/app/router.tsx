@@ -114,7 +114,10 @@ const verkRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/$workId',
   component: function VerkRoute() {
-    return <VerkPage workId={verkRoute.useParams().workId} />
+    // key ⇒ komponenten monteras om per verk, så filterfältet inte hänger kvar
+    // när man byter till ett annat verk (TanStack återanvänder annars instansen).
+    const { workId } = verkRoute.useParams()
+    return <VerkPage key={workId} workId={workId} />
   },
 })
 

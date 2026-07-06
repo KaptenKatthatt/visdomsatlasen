@@ -58,6 +58,13 @@ export type SearchHit = {
   snippet: string
 }
 
+export type BookHit = {
+  workId: string
+  workTitle: string
+  bookId: string
+  bookName: string
+}
+
 const getJson = async <T>(url: string): Promise<T> => {
   const response = await fetch(url, { headers: { Accept: 'application/json' } })
   if (response.status === 401) {
@@ -87,5 +94,7 @@ export const fetchWork = (id: string): Promise<{ work: Work; books: BookWithChap
 export const fetchChapter = (id: string, chapter: number): Promise<ChapterView> =>
   getJson(`/api/library/books/${encodeURIComponent(id)}/chapters/${chapter}`)
 
-export const searchLibrary = (query: string): Promise<{ hits: SearchHit[] }> =>
+export const searchLibrary = (
+  query: string,
+): Promise<{ books: BookHit[]; hits: SearchHit[] }> =>
   getJson(`/api/library/search?q=${encodeURIComponent(query)}`)
