@@ -10,7 +10,7 @@ const excerpt = (note: string): string => {
 }
 
 export const SamlingPage = () => {
-  const { bookmarks, notes } = useAtlas()
+  const { bookmarks, notes, dark, toggleDark } = useAtlas()
   const bookmarked = Object.keys(bookmarks)
     .filter((id) => bookmarks[id])
     .map(findTopic)
@@ -68,6 +68,18 @@ export const SamlingPage = () => {
             ) : null,
           )
         )}
+      </div>
+      <div className={styles.sectionLater}>
+        <div className="kicker sectionKicker">Utseende</div>
+        <button
+          type="button"
+          onClick={toggleDark}
+          aria-pressed={dark}
+          className={styles.appearance}
+        >
+          <span className={styles.appearanceLabel}>Mörkt läge</span>
+          <span className={styles.appearanceState}>{dark ? 'På' : 'Av'}</span>
+        </button>
       </div>
     </div>
   )

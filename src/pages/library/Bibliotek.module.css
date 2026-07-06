@@ -178,7 +178,7 @@
 }
 
 .mark {
-  background: rgba(119, 47, 53, 0.16);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
   color: inherit;
   border-radius: 3px;
   padding: 0 1px;

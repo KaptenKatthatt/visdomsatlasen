@@ -10,6 +10,20 @@
       content="En stilla atlas över mänsklighetens visdom – texter, personer och traditioner att vandra fritt bland."
     />
     <title>Visdomsatlasen</title>
+    <script>
+      // Sätt temat före första målningen så mörkt läge inte blinkar ljust.
+      // Följer sparat val, annars systeminställningen.
+      try {
+        var saved = JSON.parse(localStorage.getItem('visdomsatlasen') || 'null')
+        var dark =
+          saved && typeof saved.dark === 'boolean'
+            ? saved.dark
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.dataset.dark = dark ? 'true' : 'false'
+        var meta = document.querySelector('meta[name="theme-color"]')
+        if (meta) meta.setAttribute('content', dark ? '#1c1813' : '#faf6ed')
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>
