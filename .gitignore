@@ -4,3 +4,8 @@ dev-dist/
 .fallow/
 *.local
 .DS_Store
+.env
+# SQLite-databasen byggs av ingest och lagras i volym på VPS:en — aldrig i git.
+data/*.db
+data/*.db-shm
+data/*.db-wal

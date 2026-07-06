@@ -1,0 +1,185 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 6px 0 0;
+}
+
+.lede {
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--soft);
+  margin: 10px 0 0;
+  text-wrap: pretty;
+}
+
+.group {
+  margin-top: 34px;
+}
+
+.groupRows {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hårfina rader, samma känsla som RowLink men för externa biblioteksrutter. */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--faint);
+  color: inherit;
+  text-decoration: none;
+}
+
+.rowTitle {
+  display: block;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.rowSub {
+  display: block;
+  font-size: 13.5px;
+  color: var(--soft);
+  margin-top: 3px;
+}
+
+.chev {
+  color: var(--accsoft);
+  font-size: 22px;
+  flex: none;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accsoft);
+  border-radius: 999px;
+  padding: 1px 7px;
+  margin-left: 8px;
+  vertical-align: 1px;
+}
+
+/* Rutnät av kapitelnummer. */
+.chapterGrid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: 8px;
+}
+
+.chapterCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border: 1px solid var(--faint);
+  border-radius: 10px;
+  font-size: 17px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.chapterCell:hover {
+  border-color: var(--accsoft);
+  color: var(--accent);
+}
+
+.offline {
+  margin-top: 22px;
+  padding: 16px;
+  border: 1px solid var(--faint);
+  border-radius: 14px;
+}
+
+.offlineBtn {
+  background: var(--accent);
+  color: var(--paper);
+  border: none;
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.offlineBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.offlineText {
+  font-size: 13.5px;
+  color: var(--soft);
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.stateNote {
+  margin-top: 40px;
+  color: var(--soft);
+  font-style: italic;
+}
+
+.metaLine {
+  font-size: 14px;
+  color: var(--soft);
+  font-style: italic;
+  margin-top: 6px;
+}
+
+.searchInput {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--faint);
+  color: var(--ink);
+  font-size: 22px;
+  padding: 10px 0;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: var(--soft);
+}
+
+.hit {
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--faint);
+  color: inherit;
+  text-decoration: none;
+}
+
+.hitRef {
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.hitSnippet {
+  display: block;
+  font-size: 17px;
+  line-height: 1.55;
+  margin-top: 4px;
+  text-wrap: pretty;
+}
+
+.mark {
+  background: rgba(119, 47, 53, 0.16);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 1px;
+}

@@ -6,6 +6,11 @@ import {
 import type { ReadMode } from '../content/model'
 import { AmnePage } from '../pages/AmnePage'
 import { AtlasPage } from '../pages/AtlasPage'
+import { BibliotekPage } from '../pages/library/BibliotekPage'
+import { BibliotekSokPage } from '../pages/library/BibliotekSokPage'
+import { BokPage } from '../pages/library/BokPage'
+import { KapitelPage } from '../pages/library/KapitelPage'
+import { VerkPage } from '../pages/library/VerkPage'
 import { HemPage } from '../pages/HemPage'
 import { KallaPage } from '../pages/KallaPage'
 import { LasPage } from '../pages/LasPage'
@@ -99,6 +104,50 @@ const sokRoute = createRoute({
   component: SokPage,
 })
 
+const bibliotekRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek',
+  component: BibliotekPage,
+})
+
+const verkRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/$workId',
+  component: function VerkRoute() {
+    return <VerkPage workId={verkRoute.useParams().workId} />
+  },
+})
+
+const bokRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/$workId/$bookSlug',
+  component: function BokRoute() {
+    const params = bokRoute.useParams()
+    return <BokPage workId={params.workId} bookSlug={params.bookSlug} />
+  },
+})
+
+const kapitelRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/kapitel/$workId/$bookSlug/$chapter',
+  component: function KapitelRoute() {
+    const params = kapitelRoute.useParams()
+    return (
+      <KapitelPage
+        workId={params.workId}
+        bookSlug={params.bookSlug}
+        chapter={params.chapter}
+      />
+    )
+  },
+})
+
+const bibliotekSokRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek-sok',
+  component: BibliotekSokPage,
+})
+
 const routeTree = rootRoute.addChildren([
   hemRoute,
   utforskaRoute,
@@ -111,6 +160,11 @@ const routeTree = rootRoute.addChildren([
   atlasRoute,
   samlingRoute,
   sokRoute,
+  bibliotekRoute,
+  verkRoute,
+  bokRoute,
+  kapitelRoute,
+  bibliotekSokRoute,
 ])
 
 export const router = createRouter({

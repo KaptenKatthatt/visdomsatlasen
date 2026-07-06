@@ -2,7 +2,7 @@ import { Outlet, useRouterState } from '@tanstack/react-router'
 import { NavTabs } from '../components/NavTabs'
 import { useAtlas } from '../lib/store'
 
-const NAVLESS_PREFIXES = ['/las', '/kalla', '/sok']
+const NAVLESS_PREFIXES = ['/las', '/kalla', '/sok', '/kapitel', '/bibliotek-sok']
 
 export const RootLayout = () => {
   const { dark } = useAtlas()

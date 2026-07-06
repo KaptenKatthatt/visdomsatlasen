@@ -1,0 +1,27 @@
+{
+  "_note": "Litet urval av 1917 års bibel (public domain) för lokal verifiering av ingest → API → läsare. Hela bibeln hämtas på VPS:en via getbible-adaptern. Verstexten är hämtad ur repots redan vettade källor.",
+  "books": [
+    {
+      "slug": "predikaren",
+      "name": "Predikaren",
+      "abbrev": "Pred",
+      "verses": [
+        { "chapter": 1, "verse": 1, "text": "Detta är Predikarens ord, Davids sons, konungens i Jerusalem." },
+        { "chapter": 1, "verse": 2, "text": "Fåfängligheters fåfänglighet! säger Predikaren. Fåfängligheters fåfänglighet! Allt är fåfänglighet!" },
+        { "chapter": 1, "verse": 3, "text": "Vad förmån har människan av all möda som hon gör sig under solen?" },
+        { "chapter": 1, "verse": 4, "text": "Släkte går, och släkte kommer, och jorden står evinnerligen kvar." },
+        { "chapter": 1, "verse": 5, "text": "Och solen går upp, och solen går ned, och har sedan åter brått att komma till den ort där hon går upp." },
+        { "chapter": 3, "verse": 1, "text": "Allting har sin tid, och vart företag under himmelen har sin stund." }
+      ]
+    },
+    {
+      "slug": "markus",
+      "name": "Markusevangeliet",
+      "abbrev": "Mark",
+      "verses": [
+        { "chapter": 1, "verse": 14, "text": "Men sedan Johannes hade blivit satt i fängelse, kom Jesus till Galileen och predikade Guds evangelium." },
+        { "chapter": 1, "verse": 15, "text": "Och han sade: »Tiden är fullbordad, och Guds rike är nära; gören bättring, och tron evangelium.«" }
+      ]
+    }
+  ]
+}

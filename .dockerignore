@@ -5,3 +5,7 @@ dev-dist
 .fallow
 Dockerfile
 README.md
+.env
+data/*.db
+data/*.db-shm
+data/*.db-wal

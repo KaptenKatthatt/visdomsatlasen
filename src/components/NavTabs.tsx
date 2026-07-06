@@ -4,6 +4,7 @@ import styles from './NavTabs.module.css'
 const tabs = [
   { to: '/', label: 'Hem' },
   { to: '/utforska', label: 'Utforska' },
+  { to: '/bibliotek', label: 'Texter' },
   { to: '/atlas', label: 'Atlas' },
   { to: '/samling', label: 'Samling' },
 ] as const

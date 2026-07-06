@@ -1,0 +1,90 @@
+import { fetchJson } from '../../lib/fetchJson'
+import { mapPool } from '../../lib/concurrency'
+import { translateLines } from '../translate'
+import { DHAMMAPADA_VAGGAS, type Vagga } from './vaggas'
+import type { NormalizedBook, NormalizedVerse, NormalizedWork, WorkMeta } from '../model'
+
+// Dhammapada från SuttaCentrals bilara-data (CC0): engelska (Bhikkhu Sujato) +
+// pali (Mahāsaṅgīti). Översätts till svenska via Ollama vid ingest.
+const BASE = 'https://raw.githubusercontent.com/suttacentral/bilara-data/published'
+const enUrl = (r: string): string =>
+  `${BASE}/translation/en/sujato/sutta/kn/dhp/dhp${r}_translation-en-sujato.json`
+const pliUrl = (r: string): string => `${BASE}/root/pli/ms/sutta/kn/dhp/dhp${r}_root-pli-ms.json`
+
+type Segments = Record<string, string>
+
+// Slå ihop segmenten (dhpN:1, dhpN:2 …) till en vers per versnummer. Rubriker
+// (dhpN:0.x) hoppas över.
+const collectVerses = (seg: Segments): Map<number, string> => {
+  const parts = new Map<number, [number, string][]>()
+  for (const [key, value] of Object.entries(seg)) {
+    const match = /^dhp(\d+):(\d+(?:\.\d+)?)$/.exec(key)
+    if (!match) continue
+    const vnum = Number(match[1])
+    const order = Number(match[2])
+    if (order < 1) continue
+    const arr = parts.get(vnum) ?? []
+    arr.push([order, value])
+    parts.set(vnum, arr)
+  }
+  const out = new Map<number, string>()
+  for (const [vnum, arr] of parts) {
+    arr.sort((a, b) => a[0] - b[0])
+    out.set(vnum, arr.map(([, t]) => t.trim()).join(' ').replace(/\s+/g, ' ').trim())
+  }
+  return out
+}
+
+type VaggaResult = { verses: NormalizedVerse[]; translated: boolean }
+
+const buildVagga = async (vagga: Vagga): Promise<VaggaResult> => {
+  const [enSeg, pliSeg] = await Promise.all([
+    fetchJson(enUrl(vagga.range)) as Promise<Segments>,
+    fetchJson(pliUrl(vagga.range)) as Promise<Segments>,
+  ])
+  const en = collectVerses(enSeg)
+  const pli = collectVerses(pliSeg)
+  const nums = [...en.keys()].sort((a, b) => a - b)
+  const enTexts = nums.map((n) => en.get(n) ?? '')
+  // null ⇒ ingen översättning skedde (avstängd eller misslyckad) ⇒ behåll engelska.
+  const swedish = await translateLines(enTexts)
+  const text = swedish ?? enTexts
+  return {
+    translated: swedish !== null,
+    verses: nums.map((n, i) => ({
+      chapter: vagga.index,
+      verse: n,
+      text: text[i] ?? enTexts[i] ?? '',
+      origText: pli.get(n),
+    })),
+  }
+}
+
+const metaFor = (translated: boolean): WorkMeta => ({
+  id: 'dhammapada',
+  title: 'Dhammapada',
+  subtitle: 'Sanningens väg',
+  tradition: 'Buddhism',
+  author: 'Ur Buddhas undervisning',
+  lang: 'Pali',
+  translation: translated
+    ? 'Svensk översättning (Ollama) från Bhikkhu Sujatos engelska'
+    : 'Engelska: Bhikkhu Sujato',
+  license: 'CC0 (SuttaCentral)',
+  sourceUrl: 'https://suttacentral.net/dhp',
+  translated,
+})
+
+/** Hämtar hela Dhammapada (26 vaggas) och normaliserar den till ett verk. */
+export const suttacentralDhammapada = async (): Promise<NormalizedWork> => {
+  const perVagga = await mapPool(DHAMMAPADA_VAGGAS, 4, buildVagga)
+  // Märk som översatt bara om varje vagga faktiskt översattes.
+  const translated = perVagga.length > 0 && perVagga.every((r) => r.translated)
+  const book: NormalizedBook = {
+    slug: 'dhammapada',
+    name: 'Dhammapada',
+    abbrev: 'Dhp',
+    verses: perVagga.flatMap((r) => r.verses),
+  }
+  return { meta: metaFor(translated), books: [book] }
+}
