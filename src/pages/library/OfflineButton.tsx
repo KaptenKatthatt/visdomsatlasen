@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
-  countOfflineChapters,
   deleteOfflineDownload,
   downloadForOffline,
+  readOfflineDownload,
+  writeOfflineDownload,
   type OfflineProgress,
 } from '../../lib/offline'
 import styles from './Bibliotek.module.css'
@@ -25,18 +26,19 @@ const actionLabel = (
 export const OfflineButton = () => {
   const [progress, setProgress] = useState<OfflineProgress | null>(null)
   const [running, setRunning] = useState(false)
-  // Läses ur den kvarvarande cachen vid montering, så statusen överlever omladdning.
-  const [downloaded, setDownloaded] = useState<number | null>(null)
-
-  useEffect(() => {
-    void countOfflineChapters().then(setDownloaded)
-  }, [])
+  // Läses synkront ur flaggan vid montering, så statusen överlever omladdning.
+  const [downloaded, setDownloaded] = useState<number | null>(readOfflineDownload)
 
   const start = async (): Promise<void> => {
     setRunning(true)
+    let total = 0
     try {
-      await downloadForOffline(setProgress)
-      setDownloaded(await countOfflineChapters())
+      await downloadForOffline((p) => {
+        total = p.total
+        setProgress(p)
+      })
+      writeOfflineDownload(total)
+      setDownloaded(total)
     } catch {
       // Sväljs: knappen återställs i finally och kan provas igen.
     } finally {
@@ -47,7 +49,7 @@ export const OfflineButton = () => {
   const remove = async (): Promise<void> => {
     await deleteOfflineDownload()
     setProgress(null)
-    setDownloaded(0)
+    setDownloaded(null)
   }
 
   const hasDownload = !running && (downloaded ?? 0) > 0

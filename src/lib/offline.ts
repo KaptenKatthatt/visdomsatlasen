@@ -1,28 +1,32 @@
 import { fetchWork, fetchWorks } from './api'
+import { readJson, writeJson } from './storage'
 
 export type OfflineProgress = { done: number; total: number }
 
 // Namnet på service-workerns runtime-cache (se runtimeCaching i vite.config.ts).
 const CACHE_NAME = 'library-api'
+// Nyckel för flaggan som markerar en genomförd bulk-nedladdning.
+const STATE_KEY = 'offline-download'
+
+type OfflineDownload = { chapters: number }
 
 /**
- * Räknar hur många kapitel som redan ligger i offline-cachen. Läser det faktiska
- * innehållet i CacheStorage, så statusen speglar verkligheten och överlever omladdning.
- * Returnerar 0 om Cache-API:t saknas eller cachen inte finns.
+ * Läser antalet kapitel från en tidigare genomförd nedladdning, eller null om ingen
+ * gjorts. En explicit flagga (till skillnad från att räkna cache-poster) skiljer en
+ * riktig bulk-nedladdning från enstaka kapitel som cachats vid vanlig läsning, och
+ * läses synkront så statusen överlever omladdning utan flimmer.
  */
-export const countOfflineChapters = async (): Promise<number> => {
-  try {
-    if (!('caches' in globalThis)) return 0
-    const cache = await caches.open(CACHE_NAME)
-    const keys = await cache.keys()
-    return keys.filter((request) => request.url.includes('/chapters/')).length
-  } catch {
-    return 0
-  }
+export const readOfflineDownload = (): number | null =>
+  readJson<OfflineDownload | null>(STATE_KEY, null)?.chapters ?? null
+
+/** Sparar (eller nollar, med null) flaggan för genomförd nedladdning. */
+export const writeOfflineDownload = (chapters: number | null): void => {
+  writeJson(STATE_KEY, chapters === null ? null : { chapters })
 }
 
-/** Raderar hela offline-nedladdningen genom att ta bort runtime-cachen. */
+/** Raderar offline-nedladdningen: tömmer runtime-cachen och nollar flaggan. */
 export const deleteOfflineDownload = async (): Promise<void> => {
+  writeOfflineDownload(null)
   try {
     if (!('caches' in globalThis)) return
     const names = await caches.keys()
