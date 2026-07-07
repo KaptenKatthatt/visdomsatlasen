@@ -19,6 +19,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       workbox: {
+        // Precacha även typsnitten (woff2) så alla läsinställningar funkar offline.
+        globPatterns: ['**/*.{js,css,html,svg,woff2}'],
         // Låt navigeringsfallbacken (index.html) aldrig svara på API-anrop.
         navigateFallbackDenylist: [/^\/api\//],
         // Cacha bibliotekets API så hämtade texter kan läsas offline.

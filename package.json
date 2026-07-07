@@ -17,7 +17,10 @@
     "check": "npm run check:types && npm run check:coverage && npm run check:length && npm run check:dead"
   },
   "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5.2.8",
     "@fontsource/eb-garamond": "^5.2.7",
+    "@fontsource/literata": "^5.2.8",
+    "@fontsource/source-sans-3": "^5.2.9",
     "@hono/node-server": "^1.19.14",
     "@tanstack/react-router": "^1.132.0",
     "better-sqlite3": "^12.11.1",

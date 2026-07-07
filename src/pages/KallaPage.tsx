@@ -1,3 +1,4 @@
+import { ReadingSettingsButton } from '../components/ReadingSettingsButton'
 import { RowLink } from '../components/RowLink'
 import { TopBar } from '../components/TopBar'
 import { findSource } from '../content/sources'
@@ -11,7 +12,7 @@ export const KallaPage = ({ id }: { id: string }) => {
 
   return (
     <div className="screenReader">
-      <TopBar />
+      <TopBar right={<ReadingSettingsButton />} />
       <header className={styles.head}>
         <div className="kicker">Originaltext</div>
         <h1 className={styles.title}>{source.title}</h1>

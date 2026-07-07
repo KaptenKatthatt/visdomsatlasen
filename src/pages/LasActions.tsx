@@ -1,4 +1,5 @@
-import { BookmarkIcon, MoonIcon, PencilIcon } from '../components/Icons'
+import { BookmarkIcon, PencilIcon } from '../components/Icons'
+import { ReadingSettingsButton } from '../components/ReadingSettingsButton'
 import { useAtlas } from '../lib/store'
 import styles from './LasPage.module.css'
 
@@ -7,9 +8,9 @@ type Props = {
   onOpenNotes: () => void
 }
 
-/** Right-side actions in the reading top bar: bookmark, notes, dark mode. */
+/** Right-side actions in the reading top bar: bookmark, notes, reading settings. */
 export const LasActions = ({ topicId, onOpenNotes }: Props) => {
-  const { bookmarks, toggleBookmark, toggleDark } = useAtlas()
+  const { bookmarks, toggleBookmark } = useAtlas()
   return (
     <div className={styles.actions}>
       <button
@@ -24,9 +25,7 @@ export const LasActions = ({ topicId, onOpenNotes }: Props) => {
       <button type="button" onClick={onOpenNotes} aria-label="Anteckningar" className="iconBtn">
         <PencilIcon />
       </button>
-      <button type="button" onClick={toggleDark} aria-label="Mörkt läge" className="iconBtn">
-        <MoonIcon />
-      </button>
+      <ReadingSettingsButton />
     </div>
   )
 }
