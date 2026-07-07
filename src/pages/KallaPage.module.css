@@ -44,8 +44,7 @@
 }
 
 .verse {
-  /* +2px över brödtexten (--rs) i alla storlekssteg */
-  font-size: calc(var(--rs) + 2px);
+  font-size: var(--rs-verse);
   line-height: 1.75;
   margin: 0 0 1.1em;
   text-wrap: pretty;

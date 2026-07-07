@@ -1,12 +1,6 @@
 import { useAtlas } from '../lib/store'
-import {
-  BG_CHOICES,
-  BG_LABELS,
-  BG_PAPER,
-  FONT_OPTIONS,
-  MAX_TEXT_STEP,
-  MIN_TEXT_STEP,
-} from '../lib/theme'
+import { BG_OPTIONS, FONT_OPTIONS, MAX_TEXT_STEP, MIN_TEXT_STEP } from '../lib/theme'
+import { BottomSheet } from './BottomSheet'
 import { MoonIcon } from './Icons'
 import styles from './ReadingSettingsSheet.module.css'
 
@@ -46,7 +40,7 @@ const SizeStepper = () => {
       </button>
       <span className={styles.stepDots} aria-live="polite" aria-label={`Textstorlek ${textStep} av ${MAX_TEXT_STEP}`}>
         {Array.from({ length: MAX_TEXT_STEP }, (_, i) => (
-          <span key={i} className={i < textStep ? styles.dotOn : styles.dotOff} />
+          <span key={i} className={i < textStep ? `${styles.dot} ${styles.dotOn}` : styles.dot} />
         ))}
       </span>
       <button
@@ -66,18 +60,18 @@ const BgPicker = () => {
   const { bg, dark, setBg } = useAtlas()
   return (
     <div className={styles.options} role="radiogroup" aria-label="Bakgrund">
-      {BG_CHOICES.map((choice) => (
+      {BG_OPTIONS.map((option) => (
         <button
-          key={choice}
+          key={option.id}
           type="button"
           role="radio"
-          aria-checked={bg === choice}
+          aria-checked={bg === option.id}
           className={styles.swatchBtn}
-          onClick={() => setBg(choice)}
+          onClick={() => setBg(option.id)}
           disabled={dark}
         >
-          <span className={styles.swatch} style={{ background: BG_PAPER[choice] }} />
-          {BG_LABELS[choice]}
+          <span className={styles.swatch} style={{ background: option.paper }} />
+          {option.label}
         </button>
       ))}
     </div>
@@ -106,34 +100,18 @@ const DarkToggle = () => {
 export const ReadingSettingsSheet = ({ onClose }: { onClose: () => void }) => {
   const { dark } = useAtlas()
   return (
-    <div className={styles.overlay}>
-      <button
-        type="button"
-        className={styles.scrim}
-        onClick={onClose}
-        aria-label="Stäng läsinställningar"
-      />
-      <div className={styles.holder}>
-        <div className={styles.sheet} role="dialog" aria-label="Läsinställningar">
-          <div className={styles.head}>
-            <div className="kicker">Läsinställningar</div>
-            <button type="button" className={styles.done} onClick={onClose}>
-              Klar
-            </button>
-          </div>
-          <div className={styles.sectionLabel}>Typsnitt</div>
-          <FontPicker />
-          <div className={styles.sectionLabel}>Textstorlek</div>
-          <SizeStepper />
-          <div className={styles.sectionLabel}>
-            Bakgrund
-            {dark && <span className={styles.hint}> · Gäller i ljust läge</span>}
-          </div>
-          <BgPicker />
-          <div className={styles.sectionLabel}>Tema</div>
-          <DarkToggle />
-        </div>
+    <BottomSheet label="Läsinställningar" onClose={onClose}>
+      <div className={`kicker ${styles.sectionLabel}`}>Typsnitt</div>
+      <FontPicker />
+      <div className={`kicker ${styles.sectionLabel}`}>Textstorlek</div>
+      <SizeStepper />
+      <div className={`kicker ${styles.sectionLabel}`}>
+        Bakgrund
+        {dark && <span className={styles.hint}> · Gäller i ljust läge</span>}
       </div>
-    </div>
+      <BgPicker />
+      <div className={`kicker ${styles.sectionLabel}`}>Tema</div>
+      <DarkToggle />
+    </BottomSheet>
   )
 }

@@ -11,10 +11,10 @@ import {
 import type { ReadMode } from '../content/model'
 import { readJson, writeJson } from './storage'
 import {
-  BG_CHOICES,
+  BG_OPTIONS,
   BG_PAPER,
   DARK_PAPER,
-  FONT_CHOICES,
+  FONT_OPTIONS,
   MAX_TEXT_STEP,
   MIN_TEXT_STEP,
   type BgChoice,
@@ -26,7 +26,9 @@ const STORAGE_KEY = 'visdomsatlasen'
 type LastRead = { id: string; mode: ReadMode }
 
 type AtlasState = {
-  dark: boolean
+  // null = inget manuellt val: temat följer systemets färgschema, även när
+  // det ändras senare. Först en toggle fryser valet i localStorage.
+  dark: boolean | null
   font: FontChoice
   textStep: number
   bg: BgChoice
@@ -45,10 +47,9 @@ type AtlasActions = {
   recordRead: (id: string, mode: ReadMode) => void
 }
 
-type AtlasStore = AtlasState & AtlasActions
+// Utåt är dark alltid det effektiva värdet (manuellt val eller systemets).
+type AtlasStore = Omit<AtlasState, 'dark'> & { dark: boolean } & AtlasActions
 
-// Utan sparat val följer temat systemets inställning (matchMedia). Ett manuellt
-// val sparas sedan i localStorage och tar över.
 const systemPrefersDark = (): boolean =>
   window.matchMedia('(prefers-color-scheme: dark)').matches
 
@@ -60,21 +61,33 @@ const clampStep = (step: number): number =>
 const initialState = (): AtlasState => {
   const saved = readJson<Partial<AtlasState>>(STORAGE_KEY, {})
   return {
-    dark: typeof saved.dark === 'boolean' ? saved.dark : systemPrefersDark(),
-    font: FONT_CHOICES.find((f) => f === saved.font) ?? 'garamond',
+    dark: typeof saved.dark === 'boolean' ? saved.dark : null,
+    font: FONT_OPTIONS.find((o) => o.id === saved.font)?.id ?? 'garamond',
     textStep: typeof saved.textStep === 'number' ? clampStep(saved.textStep) : 3,
-    bg: BG_CHOICES.find((b) => b === saved.bg) ?? 'kram',
+    bg: BG_OPTIONS.find((o) => o.id === saved.bg)?.id ?? 'kram',
     bookmarks: saved.bookmarks ?? {},
     notes: saved.notes ?? {},
     lastRead: saved.lastRead ?? null,
   }
 }
 
+// Följer systemets färgschema live, så tema utan manuellt val byter med OS:et.
+const useSystemDark = (): boolean => {
+  const [sysDark, setSysDark] = useState(systemPrefersDark)
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-color-scheme: dark)')
+    const onChange = (event: MediaQueryListEvent) => setSysDark(event.matches)
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
+  }, [])
+  return sysDark
+}
+
 type SetAtlasState = Dispatch<SetStateAction<AtlasState>>
 
 const useAtlasActions = (setState: SetAtlasState): AtlasActions => {
   const toggleDark = useCallback(
-    () => setState((s) => ({ ...s, dark: !s.dark })),
+    () => setState((s) => ({ ...s, dark: !(s.dark ?? systemPrefersDark()) })),
     [setState],
   )
   const setFont = useCallback(
@@ -113,18 +126,18 @@ const useAtlasActions = (setState: SetAtlasState): AtlasActions => {
 
 // Speglar temat på <html> (bakgrund utanför skalet) och i webbläsarens chrome
 // (theme-color), så PWA:n och statusfältet följer med när temat växlar.
-const useThemeMirror = (state: AtlasState): void => {
+const useThemeMirror = (state: AtlasState, dark: boolean): void => {
   useEffect(() => {
     writeJson(STORAGE_KEY, state)
   }, [state])
 
   useEffect(() => {
-    document.documentElement.dataset.dark = state.dark ? 'true' : 'false'
+    document.documentElement.dataset.dark = dark ? 'true' : 'false'
     document.documentElement.dataset.bg = state.bg
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', state.dark ? DARK_PAPER : BG_PAPER[state.bg])
-  }, [state.dark, state.bg])
+      ?.setAttribute('content', dark ? DARK_PAPER : BG_PAPER[state.bg])
+  }, [dark, state.bg])
 }
 
 const AtlasContext = createContext<AtlasStore | null>(null)
@@ -132,10 +145,12 @@ const AtlasContext = createContext<AtlasStore | null>(null)
 export const AtlasProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<AtlasState>(initialState)
   const actions = useAtlasActions(setState)
-  useThemeMirror(state)
+  const systemDark = useSystemDark()
+  const dark = state.dark ?? systemDark
+  useThemeMirror(state, dark)
 
   return (
-    <AtlasContext.Provider value={{ ...state, ...actions }}>
+    <AtlasContext.Provider value={{ ...state, dark, ...actions }}>
       {children}
     </AtlasContext.Provider>
   )

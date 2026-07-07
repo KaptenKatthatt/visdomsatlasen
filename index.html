@@ -21,7 +21,10 @@
             ? saved.dark
             : window.matchMedia('(prefers-color-scheme: dark)').matches
         var papers = { kram: '#faf6ed', sepia: '#f7eed9', vit: '#ffffff' }
-        var bg = saved && papers[saved.bg] ? saved.bg : 'kram'
+        var bg =
+          saved && ['kram', 'sepia', 'vit'].indexOf(saved.bg) !== -1
+            ? saved.bg
+            : 'kram'
         document.documentElement.dataset.dark = dark ? 'true' : 'false'
         document.documentElement.dataset.bg = bg
         var meta = document.querySelector('meta[name="theme-color"]')

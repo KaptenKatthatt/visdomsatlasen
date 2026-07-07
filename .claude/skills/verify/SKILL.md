@@ -26,4 +26,4 @@ Bra rutter: `/las/stoicism/essa` (essä), `/kalla/markus` (källtext), `/kapitel
 - `.desk`/`html` har `transition: background-color 0.5s` — vänta ~700 ms innan färgmätning.
 - Selektorn `[class*="verse"]` träffar containern `.verses` — använd `p[class*="verse"]`.
 - Playwright `:has-text("Vit")` matchar även "Krämvit" — använd `:text-is(...)`.
-- `.topbar` har `backdrop-filter`, vilket gör den till containing block för `position: fixed`-barn — overlays som renderas därifrån måste portalas (se ReadingSettingsButton).
+- `.topbar` har `backdrop-filter`, vilket gör den till containing block för `position: fixed`-barn — overlays som renderas därifrån måste portalas till skalelementet via `useShell()` i `src/lib/shell.ts` (se ReadingSettingsButton).

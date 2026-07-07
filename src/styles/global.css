@@ -16,17 +16,18 @@ body {
 /* Bakgrund utanför det centrerade skalet — speglar --desk så tema och
    bakgrundsval inte blinkar vid inladdning (data-dark/data-bg sätts av
    skriptet i index.html). Färgerna hålls i synk med src/lib/theme.ts.
-   Mörkt läge vinner över bakgrundsvalet — behåll dark-regeln sist. */
+   Bakgrundsreglerna nollas med :where() så mörkt läge alltid vinner på
+   specificitet, oberoende av källordning. */
 html {
   background-color: #ece4d2;
   transition: background-color 0.5s;
 }
 
-html[data-bg='sepia'] {
+html:where([data-bg='sepia']) {
   background-color: #eadfc2;
 }
 
-html[data-bg='vit'] {
+html:where([data-bg='vit']) {
   background-color: #f0efec;
 }
 
@@ -92,11 +93,12 @@ p {
 
 /* Theme tokens — läsinställningarna (typsnitt, storlek, bakgrund) styrs via
    data-attribut på .desk, satta i RootLayout. Bakgrundsfärgerna hålls i synk
-   med src/lib/theme.ts. Mörkt läge vinner över bakgrundsvalet — behåll
-   data-dark-blocket efter data-bg-blocken (samma specificitet). */
+   med src/lib/theme.ts. Bakgrundsreglerna nollas med :where() så mörkt läge
+   alltid vinner på specificitet, oberoende av källordning. */
 
 .desk {
   --font: 'EB Garamond', Georgia, serif;
+  --rs-verse: calc(var(--rs) + 2px);
   --paper: #faf6ed;
   --desk: #ece4d2;
   --ink: #2b251b;
@@ -138,12 +140,12 @@ p {
   --rs: 23px;
 }
 
-.desk[data-bg='sepia'] {
+.desk:where([data-bg='sepia']) {
   --paper: #f7eed9;
   --desk: #eadfc2;
 }
 
-.desk[data-bg='vit'] {
+.desk:where([data-bg='vit']) {
   --paper: #ffffff;
   --desk: #f0efec;
 }
