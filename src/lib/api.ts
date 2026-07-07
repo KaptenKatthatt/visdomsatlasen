@@ -1,5 +1,5 @@
-// Typad klient mot bibliotekets API (server/api/library.ts). Samma origin, så
-// webbläsarens cachade basic auth följer med automatiskt.
+// Typad klient mot bibliotekets API (server/api/library.ts). Samma origin;
+// läsning är öppen (servern körs Tailscale-only, se server/index.ts).
 
 export type Work = {
   id: string
@@ -67,13 +67,6 @@ export type BookHit = {
 
 const getJson = async <T>(url: string): Promise<T> => {
   const response = await fetch(url, { headers: { Accept: 'application/json' } })
-  if (response.status === 401) {
-    // Sessionen har gått ut — skicka till inloggningsformuläret (som Proton
-    // Pass kan autofylla) och behåll nuvarande sida som återvändo-mål.
-    const from = window.location.pathname + window.location.search
-    window.location.assign(`/login?from=${encodeURIComponent(from)}`)
-    throw new Error('Sessionen har gått ut')
-  }
   if (!response.ok) throw new Error(`Kunde inte hämta (${response.status})`)
   return (await response.json()) as T
 }
