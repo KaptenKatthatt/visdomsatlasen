@@ -39,14 +39,15 @@ Appen har två slags innehåll som lever sida vid sida:
 - FTS5-index för snabb, diakritik-okänslig fritextsök över alla verser
 - Ingest-pipeline med utbytbara källadaptrar (getbible, senare Gutenberg m.fl.)
 - Ollama via Hermes-gateway för att översätta icke-svenska traditioner till svenska
-- Basic auth + Tailscale-only – privat, bara för dig, men nåbar från mobilen
+- Tailscale-only – privat, bara för dig, men nåbar från mobilen (ingen
+  inloggning: innehållet är public domain och ingen personlig data lämnar enheten)
 - Docker-container, deploy via GitHub Actions till Hetzner (som newsAgg)
 
 ## Kom igång
 
 ```bash
 npm install
-cp .env.example .env        # sätt ATLAS_USER/ATLAS_PASS m.m.
+cp .env.example .env        # sätt INGEST_TOKEN m.m.
 
 # Fyll databasen med ett urval av 1917 års bibel (utan nätverk):
 BIBLE_SOURCE=fixture npm run ingest
@@ -93,8 +94,8 @@ Texterna normaliseras till **verk → bok → kapitel → vers** och lagras i SQ
 
 ### API
 
-Allt bakom basic auth (`server/index.ts`). Samma origin, så webbläsarens
-inloggning följer automatiskt med SPA:ets anrop.
+Läs-endpointsen är öppna (servern körs Tailscale-only, `server/index.ts`); bara
+den skrivande ingest-endpointen kräver en token.
 
 | Endpoint | Svar |
 | --- | --- |
@@ -153,7 +154,7 @@ docker run -p 3001:8080 \
   -v $PWD/data:/app/data \
   --env-file .env \
   visdomsatlasen
-# öppna http://localhost:3001 (kräver ATLAS_USER/ATLAS_PASS)
+# öppna http://localhost:3001 (ingen inloggning – läsning är öppen)
 ```
 
 Bygget är flerstegs: ett deps-steg bygger `better-sqlite3`, ett byggsteg
@@ -170,8 +171,9 @@ Samma modell som newsAgg:
    `main`, pushar den till GHCR, ansluter till Tailscale och kör om containern
    `visdomsatlasen` på servern (host-port 3001 → container 8080), med
    `/opt/visdomsatlasen/data` som volym och `/opt/visdomsatlasen/.env` som miljö.
-3. **Privat:** servern nås bara via Tailscale och kräver basic auth. Ingen öppen
-   internetexponering.
+3. **Privat:** servern nås bara via Tailscale — ingen öppen internetexponering.
+   Läsning kräver ingen inloggning (public domain-innehåll, ingen personlig data
+   på servern); bara `POST /api/ingest` skyddas av `INGEST_TOKEN`.
 4. **Fyll biblioteket:** sker **automatiskt** — vid varje serverstart ingest:as
    de verk som saknas i databasen i bakgrunden (`AUTO_INGEST`, på som standard).
    Så ett nytt verk fylls på av sig självt vid nästa deploy, utan att befintliga
