@@ -105,6 +105,12 @@
   border-radius: 14px;
 }
 
+.offlineActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .offlineBtn {
   background: var(--accent);
   color: var(--paper);
@@ -118,6 +124,22 @@
 .offlineBtn:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+/* Sekundär, dämpad variant för raderingsknappen. */
+.offlineBtnGhost {
+  background: none;
+  color: var(--soft);
+  border: 1px solid var(--faint);
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.offlineBtnGhost:hover {
+  border-color: var(--accsoft);
+  color: var(--accent);
 }
 
 .offlineText {

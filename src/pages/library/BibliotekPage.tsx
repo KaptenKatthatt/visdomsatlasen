@@ -45,7 +45,7 @@ export const BibliotekPage = () => {
       <p className={styles.lede}>
         Hela källtexter att läsa och söka fritt i — offline när du hämtat hem dem.
       </p>
-      {data ? <OfflineButton /> : <StateNote loading={loading} error={error} />}
+      {!data && <StateNote loading={loading} error={error} />}
       {data?.works.length === 0 && (
         <p className={styles.stateNote}>Inga texter ännu. Kör ingest på servern.</p>
       )}
@@ -60,6 +60,7 @@ export const BibliotekPage = () => {
             </div>
           </div>
         ))}
+      {data && <OfflineButton />}
     </div>
   )
 }
