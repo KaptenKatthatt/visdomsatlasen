@@ -11,17 +11,24 @@
     />
     <title>Visdomsatlasen</title>
     <script>
-      // Sätt temat före första målningen så mörkt läge inte blinkar ljust.
-      // Följer sparat val, annars systeminställningen.
+      // Sätt tema och bakgrundsval före första målningen så inget blinkar.
+      // Följer sparat val, annars systeminställningen. Färgerna hålls i synk
+      // med src/lib/theme.ts (skriptet kan inte läsa CSS-variabler).
       try {
         var saved = JSON.parse(localStorage.getItem('visdomsatlasen') || 'null')
         var dark =
           saved && typeof saved.dark === 'boolean'
             ? saved.dark
             : window.matchMedia('(prefers-color-scheme: dark)').matches
+        var papers = { kram: '#faf6ed', sepia: '#f7eed9', vit: '#ffffff' }
+        var bg =
+          saved && ['kram', 'sepia', 'vit'].indexOf(saved.bg) !== -1
+            ? saved.bg
+            : 'kram'
         document.documentElement.dataset.dark = dark ? 'true' : 'false'
+        document.documentElement.dataset.bg = bg
         var meta = document.querySelector('meta[name="theme-color"]')
-        if (meta) meta.setAttribute('content', dark ? '#1c1813' : '#faf6ed')
+        if (meta) meta.setAttribute('content', dark ? '#1c1813' : papers[bg])
       } catch (e) {}
     </script>
   </head>

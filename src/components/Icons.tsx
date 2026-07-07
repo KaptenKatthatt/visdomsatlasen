@@ -26,6 +26,16 @@ export const BookmarkIcon = ({ filled = false }: { filled?: boolean }) => (
   </svg>
 )
 
+/** "Aa" — läsinställningar (typsnitt, storlek, bakgrund, tema). */
+export const TypeIcon = ({ size = 18 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M2.5 19 8.5 4.5 14.5 19" />
+    <path d="M4.6 14h7.8" />
+    <path d="M21.5 19v-6.8a3.2 3.2 0 0 0-5.8-1.4" />
+    <path d="M21.5 15.6a3.4 3.4 0 1 1-3.4-3.4 3.4 3.4 0 0 1 3.4 3.4z" />
+  </svg>
+)
+
 export const PencilIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
     <path d="M4.5 19.5l.9-3.6L16.6 4.7a1.7 1.7 0 0 1 2.4 2.4L7.8 18.3l-3.3 1.2z" />

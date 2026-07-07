@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { ReadingSettingsButton } from '../../components/ReadingSettingsButton'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
 import { bookId, fetchChapter } from '../../lib/api'
@@ -37,14 +38,14 @@ export const KapitelPage = ({ workId, bookSlug, chapter }: Props) => {
   if (!data) {
     return (
       <div className="screenReader">
-        <TopBar />
+        <TopBar right={<ReadingSettingsButton />} />
         <StateNote loading={loading} error={error} />
       </div>
     )
   }
   return (
     <div className="screenReader">
-      <TopBar />
+      <TopBar right={<ReadingSettingsButton />} />
       <header className={styles.head}>
         <div className="kicker">{data.book.name}</div>
         <h1 className={styles.chapterTitle}>Kapitel {data.chapter}</h1>

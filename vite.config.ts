@@ -19,10 +19,24 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg'],
       workbox: {
+        // Precacha bara standardfontens latinfiler; övriga subset och valbara
+        // typsnitt hämtas vid behov och fastnar i runtime-cachen nedan.
+        globPatterns: ['**/*.{js,css,html,svg}', '**/eb-garamond-latin-*.woff2'],
         // Låt navigeringsfallbacken (index.html) aldrig svara på API-anrop.
         navigateFallbackDenylist: [/^\/api\//],
-        // Cacha bibliotekets API så hämtade texter kan läsas offline.
         runtimeCaching: [
+          // Typsnittsfilerna är innehållshashade och oföränderliga — CacheFirst
+          // gör varje vald font offline-tillgänglig efter första användningen.
+          {
+            urlPattern: ({ url }: { url: URL }) => url.pathname.endsWith('.woff2'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'fonts',
+              expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          // Cacha bibliotekets API så hämtade texter kan läsas offline.
           {
             urlPattern: ({ url }: { url: URL }) => url.pathname.startsWith('/api/library'),
             handler: 'StaleWhileRevalidate',

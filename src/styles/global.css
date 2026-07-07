@@ -13,11 +13,22 @@ body {
   margin: 0;
 }
 
-/* Bakgrund utanför det centrerade skalet — speglar --desk så mörkt läge inte
-   blinkar ljust vid inladdning (data-dark sätts av skriptet i index.html). */
+/* Bakgrund utanför det centrerade skalet — speglar --desk så tema och
+   bakgrundsval inte blinkar vid inladdning (data-dark/data-bg sätts av
+   skriptet i index.html). Färgerna hålls i synk med src/lib/theme.ts.
+   Bakgrundsreglerna nollas med :where() så mörkt läge alltid vinner på
+   specificitet, oberoende av källordning. */
 html {
   background-color: #ece4d2;
   transition: background-color 0.5s;
+}
+
+html:where([data-bg='sepia']) {
+  background-color: #eadfc2;
+}
+
+html:where([data-bg='vit']) {
+  background-color: #f0efec;
 }
 
 html[data-dark='true'] {
@@ -36,7 +47,7 @@ body {
 input,
 textarea,
 button {
-  font-family: 'EB Garamond', Georgia, serif;
+  font-family: inherit;
 }
 
 h1,
@@ -80,9 +91,14 @@ p {
   }
 }
 
-/* Theme tokens */
+/* Theme tokens — läsinställningarna (typsnitt, storlek, bakgrund) styrs via
+   data-attribut på .desk, satta i RootLayout. Bakgrundsfärgerna hålls i synk
+   med src/lib/theme.ts. Bakgrundsreglerna nollas med :where() så mörkt läge
+   alltid vinner på specificitet, oberoende av källordning. */
 
 .desk {
+  --font: 'EB Garamond', Georgia, serif;
+  --rs-verse: calc(var(--rs) + 2px);
   --paper: #faf6ed;
   --desk: #ece4d2;
   --ink: #2b251b;
@@ -90,9 +106,48 @@ p {
   --faint: rgba(43, 37, 27, 0.16);
   --accent: #772f35;
   --accsoft: rgba(119, 47, 53, 0.5);
+  font-family: var(--font);
   background-color: var(--desk);
   min-height: 100dvh;
   transition: background-color 0.5s;
+}
+
+.desk[data-font='literata'] {
+  --font: 'Literata', Georgia, serif;
+}
+
+.desk[data-font='sans'] {
+  --font: 'Source Sans 3', system-ui, sans-serif;
+}
+
+.desk[data-font='hyperlegible'] {
+  --font: 'Atkinson Hyperlegible', system-ui, sans-serif;
+}
+
+.desk[data-size='1'] {
+  --rs: 16px;
+}
+
+.desk[data-size='2'] {
+  --rs: 17.5px;
+}
+
+.desk[data-size='4'] {
+  --rs: 21px;
+}
+
+.desk[data-size='5'] {
+  --rs: 23px;
+}
+
+.desk:where([data-bg='sepia']) {
+  --paper: #f7eed9;
+  --desk: #eadfc2;
+}
+
+.desk:where([data-bg='vit']) {
+  --paper: #ffffff;
+  --desk: #f0efec;
 }
 
 .desk[data-dark='true'] {
