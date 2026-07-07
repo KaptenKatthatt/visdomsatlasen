@@ -13,13 +13,24 @@ body {
   margin: 0;
 }
 
+/* Bakgrund utanför det centrerade skalet — speglar --desk så mörkt läge inte
+   blinkar ljust vid inladdning (data-dark sätts av skriptet i index.html). */
+html {
+  background-color: #ece4d2;
+  transition: background-color 0.5s;
+}
+
+html[data-dark='true'] {
+  background-color: #12100b;
+}
+
 body {
   font-family: 'EB Garamond', Georgia, serif;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: rgba(119, 47, 53, 0.16);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 input,

@@ -27,9 +27,14 @@ type AtlasStore = AtlasState & {
   recordRead: (id: string, mode: ReadMode) => void
 }
 
+// Utan sparat val följer temat systemets inställning (matchMedia). Ett manuellt
+// val sparas sedan i localStorage och tar över.
+const systemPrefersDark = (): boolean =>
+  window.matchMedia('(prefers-color-scheme: dark)').matches
+
 const initialState = (): AtlasState =>
   readJson<AtlasState>(STORAGE_KEY, {
-    dark: false,
+    dark: systemPrefersDark(),
     bookmarks: {},
     notes: {},
     lastRead: null,
@@ -43,6 +48,15 @@ export const AtlasProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     writeJson(STORAGE_KEY, state)
   }, [state])
+
+  // Speglar temat på <html> (bakgrund utanför skalet) och i webbläsarens chrome
+  // (theme-color), så PWA:n och statusfältet följer med när temat växlar.
+  useEffect(() => {
+    document.documentElement.dataset.dark = state.dark ? 'true' : 'false'
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', state.dark ? '#1c1813' : '#faf6ed')
+  }, [state.dark])
 
   const toggleDark = useCallback(
     () => setState((s) => ({ ...s, dark: !s.dark })),

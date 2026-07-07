@@ -34,6 +34,9 @@ const translateChapters = async (
 }
 
 type BookInfo = { slug: string; name: string; abbrev: string }
+// En namngiven bok med sina råkapitel (för verk med flera namngivna delar:
+// Eddornas dikter, Epiktetos böcker, Senecas dialoger …).
+export type NamedBook = { info: BookInfo; chapters: RawChapter[] }
 
 /** Översätter råkapitel och sätter ihop ett ett-bok-verk (delas av adaptrarna). */
 export const buildTranslatedWork = async (
@@ -47,4 +50,24 @@ export const buildTranslatedWork = async (
   // exakta täckningen rapporteras separat i stats för verifiering.
   const translated = totalVerses > 0 && translatedVerses * 2 >= totalVerses
   return { meta: metaFor(translated), books: [{ ...book, verses }], stats: { translatedVerses } }
+}
+
+/** Som buildTranslatedWork men för verk med flera namngivna böcker. Böckerna
+ * översätts en i taget (kapitlen inom en bok parallellt) så Ollama inte överlastas. */
+export const buildTranslatedMultiBook = async (
+  books: NamedBook[],
+  metaFor: (translated: boolean) => WorkMeta,
+  concurrency = 4,
+): Promise<NormalizedWork> => {
+  const out: NormalizedWork['books'] = []
+  let translatedVerses = 0
+  let totalVerses = 0
+  for (const book of books) {
+    const built = await translateChapters(book.chapters, concurrency)
+    out.push({ ...book.info, verses: built.verses })
+    translatedVerses += built.translatedVerses
+    totalVerses += built.totalVerses
+  }
+  const translated = totalVerses > 0 && translatedVerses * 2 >= totalVerses
+  return { meta: metaFor(translated), books: out, stats: { translatedVerses } }
 }
