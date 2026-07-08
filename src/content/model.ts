@@ -7,6 +7,7 @@ export type To =
   | { kind: 'person'; id: string }
   | { kind: 'source'; id: string }
   | { kind: 'las'; id: string; mode: ReadMode }
+  | { kind: 'kapitel'; workId: string; bookSlug: string; chapter: number }
   | { kind: 'screen'; id: ScreenId }
 
 export type LinkSegment = { t: string; to: To }

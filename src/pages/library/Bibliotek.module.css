@@ -82,6 +82,7 @@
 }
 
 .chapterCell {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,6 +97,17 @@
 .chapterCell:hover {
   border-color: var(--accsoft);
   color: var(--accent);
+}
+
+/* Liten prick uppe till höger på kapitel man bokmärkt. */
+.chapterDot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--accent);
 }
 
 .offline {

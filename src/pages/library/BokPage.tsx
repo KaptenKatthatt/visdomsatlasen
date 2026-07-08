@@ -2,11 +2,13 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
 import { bookId, fetchWork } from '../../lib/api'
+import { chapterKey, useAtlas } from '../../lib/store'
 import { StateNote } from './StateNote'
 import styles from './Bibliotek.module.css'
 
 export const BokPage = ({ workId, bookSlug }: { workId: string; bookSlug: string }) => {
   const { data, loading, error } = useAsync(() => fetchWork(workId), [workId])
+  const { chapterBookmarks } = useAtlas()
   const navigate = useNavigate()
   const goUp = () => navigate({ to: '/bibliotek/$workId', params: { workId } })
   const id = bookId(workId, bookSlug)
@@ -37,6 +39,9 @@ export const BokPage = ({ workId, bookSlug }: { workId: string; bookSlug: string
             className={styles.chapterCell}
           >
             {n}
+            {chapterBookmarks[chapterKey(workId, bookSlug, n)] && (
+              <span className={styles.chapterDot} aria-label="Bokmärkt" />
+            )}
           </Link>
         ))}
       </div>

@@ -1,4 +1,4 @@
-import { BookmarkIcon } from '../components/Icons'
+import { BookmarkButton } from '../components/BookmarkButton'
 import { RowLink } from '../components/RowLink'
 import { TopBar } from '../components/TopBar'
 import { findPerson } from '../content/people'
@@ -28,16 +28,11 @@ export const AmnePage = ({ id }: { id: string }) => {
     <div className="screenSub">
       <TopBar
         right={
-          <button
-            type="button"
-            onClick={() => toggleBookmark(topic.id)}
-            aria-label="Bokmärke"
-            aria-pressed={!!bookmarks[topic.id]}
-            className="iconBtn"
+          <BookmarkButton
+            marked={!!bookmarks[topic.id]}
+            onToggle={() => toggleBookmark(topic.id)}
             style={{ padding: '6px 0 6px 6px' }}
-          >
-            <BookmarkIcon filled={!!bookmarks[topic.id]} />
-          </button>
+          />
         }
       />
       <header className={styles.head}>

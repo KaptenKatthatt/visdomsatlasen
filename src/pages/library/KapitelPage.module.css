@@ -1,3 +1,9 @@
+.actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
 .head {
   margin-top: 30px;
   text-align: center;

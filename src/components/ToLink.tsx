@@ -30,6 +30,14 @@ export const ToLink = ({ to, className, style, children }: Props) => {
       return (
         <Link to="/las/$id/$mode" params={{ id: to.id, mode: to.mode }} {...shared} />
       )
+    case 'kapitel':
+      return (
+        <Link
+          to="/kapitel/$workId/$bookSlug/$chapter"
+          params={{ workId: to.workId, bookSlug: to.bookSlug, chapter: String(to.chapter) }}
+          {...shared}
+        />
+      )
     case 'screen':
       return <Link to={screenPath(to.id)} {...shared} />
   }

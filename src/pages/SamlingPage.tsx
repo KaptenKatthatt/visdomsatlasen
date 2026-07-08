@@ -1,7 +1,7 @@
 import { RowLink } from '../components/RowLink'
 import { ToLink } from '../components/ToLink'
 import { findTopic } from '../content/topics'
-import { useAtlas } from '../lib/store'
+import { chapterKey, useAtlas } from '../lib/store'
 import styles from './SamlingPage.module.css'
 
 const excerpt = (note: string): string => {
@@ -10,11 +10,15 @@ const excerpt = (note: string): string => {
 }
 
 export const SamlingPage = () => {
-  const { bookmarks, notes, dark, toggleDark } = useAtlas()
+  const { bookmarks, chapterBookmarks, notes, dark, toggleDark } = useAtlas()
   const bookmarked = Object.keys(bookmarks)
     .filter((id) => bookmarks[id])
     .map(findTopic)
     .filter((topic) => topic !== undefined)
+  const chapterBookmarked = Object.values(chapterBookmarks).sort(
+    (a, b) => b.savedAt - a.savedAt,
+  )
+  const noBookmarks = bookmarked.length === 0 && chapterBookmarked.length === 0
   const noted = Object.entries(notes)
     .filter(([id, note]) => note.trim().length > 0 && findTopic(id) !== undefined)
     .map(([id, note]) => ({ topic: findTopic(id), note }))
@@ -27,21 +31,34 @@ export const SamlingPage = () => {
       <p className={styles.lede}>Det du sparat och tänkt.</p>
       <div className={styles.section}>
         <div className="kicker sectionKicker">Bokmärken</div>
-        {bookmarked.length === 0 ? (
+        {noBookmarks ? (
           <p className={styles.empty}>
-            Inga bokmärken ännu. När du läser kan du spara ett ämne med bokmärket i övre hörnet.
+            Inga bokmärken ännu. När du läser kan du spara ett ämne eller ett kapitel med
+            bokmärket i övre hörnet.
           </p>
         ) : (
-          bookmarked.map((topic) => (
-            <RowLink
-              key={topic.id}
-              to={{ kind: 'topic', id: topic.id }}
-              title={topic.title}
-              sub={`${topic.tradition} · ${topic.min} min`}
-              chevron
-              size="md"
-            />
-          ))
+          <>
+            {bookmarked.map((topic) => (
+              <RowLink
+                key={topic.id}
+                to={{ kind: 'topic', id: topic.id }}
+                title={topic.title}
+                sub={`${topic.tradition} · ${topic.min} min`}
+                chevron
+                size="md"
+              />
+            ))}
+            {chapterBookmarked.map((b) => (
+              <RowLink
+                key={chapterKey(b.workId, b.bookSlug, b.chapter)}
+                to={{ kind: 'kapitel', workId: b.workId, bookSlug: b.bookSlug, chapter: b.chapter }}
+                title={b.bookName}
+                sub={`Kapitel ${b.chapter}`}
+                chevron
+                size="md"
+              />
+            ))}
+          </>
         )}
       </div>
       <div className={styles.sectionLater}>

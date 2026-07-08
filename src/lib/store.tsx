@@ -25,6 +25,20 @@ const STORAGE_KEY = 'visdomsatlasen'
 
 type LastRead = { id: string; mode: ReadMode }
 
+// Ett bokmärke i biblioteket: pekar på ett kapitel och bär med sig boknamnet
+// så Samling kan rendera raden utan ett extra API-anrop.
+type ChapterBookmark = {
+  workId: string
+  bookSlug: string
+  chapter: number
+  bookName: string
+  savedAt: number
+}
+
+/** Nyckel för ett kapitelbokmärke — samma form som bok-id:t plus kapitel. */
+export const chapterKey = (workId: string, bookSlug: string, chapter: number): string =>
+  `${workId}/${bookSlug}:${chapter}`
+
 type AtlasState = {
   // null = inget manuellt val: temat följer systemets färgschema, även när
   // det ändras senare. Först en toggle fryser valet i localStorage.
@@ -33,6 +47,7 @@ type AtlasState = {
   textStep: number
   bg: BgChoice
   bookmarks: Record<string, boolean>
+  chapterBookmarks: Record<string, ChapterBookmark>
   notes: Record<string, string>
   lastRead: LastRead | null
 }
@@ -43,6 +58,7 @@ type AtlasActions = {
   stepText: (delta: 1 | -1) => void
   setBg: (bg: BgChoice) => void
   toggleBookmark: (id: string) => void
+  toggleChapterBookmark: (bookmark: ChapterBookmark) => void
   setNote: (id: string, text: string) => void
   recordRead: (id: string, mode: ReadMode) => void
 }
@@ -56,8 +72,19 @@ const systemPrefersDark = (): boolean =>
 const clampStep = (step: number): number =>
   Math.min(MAX_TEXT_STEP, Math.max(MIN_TEXT_STEP, Math.round(step)))
 
+// Samlingsfälten (bokmärken, anteckningar, senast läst) behöver bara falla
+// tillbaka på tomt — ingen värdevalidering, till skillnad från temafälten.
+const restoredCollections = (
+  saved: Partial<AtlasState>,
+): Pick<AtlasState, 'bookmarks' | 'chapterBookmarks' | 'notes' | 'lastRead'> => ({
+  bookmarks: saved.bookmarks ?? {},
+  chapterBookmarks: saved.chapterBookmarks ?? {},
+  notes: saved.notes ?? {},
+  lastRead: saved.lastRead ?? null,
+})
+
 // Äldre sparad state saknar de nya fälten, och korrupt JSON får inte läcka in
-// i CSS-attributen — merga över defaults och validera varje värde.
+// i CSS-attributen — merga över defaults och validera varje temavärde.
 const initialState = (): AtlasState => {
   const saved = readJson<Partial<AtlasState>>(STORAGE_KEY, {})
   return {
@@ -65,9 +92,7 @@ const initialState = (): AtlasState => {
     font: FONT_OPTIONS.find((o) => o.id === saved.font)?.id ?? 'garamond',
     textStep: typeof saved.textStep === 'number' ? clampStep(saved.textStep) : 3,
     bg: BG_OPTIONS.find((o) => o.id === saved.bg)?.id ?? 'kram',
-    bookmarks: saved.bookmarks ?? {},
-    notes: saved.notes ?? {},
-    lastRead: saved.lastRead ?? null,
+    ...restoredCollections(saved),
   }
 }
 
@@ -111,6 +136,17 @@ const useAtlasActions = (setState: SetAtlasState): AtlasActions => {
       })),
     [setState],
   )
+  const toggleChapterBookmark = useCallback(
+    (bookmark: ChapterBookmark) =>
+      setState((s) => {
+        const key = chapterKey(bookmark.workId, bookmark.bookSlug, bookmark.chapter)
+        const next = { ...s.chapterBookmarks }
+        if (next[key]) delete next[key]
+        else next[key] = bookmark
+        return { ...s, chapterBookmarks: next }
+      }),
+    [setState],
+  )
   const setNote = useCallback(
     (id: string, text: string) =>
       setState((s) => ({ ...s, notes: { ...s.notes, [id]: text } })),
@@ -121,7 +157,16 @@ const useAtlasActions = (setState: SetAtlasState): AtlasActions => {
       setState((s) => ({ ...s, lastRead: { id, mode } })),
     [setState],
   )
-  return { toggleDark, setFont, stepText, setBg, toggleBookmark, setNote, recordRead }
+  return {
+    toggleDark,
+    setFont,
+    stepText,
+    setBg,
+    toggleBookmark,
+    toggleChapterBookmark,
+    setNote,
+    recordRead,
+  }
 }
 
 // Speglar temat på <html> (bakgrund utanför skalet) och i webbläsarens chrome
