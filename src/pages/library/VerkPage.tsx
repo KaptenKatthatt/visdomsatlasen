@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
 import { fetchWork, slugOfBook, type Book } from '../../lib/api'
@@ -23,10 +23,12 @@ const BookRow = ({ workId, book }: { workId: string; book: Book }) => (
 export const VerkPage = ({ workId }: { workId: string }) => {
   const { data, loading, error } = useAsync(() => fetchWork(workId), [workId])
   const [filter, setFilter] = useState('')
+  const navigate = useNavigate()
+  const goUp = () => navigate({ to: '/bibliotek' })
   if (!data) {
     return (
       <div className="screenSub">
-        <TopBar />
+        <TopBar onBack={goUp} />
         <StateNote loading={loading} error={error} />
       </div>
     )
@@ -37,7 +39,7 @@ export const VerkPage = ({ workId }: { workId: string }) => {
     : data.books
   return (
     <div className="screenSub">
-      <TopBar />
+      <TopBar onBack={goUp} />
       <header className={styles.group}>
         <div className="kicker">{data.work.tradition}</div>
         <h1 className={styles.title}>{data.work.title}</h1>
