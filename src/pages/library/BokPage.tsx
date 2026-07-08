@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
 import { bookId, fetchWork } from '../../lib/api'
@@ -7,12 +7,14 @@ import styles from './Bibliotek.module.css'
 
 export const BokPage = ({ workId, bookSlug }: { workId: string; bookSlug: string }) => {
   const { data, loading, error } = useAsync(() => fetchWork(workId), [workId])
+  const navigate = useNavigate()
+  const goUp = () => navigate({ to: '/bibliotek/$workId', params: { workId } })
   const id = bookId(workId, bookSlug)
   const book = data?.books.find((candidate) => candidate.id === id) ?? null
   if (!book) {
     return (
       <div className="screenSub">
-        <TopBar />
+        <TopBar onBack={goUp} />
         <StateNote loading={loading} error={error} />
       </div>
     )
@@ -20,7 +22,7 @@ export const BokPage = ({ workId, bookSlug }: { workId: string; bookSlug: string
   const chapters = book.chapters
   return (
     <div className="screenSub">
-      <TopBar />
+      <TopBar onBack={goUp} />
       <header className={styles.group}>
         <div className="kicker">{data?.work.title}</div>
         <h1 className={styles.title}>{book.name}</h1>
