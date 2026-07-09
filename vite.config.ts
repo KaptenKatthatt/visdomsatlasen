@@ -1,8 +1,14 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // Tester samlokaliseras med koden de testar (*.test.ts). Node-miljö räcker
+  // för ren logik; jsdom läggs till först när komponenttester behövs.
+  test: {
+    include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.ts'],
+    environment: 'node',
+  },
   server: {
     port: Number(process.env['PORT'] ?? 5173),
     // I utvecklingsläge proxas API:t till Node-servern (npm run dev:api).
