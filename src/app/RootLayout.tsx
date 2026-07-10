@@ -4,7 +4,7 @@ import { NavTabs } from '../components/NavTabs'
 import { ShellContext } from '../lib/shell'
 import { useAtlas } from '../lib/store'
 
-const NAVLESS_PREFIXES = ['/las', '/kalla', '/sok', '/kapitel', '/bibliotek-sok']
+const NAVLESS_PREFIXES = ['/las', '/kalla', '/sok', '/kapitel', '/bibliotek-sok', '/rum']
 
 export const RootLayout = () => {
   const { dark, font, textStep, bg } = useAtlas()

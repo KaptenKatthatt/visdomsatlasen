@@ -50,6 +50,9 @@ type AtlasState = {
   chapterBookmarks: Record<string, ChapterBookmark>
   notes: Record<string, string>
   lastRead: LastRead | null
+  // Sparade reflektionsrum (rum-id → sparat). Skilt från bookmarks: rum
+  // sparas hela, bokmärken märker kapitelpositioner i biblioteket.
+  sparadeRum: Record<string, boolean>
 }
 
 type AtlasActions = {
@@ -61,6 +64,7 @@ type AtlasActions = {
   toggleChapterBookmark: (bookmark: ChapterBookmark) => void
   setNote: (id: string, text: string) => void
   recordRead: (id: string, mode: ReadMode) => void
+  vaxlaSparatRum: (id: string) => void
 }
 
 // Utåt är dark alltid det effektiva värdet (manuellt val eller systemets).
@@ -76,11 +80,12 @@ const clampStep = (step: number): number =>
 // tillbaka på tomt — ingen värdevalidering, till skillnad från temafälten.
 const restoredCollections = (
   saved: Partial<AtlasState>,
-): Pick<AtlasState, 'bookmarks' | 'chapterBookmarks' | 'notes' | 'lastRead'> => ({
+): Pick<AtlasState, 'bookmarks' | 'chapterBookmarks' | 'notes' | 'lastRead' | 'sparadeRum'> => ({
   bookmarks: saved.bookmarks ?? {},
   chapterBookmarks: saved.chapterBookmarks ?? {},
   notes: saved.notes ?? {},
   lastRead: saved.lastRead ?? null,
+  sparadeRum: saved.sparadeRum ?? {},
 })
 
 // Äldre sparad state saknar de nya fälten, och korrupt JSON får inte läcka in
@@ -157,6 +162,14 @@ const useAtlasActions = (setState: SetAtlasState): AtlasActions => {
       setState((s) => ({ ...s, lastRead: { id, mode } })),
     [setState],
   )
+  const vaxlaSparatRum = useCallback(
+    (id: string) =>
+      setState((s) => ({
+        ...s,
+        sparadeRum: { ...s.sparadeRum, [id]: !s.sparadeRum[id] },
+      })),
+    [setState],
+  )
   return {
     toggleDark,
     setFont,
@@ -166,6 +179,7 @@ const useAtlasActions = (setState: SetAtlasState): AtlasActions => {
     toggleChapterBookmark,
     setNote,
     recordRead,
+    vaxlaSparatRum,
   }
 }
 

@@ -34,7 +34,7 @@ att avgöra. Var går den gränsen?
 
 ## Kärna
 
-Epiktetos började alltid i samma punkt: somligt beror på oss, somligt gör
+Epiktetos började alltid i samma punkt: vissa saker beror på oss, andra gör
 det inte.
 
 Det som beror på oss är våra omdömen, våra avsikter, våra handlingar. Det
@@ -48,7 +48,7 @@ kramar något som aldrig låg i den.
 Distinktionen låter enkel. Den är svår att leva. Den behöver göras om
 varje dag, ibland varje timme: är detta mitt att styra, eller inte?
 
-Men den som övar sig i att släppa det som aldrig var hens att hålla
+Men den som övar sig i att släppa det som aldrig var dess att hålla
 upptäcker något oväntat. Kraften som gick åt till att bära det omöjliga
 blir ledig — för det lilla som faktiskt går att göra.
 

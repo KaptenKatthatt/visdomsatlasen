@@ -1,0 +1,98 @@
+/* Läsrummet — rytmen är kalibrerad mot skissen: ungefär en sektion per
+   mobilskärm, lagom scroll, inga enorma avstånd. */
+
+.huvud {
+  margin: 8px 0 22px;
+}
+
+.titel {
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+.stycke {
+  font-size: var(--rs);
+  line-height: 1.75;
+  margin: 0 0 16px;
+}
+
+.paus {
+  padding: 26px 0 30px;
+}
+
+/* Tanken att bära: står ensam, kursiv och centrerad — rummets kärnpunkt. */
+.tanke {
+  font-size: calc(var(--rs) + 2px);
+  line-height: 1.6;
+  font-style: italic;
+  text-align: center;
+  padding: 0 12px;
+  margin: 0 0 34px;
+}
+
+/* Frågorna i stillhet: dämpade men läsbara, mitt emellan bläck och meta. */
+.fragor {
+  margin: 0 0 34px;
+}
+
+.fraga {
+  font-size: calc(var(--rs) - 1.5px);
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--ink) 62%, var(--soft));
+  margin: 0 0 14px;
+}
+
+.streck {
+  border-top: 1px solid var(--faint);
+}
+
+/* Kolofonen: samma typografiska röst som temaetiketten — bokens eftertext,
+   inte nästa steg. Pilen pekar nedåt: öppnas på plats, leder aldrig bort. */
+.kolofon {
+  margin: 20px 0 0;
+}
+
+.kolofonrad {
+  background: none;
+  border: none;
+  padding: 12px 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--soft);
+  display: block;
+  text-align: left;
+}
+
+.detalj {
+  padding: 2px 0 10px;
+}
+
+.detaljrad {
+  font-size: calc(var(--rs) - 3px);
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--ink) 55%, var(--soft));
+  margin: 0 0 10px;
+}
+
+/* Sidans sista rad: de inåtvända handlingarna. */
+.avslut {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  margin: 30px 0 8px;
+}
+
+.avslutshandling {
+  background: none;
+  border: none;
+  padding: 10px 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: calc(var(--rs) - 4px);
+  color: var(--soft);
+}

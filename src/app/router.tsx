@@ -21,6 +21,7 @@ import { SamlingPage } from '../pages/SamlingPage'
 import { SokPage } from '../pages/SokPage'
 import { TidslinjePage } from '../pages/TidslinjePage'
 import { UtforskaPage } from '../pages/UtforskaPage'
+import { RumPage } from '../pages/RumPage'
 import { RootLayout } from './RootLayout'
 
 const rootRoute = createRootRoute({
@@ -145,6 +146,15 @@ const kapitelRoute = createRoute({
   },
 })
 
+// Läsrummet (omgörningen, fas 3): rum ur det redaktionella innehållet.
+const rumRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/rum/$slug',
+  component: function RumRoute() {
+    return <RumPage slug={rumRoute.useParams().slug} />
+  },
+})
+
 const bibliotekSokRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek-sok',
@@ -168,6 +178,7 @@ const routeTree = rootRoute.addChildren([
   bokRoute,
   kapitelRoute,
   bibliotekSokRoute,
+  rumRoute,
 ])
 
 export const router = createRouter({
