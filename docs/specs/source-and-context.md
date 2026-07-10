@@ -63,12 +63,14 @@ Detailed context may remain collapsed until the user chooses to open it.
 Every published room must show a visible source reference.
 
 The visible reference is deliberately minimal: the name of the author or,
-when no author fits, the work. It is set in italics and underlined so it
-reads as a link.
+when no author fits, the work. It is set in small letter-spaced capitals
+with a downward caret, below the room's closing rule — a colophon line,
+not a web link. Opening it reveals the details in place; it never
+navigates away.
 
 Example Swedish UI copy:
 
-> Epiktetos
+> EPIKTETOS ▾
 
 Everything else — work, passage, editorial treatment, translation status,
 uncertainty — is revealed when the reference is opened.
