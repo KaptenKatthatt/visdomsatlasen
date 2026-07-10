@@ -137,25 +137,29 @@ export const RumPage = ({ slug }: { slug: string }) => {
   return (
     <div className="screenReader">
       <TopBar right={<ReadingSettingsButton />} />
-      <header className={styles.huvud}>
-        <div className="kicker">
-          {tema?.etikett ?? ''}
-          {rum.status !== 'publicerad' && ' · Utkast'}
-        </div>
-        <h1 className={styles.titel}>{rum.titel}</h1>
-      </header>
-      {stycken(rum.öppning).map((stycke, i) => (
-        <p key={i} className={styles.stycke}>
-          {stycke}
-        </p>
-      ))}
-      <div className={`dots ${styles.paus}`}>···</div>
-      {stycken(rum.kärna).map((stycke, i) => (
-        <p key={i} className={styles.stycke}>
-          {stycke}
-        </p>
-      ))}
-      <div className={`dots ${styles.paus}`}>···</div>
+      <section className={styles.sektion}>
+        <header className={styles.huvud}>
+          <div className="kicker">
+            {tema?.etikett ?? ''}
+            {rum.status !== 'publicerad' && ' · Utkast'}
+          </div>
+          <h1 className={styles.titel}>{rum.titel}</h1>
+        </header>
+        {stycken(rum.öppning).map((stycke, i) => (
+          <p key={i} className={styles.stycke}>
+            {stycke}
+          </p>
+        ))}
+        <div className={`dots ${styles.paus}`}>···</div>
+      </section>
+      <section className={styles.sektion}>
+        {stycken(rum.kärna).map((stycke, i) => (
+          <p key={i} className={styles.stycke}>
+            {stycke}
+          </p>
+        ))}
+        <div className={`dots ${styles.paus}`}>···</div>
+      </section>
       <p className={styles.tanke}>{rum.tankeAttBära}</p>
       <div className={styles.fragor}>
         {rum.reflektionsfrågor.map((fråga) => (

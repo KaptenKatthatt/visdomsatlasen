@@ -1,7 +1,6 @@
-/* Läsrummet — rytmen är kalibrerad mot skissen: ungefär EN sektion per
-   mobilskärm. Pauserna bär rytmen: de ska trycka nästa sektion under
-   skärmkanten (…-tecknen mitt i gapet visar att sidan fortsätter), men
-   inte gapa så tomt att sidan känns slut. */
+/* Läsrummet — rytmen är kalibrerad mot skissen: EN sektion per mobilskärm.
+   Vid viloläget möter ögat aldrig nästa sektions text — det sista på skärmen
+   är alltid ···, en stilla tillåtelse att läsa vidare, inte en inbjudan. */
 
 .huvud {
   margin: 14px 0 26px;
@@ -20,15 +19,22 @@
   margin: 0 0 16px;
 }
 
-/* Pausen är skärmrelativ: ungefär en halv skärmbild luft, med …-tecknen
-   vilande i mitten som tecken på att sidan fortsätter. Fasta pixlar blev
-   för tätt på höga skärmar (Jonas: »en vägg av text«). */
-.paus {
-  min-height: 50dvh;
+/* Varje sektion äger sin skärm: innehållet upptill, luften växer fritt och
+   prickarna vilar längst ner. 100svh minus toppradens höjd gör att första
+   skärmen slutar exakt vid vecket vid inläsning — nästa sektion börjar under
+   det. svh (inte dvh) så att inget hoppar när mobilens adressfält viks in.
+   68px = toppradens uppmätta höjd (ikonrad 40px + 14px vaddering över/under). */
+.sektion {
+  min-height: calc(100svh - 68px);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px 0;
+  flex-direction: column;
+}
+
+/* Pausen trycks mot sektionens botten av luften ovanför; lite andrum under
+   prickarna så de inte klistrar mot skärmkanten. */
+.paus {
+  margin-top: auto;
+  padding: 40px 0 32px;
 }
 
 /* Tanken att bära: står ensam, kursiv och centrerad — rummets kärnpunkt. */
