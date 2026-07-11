@@ -78,6 +78,8 @@ export const temaSchema = z.object({
   slug: slugSchema,
   etikett: z.string().min(1),
   standardRum: idSchema.optional(),
+  // Redaktionell ordning på tröskeln (home-and-entry.md); lägst först.
+  ordning: z.number().int().min(1).optional(),
   status: statusSchema,
   beskrivning: z.string().optional(),
 })

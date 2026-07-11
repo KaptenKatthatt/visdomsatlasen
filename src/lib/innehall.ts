@@ -32,6 +32,20 @@ const allaTeman: Tema[] = samla(
   (fil) => tolkaPostfil(temaSchema, fil),
 )
 
+/** Tröskelns teman (home-and-entry.md): redaktionell ordning, aldrig arkiverade. */
+export const troskelTeman: Tema[] = allaTeman
+  .filter((tema) => tema.status !== 'arkiverad')
+  .sort(
+    (a, b) =>
+      (a.ordning ?? Number.MAX_SAFE_INTEGER) - (b.ordning ?? Number.MAX_SAFE_INTEGER) ||
+      a.etikett.localeCompare(b.etikett, 'sv'),
+  )
+
+/** Temats redaktionella standardrum (roadmap fas 4). Rumsvalet i fas 5
+ * ersätter detta med en urvalsmängd och upprepningsundvikande. */
+export const hittaStandardRum = (tema: Tema): Rum | undefined =>
+  tema.standardRum === undefined ? undefined : allaRum.find((rum) => rum.id === tema.standardRum)
+
 const allaKallor: Kalla[] = samla(
   tillFiler(import.meta.glob<string>('../content/kallor/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(kallaSchema, fil),

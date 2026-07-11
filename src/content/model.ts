@@ -68,12 +68,6 @@ export type MapNode = {
   to: To
 }
 
-export type Quote = {
-  t: string
-  by: string
-  to: To
-}
-
 /** Inline link inside an essay paragraph. */
 export const l = (t: string, kind: 'topic' | 'person' | 'source', id: string): LinkSegment => ({
   t,
