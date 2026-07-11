@@ -9,7 +9,7 @@ type Uppslag = {
   teman: Map<string, Tema>
   frågor: Map<string, Fraga>
   källstatus: Map<string, string>
-  passager: Set<string>
+  passagestatus: Map<string, string>
 }
 
 const perId = <T extends { id: string }>(poster: T[]): Map<string, T> =>
@@ -62,8 +62,8 @@ const rumsreferenser = (rum: Rum, uppslag: Uppslag): Referens[] => {
       .map((relation): Referens => ({
         typ: 'källpassage',
         id: relation.passage ?? '',
-        finns: uppslag.passager.has(relation.passage ?? ''),
-        publicerad: true,
+        finns: uppslag.passagestatus.has(relation.passage ?? ''),
+        publicerad: publicerad(uppslag.passagestatus.get(relation.passage ?? '')),
       })),
   ]
 }
@@ -141,7 +141,7 @@ export const valideraInnehall = (mängd: Innehallsmangd): string[] => {
     teman: perId(mängd.teman),
     frågor: perId(mängd.frågor),
     källstatus: new Map(mängd.källor.map((källa) => [källa.id, källa.status])),
-    passager: new Set(mängd.passager.map((passage) => passage.id)),
+    passagestatus: new Map(mängd.passager.map((passage) => [passage.id, passage.status])),
   }
   return [
     ...dublettfel('rum', mängd.rum),

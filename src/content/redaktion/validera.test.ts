@@ -113,6 +113,29 @@ describe('valideraInnehall', () => {
     expect(fel.some((f) => f.includes('kalla-a') && f.includes('opublicerad'))).toBe(true)
   })
 
+  it('hindrar publicerade rum från att länka opublicerade källpassager', () => {
+    const medPassage = [
+      { källa: 'kalla-a', passage: 'passage-a', bruk: 'citat' as const, primär: true },
+    ]
+    const passagen = { id: 'passage-a', källa: 'kalla-a', referens: 'avsnitt 1' }
+    const utkastPassage = valideraInnehall(
+      grund({
+        rum: [rum({ status: 'publicerad', källor: medPassage })],
+        passager: [{ ...passagen, status: 'utkast' }],
+      }),
+    )
+    expect(
+      utkastPassage.some((f) => f.includes('passage-a') && f.includes('opublicerad')),
+    ).toBe(true)
+    const publiceradPassage = valideraInnehall(
+      grund({
+        rum: [rum({ status: 'publicerad', källor: medPassage })],
+        passager: [{ ...passagen, status: 'publicerad' }],
+      }),
+    )
+    expect(publiceradPassage).toEqual([])
+  })
+
   it('begränsar lästiden för publicerade rum till 1–10 minuter', () => {
     const fel = valideraInnehall(
       grund({ rum: [rum({ status: 'publicerad', lästidMinuter: 12 })] }),
