@@ -13,7 +13,7 @@ upphov: tillskrivet
 datering: ungefärlig
 rättigheter: public-domain
 biblioteksverk: enchiridion
-status: utkast
+status: publicerad
 ---
 
 En kort handbok i stoisk livshållning, sammanställd av lärjungen Arrianos ur

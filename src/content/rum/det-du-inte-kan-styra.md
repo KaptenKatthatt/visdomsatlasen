@@ -16,7 +16,7 @@ källor:
     primär: true
     redaktionellNot: Bearbetning av öppningsavsnittets distinktion; inga direkta citat.
 lästidMinuter: 4
-status: utkast
+status: publicerad
 skapad: 2026-07-09
 uppdaterad: 2026-07-11
 redaktion:
