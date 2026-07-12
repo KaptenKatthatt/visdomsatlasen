@@ -1,11 +1,11 @@
-import { Link, useNavigate } from '@tanstack/react-router'
-import { RumRad } from '../../components/RumRad'
+import { Link } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
-import type { Kalla, Tradition } from '../../content/redaktion/schema'
-import { rumForKalla } from '../../lib/bibliotek'
-import { allaRum, hittaKallaViaSlug, hittaTradition, stycken } from '../../lib/innehall'
+import type { Kalla } from '../../content/redaktion/schema'
+import { publiceradeVia, rumForKalla } from '../../lib/bibliotek'
+import { allaRum, hittaKallaViaSlug, hittaTradition } from '../../lib/innehall'
 import { NotFoundNote } from '../NotFoundNote'
 import styles from './Bibliotek.module.css'
+import { Beskrivning, Rumslista, Sektion, Sidhuvud } from './Biblioteksdelar'
 
 const TYPETIKETT: Record<Kalla['typ'], string> = {
   'bok': 'Bok',
@@ -45,10 +45,9 @@ const Metarad = ({ etikett, värde }: { etikett: string; värde?: string }) =>
   )
 
 const Kallmeta = ({ källa }: { källa: Kalla }) => {
-  const traditionsnamn = (källa.traditioner ?? [])
-    .map((id) => hittaTradition(id))
-    .filter((t): t is Tradition => t !== undefined && t.status === 'publicerad')
-    .map((t) => t.namn)
+  const traditionsnamn = publiceradeVia(källa.traditioner ?? [], hittaTradition).map(
+    (tradition) => tradition.namn,
+  )
   return (
     <div className={styles.metablock}>
       <Metarad etikett="Upphov" värde={upphovsrad(källa)} />
@@ -64,33 +63,21 @@ const Kallmeta = ({ källa }: { källa: Kalla }) => {
 }
 
 /** Källpost (library.md, Sources): saklig metadata, kopplade rum och vägen
- * in i biblioteksläsaren när hela texten finns där. Ingen auktoritetsprosa. */
+ * in i biblioteksläsaren när hela texten finns där. Ingen auktoritetsprosa.
+ * TopBar utan onBack ⇒ historiksteg bakåt — biblioteksplatsen bevaras. */
 export const KallaPostPage = ({ slug }: { slug: string }) => {
   const källa = hittaKallaViaSlug(slug)
-  const navigate = useNavigate()
   if (!källa) return <NotFoundNote subject="Källan" />
-  const rum = rumForKalla(källa.id, allaRum)
   return (
     <div className="screenSub">
-      <TopBar onBack={() => navigate({ to: '/bibliotek' })} />
-      <header className={styles.huvud}>
-        <div className="kicker">
-          {TYPETIKETT[källa.typ]}
-          {källa.status !== 'publicerad' && ' · Utkast'}
-        </div>
-        <h1 className={styles.huvudTitel}>{källa.titel}</h1>
+      <TopBar />
+      <Sidhuvud kicker={TYPETIKETT[källa.typ]} titel={källa.titel} status={källa.status}>
         {källa.originaltitel && <p className={styles.originaltitel}>{källa.originaltitel}</p>}
-      </header>
+      </Sidhuvud>
       <Kallmeta källa={källa} />
-      {källa.beskrivning &&
-        stycken(källa.beskrivning).map((stycke, i) => (
-          <p key={i} className={styles.beskrivning}>
-            {stycke}
-          </p>
-        ))}
+      <Beskrivning text={källa.beskrivning} />
       {källa.biblioteksverk !== undefined && (
-        <div className={styles.sektion}>
-          <div className="kicker sectionKicker">Hela texten</div>
+        <Sektion rubrik="Hela texten">
           <Link
             to="/bibliotek/verk/$workId"
             params={{ workId: källa.biblioteksverk }}
@@ -99,16 +86,14 @@ export const KallaPostPage = ({ slug }: { slug: string }) => {
             <span className={styles.radTitel}>Läs hela texten</span>
             <span className={styles.chev}>›</span>
           </Link>
-        </div>
+        </Sektion>
       )}
-      <div className={styles.sektion}>
-        <div className="kicker sectionKicker">Rum ur denna källa</div>
-        {rum.length === 0 ? (
-          <p className={styles.tomt}>Det finns inga färdiga rum ur källan ännu.</p>
-        ) : (
-          rum.map((ettRum) => <RumRad key={ettRum.id} rum={ettRum} />)
-        )}
-      </div>
+      <Sektion rubrik="Rum ur denna källa">
+        <Rumslista
+          rum={rumForKalla(källa.id, allaRum)}
+          tomtBesked="Det finns inga färdiga rum ur källan ännu."
+        />
+      </Sektion>
     </div>
   )
 }

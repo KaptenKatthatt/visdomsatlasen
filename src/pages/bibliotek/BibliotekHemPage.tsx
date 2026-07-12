@@ -17,9 +17,7 @@ import {
 } from '../../lib/innehall'
 import { valbaraRum } from '../../lib/rumsval'
 import styles from './Bibliotek.module.css'
-import { Rad, Sektion } from './Biblioteksdelar'
-
-const rumsantal = (antal: number): string => (antal === 1 ? 'Ett rum' : `${antal} rum`)
+import { Rad, rumsantal, Sektion } from './Biblioteksdelar'
 
 // Frågorna står överst — biblioteket ordnas efter mänsklig erfarenhet,
 // inte efter verk eller upphovsmän (library.md, Primary Organization).

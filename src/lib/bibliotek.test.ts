@@ -6,6 +6,7 @@ import {
   bibliotekTraditioner,
   fragorForTema,
   kallorForFraga,
+  publiceradeVia,
   rumForFraga,
   rumForKalla,
 } from './bibliotek'
@@ -165,6 +166,17 @@ describe('kallorForFraga', () => {
       'kalla-a',
       'kalla-b',
     ])
+  })
+})
+
+describe('publiceradeVia', () => {
+  it('slår upp id och behåller bara publicerade träffar', () => {
+    const poster = new Map([
+      ['tema-a', tema('a')],
+      ['tema-b', tema('b', { status: 'utkast' })],
+    ])
+    const träffar = publiceradeVia(['tema-a', 'tema-b', 'tema-saknas'], (id) => poster.get(id))
+    expect(träffar.map((t) => t.etikett)).toEqual(['a'])
   })
 })
 

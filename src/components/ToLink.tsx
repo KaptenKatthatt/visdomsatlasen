@@ -16,24 +16,21 @@ const screenPath = (id: string) => {
   return '/utforska' as const
 }
 
-// Bibliotekets mål hålls i en egen gren så huvudswitchen inte växer förbi
-// komplexitetsgränsen när fler redaktionella sidor tillkommer.
-type BibliotekTo = Extract<To, { kind: 'rum' | 'tema' | 'kallpost' | 'fraga' }>
-const BIBLIOTEKSMAL = new Set<string>(['rum', 'tema', 'kallpost', 'fraga'])
-const arBibliotekTo = (to: To): to is BibliotekTo => BIBLIOTEKSMAL.has(to.kind)
+// Bibliotekets mål är alla slug-adresserade — en karta räcker, och ett nytt
+// mål är en rad här plus unionsmedlemmen i model.ts.
+const BIBLIOTEKSPATH = {
+  rum: '/rum/$slug',
+  tema: '/bibliotek/tema/$slug',
+  kallpost: '/bibliotek/kalla/$slug',
+  fraga: '/bibliotek/fraga/$slug',
+} as const
 
-const BibliotekLink = ({ to, ...shared }: Props & { to: BibliotekTo }) => {
-  switch (to.kind) {
-    case 'rum':
-      return <Link to="/rum/$slug" params={{ slug: to.slug }} {...shared} />
-    case 'tema':
-      return <Link to="/bibliotek/tema/$slug" params={{ slug: to.slug }} {...shared} />
-    case 'kallpost':
-      return <Link to="/bibliotek/kalla/$slug" params={{ slug: to.slug }} {...shared} />
-    case 'fraga':
-      return <Link to="/bibliotek/fraga/$slug" params={{ slug: to.slug }} {...shared} />
-  }
-}
+type BibliotekTo = Extract<To, { kind: keyof typeof BIBLIOTEKSPATH }>
+const arBibliotekTo = (to: To): to is BibliotekTo => to.kind in BIBLIOTEKSPATH
+
+const BibliotekLink = ({ to, ...shared }: Props & { to: BibliotekTo }) => (
+  <Link to={BIBLIOTEKSPATH[to.kind]} params={{ slug: to.slug }} {...shared} />
+)
 
 /** Renders a router link for any content link target. */
 export const ToLink = ({ to, className, style, children }: Props) => {

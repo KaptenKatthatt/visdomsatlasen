@@ -8,9 +8,12 @@ const tabs = [
   { to: '/installningar', label: 'Inställningar' },
 ] as const
 
-const activeTab = (pathname: string): string => {
+// Null när ingen flik äger sidan (t.ex. gamla atlasskärmar via direkt-URL) —
+// hellre ingen markering än en som pekar fel.
+const activeTab = (pathname: string): string | null => {
+  if (pathname === '/') return '/'
   const match = tabs.find((tab) => tab.to !== '/' && pathname.startsWith(tab.to))
-  return match ? match.to : '/'
+  return match ? match.to : null
 }
 
 export const NavTabs = () => {

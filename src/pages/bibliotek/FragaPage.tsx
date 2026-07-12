@@ -1,9 +1,7 @@
-import { useNavigate } from '@tanstack/react-router'
-import { RumRad } from '../../components/RumRad'
 import { ToLink } from '../../components/ToLink'
 import { TopBar } from '../../components/TopBar'
-import type { Fraga, Tema } from '../../content/redaktion/schema'
-import { kallorForFraga, rumForFraga } from '../../lib/bibliotek'
+import type { Fraga } from '../../content/redaktion/schema'
+import { kallorForFraga, publiceradeVia, rumForFraga } from '../../lib/bibliotek'
 import {
   allaKallor,
   allaRum,
@@ -11,29 +9,13 @@ import {
   hittaFragaViaSlug,
   hittaTema,
   kallnamn,
-  stycken,
 } from '../../lib/innehall'
 import { NotFoundNote } from '../NotFoundNote'
 import styles from './Bibliotek.module.css'
-import { Rad, Sektion } from './Biblioteksdelar'
-
-const Rumsdel = ({ fråga }: { fråga: Fraga }) => {
-  const rum = rumForFraga(fråga.id, allaRum)
-  return (
-    <Sektion rubrik="Rum">
-      {rum.length === 0 ? (
-        <p className={styles.tomt}>Det finns inga färdiga rum kring frågan ännu.</p>
-      ) : (
-        rum.map((ettRum) => <RumRad key={ettRum.id} rum={ettRum} />)
-      )}
-    </Sektion>
-  )
-}
+import { Beskrivning, Rad, Rumslista, Sektion, Sidhuvud } from './Biblioteksdelar'
 
 const Temadel = ({ fråga }: { fråga: Fraga }) => {
-  const teman = fråga.teman
-    .map((id) => hittaTema(id))
-    .filter((tema): tema is Tema => tema !== undefined && tema.status === 'publicerad')
+  const teman = publiceradeVia(fråga.teman, hittaTema)
   if (teman.length === 0) return null
   return (
     <Sektion rubrik="Teman">
@@ -61,12 +43,7 @@ const Kalldel = ({ fråga }: { fråga: Fraga }) => {
 }
 
 const Narliggande = ({ fråga }: { fråga: Fraga }) => {
-  const frågor = (fråga.relateradeFrågor ?? [])
-    .map((id) => hittaFraga(id))
-    .filter(
-      (relaterad): relaterad is Fraga =>
-        relaterad !== undefined && relaterad.status === 'publicerad',
-    )
+  const frågor = publiceradeVia(fråga.relateradeFrågor ?? [], hittaFraga)
   if (frågor.length === 0) return null
   return (
     <Sektion rubrik="Närliggande frågor">
@@ -84,28 +61,22 @@ const Narliggande = ({ fråga }: { fråga: Fraga }) => {
 }
 
 /** Frågesida (library.md, Questions): beskrivning, rum, teman och
- * källmaterial. En plats att välja från — aldrig en automatisk lässekvens. */
+ * källmaterial. En plats att välja från — aldrig en automatisk lässekvens.
+ * TopBar utan onBack ⇒ historiksteg bakåt — biblioteksplatsen bevaras. */
 export const FragaPage = ({ slug }: { slug: string }) => {
   const fråga = hittaFragaViaSlug(slug)
-  const navigate = useNavigate()
   if (!fråga) return <NotFoundNote subject="Frågan" />
   return (
     <div className="screenSub">
-      <TopBar onBack={() => navigate({ to: '/bibliotek' })} />
-      <header className={styles.huvud}>
-        <div className="kicker">
-          Fråga
-          {fråga.status !== 'publicerad' && ' · Utkast'}
-        </div>
-        <h1 className={styles.huvudTitel}>{fråga.text}</h1>
-      </header>
-      {fråga.beskrivning &&
-        stycken(fråga.beskrivning).map((stycke, i) => (
-          <p key={i} className={styles.beskrivning}>
-            {stycke}
-          </p>
-        ))}
-      <Rumsdel fråga={fråga} />
+      <TopBar />
+      <Sidhuvud kicker="Fråga" titel={fråga.text} status={fråga.status} />
+      <Beskrivning text={fråga.beskrivning} />
+      <Sektion rubrik="Rum">
+        <Rumslista
+          rum={rumForFraga(fråga.id, allaRum)}
+          tomtBesked="Det finns inga färdiga rum kring frågan ännu."
+        />
+      </Sektion>
       <Temadel fråga={fråga} />
       <Kalldel fråga={fråga} />
       <Narliggande fråga={fråga} />

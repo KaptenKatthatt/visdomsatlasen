@@ -1,13 +1,11 @@
-import { useNavigate } from '@tanstack/react-router'
-import { RumRad } from '../../components/RumRad'
 import { ToLink } from '../../components/ToLink'
 import { TopBar } from '../../components/TopBar'
 import { fragorForTema } from '../../lib/bibliotek'
-import { allaFragor, allaRum, hittaTemaViaSlug, stycken } from '../../lib/innehall'
+import { allaFragor, allaRum, hittaTemaViaSlug } from '../../lib/innehall'
 import { valbaraRum } from '../../lib/rumsval'
 import { NotFoundNote } from '../NotFoundNote'
 import styles from './Bibliotek.module.css'
-import { Rad, Sektion } from './Biblioteksdelar'
+import { Beskrivning, Rad, Rumslista, Sektion, Sidhuvud } from './Biblioteksdelar'
 
 const Fragedel = ({ temaId }: { temaId: string }) => {
   const frågor = fragorForTema(temaId, allaFragor)
@@ -23,38 +21,23 @@ const Fragedel = ({ temaId }: { temaId: string }) => {
   )
 }
 
-/** Temasida (library.md, Themes): beskrivning och temats publicerade rum.
- * Utkast nås via direkt länk, märkta — samma granskningsvy som läsrummet. */
+/** Temasida (library.md, Themes): beskrivning, temats frågor och publicerade
+ * rum. TopBar utan onBack ⇒ historiksteg bakåt — biblioteksplatsen bevaras. */
 export const TemaPage = ({ slug }: { slug: string }) => {
   const tema = hittaTemaViaSlug(slug)
-  const navigate = useNavigate()
   if (!tema) return <NotFoundNote subject="Temat" />
-  const rum = valbaraRum(tema.id, allaRum)
   return (
     <div className="screenSub">
-      <TopBar onBack={() => navigate({ to: '/bibliotek' })} />
-      <header className={styles.huvud}>
-        <div className="kicker">
-          Tema
-          {tema.status !== 'publicerad' && ' · Utkast'}
-        </div>
-        <h1 className={styles.huvudTitel}>{tema.etikett}</h1>
-      </header>
-      {tema.beskrivning &&
-        stycken(tema.beskrivning).map((stycke, i) => (
-          <p key={i} className={styles.beskrivning}>
-            {stycke}
-          </p>
-        ))}
+      <TopBar />
+      <Sidhuvud kicker="Tema" titel={tema.etikett} status={tema.status} />
+      <Beskrivning text={tema.beskrivning} />
       <Fragedel temaId={tema.id} />
-      <div className={styles.sektion}>
-        <div className="kicker sectionKicker">Rum</div>
-        {rum.length === 0 ? (
-          <p className={styles.tomt}>Det finns inga färdiga rum här ännu.</p>
-        ) : (
-          rum.map((ettRum) => <RumRad key={ettRum.id} rum={ettRum} />)
-        )}
-      </div>
+      <Sektion rubrik="Rum">
+        <Rumslista
+          rum={valbaraRum(tema.id, allaRum)}
+          tomtBesked="Det finns inga färdiga rum här ännu."
+        />
+      </Sektion>
     </div>
   )
 }

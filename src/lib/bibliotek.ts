@@ -8,33 +8,47 @@ import type { Fraga, Kalla, Rum, Tema, Tradition } from '../content/redaktion/sc
 const publicerade = <T extends { status: Rum['status'] }>(poster: T[]): T[] =>
   poster.filter((post) => post.status === 'publicerad')
 
+const svOrdning =
+  <T,>(text: (post: T) => string) =>
+  (a: T, b: T): number =>
+    text(a).localeCompare(text(b), 'sv')
+
 const SIST = Number.MAX_SAFE_INTEGER
+
+/** Slår upp id-referenser och behåller de publicerade posterna. */
+export const publiceradeVia = <T extends { status: Rum['status'] }>(
+  ids: string[],
+  hitta: (id: string) => T | undefined,
+): T[] =>
+  ids.flatMap((id) => {
+    const post = hitta(id)
+    return post !== undefined && post.status === 'publicerad' ? [post] : []
+  })
 
 /** Bibliotekets teman: publicerade, i samma redaktionella ordning som tröskeln. */
 export const bibliotekTeman = (teman: Tema[]): Tema[] =>
   publicerade(teman).sort(
-    (a, b) =>
-      (a.ordning ?? SIST) - (b.ordning ?? SIST) || a.etikett.localeCompare(b.etikett, 'sv'),
+    (a, b) => (a.ordning ?? SIST) - (b.ordning ?? SIST) || svOrdning<Tema>((t) => t.etikett)(a, b),
   )
 
 /** Den ändliga rumslistan: publicerade rum i svensk titelordning. */
 export const bibliotekRum = (rum: Rum[]): Rum[] =>
-  publicerade(rum).sort((a, b) => a.titel.localeCompare(b.titel, 'sv'))
+  publicerade(rum).sort(svOrdning((r) => r.titel))
 
 /** Bibliotekets källposter: publicerade, i svensk titelordning. */
 export const bibliotekKallor = (källor: Kalla[]): Kalla[] =>
-  publicerade(källor).sort((a, b) => a.titel.localeCompare(b.titel, 'sv'))
+  publicerade(källor).sort(svOrdning((k) => k.titel))
 
 /** Traditionerna: publicerade, i svensk namnordning. Sekundär ingång —
  * de hjälper till med sammanhang men äger inte frågorna (library.md). */
 export const bibliotekTraditioner = (traditioner: Tradition[]): Tradition[] =>
-  publicerade(traditioner).sort((a, b) => a.namn.localeCompare(b.namn, 'sv'))
-
-const svTitel = (a: Rum, b: Rum): number => a.titel.localeCompare(b.titel, 'sv')
+  publicerade(traditioner).sort(svOrdning((t) => t.namn))
 
 /** Bibliotekets frågor: publicerade, i svensk textordning. */
 export const bibliotekFragor = (frågor: Fraga[]): Fraga[] =>
-  publicerade(frågor).sort((a, b) => a.text.localeCompare(b.text, 'sv'))
+  publicerade(frågor).sort(svOrdning((f) => f.text))
+
+const svTitel = svOrdning<Rum>((r) => r.titel)
 
 /** Frågesidans rum: rum som bär frågan som sitt eget anspråk (primärFråga)
  * står först; rum som bara pekar på den bland relateradeFrågor breddar
@@ -55,7 +69,7 @@ export const rumForFraga = (fragaId: string, rum: Rum[]): Rum[] => {
 export const fragorForTema = (temaId: string, frågor: Fraga[]): Fraga[] =>
   publicerade(frågor)
     .filter((fråga) => fråga.teman.includes(temaId))
-    .sort((a, b) => a.text.localeCompare(b.text, 'sv'))
+    .sort(svOrdning((f) => f.text))
 
 /** Frågans källmaterial: källorna bakom frågans rum — frågeschemat har inga
  * egna källreferenser, så materialet härleds ur rummens relationer. */
@@ -74,5 +88,5 @@ export const rumForKalla = (kallaId: string, rum: Rum[]): Rum[] => {
     ettRum.källor.some((relation) => relation.källa === kallaId && relation.primär) ? 0 : 1
   return publicerade(rum)
     .filter((ettRum) => ettRum.källor.some((relation) => relation.källa === kallaId))
-    .sort((a, b) => primärvikt(a) - primärvikt(b) || a.titel.localeCompare(b.titel, 'sv'))
+    .sort((a, b) => primärvikt(a) - primärvikt(b) || svTitel(a, b))
 }
