@@ -10,7 +10,7 @@ const excerpt = (note: string): string => {
 }
 
 export const SamlingPage = () => {
-  const { bookmarks, chapterBookmarks, notes, dark, toggleDark } = useAtlas()
+  const { bookmarks, chapterBookmarks, notes } = useAtlas()
   const bookmarked = Object.keys(bookmarks)
     .filter((id) => bookmarks[id])
     .map(findTopic)
@@ -27,7 +27,7 @@ export const SamlingPage = () => {
   return (
     <div className="screenTab">
       <div className="kicker">Visdomsatlasen</div>
-      <h1 className={styles.title}>Samling</h1>
+      <h1 className={styles.title}>Sparat</h1>
       <p className={styles.lede}>Det du sparat och tänkt.</p>
       <div className={styles.section}>
         <div className="kicker sectionKicker">Bokmärken</div>
@@ -85,18 +85,6 @@ export const SamlingPage = () => {
             ) : null,
           )
         )}
-      </div>
-      <div className={styles.sectionLater}>
-        <div className="kicker sectionKicker">Utseende</div>
-        <button
-          type="button"
-          onClick={toggleDark}
-          aria-pressed={dark}
-          className={styles.appearance}
-        >
-          <span className={styles.appearanceLabel}>Mörkt läge</span>
-          <span className={styles.appearanceState}>{dark ? 'På' : 'Av'}</span>
-        </button>
       </div>
     </div>
   )

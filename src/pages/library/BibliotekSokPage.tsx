@@ -24,7 +24,7 @@ const Snippet = ({ text }: { text: string }) => (
 // Boktreff: leder till bokens kapitelöversikt (t.ex. sök "matteus" → boken).
 const BookHitRow = ({ hit }: { hit: BookHit }) => (
   <Link
-    to="/bibliotek/$workId/$bookSlug"
+    to="/bibliotek/verk/$workId/$bookSlug"
     params={{ workId: hit.workId, bookSlug: slugOfBook(hit.workId, hit.bookId) }}
     className={styles.row}
   >

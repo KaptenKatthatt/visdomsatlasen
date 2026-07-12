@@ -6,12 +6,18 @@ import {
 import type { ReadMode } from '../content/model'
 import { AmnePage } from '../pages/AmnePage'
 import { AtlasPage } from '../pages/AtlasPage'
-import { BibliotekPage } from '../pages/library/BibliotekPage'
+import { BibliotekHemPage } from '../pages/bibliotek/BibliotekHemPage'
+import { FragaPage } from '../pages/bibliotek/FragaPage'
+import { KallaPostPage } from '../pages/bibliotek/KallaPostPage'
+import { RumlistaPage } from '../pages/bibliotek/RumlistaPage'
+import { TemaPage } from '../pages/bibliotek/TemaPage'
 import { BibliotekSokPage } from '../pages/library/BibliotekSokPage'
 import { BokPage } from '../pages/library/BokPage'
 import { KapitelPage } from '../pages/library/KapitelPage'
+import { VerklistaPage } from '../pages/library/VerklistaPage'
 import { VerkPage } from '../pages/library/VerkPage'
 import { HemPage } from '../pages/HemPage'
+import { InstallningarPage } from '../pages/InstallningarPage'
 import { KallaPage } from '../pages/KallaPage'
 import { LasPage } from '../pages/LasPage'
 import { NotFoundNote } from '../pages/NotFoundNote'
@@ -99,21 +105,66 @@ const samlingRoute = createRoute({
   component: SamlingPage,
 })
 
+const installningarRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/installningar',
+  component: InstallningarPage,
+})
+
 const sokRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/sok',
   component: SokPage,
 })
 
+// Bibliotekets landning (omgörningen, fas 6): frågor, teman, rum, källor.
 const bibliotekRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek',
-  component: BibliotekPage,
+  component: BibliotekHemPage,
+})
+
+const fragaRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/fraga/$slug',
+  component: function FragaRoute() {
+    return <FragaPage slug={fragaRoute.useParams().slug} />
+  },
+})
+
+const temaRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/tema/$slug',
+  component: function TemaRoute() {
+    return <TemaPage slug={temaRoute.useParams().slug} />
+  },
+})
+
+const rumlistaRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/rum',
+  component: RumlistaPage,
+})
+
+const kallaPostRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/kalla/$slug',
+  component: function KallaPostRoute() {
+    return <KallaPostPage slug={kallaPostRoute.useParams().slug} />
+  },
+})
+
+// Verkläsaren bor under det statiska segmentet `verk`, så landningens
+// undersidor aldrig kan skuggas av ett verks id.
+const verklistaRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/verk',
+  component: VerklistaPage,
 })
 
 const verkRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/bibliotek/$workId',
+  path: '/bibliotek/verk/$workId',
   component: function VerkRoute() {
     // key ⇒ komponenten monteras om per verk, så filterfältet inte hänger kvar
     // när man byter till ett annat verk (TanStack återanvänder annars instansen).
@@ -124,7 +175,7 @@ const verkRoute = createRoute({
 
 const bokRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/bibliotek/$workId/$bookSlug',
+  path: '/bibliotek/verk/$workId/$bookSlug',
   component: function BokRoute() {
     const params = bokRoute.useParams()
     return <BokPage workId={params.workId} bookSlug={params.bookSlug} />
@@ -172,8 +223,14 @@ const routeTree = rootRoute.addChildren([
   personRoute,
   atlasRoute,
   samlingRoute,
+  installningarRoute,
   sokRoute,
   bibliotekRoute,
+  fragaRoute,
+  temaRoute,
+  rumlistaRoute,
+  kallaPostRoute,
+  verklistaRoute,
   verkRoute,
   bokRoute,
   kapitelRoute,

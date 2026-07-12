@@ -10,7 +10,7 @@ export const BokPage = ({ workId, bookSlug }: { workId: string; bookSlug: string
   const { data, loading, error } = useAsync(() => fetchWork(workId), [workId])
   const { chapterBookmarks } = useAtlas()
   const navigate = useNavigate()
-  const goUp = () => navigate({ to: '/bibliotek/$workId', params: { workId } })
+  const goUp = () => navigate({ to: '/bibliotek/verk/$workId', params: { workId } })
   const id = bookId(workId, bookSlug)
   const book = data?.books.find((candidate) => candidate.id === id) ?? null
   if (!book) {

@@ -1,0 +1,121 @@
+/* Bibliotekets redaktionella sidor: landning, frågor, teman, rum, källposter. */
+
+.titel {
+  font-size: 33px;
+  font-weight: 500;
+  line-height: 1.16;
+  margin: 56px 0 0;
+  letter-spacing: -0.01em;
+}
+
+.lede {
+  font-size: 17px;
+  color: var(--soft);
+  font-style: italic;
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+.sektion {
+  margin-top: 42px;
+}
+
+/* Undersidornas huvud (under TopBar), samma mått som verkläsarens. */
+.huvud {
+  margin-top: 34px;
+}
+
+.huvudTitel {
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 6px 0 0;
+}
+
+.beskrivning {
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 14px 0 0;
+  text-wrap: pretty;
+}
+
+.antal {
+  font-size: 13.5px;
+  color: var(--soft);
+  margin: 8px 0 0;
+}
+
+.tomt {
+  font-size: 16.5px;
+  color: var(--soft);
+  font-style: italic;
+  line-height: 1.55;
+  margin: 6px 0 0;
+}
+
+.originaltitel {
+  font-size: 14px;
+  color: var(--soft);
+  font-style: italic;
+  margin: 6px 0 0;
+}
+
+/* Källpostens sakliga metadata — stillsamma rader, ingen tabellkänsla. */
+.metablock {
+  margin-top: 22px;
+  border-top: 1px solid var(--faint);
+  padding-top: 6px;
+}
+
+.metarad {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 8px 0 0;
+}
+
+.metaetikett {
+  display: inline-block;
+  min-width: 110px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+
+/* Hårfina rader, samma känsla som RowLink men för statiska biblioteksrutter. */
+.rad {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--faint);
+  color: inherit;
+  text-decoration: none;
+}
+
+.radTitel {
+  display: block;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.radSub {
+  display: block;
+  font-size: 13.5px;
+  color: var(--soft);
+  margin-top: 3px;
+}
+
+.chev {
+  color: var(--accsoft);
+  font-size: 22px;
+  flex: none;
+}
+
+/* Traditionsrad utan länk — stödpost, ingen destination (roadmap fas 6). */
+.stillaRad {
+  display: block;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--faint);
+}

@@ -1,0 +1,34 @@
+import { BgPicker, DarkToggle, FontPicker, SizeStepper } from '../components/ReadingSettingsControls'
+import { useAtlas } from '../lib/store'
+import styles from './InstallningarPage.module.css'
+
+/** Inställningar (navigation.md: Settings) — utseendet samlat på en egen yta. */
+export const InstallningarPage = () => {
+  const { dark } = useAtlas()
+  return (
+    <div className="screenTab">
+      <div className="kicker">Visdomsatlasen</div>
+      <h1 className={styles.title}>Inställningar</h1>
+      <p className={styles.lede}>Hur läsningen ska kännas.</p>
+      <div className={styles.section}>
+        <div className="kicker sectionKicker">Typsnitt</div>
+        <FontPicker />
+      </div>
+      <div className={styles.section}>
+        <div className="kicker sectionKicker">Textstorlek</div>
+        <SizeStepper />
+      </div>
+      <div className={styles.section}>
+        <div className="kicker sectionKicker">
+          Bakgrund
+          {dark && <span className={styles.hint}> · Gäller i ljust läge</span>}
+        </div>
+        <BgPicker />
+      </div>
+      <div className={styles.section}>
+        <div className="kicker sectionKicker">Tema</div>
+        <DarkToggle />
+      </div>
+    </div>
+  )
+}
