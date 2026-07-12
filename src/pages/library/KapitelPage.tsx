@@ -66,7 +66,7 @@ export const KapitelPage = ({ workId, bookSlug, chapter }: Props) => {
   const id = bookId(workId, bookSlug)
   const navigate = useNavigate()
   const goUp = () =>
-    navigate({ to: '/bibliotek/$workId/$bookSlug', params: { workId, bookSlug } })
+    navigate({ to: '/bibliotek/verk/$workId/$bookSlug', params: { workId, bookSlug } })
   const { data, loading, error } = useAsync(() => fetchChapter(id, n), [id, n])
   if (!data) {
     return (

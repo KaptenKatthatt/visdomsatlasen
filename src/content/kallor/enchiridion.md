@@ -6,6 +6,7 @@ originaltitel: Encheiridion
 typ: bok
 författare: Arrianos
 tillskrivenFörfattare: Epiktetos
+traditioner: [tradition-stoicism]
 originalspråk: Grekiska
 ungefärligDatering: ca 125 e.Kr
 plats: Nikopolis

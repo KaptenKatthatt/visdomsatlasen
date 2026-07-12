@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { allaRum, hittaKalla, hittaRum, hittaTema, kallnamn, stycken, troskelTeman } from './innehall'
+import {
+  allaRum,
+  hittaFragaViaSlug,
+  hittaKalla,
+  hittaKallaViaSlug,
+  hittaRum,
+  hittaTema,
+  hittaTradition,
+  kallnamn,
+  stycken,
+  troskelTeman,
+} from './innehall'
 
 describe('innehållsladdaren', () => {
   it('laddar exempelrummet från markdown', () => {
@@ -16,6 +27,13 @@ describe('innehållsladdaren', () => {
     expect(tema?.etikett).toBe('Lugn')
     const källa = rum ? hittaKalla(rum.källor[0]?.källa ?? '') : undefined
     expect(källa && kallnamn(källa)).toBe('Epiktetos')
+  })
+
+  it('laddar frågor, källor och traditioner för biblioteket', () => {
+    expect(hittaFragaViaSlug('vad-kan-du-styra')?.text).toBe('Vad kan du egentligen styra?')
+    expect(hittaKallaViaSlug('enchiridion')?.titel).toBe('Enchiridion (Handboken)')
+    const traditionId = hittaKallaViaSlug('enchiridion')?.traditioner?.[0] ?? ''
+    expect(hittaTradition(traditionId)?.namn).toBe('Stoicism')
   })
 })
 

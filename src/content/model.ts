@@ -9,6 +9,11 @@ export type To =
   | { kind: 'las'; id: string; mode: ReadMode }
   | { kind: 'kapitel'; workId: string; bookSlug: string; chapter: number }
   | { kind: 'screen'; id: ScreenId }
+  // Omgörningens redaktionella mål (fas 6): läsrummet och bibliotekets sidor.
+  | { kind: 'rum'; slug: string }
+  | { kind: 'tema'; slug: string }
+  | { kind: 'kallpost'; slug: string }
+  | { kind: 'fraga'; slug: string }
 
 export type LinkSegment = { t: string; to: To }
 export type Segment = string | LinkSegment

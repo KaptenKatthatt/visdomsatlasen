@@ -8,7 +8,7 @@ import styles from './Bibliotek.module.css'
 
 const BookRow = ({ workId, book }: { workId: string; book: Book }) => (
   <Link
-    to="/bibliotek/$workId/$bookSlug"
+    to="/bibliotek/verk/$workId/$bookSlug"
     params={{ workId, bookSlug: slugOfBook(workId, book.id) }}
     className={styles.row}
   >
@@ -24,7 +24,7 @@ export const VerkPage = ({ workId }: { workId: string }) => {
   const { data, loading, error } = useAsync(() => fetchWork(workId), [workId])
   const [filter, setFilter] = useState('')
   const navigate = useNavigate()
-  const goUp = () => navigate({ to: '/bibliotek' })
+  const goUp = () => navigate({ to: '/bibliotek/verk' })
   if (!data) {
     return (
       <div className="screenSub">
