@@ -20,6 +20,39 @@
   margin-top: 42px;
 }
 
+/* Undersidornas huvud (under TopBar), samma mått som verkläsarens. */
+.huvud {
+  margin-top: 34px;
+}
+
+.huvudTitel {
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 6px 0 0;
+}
+
+.beskrivning {
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 14px 0 0;
+  text-wrap: pretty;
+}
+
+.antal {
+  font-size: 13.5px;
+  color: var(--soft);
+  margin: 8px 0 0;
+}
+
+.tomt {
+  font-size: 16.5px;
+  color: var(--soft);
+  font-style: italic;
+  line-height: 1.55;
+  margin: 6px 0 0;
+}
+
 /* Hårfina rader, samma känsla som RowLink men för statiska biblioteksrutter. */
 .rad {
   display: flex;

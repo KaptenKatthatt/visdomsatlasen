@@ -27,7 +27,7 @@ export const allaRum: Rum[] = samla(
   tolkaRumsfil,
 )
 
-const allaTeman: Tema[] = samla(
+export const allaTeman: Tema[] = samla(
   tillFiler(import.meta.glob<string>('../content/teman/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(temaSchema, fil),
 )
@@ -51,6 +51,9 @@ export const hittaRum = (slug: string): Rum | undefined =>
 
 export const hittaTema = (id: string): Tema | undefined =>
   allaTeman.find((tema) => tema.id === id)
+
+export const hittaTemaViaSlug = (slug: string): Tema | undefined =>
+  allaTeman.find((tema) => tema.slug === slug)
 
 export const hittaKalla = (id: string): Kalla | undefined =>
   allaKallor.find((källa) => källa.id === id)

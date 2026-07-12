@@ -7,6 +7,8 @@ import type { ReadMode } from '../content/model'
 import { AmnePage } from '../pages/AmnePage'
 import { AtlasPage } from '../pages/AtlasPage'
 import { BibliotekHemPage } from '../pages/bibliotek/BibliotekHemPage'
+import { RumlistaPage } from '../pages/bibliotek/RumlistaPage'
+import { TemaPage } from '../pages/bibliotek/TemaPage'
 import { BibliotekSokPage } from '../pages/library/BibliotekSokPage'
 import { BokPage } from '../pages/library/BokPage'
 import { KapitelPage } from '../pages/library/KapitelPage'
@@ -120,6 +122,20 @@ const bibliotekRoute = createRoute({
   component: BibliotekHemPage,
 })
 
+const temaRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/tema/$slug',
+  component: function TemaRoute() {
+    return <TemaPage slug={temaRoute.useParams().slug} />
+  },
+})
+
+const rumlistaRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/rum',
+  component: RumlistaPage,
+})
+
 // Verkläsaren bor under det statiska segmentet `verk`, så landningens
 // undersidor aldrig kan skuggas av ett verks id.
 const verklistaRoute = createRoute({
@@ -192,6 +208,8 @@ const routeTree = rootRoute.addChildren([
   installningarRoute,
   sokRoute,
   bibliotekRoute,
+  temaRoute,
+  rumlistaRoute,
   verklistaRoute,
   verkRoute,
   bokRoute,
