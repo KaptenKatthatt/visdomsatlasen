@@ -12,6 +12,7 @@ import { BokPage } from '../pages/library/BokPage'
 import { KapitelPage } from '../pages/library/KapitelPage'
 import { VerkPage } from '../pages/library/VerkPage'
 import { HemPage } from '../pages/HemPage'
+import { InstallningarPage } from '../pages/InstallningarPage'
 import { KallaPage } from '../pages/KallaPage'
 import { LasPage } from '../pages/LasPage'
 import { NotFoundNote } from '../pages/NotFoundNote'
@@ -99,6 +100,12 @@ const samlingRoute = createRoute({
   component: SamlingPage,
 })
 
+const installningarRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/installningar',
+  component: InstallningarPage,
+})
+
 const sokRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/sok',
@@ -172,6 +179,7 @@ const routeTree = rootRoute.addChildren([
   personRoute,
   atlasRoute,
   samlingRoute,
+  installningarRoute,
   sokRoute,
   bibliotekRoute,
   verkRoute,

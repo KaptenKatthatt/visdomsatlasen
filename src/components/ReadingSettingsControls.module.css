@@ -1,0 +1,123 @@
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.option {
+  background: none;
+  border: 1px solid var(--faint);
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 15.5px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.option[aria-checked='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--faint);
+  border-radius: 10px;
+  padding: 6px 10px;
+}
+
+.stepBtn {
+  background: none;
+  border: none;
+  color: var(--ink);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 6px 14px;
+}
+
+.stepBtnLarge {
+  font-size: 23px;
+}
+
+.stepBtn:disabled {
+  color: var(--faint);
+  cursor: default;
+}
+
+.stepDots {
+  display: flex;
+  gap: 7px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--faint);
+}
+
+.dotOn {
+  background: var(--accent);
+}
+
+.swatchBtn {
+  background: none;
+  border: 1px solid var(--faint);
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 15.5px;
+  padding: 8px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.swatchBtn[aria-checked='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.swatchBtn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--faint);
+}
+
+.darkRow {
+  width: 100%;
+  background: none;
+  border: 1px solid var(--faint);
+  border-radius: 10px;
+  color: var(--ink);
+  font-size: 15.5px;
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.darkRow[aria-pressed='true'] {
+  border-color: var(--accent);
+}
+
+.darkLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.darkState {
+  color: var(--soft);
+  font-style: italic;
+}

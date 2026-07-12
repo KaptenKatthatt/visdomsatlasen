@@ -2,11 +2,10 @@ import { Link, useRouterState } from '@tanstack/react-router'
 import styles from './NavTabs.module.css'
 
 const tabs = [
-  { to: '/', label: 'Hem' },
-  { to: '/utforska', label: 'Utforska' },
-  { to: '/bibliotek', label: 'Texter' },
-  { to: '/atlas', label: 'Atlas' },
-  { to: '/samling', label: 'Samling' },
+  { to: '/', label: 'Läsrummet' },
+  { to: '/bibliotek', label: 'Biblioteket' },
+  { to: '/samling', label: 'Sparat' },
+  { to: '/installningar', label: 'Inställningar' },
 ] as const
 
 const activeTab = (pathname: string): string => {
