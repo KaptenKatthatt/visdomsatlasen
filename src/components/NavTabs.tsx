@@ -25,9 +25,9 @@ export const NavTabs = () => {
         <Link
           key={tab.to}
           to={tab.to}
+          aria-current={current === tab.to ? 'page' : undefined}
           className={current === tab.to ? `${styles.tab} ${styles.active}` : styles.tab}
         >
-          <span className={styles.dot} />
           <span>{tab.label}</span>
         </Link>
       ))}
