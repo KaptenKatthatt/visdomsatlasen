@@ -64,8 +64,9 @@ det som hänt eller kalla det gott. Han pekade bara på att det nästan alltid
 finns mer än ett ställe att ta tag, och att valet av grepp är ditt — även när
 själva händelsen inte var det.
 
-Här möts vandringens trådar. Det mesta kan du inte styra. Men hur du tar tag i
-det, vilket handtag du sluter handen om, ligger närmare dig än du först tror.
+Och där ligger något värt att bära med sig. Det mesta kan du inte styra. Men
+hur du tar tag i det, vilket handtag du sluter handen om, ligger närmare dig än
+du först tror.
 
 ## Historisk kontext
 
