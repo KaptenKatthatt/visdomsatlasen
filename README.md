@@ -27,7 +27,7 @@ Appen har två slags innehåll som lever sida vid sida:
 
 ## Teknik
 
-**Frontend (atlasen + biblioteksläsaren)**
+**Frontend (läsrummet, biblioteket, biblioteksläsaren)**
 
 - React 19 + Vite 7 + TypeScript (strict)
 - TanStack Router (kodbaserade rutter)
