@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Fraga, Innehallsmangd, Kalla, Rum, Tema } from './schema'
+import type { Fraga, Innehallsmangd, Kalla, Kallpassage, Rum, Tema } from './schema'
 import { valideraInnehall } from './validera'
 
 const rum = (över: Partial<Rum> = {}): Rum => ({
@@ -44,7 +44,17 @@ const källa = (över: Partial<Kalla> = {}): Kalla => ({
   slug: 'kalla-a',
   titel: 'Källa A',
   typ: 'bok',
+  upphov: 'känt',
+  datering: 'känd',
   rättigheter: 'public-domain',
+  status: 'publicerad',
+  ...över,
+})
+
+const passage = (över: Partial<Kallpassage> = {}): Kallpassage => ({
+  id: 'passage-a',
+  källa: 'kalla-a',
+  referens: 'avsnitt 1',
   status: 'publicerad',
   ...över,
 })
@@ -117,7 +127,12 @@ describe('valideraInnehall', () => {
     const medPassage = [
       { källa: 'kalla-a', passage: 'passage-a', bruk: 'citat' as const, primär: true },
     ]
-    const passagen = { id: 'passage-a', källa: 'kalla-a', referens: 'avsnitt 1' }
+    const passagen = {
+      id: 'passage-a',
+      källa: 'kalla-a',
+      referens: 'avsnitt 1',
+      utgåva: 'George Long, 1877',
+    }
     const utkastPassage = valideraInnehall(
       grund({
         rum: [rum({ status: 'publicerad', källor: medPassage })],
@@ -279,6 +294,76 @@ describe('valideraInnehall', () => {
       }),
     )
     expect(fel.some((f) => f.includes('vandring-a') && f.includes('opublicer'))).toBe(true)
+  })
+
+  it('kräver källpassage med edition för citat och översättning i publicerade rum', () => {
+    const utanPassage = [{ källa: 'kalla-a', bruk: 'citat' as const, primär: true }]
+    // Utkast får sakna passage — grinden gäller bara publicerat.
+    expect(valideraInnehall(grund({ rum: [rum({ källor: utanPassage })] }))).toEqual([])
+    const publiceratUtan = valideraInnehall(
+      grund({ rum: [rum({ status: 'publicerad', källor: utanPassage })] }),
+    )
+    expect(publiceratUtan.some((f) => f.includes('citat') && f.includes('källpassage'))).toBe(true)
+    // Passage utan utgåva räcker inte.
+    const medPassage = [
+      { källa: 'kalla-a', passage: 'passage-a', bruk: 'citat' as const, primär: true },
+    ]
+    const utanUtgava = valideraInnehall(
+      grund({
+        rum: [rum({ status: 'publicerad', källor: medPassage })],
+        passager: [passage()],
+      }),
+    )
+    expect(utanUtgava.some((f) => f.includes('citat') && f.includes('utgåva'))).toBe(true)
+    // Med referens + utgåva passerar citatet.
+    const komplett = valideraInnehall(
+      grund({
+        rum: [rum({ status: 'publicerad', källor: medPassage })],
+        passager: [passage({ utgåva: 'George Long, 1877' })],
+      }),
+    )
+    expect(komplett).toEqual([])
+  })
+
+  it('kräver angiven översättare för egen översättning', () => {
+    const relation = [
+      { källa: 'kalla-a', passage: 'passage-a', bruk: 'översättning' as const, primär: true },
+    ]
+    const utanÖversättare = valideraInnehall(
+      grund({
+        rum: [rum({ status: 'publicerad', källor: relation })],
+        passager: [passage({ utgåva: 'Grekiska (public domain)' })],
+      }),
+    )
+    expect(
+      utanÖversättare.some((f) => f.includes('översättning') && f.includes('översättare')),
+    ).toBe(true)
+    const medÖversättare = valideraInnehall(
+      grund({
+        rum: [rum({ status: 'publicerad', källor: relation })],
+        passager: [passage({ utgåva: 'Grekiska (public domain)', översättare: 'Redaktionen' })],
+      }),
+    )
+    expect(medÖversättare).toEqual([])
+  })
+
+  it('kräver upphovs- och dateringsstatus för publicerade källor', () => {
+    const utan = valideraInnehall(
+      grund({ källor: [källa({ upphov: undefined, datering: undefined })] }),
+    )
+    expect(utan.some((f) => f.includes('kalla-a') && f.includes('upphov'))).toBe(true)
+    expect(utan.some((f) => f.includes('kalla-a') && f.includes('datering'))).toBe(true)
+    // Utkastkällor slipper grinden.
+    const utkast = valideraInnehall(
+      grund({
+        rum: [rum({ källor: [{ källa: 'kalla-b', bruk: 'bearbetning', primär: true }] })],
+        källor: [
+          källa({ id: 'kalla-b', slug: 'kalla-b' }),
+          källa({ status: 'utkast', upphov: undefined, datering: undefined }),
+        ],
+      }),
+    )
+    expect(utkast).toEqual([])
   })
 
   it('hindrar publicerade vandringar från att länka en opublicerad central fråga', () => {

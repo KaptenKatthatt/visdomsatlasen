@@ -3,16 +3,18 @@ import { useEffect, useState } from 'react'
 import { NotesSheet } from '../components/NotesSheet'
 import { ReadingSettingsButton } from '../components/ReadingSettingsButton'
 import { TopBar } from '../components/TopBar'
-import type { Rum, Vandring } from '../content/redaktion/schema'
+import type { Kalla, Kallpassage, Rum, Vandring } from '../content/redaktion/schema'
 import { rumForVandring } from '../lib/bibliotek'
 import {
   allaRum,
   brukEtikett,
   hittaKalla,
+  hittaPassage,
   hittaRum,
   hittaTema,
   hittaVandringViaSlug,
   kallnamn,
+  osakerheter,
   stycken,
 } from '../lib/innehall'
 import { useAtlas } from '../lib/store'
@@ -50,22 +52,46 @@ const Kolofonrad = ({
   </div>
 )
 
-/** Källdetaljen bakom namnet: verk, referens och bruksdeklaration —
- * synligt först på begäran (source-and-context.md, Source Visibility). */
+// Bibliografiraden: verk, referens och härkomst (språk · datering) i en följd.
+const kallrad = (källa: Kalla, referens: string | undefined): string => {
+  const titel = [källa.titel, referens].filter(Boolean).join(', ')
+  const härkomst = [källa.originalspråk, källa.ungefärligDatering].filter(Boolean).join(' · ')
+  return [titel, härkomst].filter(Boolean).join(' · ')
+}
+
+// Editionsraden syns bara när en passage anger utgåva (source-and-context.md,
+// Translation Policy): edition och, för egen översättning, ansvarig hand.
+const editionsrad = (passage: Kallpassage | undefined): string | undefined => {
+  if (!passage?.utgåva) return undefined
+  const översättning = passage.översättare ? ` · översättning ${passage.översättare}` : ''
+  return `Edition: ${passage.utgåva}${översättning}`
+}
+
+/** Källdetaljen bakom namnet: verk, referens, bruksdeklaration och ärlig
+ * osäkerhet — synligt först på begäran (source-and-context.md, Source
+ * Visibility). Håller sig bibliografisk; källans ord och full passagetext
+ * bor på källsidan, dit »Om texten« leder efter ett medvetet val. */
 const Kalldetalj = ({ rum }: { rum: Rum }) => {
   const relation = rum.källor.find((k) => k.primär) ?? rum.källor[0]
   const källa = relation ? hittaKalla(relation.källa) : undefined
   if (!relation || !källa) return null
-  const meta = [källa.originalspråk, källa.ungefärligDatering].filter(Boolean).join(' · ')
+  const passage = relation.passage ? hittaPassage(relation.passage) : undefined
+  const rader = [
+    kallrad(källa, passage?.referens ?? relation.referens),
+    brukEtikett[relation.bruk],
+    editionsrad(passage),
+    ...osakerheter(källa),
+  ].filter((rad): rad is string => Boolean(rad))
   return (
     <>
-      <p className={styles.detaljrad}>
-        {källa.titel}
-        {relation.referens ? `, ${relation.referens}` : ''}
-        {meta ? ` · ${meta}` : ''}
-      </p>
-      <p className={styles.detaljrad}>{brukEtikett[relation.bruk]}</p>
-      {källa.beskrivning && <p className={styles.detaljrad}>{källa.beskrivning}</p>}
+      {rader.map((rad) => (
+        <p key={rad} className={styles.detaljrad}>
+          {rad}
+        </p>
+      ))}
+      <Link to="/bibliotek/kalla/$slug" params={{ slug: källa.slug }} className={styles.detaljlank}>
+        Om texten
+      </Link>
     </>
   )
 }

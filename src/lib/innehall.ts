@@ -6,11 +6,13 @@
 import {
   fragaSchema,
   kallaSchema,
+  kallpassageSchema,
   temaSchema,
   traditionSchema,
   vandringSchema,
   type Fraga,
   type Kalla,
+  type Kallpassage,
   type Rum,
   type Tema,
   type Tradition,
@@ -62,6 +64,14 @@ export const allaVandringar: Vandring[] = samla(
   (fil) => tolkaPostfil(vandringSchema, fil),
 )
 
+/** Källpassager — kanoniska textutdrag med referens, edition och översättning
+ * (source-and-context.md, Suggested Passage Model). Rum pekar hit via
+ * relationens `passage`, så källans ord hålls åtskilda från redaktionell prosa. */
+export const allaPassager: Kallpassage[] = samla(
+  tillFiler(import.meta.glob<string>('../content/passager/*.md', { query: '?raw', import: 'default', eager: true })),
+  (fil) => tolkaPostfil(kallpassageSchema, fil),
+)
+
 export const allaTraditioner: Tradition[] = samla(
   tillFiler(import.meta.glob<string>('../content/traditioner/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(traditionSchema, fil),
@@ -97,6 +107,9 @@ export const hittaTradition = (id: string): Tradition | undefined =>
 export const hittaVandringViaSlug = (slug: string): Vandring | undefined =>
   allaVandringar.find((vandring) => vandring.slug === slug)
 
+export const hittaPassage = (id: string): Kallpassage | undefined =>
+  allaPassager.find((passage) => passage.id === id)
+
 /** Delar prosatext i stycken på tomrad — rummens sektioner är ren prosa. */
 export const stycken = (text: string): string[] =>
   text
@@ -107,6 +120,22 @@ export const stycken = (text: string): string[] =>
 /** Namnet i kolofonen: den tillskrivna rösten före nedtecknaren före verket. */
 export const kallnamn = (källa: Kalla): string =>
   källa.tillskrivenFörfattare ?? källa.författare ?? källa.titel
+
+/** Ärliga osäkerhetsmeningar i klartext (source-and-context.md, Uncertainty):
+ * dold osäkerhet försvagar tilliten, inte källan. Delas av läsrummet och
+ * källsidan så samma formulering möter läsaren på båda ställena. */
+export const osakerheter = (källa: Kalla): string[] => {
+  const namn = källa.tillskrivenFörfattare ?? källa.författare ?? 'annan hand'
+  const rader: string[] = []
+  if (källa.upphov === 'tillskrivet')
+    rader.push(`Verket tillskrivs traditionellt ${namn}; författarskapet är inte säkert belagt.`)
+  if (källa.upphov === 'omtvistat') rader.push('Författarskapet är omdiskuterat.')
+  if (källa.upphov === 'okänt') rader.push('Upphovspersonen är okänd.')
+  if (källa.datering === 'ungefärlig') rader.push('Textens exakta datering är osäker.')
+  if (källa.datering === 'omtvistad') rader.push('Textens datering är omtvistad.')
+  if (källa.datering === 'okänd') rader.push('När texten tillkom är okänt.')
+  return rader
+}
 
 /** Kort svensk deklaration av hur rummet använder källan (source-and-context.md). */
 export const brukEtikett: Record<Rum['källor'][number]['bruk'], string> = {

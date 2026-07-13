@@ -1,8 +1,15 @@
 import { Link } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
-import type { Kalla } from '../../content/redaktion/schema'
-import { publiceradeVia, rumForKalla } from '../../lib/bibliotek'
-import { allaRum, hittaKallaViaSlug, hittaTradition } from '../../lib/innehall'
+import type { Kalla, Kallpassage } from '../../content/redaktion/schema'
+import { passagerForKalla, publiceradeVia, rumForKalla } from '../../lib/bibliotek'
+import {
+  allaPassager,
+  allaRum,
+  hittaKallaViaSlug,
+  hittaTradition,
+  osakerheter,
+  stycken,
+} from '../../lib/innehall'
 import { NotFoundNote } from '../NotFoundNote'
 import styles from './Bibliotek.module.css'
 import { Beskrivning, Rumslista, Sektion, Sidhuvud } from './Biblioteksdelar'
@@ -62,12 +69,56 @@ const Kallmeta = ({ källa }: { källa: Kalla }) => {
   )
 }
 
+// Passagens metarad: översättning, edition och år, stilla sammanfogade.
+const passagemeta = (passage: Kallpassage): string =>
+  [
+    passage.översättare && `Översättning: ${passage.översättare}`,
+    passage.utgåva,
+    passage.utgivningsår,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+
+/** En källpassage: exakt referens, källans ord som semantiskt blockcitat
+ * (originaltext och/eller översättning) och bibliografisk härkomst. Källans
+ * ord hålls tydligt åtskilda från redaktionell prosa (source-and-context.md). */
+const Passageblock = ({ passage }: { passage: Kallpassage }) => {
+  const meta = passagemeta(passage)
+  return (
+    <div className={styles.passage}>
+      <p className={styles.passagref}>{passage.referens}</p>
+      {passage.originaltext && (
+        <blockquote className={styles.passagetext}>
+          {stycken(passage.originaltext).map((stycke, i) => (
+            <p key={i}>{stycke}</p>
+          ))}
+        </blockquote>
+      )}
+      {passage.översättning && (
+        <blockquote className={styles.passagetext}>
+          {stycken(passage.översättning).map((stycke, i) => (
+            <p key={i}>{stycke}</p>
+          ))}
+        </blockquote>
+      )}
+      {meta && <p className={styles.passagmeta}>{meta}</p>}
+      {passage.url && (
+        <a className={styles.passaglank} href={passage.url} target="_blank" rel="noreferrer">
+          Källa på nätet
+        </a>
+      )}
+    </div>
+  )
+}
+
 /** Källpost (library.md, Sources): saklig metadata, kopplade rum och vägen
  * in i biblioteksläsaren när hela texten finns där. Ingen auktoritetsprosa.
  * TopBar utan onBack ⇒ historiksteg bakåt — biblioteksplatsen bevaras. */
 export const KallaPostPage = ({ slug }: { slug: string }) => {
   const källa = hittaKallaViaSlug(slug)
   if (!källa) return <NotFoundNote subject="Källan" />
+  const osäkerhet = osakerheter(källa)
+  const passager = passagerForKalla(källa.id, allaPassager)
   return (
     <div className="screenSub">
       <TopBar />
@@ -76,6 +127,22 @@ export const KallaPostPage = ({ slug }: { slug: string }) => {
       </Sidhuvud>
       <Kallmeta källa={källa} />
       <Beskrivning text={källa.beskrivning} />
+      {osäkerhet.length > 0 && (
+        <Sektion rubrik="Osäkerhet">
+          {osäkerhet.map((rad) => (
+            <p key={rad} className={styles.beskrivning}>
+              {rad}
+            </p>
+          ))}
+        </Sektion>
+      )}
+      {passager.length > 0 && (
+        <Sektion rubrik="Passager">
+          {passager.map((passage) => (
+            <Passageblock key={passage.id} passage={passage} />
+          ))}
+        </Sektion>
+      )}
       {källa.biblioteksverk !== undefined && (
         <Sektion rubrik="Hela texten">
           <Link

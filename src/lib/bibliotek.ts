@@ -3,7 +3,15 @@
 // (!== 'arkiverad'), som visar utkastteman i väntan på deras första rum.
 // Rätta inte "åt andra hållet": utkast nås enbart via direkt länk och är
 // redaktionens granskningsvy, aldrig en del av utforskningen.
-import type { Fraga, Kalla, Rum, Tema, Tradition, Vandring } from '../content/redaktion/schema'
+import type {
+  Fraga,
+  Kalla,
+  Kallpassage,
+  Rum,
+  Tema,
+  Tradition,
+  Vandring,
+} from '../content/redaktion/schema'
 
 const publicerade = <T extends { status: Rum['status'] }>(poster: T[]): T[] =>
   poster.filter((post) => post.status === 'publicerad')
@@ -120,6 +128,13 @@ export const traditionerForVandring = (
   )
   return bibliotekTraditioner(traditioner.filter((tradition) => traditionIds.has(tradition.id)))
 }
+
+/** Källans publicerade passager, i referensordning (svensk kollation).
+ * Bara publicerade passager når biblioteket; utkast är redaktionens granskningsvy. */
+export const passagerForKalla = (kallaId: string, passager: Kallpassage[]): Kallpassage[] =>
+  publicerade(passager)
+    .filter((passage) => passage.källa === kallaId)
+    .sort(svOrdning((p) => p.referens))
 
 /** Publicerade rum som använder källan — rum med primär relation först. */
 export const rumForKalla = (kallaId: string, rum: Rum[]): Rum[] => {

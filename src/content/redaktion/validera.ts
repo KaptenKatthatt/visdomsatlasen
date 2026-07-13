@@ -2,14 +2,16 @@
 // dubbletter, brutna relationer och publiceringskrav. Fältkraven per post tas
 // av zod-schemana vid tolkningen; här kontrolleras det som kräver helheten.
 // Publicerat innehåll får aldrig peka på opublicerat — utkast är fria.
-import type { Fraga, Innehallsmangd, Rum, Tema } from './schema'
+import type { Fraga, Innehallsmangd, Kalla, Kallpassage, Rum, Tema } from './schema'
+
+type Kallrelation = Rum['källor'][number]
 
 type Uppslag = {
   rum: Map<string, Rum>
   teman: Map<string, Tema>
   frågor: Map<string, Fraga>
   källstatus: Map<string, string>
-  passagestatus: Map<string, string>
+  passager: Map<string, Kallpassage>
   traditionsstatus: Map<string, string>
 }
 
@@ -63,8 +65,8 @@ const rumsreferenser = (rum: Rum, uppslag: Uppslag): Referens[] => {
       .map((relation): Referens => ({
         typ: 'källpassage',
         id: relation.passage ?? '',
-        finns: uppslag.passagestatus.has(relation.passage ?? ''),
-        publicerad: publicerad(uppslag.passagestatus.get(relation.passage ?? '')),
+        finns: uppslag.passager.has(relation.passage ?? ''),
+        publicerad: publicerad(uppslag.passager.get(relation.passage ?? '')?.status),
       })),
   ]
 }
@@ -73,6 +75,27 @@ const relationsfel = (rum: Rum, uppslag: Uppslag): string[] =>
   rumsreferenser(rum, uppslag)
     .filter((referens) => !referens.finns)
     .map((referens) => `rum ${rum.id}: ${referens.typ} "${referens.id}" finns inte`)
+
+// Citat och egen översättning kräver en källpassage med exakt referens och
+// edition (source-and-context.md, Types of Source Use): så hålls källans ord
+// belagda och åtskilda från redaktionell prosa. Bearbetning/parafras/inspiration
+// får nöja sig med fritextreferens och passerar orörda.
+const KRÄVER_PASSAGE: ReadonlySet<Kallrelation['bruk']> = new Set(['citat', 'översättning'])
+
+const bruksgrind = (rum: Rum, relation: Kallrelation, uppslag: Uppslag): string[] => {
+  if (!KRÄVER_PASSAGE.has(relation.bruk)) return []
+  const märke = `rum ${rum.id}: ${relation.bruk}`
+  if (relation.passage === undefined)
+    return [`${märke} kräver en källpassage med exakt referens och edition`]
+  const passage = uppslag.passager.get(relation.passage)
+  if (!passage) return [] // saknad passage rapporteras redan som bruten relation
+  return [
+    ...(passage.utgåva ? [] : [`${märke} kräver edition (utgåva) på passagen "${passage.id}"`]),
+    ...(relation.bruk === 'översättning' && !passage.översättare
+      ? [`${märke} kräver angiven översättare på passagen "${passage.id}"`]
+      : []),
+  ]
+}
 
 // Publiceringskraven (source-and-context.md Publication Gate, room-schema.md).
 const publiceringsfel = (rum: Rum, uppslag: Uppslag): string[] => {
@@ -84,6 +107,7 @@ const publiceringsfel = (rum: Rum, uppslag: Uppslag): string[] => {
     ...(rum.lästidMinuter <= 10
       ? []
       : [`rum ${rum.id}: lästid ${rum.lästidMinuter} min utanför 1–10 för publicerat rum`]),
+    ...rum.källor.flatMap((relation) => bruksgrind(rum, relation, uppslag)),
   ]
   const opublicerade = rumsreferenser(rum, uppslag)
     .filter((referens) => referens.finns && !referens.publicerad)
@@ -145,16 +169,35 @@ const vandringsfel = (mängd: Innehallsmangd, uppslag: Uppslag): string[] =>
     return fel
   })
 
+// En publicerad källa måste ta ställning till upphov och datering (även svaret
+// "okänt"/"omtvistat") så osäkerhet representeras i stället för att döljas
+// (source-and-context.md, Uncertainty; Publication Gate).
+const kallosakerhet = (källa: Kalla): string[] =>
+  publicerad(källa.status)
+    ? [
+        ...(källa.upphov === undefined
+          ? [`källa ${källa.id}: publicerad källa saknar upphovsstatus (upphov)`]
+          : []),
+        ...(källa.datering === undefined
+          ? [`källa ${källa.id}: publicerad källa saknar dateringsstatus (datering)`]
+          : []),
+      ]
+    : []
+
+const kalltraditionsfel = (källa: Kalla, uppslag: Uppslag): string[] =>
+  (källa.traditioner ?? []).flatMap((traditionId) => {
+    if (!uppslag.traditionsstatus.has(traditionId))
+      return [`källa ${källa.id}: tradition "${traditionId}" finns inte`]
+    if (publicerad(källa.status) && !publicerad(uppslag.traditionsstatus.get(traditionId)))
+      return [`källa ${källa.id}: publicerad källa länkar opublicerad tradition "${traditionId}"`]
+    return []
+  })
+
 const kallfel = (mängd: Innehallsmangd, uppslag: Uppslag): string[] =>
-  mängd.källor.flatMap((källa) =>
-    (källa.traditioner ?? []).flatMap((traditionId) => {
-      if (!uppslag.traditionsstatus.has(traditionId))
-        return [`källa ${källa.id}: tradition "${traditionId}" finns inte`]
-      if (publicerad(källa.status) && !publicerad(uppslag.traditionsstatus.get(traditionId)))
-        return [`källa ${källa.id}: publicerad källa länkar opublicerad tradition "${traditionId}"`]
-      return []
-    }),
-  )
+  mängd.källor.flatMap((källa) => [
+    ...kalltraditionsfel(källa, uppslag),
+    ...kallosakerhet(källa),
+  ])
 
 const passagefel = (mängd: Innehallsmangd, uppslag: Uppslag): string[] =>
   mängd.passager.flatMap((passage) =>
@@ -171,7 +214,7 @@ export const valideraInnehall = (mängd: Innehallsmangd): string[] => {
     teman: perId(mängd.teman),
     frågor: perId(mängd.frågor),
     källstatus: new Map(mängd.källor.map((källa) => [källa.id, källa.status])),
-    passagestatus: new Map(mängd.passager.map((passage) => [passage.id, passage.status])),
+    passager: perId(mängd.passager),
     traditionsstatus: new Map(
       mängd.traditioner.map((tradition) => [tradition.id, tradition.status]),
     ),
