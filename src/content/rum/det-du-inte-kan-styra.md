@@ -11,6 +11,7 @@ reflektionsfrågor:
   - Finns det något du kan lämna olöst i dag?
 källor:
   - källa: kalla-enchiridion
+    passage: passage-enchiridion-1
     referens: avsnitt 1
     bruk: bearbetning
     primär: true
@@ -18,7 +19,7 @@ källor:
 lästidMinuter: 4
 status: publicerad
 skapad: 2026-07-09
-uppdaterad: 2026-07-11
+uppdaterad: 2026-07-13
 redaktion:
   skribent: Claude (kalibreringsrum)
   källgranskare: Claude (förgranskning)
@@ -40,7 +41,10 @@ redaktion:
     (valideringen tillåter inte publicerat rum med opublicerade relationer).
     Publiceringen godkänd av redaktören Jonas Olson 2026-07-11 efter egen
     läsning av rummet — AI avgör aldrig ensam vad som publiceras.
-  version: 2
+    Fas 8 (2026-07-13): kopplad till källpassagen passage-enchiridion-1 (egen
+    svensk översättning av avsnitt 1, godkänd av Jonas Olson) — källans ord nås nu
+    på källsidan, åtskilda från rummets bearbetning.
+  version: 3
 ---
 
 ## Öppning

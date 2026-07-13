@@ -10,14 +10,14 @@ referens: avsnitt 5
   sörjer, låt oss aldrig skylla på andra utan på oss själva, det vill säga på
   våra föreställningar.
 översättare: Visdomsatlasens redaktion
-utgåva: 'Grundtext: George Long (1877), public domain'
+utgåva: George Long, ur Standard Ebooks (public domain)
+url: https://standardebooks.net/ebooks/epictetus/short-works/george-long
 noteringar: >-
-  Egen svensk översättning, förgranskad mot verify-sources.md. Gjord ur George
-  Longs public-domain-engelska (»Men are disturbed not by the things which
-  happen, but by the opinions about the things …«), samma edition som rummen
-  verifierats mot — en försvenskning av Longs engelska, inte direkt ur grekiskan.
-  Redaktören avgör grundfrågan (Long eller grekiskan) och lägger till en
-  verifierad stabil länk (url) innan publicering. Ingen ändring av meningen.
-  AI avgör aldrig ensam vad som publiceras.
-status: granskning
+  Egen svensk översättning, förgranskad mot verify-sources.md och godkänd av
+  redaktören Jonas Olson 2026-07-13. Grundtext: George Longs public-domain-
+  engelska (»Men are disturbed not by the things which happen, but by the opinions
+  about the things …«) via Standard Ebooks — samma källa som bibliotekets ingest.
+  En försvenskning av Longs engelska, inte direkt ur grekiskan; ingen ändring av
+  meningen. AI avgör aldrig ensam vad som publiceras.
+status: publicerad
 ---

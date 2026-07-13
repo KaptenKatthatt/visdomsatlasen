@@ -8,14 +8,14 @@ referens: avsnitt 1
   egna handlingar. Utanför vår makt står kroppen, ägodelarna, ryktet och
   ämbetena — kort sagt allt som inte är våra egna handlingar.
 översättare: Visdomsatlasens redaktion
-utgåva: 'Grundtext: George Long (1877), public domain'
+utgåva: George Long, ur Standard Ebooks (public domain)
+url: https://standardebooks.net/ebooks/epictetus/short-works/george-long
 noteringar: >-
-  Egen svensk översättning, förgranskad mot verify-sources.md. Gjord ur George
-  Longs public-domain-engelska (»Of things some are in our power, and others are
-  not …«), samma edition som bibliotekets ingest och som rummen redan verifierats
-  mot — alltså en försvenskning av Longs engelska, inte direkt ur grekiskan.
-  Redaktören avgör om det räcker eller om texten ska ställas mot grekiskan innan
-  publicering, och lägger till en verifierad stabil länk (url). Ingen ändring av
+  Egen svensk översättning, förgranskad mot verify-sources.md och godkänd av
+  redaktören Jonas Olson 2026-07-13. Grundtext: George Longs public-domain-
+  engelska (»Of things some are in our power, and others are not …«) via Standard
+  Ebooks — samma källa som bibliotekets ingest av Handboken. Alltså en
+  försvenskning av Longs engelska, inte direkt ur grekiskan; ingen ändring av
   meningen. AI avgör aldrig ensam vad som publiceras.
-status: granskning
+status: publicerad
 ---

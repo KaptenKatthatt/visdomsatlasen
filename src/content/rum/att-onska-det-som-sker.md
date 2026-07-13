@@ -11,6 +11,7 @@ reflektionsfrågor:
   - Vad skulle förändras om du för en stund önskade det som redan är?
 källor:
   - källa: kalla-enchiridion
+    passage: passage-enchiridion-8
     referens: avsnitt 8
     bruk: bearbetning
     primär: true
@@ -18,7 +19,7 @@ källor:
 lästidMinuter: 3
 status: publicerad
 skapad: 2026-07-12
-uppdaterad: 2026-07-12
+uppdaterad: 2026-07-13
 redaktion:
   skribent: Claude (utkast, fas 7)
   källgranskare: Claude (förgranskning)
@@ -36,7 +37,10 @@ redaktion:
     reflektionsfrågor, ca 3 min. Inga direkta citat, inga emojis. Publicerad
     tillsammans med vandring-vagen-mot-lugn; godkänd av redaktören Jonas Olson
     2026-07-13 efter egen läsning. AI avgör aldrig ensam vad som publiceras.
-  version: 1
+    Fas 8 (2026-07-13): kopplad till källpassagen passage-enchiridion-8 (egen
+    svensk översättning av avsnitt 8, godkänd av Jonas Olson) — källans ord nås nu
+    på källsidan, åtskilda från rummets bearbetning.
+  version: 2
 ---
 
 ## Öppning

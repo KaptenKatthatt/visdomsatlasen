@@ -11,6 +11,7 @@ reflektionsfrågor:
   - Om omdömet är ditt — vad skulle hända om du prövade ett annat?
 källor:
   - källa: kalla-enchiridion
+    passage: passage-enchiridion-5
     referens: avsnitt 5
     bruk: bearbetning
     primär: true
@@ -18,7 +19,7 @@ källor:
 lästidMinuter: 3
 status: publicerad
 skapad: 2026-07-12
-uppdaterad: 2026-07-12
+uppdaterad: 2026-07-13
 redaktion:
   skribent: Claude (utkast, fas 7)
   källgranskare: Claude (förgranskning)
@@ -39,7 +40,10 @@ redaktion:
     ca 3 min. Inga direkta citat, inga emojis. Publicerad tillsammans med
     vandring-vagen-mot-lugn; godkänd av redaktören Jonas Olson 2026-07-13 efter
     egen läsning. AI avgör aldrig ensam vad som publiceras.
-  version: 1
+    Fas 8 (2026-07-13): kopplad till källpassagen passage-enchiridion-5 (egen
+    svensk översättning av avsnitt 5, godkänd av Jonas Olson) — källans ord nås nu
+    på källsidan, åtskilda från rummets bearbetning.
+  version: 2
 ---
 
 ## Öppning

@@ -3,21 +3,21 @@ id: passage-enchiridion-43
 källa: kalla-enchiridion
 referens: avsnitt 43
 översättning: >-
-  Allt har två handtag, det ena som det kan bäras med, det andra som det inte kan
-  bäras med. Om din broder handlar orätt, grip inte handlingen i det handtag där
-  han handlar orätt — för det handtaget går inte att bära. Grip i stället det
-  andra: att han är din broder, att ni fostrats tillsammans, så griper du saken i
-  det handtag som går att bära.
+  Allt har två handtag, ett med vilket det kan bäras, ett som det inte går. Om
+  din vän handlar orätt, grip inte i det handtag där han handlar orätt — för det
+  handtaget går inte att bära. Grip i stället det andra, så griper du saken i det
+  handtag som går att bära.
 översättare: Visdomsatlasens redaktion
-utgåva: 'Grundtext: George Long (1877), public domain'
+utgåva: George Long, ur Standard Ebooks (public domain)
+url: https://standardebooks.net/ebooks/epictetus/short-works/george-long
 noteringar: >-
-  Egen svensk översättning, förgranskad mot verify-sources.md. Gjord ur George
-  Longs public-domain-engelska (»Every thing has two handles …«), samma edition
-  som rummet verifierats mot — en försvenskning av Longs engelska, inte direkt ur
-  grekiskan. »Broder« behålls i passagen (källans ord); rummet de-tva-handtagen
-  generaliserar bilden till någon som står en nära, vilket är rummets bearbetning
-  och inte källans ord. Redaktören avgör grundfrågan och lägger till en
-  verifierad stabil länk (url) innan publicering. AI avgör aldrig ensam vad som
-  publiceras.
-status: granskning
+  Egen svensk återgivning, förgranskad mot verify-sources.md och godkänd av
+  redaktören Jonas Olson 2026-07-13. Grundtext: George Longs public-domain-
+  engelska via Standard Ebooks (samma källa som bibliotekets ingest av Handboken).
+  Redaktörens beslut: källans »broder« (grek. ἀδελφός) återges könsneutralt som
+  »vän« för att inte utesluta kvinnor, och släktskapsledet (»att han är din
+  broder, att ni fostrats tillsammans«) kondenseras. Medvetet val, dokumenterat
+  här — passagen bär redaktionens namn, inte anspråket att vara Epiktetos exakta
+  ord. AI avgör aldrig ensam vad som publiceras.
+status: publicerad
 ---

@@ -11,6 +11,7 @@ reflektionsfrågor:
   - Finns det ett annat handtag på samma sak?
 källor:
   - källa: kalla-enchiridion
+    passage: passage-enchiridion-43
     referens: avsnitt 43
     bruk: bearbetning
     primär: true
@@ -18,7 +19,7 @@ källor:
 lästidMinuter: 3
 status: publicerad
 skapad: 2026-07-12
-uppdaterad: 2026-07-12
+uppdaterad: 2026-07-13
 redaktion:
   skribent: Claude (utkast, fas 7)
   källgranskare: Claude (förgranskning)
@@ -39,7 +40,12 @@ redaktion:
     direkta citat, inga emojis. Publicerad tillsammans med vandring-vagen-mot-lugn;
     godkänd av redaktören Jonas Olson 2026-07-13 efter egen läsning. AI avgör
     aldrig ensam vad som publiceras.
-  version: 1
+    Fas 8 (2026-07-13): kopplad till källpassagen passage-enchiridion-43. På
+    redaktörens beslut återges källans »broder« könsneutralt som »vän« även i
+    passagen (för att inte utesluta kvinnor) och släktskapsledet kondenseras —
+    dokumenterat i passagens noteringar; passagen bär redaktionens namn, inte
+    anspråket att vara Epiktetos exakta ord.
+  version: 2
 ---
 
 ## Öppning
