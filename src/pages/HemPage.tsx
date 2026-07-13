@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import type { Tema } from '../content/redaktion/schema'
 import { allaRum, troskelTeman } from '../lib/innehall'
@@ -40,12 +40,6 @@ export const HemPage = () => {
       <p role="status" className={styles.tomt}>
         {tomtVal ? 'Det finns inget färdigt rum här ännu.' : ''}
       </p>
-      <div className={styles.fot}>
-        <div className="dots">···</div>
-        <Link to="/bibliotek" className={styles.bibliotek}>
-          Biblioteket
-        </Link>
-      </div>
     </div>
   )
 }

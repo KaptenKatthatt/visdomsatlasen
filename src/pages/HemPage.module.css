@@ -1,5 +1,5 @@
-/* Tröskeln — huvudfrågan är skärmens tydligaste element, temana får jämn
-   vikt som tysta rader, och Biblioteket väntar nertonat under strecket. */
+/* Tröskeln — huvudfrågan är skärmens tydligaste element och temana får jämn
+   vikt som tysta rader. Biblioteket nås via bottennaven, inte härifrån. */
 
 .hero {
   margin-top: 68px;
@@ -48,17 +48,4 @@
   font-style: italic;
   color: var(--soft);
   margin: 16px 0 0;
-}
-
-.fot {
-  margin-top: 36px;
-  text-align: center;
-}
-
-.bibliotek {
-  display: inline-block;
-  margin-top: 22px;
-  font-size: 17.5px;
-  color: inherit;
-  text-decoration: none;
 }
