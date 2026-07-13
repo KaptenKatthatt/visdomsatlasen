@@ -3,7 +3,7 @@
 // (!== 'arkiverad'), som visar utkastteman i väntan på deras första rum.
 // Rätta inte "åt andra hållet": utkast nås enbart via direkt länk och är
 // redaktionens granskningsvy, aldrig en del av utforskningen.
-import type { Fraga, Kalla, Rum, Tema, Tradition } from '../content/redaktion/schema'
+import type { Fraga, Kalla, Rum, Tema, Tradition, Vandring } from '../content/redaktion/schema'
 
 const publicerade = <T extends { status: Rum['status'] }>(poster: T[]): T[] =>
   poster.filter((post) => post.status === 'publicerad')
@@ -80,6 +80,45 @@ export const kallorForFraga = (fragaId: string, rum: Rum[], källor: Kalla[]): K
     ),
   )
   return bibliotekKallor(källor.filter((källa) => ids.has(källa.id)))
+}
+
+/** Bibliotekets vandringar: publicerade, i svensk titelordning (paths.md,
+ * Discoverability — en stilla sektion, aldrig framhävd). */
+export const bibliotekVandringar = (vandringar: Vandring[]): Vandring[] =>
+  publicerade(vandringar).sort(svOrdning((v) => v.titel))
+
+/** Vandringens rum i redaktionell ordning — `rum`-listan ÄR sekvensen
+ * (paths.md, Data Requirements), så inget sorteras om. Rummen behålls oavsett
+ * status: valideringsgrinden ser till att en publicerad vandring bara rymmer
+ * publicerade rum, och utkastvandringen är redaktionens granskningsvy där hela
+ * följden ska gå att läsa. Saknade id (redaktionellt fel) hoppas tyst över. */
+export const rumForVandring = (vandring: Vandring, rum: Rum[]): Rum[] =>
+  vandring.rum.flatMap((id) => {
+    const träff = rum.find((ettRum) => ettRum.id === id)
+    return träff ? [träff] : []
+  })
+
+/** Ungefärlig sammanlagd lästid för vandringens rum (paths.md, Path Overview). */
+export const vandringLastid = (rum: Rum[]): number =>
+  rum.reduce((summa, ettRum) => summa + ettRum.lästidMinuter, 0)
+
+/** Vandringens traditioner, stilla härledda ur rummens källor (paths.md,
+ * source traditions shown quietly): rum → källa → traditioner, bara
+ * publicerade, unika, i svensk namnordning. */
+export const traditionerForVandring = (
+  vandringensRum: Rum[],
+  källor: Kalla[],
+  traditioner: Tradition[],
+): Tradition[] => {
+  const källIds = new Set(
+    vandringensRum.flatMap((ettRum) => ettRum.källor.map((relation) => relation.källa)),
+  )
+  const traditionIds = new Set(
+    källor
+      .filter((källa) => källIds.has(källa.id))
+      .flatMap((källa) => källa.traditioner ?? []),
+  )
+  return bibliotekTraditioner(traditioner.filter((tradition) => traditionIds.has(tradition.id)))
 }
 
 /** Publicerade rum som använder källan — rum med primär relation först. */

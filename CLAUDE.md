@@ -30,9 +30,13 @@ fas för fas enligt `docs/specs/implementation-roadmap.md`; visionen ligger i
 - **CSS:** globala klasser `screenTab`/`screenSub`/`screenReader`, `kicker`,
   `sectionKicker`, `dots`; per-sida CSS-moduler. Inga emojis, någonsin.
 - **Bibliotekets datalager:** `src/lib/innehall.ts` (laddar rum/teman/frågor/kallor/
-  traditioner via `import.meta.glob`), `src/lib/bibliotek.ts` (urvalslogik — bara
-  publicerat visas), `src/lib/rumsval.ts` (deterministiskt rumsval). Verkläsaren =
+  traditioner/vandringar via `import.meta.glob`), `src/lib/bibliotek.ts` (urvalslogik —
+  bara publicerat visas), `src/lib/rumsval.ts` (deterministiskt rumsval). Verkläsaren =
   Hono + SQLite (`server/`), klient i `src/lib/api.ts`.
+- **Vandringar (Fas 7):** läsrummet får vandringskontext via sökparametern
+  `?vandring=<slug>` på `/rum/$slug` (utan den läses rummet fristående, utan
+  vandrings-UI). Senast öppnade rum per vandring minns i store (`vandringsplatser`) —
+  bara orientering, aldrig förlopp.
 
 ## Redaktionell innehållspipeline
 
@@ -45,23 +49,34 @@ publicering = ägarens merge/granskning, dokumenteras i rummets `redaktion.noter
 
 ## Gren- och deployflöde
 
-Utveckla på featuregren → **utkast-PR mot `remake`**. Deploy till Hetzner
-(Tailscale-only) triggas när `remake` promoveras till `main` via en egen PR
-(merge-commit, **inte squash**) — ägarens beslut. Direktpush till `main` nekas.
-Obs: PR till remake kan squash-mergas och grenen raderas; starta då om grenen
-från `origin/remake` för uppföljningsarbete.
+Utveckla på featuregren → **utkast-PR**. Deploy till Hetzner (Tailscale-only)
+triggas när ändringen når `main` (merge-commit, **inte squash**) — ägarens beslut.
+Direktpush till `main` nekas.
+Obs (2026-07-13): den tidigare `remake`-mellangrenen promoverades till `main` (#24)
+och **raderades** — `main` bär nu allt `remake` hade. Feature-PR:er baseras därför
+på `main` tills en ny mellangren ev. återskapas. Starta om grenen från `origin/main`
+för uppföljningsarbete.
 
 ## Status (uppdatera per fas)
 
-Fas 0–6 klara och i produktion (`main`). Fas 6 = Biblioteket (landning med Frågor/
-Teman/Rum/Källor/Traditioner/Sparat, fråge-/tema-/käll-sidor, verkläsaren flyttad
-till `/bibliotek/verk/…`, ny Inställningar-sida). Nav-nedtoning (ingen prick,
-tröskeln utan bibliotekslänk, aria-current) i PR #20.
+Fas 0–6 klara och i produktion (`main`); nav-nedtoningen (#20) och Sparat-fixen (#23)
+i produktion via promoveringen till `main` (#24). Fas 6 = Biblioteket (landning med
+Frågor/Teman/Rum/Källor/Traditioner/Sparat, fråge-/tema-/käll-sidor, verkläsaren
+flyttad till `/bibliotek/verk/…`, ny Inställningar-sida).
 
-**Nästa: Fas 7 — Vandringar (`docs/specs/paths.md`).** `vandringSchema` +
-valideringen finns redan (`schema.ts`, `validera.ts`: publicerad vandring får inte
-innehålla opublicerat rum). Saknas: laddning i `innehall.ts`, sidor, `src/content/
-vandringar/`-innehåll, koppling i biblioteket. Följ mönstret från Fas 6.
+**Fas 7 — Vandringar (`docs/specs/paths.md`) i PR (mot `main`).** Laddning
+(`allaVandringar`/`hittaVandringViaSlug`), urval (`bibliotek.ts`: `bibliotekVandringar`,
+`rumForVandring` = redaktionell ordning, `vandringLastid`, `traditionerForVandring`),
+översiktssida (`VandringPage`), routen `/bibliotek/vandring/$slug`, To-målet `vandring`,
+landningssektion (döljs tills publicerat) och läsrummets vandringsfot (»Fortsätt
+vandringen«/»Stanna här«, sökparametern `?vandring`, avslutande reflektion på sista
+rummet) + `vandringsplatser` i store. Valideringen kräver att en publicerad vandring
+bara länkar publicerade rum **och** publicerad central fråga. Innehållet (`Vägen mot
+lugn` + tre nya rum ur Enchiridion, avsnitt 5/8/43) är **publicerat** — godkänt av
+redaktören Jonas Olson 2026-07-13 efter läsning av alla fyra texterna; vandringen och
+dess tre rum publicerade tillsammans.
+
+**Nästa: Fas 8 — Källor och kontext (`docs/specs/source-and-context.md`).**
 
 ## Kända skulder
 

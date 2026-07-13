@@ -119,3 +119,11 @@
   padding: 15px 0;
   border-bottom: 1px solid var(--faint);
 }
+
+/* Vandringens rum som en semantiskt ordnad lista utan visuella pilar
+   (paths.md, Accessibility). Radstilen delas med resten av biblioteket. */
+.vandringslista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

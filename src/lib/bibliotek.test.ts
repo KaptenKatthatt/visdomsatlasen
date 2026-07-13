@@ -1,14 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import type { Fraga, Kalla, Rum, Tema, Tradition } from '../content/redaktion/schema'
+import type { Fraga, Kalla, Rum, Tema, Tradition, Vandring } from '../content/redaktion/schema'
 import {
   bibliotekRum,
   bibliotekTeman,
   bibliotekTraditioner,
+  bibliotekVandringar,
   fragorForTema,
   kallorForFraga,
   publiceradeVia,
   rumForFraga,
   rumForKalla,
+  rumForVandring,
+  traditionerForVandring,
+  vandringLastid,
 } from './bibliotek'
 
 // Fabricerade poster: bara fälten biblioteket läser behöver vara meningsfulla.
@@ -214,5 +218,107 @@ describe('bibliotekTraditioner', () => {
   it('släpper bara igenom publicerade traditioner, i svensk namnordning', () => {
     const alla = [tradition('stoicism'), tradition('buddhism'), tradition('taoism', 'utkast')]
     expect(bibliotekTraditioner(alla).map((t) => t.namn)).toEqual(['buddhism', 'stoicism'])
+  })
+})
+
+const vandring = (titel: string, över: Partial<Vandring> = {}): Vandring => ({
+  id: `vandring-${titel}`,
+  slug: titel,
+  titel,
+  introduktion: 'x',
+  centralFråga: 'fraga-x',
+  rum: ['rum-a', 'rum-b', 'rum-c'],
+  status: 'publicerad',
+  skapad: '2026-07-12',
+  uppdaterad: '2026-07-12',
+  ...över,
+})
+
+describe('bibliotekVandringar', () => {
+  it('släpper bara igenom publicerade vandringar, i svensk titelordning', () => {
+    const alla = [
+      vandring('över tröskeln'),
+      vandring('att vandra'),
+      vandring('utkastet', { status: 'utkast' }),
+      vandring('arkivet', { status: 'arkiverad' }),
+    ]
+    expect(bibliotekVandringar(alla).map((v) => v.titel)).toEqual(['att vandra', 'över tröskeln'])
+  })
+})
+
+describe('rumForVandring', () => {
+  it('följer den redaktionella ordningen i rum-listan, inte titelordning', () => {
+    const alla = [
+      rum('sist', 'publicerad', { id: 'rum-c' }),
+      rum('först', 'publicerad', { id: 'rum-a' }),
+      rum('mitten', 'publicerad', { id: 'rum-b' }),
+    ]
+    const v = vandring('v', { rum: ['rum-a', 'rum-b', 'rum-c'] })
+    expect(rumForVandring(v, alla).map((r) => r.titel)).toEqual(['först', 'mitten', 'sist'])
+  })
+
+  it('behåller opublicerade rum — granskningsvyn ska gå att vandra', () => {
+    const alla = [
+      rum('publikt', 'publicerad', { id: 'rum-a' }),
+      rum('utkast', 'utkast', { id: 'rum-b' }),
+    ]
+    const v = vandring('v', { rum: ['rum-a', 'rum-b'] })
+    expect(rumForVandring(v, alla).map((r) => r.titel)).toEqual(['publikt', 'utkast'])
+  })
+
+  it('hoppar tyst över id som saknar rum', () => {
+    const alla = [rum('finns', 'publicerad', { id: 'rum-a' })]
+    const v = vandring('v', { rum: ['rum-a', 'rum-saknas'] })
+    expect(rumForVandring(v, alla).map((r) => r.titel)).toEqual(['finns'])
+  })
+})
+
+describe('vandringLastid', () => {
+  it('summerar rummens lästid', () => {
+    const rummen = [
+      rum('a', 'publicerad', { lästidMinuter: 4 }),
+      rum('b', 'publicerad', { lästidMinuter: 3 }),
+      rum('c', 'publicerad', { lästidMinuter: 3 }),
+    ]
+    expect(vandringLastid(rummen)).toBe(10)
+  })
+})
+
+describe('traditionerForVandring', () => {
+  const källa = (id: string, traditioner: string[]): Kalla => ({
+    id,
+    slug: id,
+    titel: id,
+    typ: 'bok',
+    rättigheter: 'public-domain',
+    traditioner,
+    status: 'publicerad',
+  })
+  const tradition = (namn: string, status: Tradition['status'] = 'publicerad'): Tradition => ({
+    id: `tradition-${namn}`,
+    slug: namn,
+    namn,
+    status,
+  })
+
+  it('härleder unika publicerade traditioner ur rummens källor, i svensk ordning', () => {
+    const rummen = [
+      rum('ett', 'publicerad', { källor: [{ källa: 'kalla-a', bruk: 'bearbetning', primär: true }] }),
+      rum('två', 'publicerad', { källor: [{ källa: 'kalla-b', bruk: 'citat', primär: true }] }),
+    ]
+    const källor = [
+      källa('kalla-a', ['tradition-stoicism']),
+      källa('kalla-b', ['tradition-buddhism', 'tradition-taoism']),
+    ]
+    const traditioner = [
+      tradition('stoicism'),
+      tradition('buddhism'),
+      tradition('taoism', 'utkast'),
+    ]
+    // taoism är utkast och faller bort; stoicism och buddhism i svensk ordning.
+    expect(traditionerForVandring(rummen, källor, traditioner).map((t) => t.namn)).toEqual([
+      'buddhism',
+      'stoicism',
+    ])
   })
 })

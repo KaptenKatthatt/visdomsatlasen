@@ -8,11 +8,13 @@ import {
   kallaSchema,
   temaSchema,
   traditionSchema,
+  vandringSchema,
   type Fraga,
   type Kalla,
   type Rum,
   type Tema,
   type Tradition,
+  type Vandring,
 } from '../content/redaktion/schema'
 import { tolkaPostfil, tolkaRumsfil, type Innehallsfil, type Tolkning } from '../content/redaktion/tolka'
 
@@ -55,6 +57,11 @@ export const allaKallor: Kalla[] = samla(
   (fil) => tolkaPostfil(kallaSchema, fil),
 )
 
+export const allaVandringar: Vandring[] = samla(
+  tillFiler(import.meta.glob<string>('../content/vandringar/*.md', { query: '?raw', import: 'default', eager: true })),
+  (fil) => tolkaPostfil(vandringSchema, fil),
+)
+
 export const allaTraditioner: Tradition[] = samla(
   tillFiler(import.meta.glob<string>('../content/traditioner/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(traditionSchema, fil),
@@ -86,6 +93,9 @@ export const hittaKallaViaSlug = (slug: string): Kalla | undefined =>
 
 export const hittaTradition = (id: string): Tradition | undefined =>
   allaTraditioner.find((tradition) => tradition.id === id)
+
+export const hittaVandringViaSlug = (slug: string): Vandring | undefined =>
+  allaVandringar.find((vandring) => vandring.slug === slug)
 
 /** Delar prosatext i stycken på tomrad — rummens sektioner är ren prosa. */
 export const stycken = (text: string): string[] =>

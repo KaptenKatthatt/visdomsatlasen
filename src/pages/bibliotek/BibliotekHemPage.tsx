@@ -6,6 +6,9 @@ import {
   bibliotekRum,
   bibliotekTeman,
   bibliotekTraditioner,
+  bibliotekVandringar,
+  rumForVandring,
+  vandringLastid,
 } from '../../lib/bibliotek'
 import {
   allaFragor,
@@ -13,6 +16,7 @@ import {
   allaRum,
   allaTeman,
   allaTraditioner,
+  allaVandringar,
   kallnamn,
 } from '../../lib/innehall'
 import { valbaraRum } from '../../lib/rumsval'
@@ -51,6 +55,32 @@ const Temasektion = () => {
           </ToLink>
         ))
       )}
+    </Sektion>
+  )
+}
+
+// Vandringar är en frivillig, stilla ingång (paths.md, Discoverability) — de
+// får inte stå som en tom, lovande sektion, så den döljs tills publicerade
+// vandringar finns (samma disciplin som traditionerna). Utkast granskas via
+// direkt länk.
+const Vandringssektion = () => {
+  const vandringar = bibliotekVandringar(allaVandringar)
+  if (vandringar.length === 0) return null
+  return (
+    <Sektion rubrik="Vandringar">
+      {vandringar.map((vandring) => {
+        const rummen = rumForVandring(vandring, allaRum)
+        const sub = `${rumsantal(rummen.length)} · ca ${vandringLastid(rummen)} min`
+        return (
+          <ToLink
+            key={vandring.id}
+            to={{ kind: 'vandring', slug: vandring.slug }}
+            className={styles.rad}
+          >
+            <Rad titel={vandring.titel} sub={sub} />
+          </ToLink>
+        )
+      })}
     </Sektion>
   )
 }
@@ -109,6 +139,7 @@ export const BibliotekHemPage = () => (
     </p>
     <Fragesektion />
     <Temasektion />
+    <Vandringssektion />
     <Rumsektion />
     <Kallsektion />
     <Traditionssektion />

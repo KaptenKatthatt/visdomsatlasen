@@ -111,3 +111,42 @@
   font-size: calc(var(--rs) - 4px);
   color: var(--soft);
 }
+
+/* Vandringsfoten: två likvärdiga, stilla val — ingen knapp är framhävd, ingen
+   pekar ut sig som det rätta (paths.md, Moving Between Stops). Ett tunt streck
+   ovanför skiljer den från rummets egna avslutshandlingar. */
+.vandring {
+  border-top: 1px solid var(--faint);
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  margin: 40px 0 96px;
+  padding-top: 32px;
+}
+
+.vandringshandling {
+  background: none;
+  border: none;
+  padding: 10px 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: calc(var(--rs) - 4px);
+  color: var(--soft);
+  text-decoration: none;
+}
+
+/* Den valfria avslutande reflektionen efter sista rummet: stilla prosa, inget
+   avslut som firar. Egen prosaklass — inte kolofonens detaljrad — så rummets
+   eftertext och vandringens avslut kan röra sig oberoende. */
+.vandringsslut {
+  border-top: 1px solid var(--faint);
+  margin: 40px 0 96px;
+  padding-top: 32px;
+}
+
+.vandringsslutStycke {
+  font-size: calc(var(--rs) - 1px);
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--ink) 70%, var(--soft));
+  margin: 0 0 14px;
+}

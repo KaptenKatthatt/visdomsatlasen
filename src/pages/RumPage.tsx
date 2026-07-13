@@ -1,9 +1,20 @@
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { NotesSheet } from '../components/NotesSheet'
 import { ReadingSettingsButton } from '../components/ReadingSettingsButton'
 import { TopBar } from '../components/TopBar'
-import type { Rum } from '../content/redaktion/schema'
-import { brukEtikett, hittaKalla, hittaRum, hittaTema, kallnamn, stycken } from '../lib/innehall'
+import type { Rum, Vandring } from '../content/redaktion/schema'
+import { rumForVandring } from '../lib/bibliotek'
+import {
+  allaRum,
+  brukEtikett,
+  hittaKalla,
+  hittaRum,
+  hittaTema,
+  hittaVandringViaSlug,
+  kallnamn,
+  stycken,
+} from '../lib/innehall'
 import { useAtlas } from '../lib/store'
 import { NotFoundNote } from './NotFoundNote'
 import styles from './RumPage.module.css'
@@ -126,20 +137,81 @@ const Rumsavslut = ({ rum }: { rum: Rum }) => {
   )
 }
 
-/** Läsrummet (reading-room.md): en text, en tanke, ett naturligt slut.
- * Inga rekommendationer, inget nästa rum. Tröskeln öppnar hit via rumsvalet,
- * som bara väljer publicerade rum; utkast nås märkta via direkt länk och
- * fungerar som redaktionens granskningsvy. */
-export const RumPage = ({ slug }: { slug: string }) => {
-  const rum = hittaRum(slug)
-  const { registreraLastRum } = useAtlas()
-  // Historiken låter rumsvalet undvika omedelbar upprepning. Bara publicerade
-  // rum registreras — utkast som förhandsgranskas via direkt länk ska inte
-  // tränga ut publicerade rum ur det lilla fönstret.
+/** Vandringens fot: syns bara när rummet läses inom en vandring (sökparametern
+ * `vandring`). Två likvärdiga, stilla val — aldrig autoplay, aldrig ett »rätt«
+ * val (paths.md, Moving Between Stops). Sista rummet får den valfria avslutande
+ * reflektionen i stället, utan gratulation eller förloppsmått. */
+const Vandringsfot = ({ vandring, rum }: { vandring: Vandring; rum: Rum }) => {
+  const navigate = useNavigate()
+  const ordning = rumForVandring(vandring, allaRum)
+  const index = ordning.findIndex((ettRum) => ettRum.id === rum.id)
+  if (index === -1) return null
+  const nästa = ordning[index + 1]
+  if (!nästa) {
+    if (vandring.avslutandeReflektion === undefined) return null
+    return (
+      <div className={styles.vandringsslut}>
+        {stycken(vandring.avslutandeReflektion).map((stycke, i) => (
+          <p key={i} className={styles.vandringsslutStycke}>
+            {stycke}
+          </p>
+        ))}
+      </div>
+    )
+  }
+  // »Stanna här« tömmer vandringskontexten: foten försvinner och rummet blir
+  // fristående igen. Läsaren stannar kvar — inget navigeras bort.
+  const stanna = () =>
+    navigate({ to: '/rum/$slug', params: { slug: rum.slug }, search: {}, replace: true })
+  return (
+    <div className={styles.vandring}>
+      <Link
+        to="/rum/$slug"
+        params={{ slug: nästa.slug }}
+        search={{ vandring: vandring.slug }}
+        className={styles.vandringshandling}
+      >
+        Fortsätt vandringen
+      </Link>
+      <button type="button" className={styles.vandringshandling} onClick={stanna}>
+        Stanna här
+      </button>
+    </div>
+  )
+}
+
+/** Skriver orienteringsminnet: senast lästa rum (så rumsvalet undviker
+ * omedelbar upprepning) och senast öppnade rum i vandringen (så läsaren kan
+ * återvända). Bara publicerat registreras — utkast som förhandsgranskas via
+ * direkt länk ska varken tränga ut publicerade rum ur det lilla fönstret eller
+ * skriva vandringsminne (paths.md: minnet är orientering, aldrig förlopp). */
+const useRumsminne = (rum: Rum | undefined, vandring: Vandring | undefined): void => {
+  const { registreraLastRum, registreraVandringsplats } = useAtlas()
   const publiceratRumId = rum?.status === 'publicerad' ? rum.id : undefined
+  const vandringsplatsId =
+    vandring?.status === 'publicerad' &&
+    publiceratRumId !== undefined &&
+    vandring.rum.includes(publiceratRumId)
+      ? vandring.id
+      : undefined
   useEffect(() => {
     if (publiceratRumId !== undefined) registreraLastRum(publiceratRumId)
   }, [publiceratRumId, registreraLastRum])
+  useEffect(() => {
+    if (vandringsplatsId !== undefined && publiceratRumId !== undefined)
+      registreraVandringsplats(vandringsplatsId, publiceratRumId)
+  }, [vandringsplatsId, publiceratRumId, registreraVandringsplats])
+}
+
+/** Läsrummet (reading-room.md): en text, en tanke, ett naturligt slut.
+ * Inga rekommendationer, inget nästa rum. Tröskeln öppnar hit via rumsvalet,
+ * som bara väljer publicerade rum; utkast nås märkta via direkt länk och
+ * fungerar som redaktionens granskningsvy. Sökparametern `vandringSlug` sätts
+ * bara när rummet nås inifrån en vandring och styr vandringsfoten. */
+export const RumPage = ({ slug, vandringSlug }: { slug: string; vandringSlug?: string }) => {
+  const rum = hittaRum(slug)
+  const vandring = vandringSlug !== undefined ? hittaVandringViaSlug(vandringSlug) : undefined
+  useRumsminne(rum, vandring)
   if (!rum) return <NotFoundNote subject="Rummet" />
   const tema = hittaTema(rum.teman[0] ?? '')
   return (
@@ -177,6 +249,7 @@ export const RumPage = ({ slug }: { slug: string }) => {
         ))}
       </div>
       <Rumsavslut rum={rum} />
+      {vandring !== undefined && <Vandringsfot vandring={vandring} rum={rum} />}
     </div>
   )
 }

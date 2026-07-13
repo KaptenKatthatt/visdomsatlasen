@@ -127,8 +127,15 @@ const fragefel = (fråga: Fraga, uppslag: Uppslag): string[] => [
 const vandringsfel = (mängd: Innehallsmangd, uppslag: Uppslag): string[] =>
   mängd.vandringar.flatMap((vandring) => {
     const fel: string[] = []
-    if (!uppslag.frågor.has(vandring.centralFråga))
+    // Central fråga: samma grind som rummen — en publicerad vandring är en
+    // synlig ingång och får inte länka en opublicerad fråga.
+    const central = uppslag.frågor.get(vandring.centralFråga)
+    if (!central)
       fel.push(`vandring ${vandring.id}: central fråga "${vandring.centralFråga}" finns inte`)
+    else if (publicerad(vandring.status) && !publicerad(central.status))
+      fel.push(
+        `vandring ${vandring.id}: publicerad vandring länkar opublicerad central fråga "${vandring.centralFråga}"`,
+      )
     for (const rumId of vandring.rum) {
       const rum = uppslag.rum.get(rumId)
       if (!rum) fel.push(`vandring ${vandring.id}: rum "${rumId}" finns inte`)

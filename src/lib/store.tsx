@@ -57,6 +57,10 @@ type AtlasState = {
   // De senast öppnade rummen (nyast först, max HISTORIKLANGD). Finns bara
   // för att rumsvalet ska undvika omedelbar upprepning — ingen aktivitetslogg.
   senastLastaRum: string[]
+  // Senast öppnade rum per vandring (vandring-id → rum-id). Enbart orientering
+  // så läsaren kan återvända dit hen stannade (paths.md, Returning to a Path) —
+  // aldrig förlopp, procent eller påminnelse.
+  vandringsplatser: Record<string, string>
 }
 
 type AtlasActions = {
@@ -70,6 +74,7 @@ type AtlasActions = {
   recordRead: (id: string, mode: ReadMode) => void
   vaxlaSparatRum: (id: string) => void
   registreraLastRum: (id: string) => void
+  registreraVandringsplats: (vandringId: string, rumId: string) => void
 }
 
 // Utåt är dark alltid det effektiva värdet (manuellt val eller systemets).
@@ -87,7 +92,13 @@ const restoredCollections = (
   saved: Partial<AtlasState>,
 ): Pick<
   AtlasState,
-  'bookmarks' | 'chapterBookmarks' | 'notes' | 'lastRead' | 'sparadeRum' | 'senastLastaRum'
+  | 'bookmarks'
+  | 'chapterBookmarks'
+  | 'notes'
+  | 'lastRead'
+  | 'sparadeRum'
+  | 'senastLastaRum'
+  | 'vandringsplatser'
 > => ({
   bookmarks: saved.bookmarks ?? {},
   chapterBookmarks: saved.chapterBookmarks ?? {},
@@ -95,6 +106,7 @@ const restoredCollections = (
   lastRead: saved.lastRead ?? null,
   sparadeRum: saved.sparadeRum ?? {},
   senastLastaRum: saved.senastLastaRum ?? [],
+  vandringsplatser: saved.vandringsplatser ?? {},
 })
 
 // Äldre sparad state saknar de nya fälten, och korrupt JSON får inte läcka in
@@ -124,7 +136,12 @@ const useSystemDark = (): boolean => {
 
 type SetAtlasState = Dispatch<SetStateAction<AtlasState>>
 
-const useAtlasActions = (setState: SetAtlasState): AtlasActions => {
+// Utseendehandlingarna (tema, typsnitt, textstorlek, bakgrund) hålls skilda
+// från samlingshandlingarna så ingen av hjälparna växer förbi komplexitetsgränsen.
+type ThemeActions = Pick<AtlasActions, 'toggleDark' | 'setFont' | 'stepText' | 'setBg'>
+type CollectionActions = Omit<AtlasActions, keyof ThemeActions>
+
+const useThemeActions = (setState: SetAtlasState): ThemeActions => {
   const toggleDark = useCallback(
     () => setState((s) => ({ ...s, dark: !(s.dark ?? systemPrefersDark()) })),
     [setState],
@@ -142,6 +159,10 @@ const useAtlasActions = (setState: SetAtlasState): AtlasActions => {
     (bg: BgChoice) => setState((s) => ({ ...s, bg })),
     [setState],
   )
+  return { toggleDark, setFont, stepText, setBg }
+}
+
+const useCollectionActions = (setState: SetAtlasState): CollectionActions => {
   const toggleBookmark = useCallback(
     (id: string) =>
       setState((s) => ({
@@ -192,19 +213,30 @@ const useAtlasActions = (setState: SetAtlasState): AtlasActions => {
       })),
     [setState],
   )
+  const registreraVandringsplats = useCallback(
+    // Sista rummet vinner — ren orientering, ingen historik och inget förlopp.
+    (vandringId: string, rumId: string) =>
+      setState((s) => ({
+        ...s,
+        vandringsplatser: { ...s.vandringsplatser, [vandringId]: rumId },
+      })),
+    [setState],
+  )
   return {
-    toggleDark,
-    setFont,
-    stepText,
-    setBg,
     toggleBookmark,
     toggleChapterBookmark,
     setNote,
     recordRead,
     vaxlaSparatRum,
     registreraLastRum,
+    registreraVandringsplats,
   }
 }
+
+const useAtlasActions = (setState: SetAtlasState): AtlasActions => ({
+  ...useThemeActions(setState),
+  ...useCollectionActions(setState),
+})
 
 // Speglar temat på <html> (bakgrund utanför skalet) och i webbläsarens chrome
 // (theme-color), så PWA:n och statusfältet följer med när temat växlar.

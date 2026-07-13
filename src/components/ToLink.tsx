@@ -23,6 +23,7 @@ const BIBLIOTEKSPATH = {
   tema: '/bibliotek/tema/$slug',
   kallpost: '/bibliotek/kalla/$slug',
   fraga: '/bibliotek/fraga/$slug',
+  vandring: '/bibliotek/vandring/$slug',
 } as const
 
 type BibliotekTo = Extract<To, { kind: keyof typeof BIBLIOTEKSPATH }>

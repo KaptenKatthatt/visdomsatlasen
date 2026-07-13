@@ -11,6 +11,7 @@ import { FragaPage } from '../pages/bibliotek/FragaPage'
 import { KallaPostPage } from '../pages/bibliotek/KallaPostPage'
 import { RumlistaPage } from '../pages/bibliotek/RumlistaPage'
 import { TemaPage } from '../pages/bibliotek/TemaPage'
+import { VandringPage } from '../pages/bibliotek/VandringPage'
 import { BibliotekSokPage } from '../pages/library/BibliotekSokPage'
 import { BokPage } from '../pages/library/BokPage'
 import { KapitelPage } from '../pages/library/KapitelPage'
@@ -154,6 +155,14 @@ const kallaPostRoute = createRoute({
   },
 })
 
+const vandringRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/vandring/$slug',
+  component: function VandringRoute() {
+    return <VandringPage slug={vandringRoute.useParams().slug} />
+  },
+})
+
 // Verkläsaren bor under det statiska segmentet `verk`, så landningens
 // undersidor aldrig kan skuggas av ett verks id.
 const verklistaRoute = createRoute({
@@ -198,11 +207,15 @@ const kapitelRoute = createRoute({
 })
 
 // Läsrummet (omgörningen, fas 3): rum ur det redaktionella innehållet.
+// Sökparametern `vandring` bär den enda vandringskontexten — utan den läses
+// rummet fristående, utan vandrings-UI (paths.md, Relationship to the Library).
 const rumRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/rum/$slug',
+  validateSearch: (search: Record<string, unknown>): { vandring?: string } =>
+    typeof search['vandring'] === 'string' ? { vandring: search['vandring'] } : {},
   component: function RumRoute() {
-    return <RumPage slug={rumRoute.useParams().slug} />
+    return <RumPage slug={rumRoute.useParams().slug} vandringSlug={rumRoute.useSearch().vandring} />
   },
 })
 
@@ -230,6 +243,7 @@ const routeTree = rootRoute.addChildren([
   temaRoute,
   rumlistaRoute,
   kallaPostRoute,
+  vandringRoute,
   verklistaRoute,
   verkRoute,
   bokRoute,

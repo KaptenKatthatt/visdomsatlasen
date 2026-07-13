@@ -280,4 +280,33 @@ describe('valideraInnehall', () => {
     )
     expect(fel.some((f) => f.includes('vandring-a') && f.includes('opublicer'))).toBe(true)
   })
+
+  it('hindrar publicerade vandringar från att länka en opublicerad central fråga', () => {
+    const fel = valideraInnehall(
+      grund({
+        // fraga-b är utkast och central; rummen är publicerade så bara den
+        // centrala frågan bryter grinden.
+        frågor: [fråga(), fråga({ id: 'fraga-b', slug: 'fraga-b', status: 'utkast' })],
+        rum: [
+          rum({ status: 'publicerad' }),
+          rum({ id: 'rum-b', slug: 'rum-b', status: 'publicerad' }),
+          rum({ id: 'rum-c', slug: 'rum-c', status: 'publicerad' }),
+        ],
+        vandringar: [
+          {
+            id: 'vandring-a',
+            slug: 'vandring-a',
+            titel: 'Vandring A',
+            introduktion: 'Intro.',
+            centralFråga: 'fraga-b',
+            rum: ['rum-a', 'rum-b', 'rum-c'],
+            status: 'publicerad',
+            skapad: '2026-07-09',
+            uppdaterad: '2026-07-09',
+          },
+        ],
+      }),
+    )
+    expect(fel.some((f) => f.includes('vandring-a') && f.includes('central fråga'))).toBe(true)
+  })
 })
