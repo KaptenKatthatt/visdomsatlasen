@@ -65,5 +65,8 @@ jobs:
           git add docs/research/zen-experiment/results
           git diff --cached --quiet || {
             git commit -m "zen-experiment: råresultat från CI-körning [skip ci]"
-            git push
+            for forsok in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
+              sleep $((forsok * 5))
+            done
           }
