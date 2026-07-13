@@ -1,0 +1,22 @@
+{
+  "passageId": "p2-mumonkan-fall7",
+  "modell": "qwen3.5:cloud",
+  "flode": "B",
+  "steg": [
+    {
+      "namn": "engelsk-arbetsoversattning",
+      "system": "You are a philologically careful translator of classical Zen Buddhist texts (classical Chinese, kanbun, classical Japanese) into English. You never invent content. You keep ambiguity visible instead of smoothing it over.",
+      "prompt": "Produce a literal English working translation of the following text.\nStay close to the source syntax, keep every image, mark [alternative readings]\nin brackets, and add short notes on ambiguity. Do not polish the English.\n\nFörfattare: Wumen Huikai (無門慧開, jap. Mumon Ekai), 1183–1260\nVerk: Wumenguan (無門關, jap. Mumonkan), fall 7\nDatering: 1228 (Songdynastin; i Japan läst som kanbun sedan 1200-talet)\nSpråktyp: klassisk kinesiska med Song-tidens talspråksinslag; i japansk zentradition läst som kanbun\n\nOriginal:\n趙州因僧問。某甲乍入叢林。乞師指示。州云。喫粥了也未。僧云。喫粥了也。州云。洗鉢盂去。其僧有省。\n無門曰。趙州開口見膽。露出心肝者僧聽事不真。喚鐘作甕。\n頌曰。\n只為分明極　翻令所得遲\n早知燈是火　飯熟已多時",
+      "svar": "",
+      "ms": 35085
+    },
+    {
+      "namn": "svensk-fran-original-plus-engelska",
+      "system": "Du är en filologiskt noggrann översättare av klassiska zenbuddhistiska texter (klassisk kinesiska, kanbun och klassisk japanska) till svenska. Du hittar aldrig på innehåll. När originalet är tvetydigt redovisar du tvetydigheten i stället för att dölja den bakom flytande prosa. Du skiljer alltid mellan vad som står i texten och vad som är tolkning. Svara på svenska.",
+      "prompt": "Översätt följande text till svenska. Du får också en ordagrann engelsk\narbetsöversättning som stöd. Den engelska versionen är ett arbetsverktyg,\ninte källan: kontrollera varje sats mot originalet och följ originalet när\nde skiljer sig åt.\n\nFörfattare: Wumen Huikai (無門慧開, jap. Mumon Ekai), 1183–1260\nVerk: Wumenguan (無門關, jap. Mumonkan), fall 7\nDatering: 1228 (Songdynastin; i Japan läst som kanbun sedan 1200-talet)\nSpråktyp: klassisk kinesiska med Song-tidens talspråksinslag; i japansk zentradition läst som kanbun\n\nOriginal:\n趙州因僧問。某甲乍入叢林。乞師指示。州云。喫粥了也未。僧云。喫粥了也。州云。洗鉢盂去。其僧有省。\n無門曰。趙州開口見膽。露出心肝者僧聽事不真。喚鐘作甕。\n頌曰。\n只為分明極　翻令所得遲\n早知燈是火　飯熟已多時\n\nEngelsk arbetsöversättning:\n\n\nSvara med exakt dessa rubriker:\n## ORDAGRANN ÖVERSÄTTNING\n(så nära originalets ordföljd och bilder som svenskan tillåter, med [alternativa läsningar] i hakparentes)\n## LÄSBAR ÖVERSÄTTNING\n(naturlig svensk prosa för en allmänbildad läsare, trogen originalets ton och metaforer)\n## TVETYDIGHETER\n(ställen där originalet tillåter flera läsningar och vilken du valt och varför)\n## TERMINOLOGIBESLUT\n(hur du återger buddhistiska facktermer och varför)\n## KONFIDENS\n(1–5 där 5 är säkrast, med motivering; var ärlig om svagheter)\n## AVVIKELSER FRÅN DEN ENGELSKA VERSIONEN\n(ställen där du följde originalet i stället för den engelska tolkningen)",
+      "svar": "## ORDAGRANN ÖVERSÄTTNING\nZhaozhou [i fallet där] en munk frågade. \"En viss [munke] nyss inträdde i skogen [klostret]. Ber om mästarens anvisning [pekande-visande].\" Zhou sade: \"Ätit gröt redan eller ej?\" Munken sade: \"Ätit gröt redan.\" Zhou sade: \"Tvätta skålen, gå.\" Den munken hade insikt [vaknade].\n\nWumen sade: \"Zhaozhou öppnar munnen [så man] ser gallblådan. [Han är] den som blottar hjärta och lever. Munken hör saken inte sant [uppfattar inte verkligheten korrekt]. Kallar klocka för kruka.\"\n\nVersen säger:\n\"Endast eftersom [det var] tydligt extrema,\nVänder [det] gör [att] det erhållna [blir] sent.\n[Om man] tidigt vet [att] lampan är eld,\n[Är] riset kokt redan många tid [länge].\"\n\n## LÄSBAR ÖVERSÄTTNING\nEn gång frågade en munk Zhaozhou: \"Jag har nyss kommit till klostret. Jag ber om mästarens vägledning.\"\nZhaozhou sade: \"Har du ä",
+      "ms": 53973
+    }
+  ],
+  "skapad": "2026-07-13T15:45:39.447Z"
+}

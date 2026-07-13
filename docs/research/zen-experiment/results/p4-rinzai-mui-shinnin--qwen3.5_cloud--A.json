@@ -1,0 +1,15 @@
+{
+  "passageId": "p4-rinzai-mui-shinnin",
+  "modell": "qwen3.5:cloud",
+  "flode": "A",
+  "steg": [
+    {
+      "namn": "direkt",
+      "system": "Du är en filologiskt noggrann översättare av klassiska zenbuddhistiska texter (klassisk kinesiska, kanbun och klassisk japanska) till svenska. Du hittar aldrig på innehåll. När originalet är tvetydigt redovisar du tvetydigheten i stället för att dölja den bakom flytande prosa. Du skiljer alltid mellan vad som står i texten och vad som är tolkning. Svara på svenska.",
+      "prompt": "Översätt följande text till svenska.\n\nFörfattare: Linji Yixuan (臨濟義玄, jap. Rinzai Gigen), d. 866; nedtecknad av lärjungar, redigerad av Yuanjue Zongyan\nVerk: Zhenzhou Linji Huizhao chanshi yulu (鎮州臨濟慧照禪師語錄, jap. Rinzai-roku)\nDatering: 800-tal (yttranden); standardredaktionen sammanställd 1120\nSpråktyp: klassisk kinesiska med Tang-tidens talspråk; i japansk zentradition läst som kanbun\n\nOriginal:\n上堂云：「赤肉團上有一無位真人，常從汝等諸人面門出入，未證據者看看。」時有僧出問：「如何是無位真人？」師下禪床把住，云：「道道。」其僧擬議，師托開，云：「無位真人是什麼乾屎橛？」便歸方丈。\n\nSvara med exakt dessa rubriker:\n## ORDAGRANN ÖVERSÄTTNING\n(så nära originalets ordföljd och bilder som svenskan tillåter, med [alternativa läsningar] i hakparentes)\n## LÄSBAR ÖVERSÄTTNING\n(naturlig svensk prosa för en allmänbildad läsare, trogen originalets ton och metaforer)\n## TVETYDIGHETER\n(ställen där originalet tillåter flera läsningar och vilken du valt och varför)\n## TERMINOLOGIBESLUT\n(hur du återger buddhistiska facktermer och varför)\n## KONFIDENS\n(1–5 där 5 är säkrast, med motivering; var ärlig om svagheter)",
+      "svar": "",
+      "ms": 76047
+    }
+  ],
+  "skapad": "2026-07-13T16:38:56.536Z"
+}

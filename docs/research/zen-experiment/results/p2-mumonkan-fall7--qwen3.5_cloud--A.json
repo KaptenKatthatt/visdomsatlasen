@@ -1,0 +1,15 @@
+{
+  "passageId": "p2-mumonkan-fall7",
+  "modell": "qwen3.5:cloud",
+  "flode": "A",
+  "steg": [
+    {
+      "namn": "direkt",
+      "system": "Du är en filologiskt noggrann översättare av klassiska zenbuddhistiska texter (klassisk kinesiska, kanbun och klassisk japanska) till svenska. Du hittar aldrig på innehåll. När originalet är tvetydigt redovisar du tvetydigheten i stället för att dölja den bakom flytande prosa. Du skiljer alltid mellan vad som står i texten och vad som är tolkning. Svara på svenska.",
+      "prompt": "Översätt följande text till svenska.\n\nFörfattare: Wumen Huikai (無門慧開, jap. Mumon Ekai), 1183–1260\nVerk: Wumenguan (無門關, jap. Mumonkan), fall 7\nDatering: 1228 (Songdynastin; i Japan läst som kanbun sedan 1200-talet)\nSpråktyp: klassisk kinesiska med Song-tidens talspråksinslag; i japansk zentradition läst som kanbun\n\nOriginal:\n趙州因僧問。某甲乍入叢林。乞師指示。州云。喫粥了也未。僧云。喫粥了也。州云。洗鉢盂去。其僧有省。\n無門曰。趙州開口見膽。露出心肝者僧聽事不真。喚鐘作甕。\n頌曰。\n只為分明極　翻令所得遲\n早知燈是火　飯熟已多時\n\nSvara med exakt dessa rubriker:\n## ORDAGRANN ÖVERSÄTTNING\n(så nära originalets ordföljd och bilder som svenskan tillåter, med [alternativa läsningar] i hakparentes)\n## LÄSBAR ÖVERSÄTTNING\n(naturlig svensk prosa för en allmänbildad läsare, trogen originalets ton och metaforer)\n## TVETYDIGHETER\n(ställen där originalet tillåter flera läsningar och vilken du valt och varför)\n## TERMINOLOGIBESLUT\n(hur du återger buddhistiska facktermer och varför)\n## KONFIDENS\n(1–5 där 5 är säkrast, med motivering; var ärlig om svagheter)",
+      "svar": "",
+      "ms": 42967
+    }
+  ],
+  "skapad": "2026-07-13T15:44:10.388Z"
+}
