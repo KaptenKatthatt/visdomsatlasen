@@ -1,6 +1,8 @@
 import { RowLink } from '../components/RowLink'
+import { RumRad } from '../components/RumRad'
 import { ToLink } from '../components/ToLink'
 import { findTopic } from '../content/topics'
+import { hittaRumViaId } from '../lib/innehall'
 import { chapterKey, useAtlas } from '../lib/store'
 import styles from './SamlingPage.module.css'
 
@@ -10,7 +12,11 @@ const excerpt = (note: string): string => {
 }
 
 export const SamlingPage = () => {
-  const { bookmarks, chapterBookmarks, notes } = useAtlas()
+  const { sparadeRum, bookmarks, chapterBookmarks, notes } = useAtlas()
+  const sparade = Object.keys(sparadeRum)
+    .filter((id) => sparadeRum[id])
+    .map(hittaRumViaId)
+    .filter((rum) => rum !== undefined)
   const bookmarked = Object.keys(bookmarks)
     .filter((id) => bookmarks[id])
     .map(findTopic)
@@ -20,15 +26,32 @@ export const SamlingPage = () => {
   )
   const noBookmarks = bookmarked.length === 0 && chapterBookmarked.length === 0
   const noted = Object.entries(notes)
-    .filter(([id, note]) => note.trim().length > 0 && findTopic(id) !== undefined)
-    .map(([id, note]) => ({ topic: findTopic(id), note }))
-    .filter((entry) => entry.topic !== undefined)
+    .filter(([, note]) => note.trim().length > 0)
+    .map(([id, note]) => {
+      const topic = findTopic(id)
+      if (topic)
+        return { key: id, title: topic.title, note, to: { kind: 'las', id: topic.id, mode: 'essa' } as const }
+      const rum = hittaRumViaId(id)
+      if (rum) return { key: id, title: rum.titel, note, to: { kind: 'rum', slug: rum.slug } as const }
+      return undefined
+    })
+    .filter((entry) => entry !== undefined)
 
   return (
     <div className="screenTab">
       <div className="kicker">Visdomsatlasen</div>
       <h1 className={styles.title}>Sparat</h1>
       <p className={styles.lede}>Det du sparat och tänkt.</p>
+      <div className={styles.section}>
+        <div className="kicker sectionKicker">Sparade rum</div>
+        {sparade.length === 0 ? (
+          <p className={styles.empty}>
+            Inga sparade rum ännu. I läsrummet kan du spara ett rum med Spara längst ner.
+          </p>
+        ) : (
+          sparade.map((rum) => <RumRad key={rum.id} rum={rum} />)
+        )}
+      </div>
       <div className={styles.section}>
         <div className="kicker sectionKicker">Bokmärken</div>
         {noBookmarks ? (
@@ -68,22 +91,16 @@ export const SamlingPage = () => {
             Inga anteckningar ännu. Pennan i läsläget öppnar din anteckningsbok.
           </p>
         ) : (
-          noted.map(({ topic, note }) =>
-            topic ? (
-              <ToLink
-                key={topic.id}
-                to={{ kind: 'las', id: topic.id, mode: 'essa' }}
-                className={styles.note}
-              >
-                <span className={styles.noteTitle} style={{ display: 'block' }}>
-                  {topic.title}
-                </span>
-                <span className={styles.noteExcerpt} style={{ display: 'block' }}>
-                  »{excerpt(note)}«
-                </span>
-              </ToLink>
-            ) : null,
-          )
+          noted.map(({ key, title, note, to }) => (
+            <ToLink key={key} to={to} className={styles.note}>
+              <span className={styles.noteTitle} style={{ display: 'block' }}>
+                {title}
+              </span>
+              <span className={styles.noteExcerpt} style={{ display: 'block' }}>
+                »{excerpt(note)}«
+              </span>
+            </ToLink>
+          ))
         )}
       </div>
     </div>

@@ -63,6 +63,9 @@ export const allaTraditioner: Tradition[] = samla(
 export const hittaRum = (slug: string): Rum | undefined =>
   allaRum.find((rum) => rum.slug === slug)
 
+export const hittaRumViaId = (id: string): Rum | undefined =>
+  allaRum.find((rum) => rum.id === id)
+
 export const hittaTema = (id: string): Tema | undefined =>
   allaTeman.find((tema) => tema.id === id)
 
