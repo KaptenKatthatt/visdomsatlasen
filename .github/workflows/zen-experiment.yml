@@ -1,12 +1,16 @@
 # Kör zen-översättningsexperimentet (docs/research/zen-experiment) mot
 # Hermes-gatewayen: runnern går med i tailnet, tunnlar 11434 från Hetzner-hosten
 # över SSH och committar råresultaten tillbaka till grenen som triggade körningen.
-# Triggas manuellt (workflow_dispatch); ofarlig att köra om — färdiga resultat
-# hoppas över (återupptagbar).
+# Triggas manuellt (workflow_dispatch kräver att filen ligger på main; innan dess
+# startas körningar genom att bumpa .github/zen-experiment-run på grenen).
+# Ofarlig att köra om — färdiga resultat hoppas över (återupptagbar).
 name: Zen experiment
 
 on:
   workflow_dispatch:
+  push:
+    branches: ['claude/zen-translation-workflow-1w5jm0']
+    paths: ['.github/zen-experiment-run']
 
 jobs:
   experiment:
@@ -60,6 +64,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/research/zen-experiment/results
           git diff --cached --quiet || {
-            git commit -m "zen-experiment: råresultat från CI-körning"
+            git commit -m "zen-experiment: råresultat från CI-körning [skip ci]"
             git push
           }
