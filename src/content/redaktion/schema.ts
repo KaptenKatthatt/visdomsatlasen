@@ -13,6 +13,11 @@ const slugSchema = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'ogiltig slug (a
 const idSchema = z.string().min(1)
 const datumSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}/, 'datum som ÅÅÅÅ-MM-DD')
 
+// Redaktionella sök-nyckelord (search.md, Editorial Keywords): synonymer, vanligt
+// användarspråk och alternativa stavningar som bara förbättrar upptäckt i söket.
+// Aldrig synliga i det vanliga gränssnittet; söket viker dem för matchning.
+const nyckelordSchema = z.array(z.string().min(1)).optional()
+
 /** Hur ett rum använder en källa (source-and-context.md, Types of Source Use). */
 const brukSchema = z.enum([
   'citat',
@@ -82,6 +87,7 @@ export const temaSchema = z.object({
   ordning: z.number().int().min(1).optional(),
   status: statusSchema,
   beskrivning: z.string().optional(),
+  nyckelord: nyckelordSchema,
 })
 export type Tema = z.infer<typeof temaSchema>
 
@@ -94,6 +100,7 @@ export const fragaSchema = z.object({
   relateradeFrågor: z.array(idSchema).optional(),
   status: statusSchema,
   beskrivning: z.string().optional(),
+  nyckelord: nyckelordSchema,
 })
 export type Fraga = z.infer<typeof fragaSchema>
 
@@ -110,6 +117,7 @@ export const vandringSchema = z.object({
   skapad: datumSchema,
   uppdaterad: datumSchema,
   redaktionellaNoteringar: z.string().optional(),
+  nyckelord: nyckelordSchema,
 })
 export type Vandring = z.infer<typeof vandringSchema>
 
@@ -144,6 +152,10 @@ export const kallaSchema = z.object({
   biblioteksverk: z.string().optional(),
   status: statusSchema,
   beskrivning: z.string().optional(),
+  // Alternativa namn för källan (search.md): originalspråkiga eller översatta
+  // titlar och etablerade förkortningar, t.ex. "Epictetus", "Handboken".
+  alias: z.array(z.string().min(1)).optional(),
+  nyckelord: nyckelordSchema,
 })
 export type Kalla = z.infer<typeof kallaSchema>
 
@@ -170,6 +182,7 @@ export const traditionSchema = z.object({
   namn: z.string().min(1),
   status: statusSchema,
   beskrivning: z.string().optional(),
+  nyckelord: nyckelordSchema,
 })
 export type Tradition = z.infer<typeof traditionSchema>
 

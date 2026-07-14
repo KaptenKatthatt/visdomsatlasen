@@ -92,6 +92,13 @@ radering i `NotesSheet`, samt export/import och förutsägbar rensning (`datafly
 »Dina data« i Inställningar). Personlig data är privat — påverkar aldrig rumsvalet,
 publik sök, AI eller analytics. `chapterKey`/`ChapterBookmark` bor nu i `personligt.ts`.
 
+**Pågår: Fas 10 — Sök i Biblioteket (`docs/specs/search.md`).** Konventionellt genererat
+publikt sökindex över publicerat redaktionellt innehåll (frågor/teman/rum/vandringar/källor
+m. passager/traditioner) — ingen AI, ingen popularitetssignal. Svensk normalisering, alias,
+kontrollerade synonymer, konservativ stavfelstolerans, grupperade ändliga resultat. Privat
+anteckningssök hålls skilt från det publika indexet. Verkläsarens FTS-verssök blir en grupp
+i det samlade söket. Ny route `/bibliotek/sok`; legacy `/sok` + `/bibliotek-sok` orörda.
+
 ## Kända skulder
 
 - BottomSheet saknar fokusfälla/Escape (Fas 11); PWA saknar PNG/maskable-ikoner
