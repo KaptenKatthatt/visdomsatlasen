@@ -97,7 +97,7 @@ const Kalldetalj = ({ rum }: { rum: Rum }) => {
 }
 
 const Rumsavslut = ({ rum }: { rum: Rum }) => {
-  const { sparadeRum, vaxlaSparatRum, anteckningar, sattAnteckning } = useAtlas()
+  const { sparadeRum, vaxlaSparatRum, anteckningar, sattAnteckning, taBortAnteckning } = useAtlas()
   const [öppenRad, setÖppenRad] = useState<'källa' | 'bakgrund' | null>(null)
   const [anteckningÖppen, setAnteckningÖppen] = useState(false)
   const primärKälla = rum.källor.find((k) => k.primär) ?? rum.källor[0]
@@ -156,6 +156,7 @@ const Rumsavslut = ({ rum }: { rum: Rum }) => {
           title={rum.titel}
           value={anteckningar[rum.id]?.text ?? ''}
           onChange={(text) => sattAnteckning('rum', rum.id, text)}
+          onDelete={() => taBortAnteckning(rum.id)}
           onClose={() => setAnteckningÖppen(false)}
         />
       )}
