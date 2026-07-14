@@ -1,0 +1,22 @@
+{
+  "id": "p5-dogen-uji",
+  "titel": "Uji (有時) — öppningen",
+  "forfattare": "Dogen Kigen (道元希玄), 1200–1253",
+  "verk": "Shobogenzo (正法眼蔵), kapitlet Uji",
+  "datum": "1240",
+  "sprak": "blandtext: kanbun-citat (tillskrivet Yaoshan Weiyan) följt av klassisk japanska (wabun)",
+  "svarighetsgrad": "mycket svår",
+  "urvalsskal": "Kravet på en genuint tvetydig passage. Själva nyckelordet 有時 kan läsas 'det finns tillfällen då', 'ibland' — eller som Dogens filosofiska nybildning 'varande-tid'; etablerade tolkningar går isär, och Dogen exploaterar tvetydigheten medvetet. Öppningen växlar dessutom språktyp mitt i passagen (kanbun till wabun).",
+  "original": "古仏言、\n有時高高峰頂立、有時深深海底行、有時三頭八臂、有時丈六八尺、有時杖払子、有時露柱灯籠、有時張三李四、有時大地虚空。\nいはゆる有時は、時すでにこれ有なり、有はみな時なり。丈六金身これ時なり、時なるがゆゑに時の荘厳光明あり。いまの十二時に習学すべし。三頭八臂これ時なり、時なるがゆゑにいまの十二時に一如なるべし。",
+  "kalla": {
+    "utgava": "Standardtext enligt 75-kapitelsredaktionen; motsvarar Taisho vol. 82, nr 2582 (T82n2582). Webbtranskriptioner följer moderna kritiska utgåvor.",
+    "transkription": "Kryssverifierad mot flera oberoende japanska transkriptioner samt en akademisk kommentar (Zenbunka kenkyujo kiyo 32, Matsuoka) 2026-07-13; teckenexakt kollationering mot SAT-databasen återstår som mänskligt verifieringssteg.",
+    "lankar": [
+      "http://hikari-k.ed.jp/zenchoji/sutra/soroku/genzo20.htm",
+      "http://www.shomonji.or.jp/soroku/genzou20/index.html",
+      "https://www.zenbunka.or.jp/pub_etc/pub/docs/kiyou/032_04%E6%9D%BE%E5%B2%A1.pdf"
+    ]
+  },
+  "pdMotivering": "Dogen dog 1253; texten (1240) är public domain. Samma förbehåll som för Genjokoan: modern interpunktion/kanaval är redaktionell, ordalydelsen fri.",
+  "transkriptionsanmarkningar": "Variant: vissa transkriptioner har 有時大地空 i stället för 有時大地虚空; standardutgåvorna har 虚空. Moderna förenklade tecken (仏, 払, 灯) som i gängse transkriptioner. Kanbun-versen återges i japansk teckenordning utan kundoku-tecken."
+}

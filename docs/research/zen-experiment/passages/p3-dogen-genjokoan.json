@@ -1,0 +1,22 @@
+{
+  "id": "p3-dogen-genjokoan",
+  "titel": "Genjokoan (現成公案) — öppningsstycket",
+  "forfattare": "Dogen Kigen (道元希玄), 1200–1253",
+  "verk": "Shobogenzo (正法眼蔵), kapitlet Genjokoan",
+  "datum": "1233",
+  "sprak": "klassisk japanska (wabun) med sino-japansk buddhistisk terminologi",
+  "svarighetsgrad": "svår",
+  "urvalsskal": "Kravet på en språkligt svår författare. Dogens öppning är berömd för sin täta parallellism och för termer som 豊倹 och 跳出 vars tolkning är omdiskuterad; sista meningen (華は愛惜にちり…) testar metaforbevarande.",
+  "original": "諸法の仏法なる時節、すなはち迷悟あり、修行あり、生あり死あり、諸仏あり衆生あり。万法ともにわれにあらざる時節、まどひなくさとりなく、諸仏なく衆生なく、生なく滅なし。仏道もとより豊倹より跳出せるゆゑに、生滅あり、迷悟あり、生仏あり。しかもかくのごとくなりといへども、華は愛惜にちり、草は棄嫌におふるのみなり。",
+  "kalla": {
+    "utgava": "Standardtext enligt 75-kapitelsredaktionen; motsvarar Taisho vol. 82, nr 2582 (T82n2582). Webbtranskriptioner följer i regel moderna kritiska utgåvor (t.ex. Iwanami, red. Mizuno Yaoko).",
+    "transkription": "Kryssverifierad mot flera oberoende japanska transkriptioner (2026-07-13); Taisho vol. 82 ingår inte i CBETA:s fria XML-korpus, så teckenexakt kollationering mot SAT-databasen återstår som mänskligt verifieringssteg.",
+    "lankar": [
+      "https://www.zen-essay.com/entry/genjyoukouan",
+      "http://kohgetsuji.justhpbs.jp/genjokoan.html",
+      "http://hikari-k.ed.jp/zenchoji/sutra/soroku/genzo01.htm"
+    ]
+  },
+  "pdMotivering": "Dogen dog 1253; texten (1233) är public domain. Moderna kritiska utgåvors interpunktion och kanaval kan i teorin ha tunt redaktionellt skydd; själva ordalydelsen är fri. Flaggas för redaktionell verifiering mot SAT/tryckt utgåva.",
+  "transkriptionsanmarkningar": "Skrivet med moderna förenklade tecken (仏, 万) som i gängse webbtranskriptioner; äldre utgåvor har 佛, 萬. Historisk kanaortografi bevarad (すなはち, まどひ, ゆゑに, いへども). Interpunktion är modern redaktionell konvention."
+}

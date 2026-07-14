@@ -1,0 +1,72 @@
+# Kör zen-översättningsexperimentet (docs/research/zen-experiment) mot
+# Hermes-gatewayen: runnern går med i tailnet, tunnlar 11434 från Hetzner-hosten
+# över SSH och committar råresultaten tillbaka till grenen som triggade körningen.
+# Triggas manuellt (workflow_dispatch kräver att filen ligger på main; innan dess
+# startas körningar genom att bumpa .github/zen-experiment-run på grenen).
+# Ofarlig att köra om — färdiga resultat hoppas över (återupptagbar).
+name: Zen experiment
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/zen-translation-workflow-1w5jm0']
+    paths: ['.github/zen-experiment-run']
+
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Open SSH tunnel to Hermes gateway
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/id_hermes
+          chmod 600 ~/.ssh/id_hermes
+          ssh -o StrictHostKeyChecking=accept-new -o ExitOnForwardFailure=yes \
+            -i ~/.ssh/id_hermes -f -N -L 11434:127.0.0.1:11434 \
+            "${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_TS_IP }}"
+          for _ in $(seq 1 15); do
+            curl -sf http://127.0.0.1:11434/api/version && exit 0
+            sleep 2
+          done
+          echo "Nådde inte Ollama genom tunneln" >&2
+          exit 1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run experiment
+        env:
+          OLLAMA_HOST: http://127.0.0.1:11434
+        run: npx tsx scripts/zen-experiment/run.ts
+
+      - name: Commit results to branch
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/research/zen-experiment/results
+          git diff --cached --quiet || {
+            git commit -m "zen-experiment: råresultat från CI-körning [skip ci]"
+            for forsok in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
+              sleep $((forsok * 5))
+            done
+          }

@@ -1,0 +1,21 @@
+{
+  "id": "p4-rinzai-mui-shinnin",
+  "titel": "Rinzai-roku: den ranglöse sanna människan (無位真人)",
+  "forfattare": "Linji Yixuan (臨濟義玄, jap. Rinzai Gigen), d. 866; nedtecknad av lärjungar, redigerad av Yuanjue Zongyan",
+  "verk": "Zhenzhou Linji Huizhao chanshi yulu (鎮州臨濟慧照禪師語錄, jap. Rinzai-roku)",
+  "datum": "800-tal (yttranden); standardredaktionen sammanställd 1120",
+  "sprak": "klassisk kinesiska med Tang-tidens talspråk; i japansk zentradition läst som kanbun",
+  "svarighetsgrad": "svår",
+  "urvalsskal": "Kravet på tung buddhistisk terminologi och omstridd tolkning: 赤肉團 (den röda köttklumpen — kropp eller hjärta/sinne?), 無位真人 (ranglös sann människa — daoistiskt färgad term), 面門 (ansiktets portar — omdiskuterat vad som avses) och det drastiska 乾屎橛 (vars konkreta referent är filologiskt omtvistad).",
+  "original": "上堂云：「赤肉團上有一無位真人，常從汝等諸人面門出入，未證據者看看。」時有僧出問：「如何是無位真人？」師下禪床把住，云：「道道。」其僧擬議，師托開，云：「無位真人是什麼乾屎橛？」便歸方丈。",
+  "kalla": {
+    "utgava": "Taisho shinshu daizokyo, vol. 47, nr 1985 (T47n1985), s. 0496c10–0496c14",
+    "transkription": "CBETA:s TEI-XML-transkription av Taisho-utgåvan (fil T47n1985.xml, hämtad 2026-07-13)",
+    "lankar": [
+      "https://raw.githubusercontent.com/cbeta-org/xml-p5/master/T/T47/T47n1985.xml",
+      "https://github.com/cbeta-org/xml-p5"
+    ]
+  },
+  "pdMotivering": "Linji dog 866; standardredaktionen är från 1120. Originalet är public domain. Taisho-utgåvans textinnehåll är fritt; CBETA:s transkription används fritt med attribution. Den moderna interpunktionen (：「」，？) är CBETA:s redaktionella tillägg.",
+  "transkriptionsanmarkningar": "Tecken-exakt ur T47n1985 inklusive CBETA:s interpunktion. Traditionella tecken bevarade (禪, 麼). Passagen är den berömda inledningen till Rinzais uppstigningstal (上堂)."
+}

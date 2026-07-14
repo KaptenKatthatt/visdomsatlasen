@@ -1,0 +1,22 @@
+{
+  "id": "p1-hakuin-zazen-wasan",
+  "titel": "Zazen wasan (Hymn till zazen) — inledning och avslutning",
+  "forfattare": "Hakuin Ekaku (白隠慧鶴), 1686–1769",
+  "verk": "Zazen wasan (坐禅和讃)",
+  "datum": "ca 1750-tal (Edoperioden)",
+  "sprak": "japanska (tidigmodern japanska i 7-5-versmått, wasan-form)",
+  "svarighetsgrad": "enkel",
+  "urvalsskal": "En relativt enkel zenundervisning i sångform, skriven av Hakuin uttryckligen för lekfolk. Testar grundläggande trohet, verskänsla och naturlig svenska utan tung terminologi.",
+  "original": "衆生本来仏なり\n水と氷のごとくにて\n水を離れて氷なく\n衆生の外に仏なし\n衆生近きを知らずして\n遠く求むるはかなさよ\nたとえば水の中に居て\n渇を叫ぶがごとくなり\n長者の家の子となりて\n貧里に迷うに異ならず\n（……）\n此の時何をか求むべき\n寂滅現前するゆえに\n当処即ち蓮華国\n此の身即ち仏なり",
+  "kalla": {
+    "utgava": "Standardiserad liturgisk text (Rinzai-shu, bl.a. Myoshinji-grenens lekmannaliturgi); ingen kritisk utgåva använd.",
+    "transkription": "Sammanställd ur flera oberoende tempel- och referenspubliceringar av den liturgiska standardtexten.",
+    "lankar": [
+      "https://ja.wikipedia.org/wiki/%E5%9D%90%E7%A6%85%E5%92%8C%E8%AE%83",
+      "https://ryuun-ji.or.jp/wryuunjip/wp-content/uploads/2021/06/20200512wasan.pdf",
+      "http://sybrma.sakura.ne.jp/470hakuin.zazenwasan.html"
+    ]
+  },
+  "pdMotivering": "Hakuin dog 1769. Verket är fritt (public domain) i alla jurisdiktioner; upphovsrätt löper som längst 100 år efter upphovsmannens död. Den liturgiska texten är stabil och saknar modern redaktionell bearbetning med verkshöjd.",
+  "transkriptionsanmarkningar": "Utdrag: de tio första halvverserna samt de fyra sista; utelämnad mitt markerad med （……）. Ortografin varierar mellan publiceringar (ごとくにて/如くにて, ゆえに/ゆゑに, 此の/この); här följs den vanligaste tempelortografin. Slutlig mänsklig verifiering mot tryckt utgåva rekommenderas före publicering."
+}

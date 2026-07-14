@@ -1,0 +1,21 @@
+{
+  "id": "p2-mumonkan-fall7",
+  "titel": "Mumonkan, fall 7: Zhaozhou diskar skålen (趙州洗鉢) — med Wumens kommentar och vers",
+  "forfattare": "Wumen Huikai (無門慧開, jap. Mumon Ekai), 1183–1260",
+  "verk": "Wumenguan (無門關, jap. Mumonkan), fall 7",
+  "datum": "1228 (Songdynastin; i Japan läst som kanbun sedan 1200-talet)",
+  "sprak": "klassisk kinesiska med Song-tidens talspråksinslag; i japansk zentradition läst som kanbun",
+  "svarighetsgrad": "medel",
+  "urvalsskal": "Kravet på en koan med kommentar. Kort berättande huvudfall, aforistisk kommentar och fyrradig vers — tre olika register i en passage. Taisho-interpunktionen lämnar dessutom segmenteringen av kommentaren öppen (露出心肝者僧…), vilket testar hantering av genuin tvetydighet.",
+  "original": "趙州因僧問。某甲乍入叢林。乞師指示。州云。喫粥了也未。僧云。喫粥了也。州云。洗鉢盂去。其僧有省。\n無門曰。趙州開口見膽。露出心肝者僧聽事不真。喚鐘作甕。\n頌曰。\n只為分明極　翻令所得遲\n早知燈是火　飯熟已多時",
+  "kalla": {
+    "utgava": "Taisho shinshu daizokyo, vol. 48, nr 2005 (T48n2005), s. 0293c27–0294a05",
+    "transkription": "CBETA:s TEI-XML-transkription av Taisho-utgåvan (fil T48n2005.xml, hämtad 2026-07-13)",
+    "lankar": [
+      "https://raw.githubusercontent.com/cbeta-org/xml-p5/master/T/T48/T48n2005.xml",
+      "https://github.com/cbeta-org/xml-p5"
+    ]
+  },
+  "pdMotivering": "Wumen Huikai dog 1260; originaltexten (1228) är public domain. Taisho-utgåvan trycktes 1924–1934; dess textinnehåll är fritt. CBETA:s transkription tillhandahålls fritt med attribution (CBETA, cbeta.org); interpunktionen är utgåvans/CBETA:s redaktionella tillägg och anges som sådan.",
+  "transkriptionsanmarkningar": "Tecken-exakt ur T48n2005 inklusive Taisho-interpunktionen. Observera att Taisho INTE sätter punkt mellan 露出心肝 och 者僧 — den vedertagna läsningen delar där (『…露出心肝。者僧聽事不真。』). Radbrytningar i versen följer versparen (頌), inte Taishos radbrytning."
+}
