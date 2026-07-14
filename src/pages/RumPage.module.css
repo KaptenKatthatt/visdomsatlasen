@@ -96,6 +96,12 @@
 
 /* Vägen in till källsidan: en tydlig, klar länk (aldrig en ikon ensam) som
    öppnas efter ett medvetet val (source-and-context.md, Source Links). */
+/* Ett block per källpost i källdetaljen — luft mellan verken när ett rum
+   bygger på flera källor, osynligt för enkällsrummen. */
+.kallblock + .kallblock {
+  margin-top: 16px;
+}
+
 .detaljlank {
   display: inline-block;
   font-size: calc(var(--rs) - 3px);

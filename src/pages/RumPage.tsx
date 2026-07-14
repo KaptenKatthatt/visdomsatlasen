@@ -67,34 +67,70 @@ const editionsrad = (passage: Kallpassage | undefined): string | undefined => {
   return `Edition: ${passage.utgåva}${översättning}`
 }
 
-/** Källdetaljen bakom namnet: verk, referens, bruksdeklaration och ärlig
- * osäkerhet — synligt först på begäran (source-and-context.md, Source
- * Visibility). Håller sig bibliografisk; källans ord och full passagetext
- * bor på källsidan, dit »Om texten« leder efter ett medvetet val. */
-const Kalldetalj = ({ rum }: { rum: Rum }) => {
-  const relation = rum.källor.find((k) => k.primär) ?? rum.källor[0]
-  const källa = relation ? hittaKalla(relation.källa) : undefined
-  if (!relation || !källa) return null
-  const passage = relation.passage ? hittaPassage(relation.passage) : undefined
+type Kallrelation = Rum['källor'][number]
+
+// Relationerna grupperade per källpost i frontmatterordning, så att ett rum
+// med flera nedslag i samma verk (t.ex. två bibelställen) får ett block med
+// en osäkerhetsdeklaration och en »Om texten«-länk — inte upprepade.
+const grupperaPerKalla = (relationer: Kallrelation[]): [Kalla, Kallrelation[]][] => {
+  const grupper: [Kalla, Kallrelation[]][] = []
+  for (const relation of relationer) {
+    const befintlig = grupper.find(([källa]) => källa.id === relation.källa)
+    if (befintlig) {
+      befintlig[1].push(relation)
+      continue
+    }
+    const källa = hittaKalla(relation.källa)
+    if (källa) grupper.push([källa, [relation]])
+  }
+  return grupper
+}
+
+// En källas rader i detaljen: bibliografi + bruk + edition per relation,
+// därefter källans osäkerhet en gång och länken till källsidan.
+const Kallblock = ({ källa, relationer }: { källa: Kalla; relationer: Kallrelation[] }) => {
   const rader = [
-    kallrad(källa, passage?.referens ?? relation.referens),
-    brukEtikett[relation.bruk],
-    editionsrad(passage),
+    ...relationer.flatMap((relation) => {
+      const passage = relation.passage ? hittaPassage(relation.passage) : undefined
+      return [
+        kallrad(källa, passage?.referens ?? relation.referens),
+        brukEtikett[relation.bruk],
+        editionsrad(passage),
+      ]
+    }),
     ...osakerheter(källa),
   ].filter((rad): rad is string => Boolean(rad))
   return (
-    <>
-      {rader.map((rad) => (
-        <p key={rad} className={styles.detaljrad}>
+    <div className={styles.kallblock}>
+      {rader.map((rad, i) => (
+        <p key={`${rad}-${i}`} className={styles.detaljrad}>
           {rad}
         </p>
       ))}
       <Link to="/bibliotek/kalla/$slug" params={{ slug: källa.slug }} className={styles.detaljlank}>
         Om texten
       </Link>
-    </>
+    </div>
   )
 }
+
+/** Källdetaljen bakom namnet: verk, referens, bruksdeklaration och ärlig
+ * osäkerhet — synligt först på begäran (source-and-context.md, Source
+ * Visibility). Håller sig bibliografisk; källans ord och full passagetext
+ * bor på källsidan, dit »Om texten« leder efter ett medvetet val. Rum med
+ * flera källor visar alla relationer, grupperade per källpost. */
+const Kalldetalj = ({ rum }: { rum: Rum }) => (
+  <>
+    {grupperaPerKalla(rum.källor).map(([källa, relationer]) => (
+      <Kallblock key={källa.id} källa={källa} relationer={relationer} />
+    ))}
+  </>
+)
+
+// Kolofonens etikett: källans röst när rummet bygger på ett verk,
+// »Källor« när det bygger på flera (första flerkällsrummet: Fas 12).
+const kolofonetikett = (rum: Rum, källa: Kalla): string =>
+  new Set(rum.källor.map((relation) => relation.källa)).size > 1 ? 'Källor' : kallnamn(källa)
 
 const Rumsavslut = ({ rum }: { rum: Rum }) => {
   const { sparadeRum, vaxlaSparatRum, notes, setNote } = useAtlas()
@@ -111,7 +147,7 @@ const Rumsavslut = ({ rum }: { rum: Rum }) => {
       <div className={styles.kolofon}>
         {källa && (
           <Kolofonrad
-            etikett={kallnamn(källa)}
+            etikett={kolofonetikett(rum, källa)}
             öppen={öppenRad === 'källa'}
             onVaxla={() => vaxla('källa')}
             detaljId="kalldetalj"
