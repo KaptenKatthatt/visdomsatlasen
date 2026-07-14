@@ -123,6 +123,13 @@ export const uppdateradAnteckning = (
   uppdaterad: nu,
 })
 
+/** Sparade poster i tidsordning: senast sparat först. Migrerade poster utan
+ * datum (`sparadNar === null`) sorteras sist via tom nyckel. */
+export const sparadeIdITidsordning = (poster: Record<string, SparadPost>): string[] => {
+  const nyckel = (id: string): string => poster[id]?.sparadNar ?? ''
+  return Object.keys(poster).sort((a, b) => nyckel(b).localeCompare(nyckel(a)))
+}
+
 /** Anteckningsöversiktens ordning: senast ändrad först, tomma utelämnade
  * (spec Notes Overview: lugnt kronologisk). ISO 8601 jämförs lexikalt. */
 export const sorteradeAnteckningar = (anteckningar: Record<string, Anteckning>): Anteckning[] =>

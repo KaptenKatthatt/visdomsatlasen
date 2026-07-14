@@ -1,0 +1,85 @@
+.grupp {
+  margin-top: 44px;
+}
+
+/* Vandrings- och sparade-kort: lugna, bokmärkeslika — aldrig uppgiftskort. */
+.kort {
+  display: block;
+  padding: 15px 0 17px;
+  border-top: 1px solid var(--faint);
+  text-decoration: none;
+  color: inherit;
+}
+
+.kortTitel {
+  display: block;
+  font-size: 19px;
+  line-height: 1.3;
+}
+
+.kortText {
+  display: block;
+  font-size: 16px;
+  color: var(--soft);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+.kortMeta {
+  display: block;
+  font-size: 13.5px;
+  color: var(--soft);
+  margin-top: 6px;
+}
+
+/* Anteckningskort: som en mening skriven i marginalen. */
+.note {
+  display: block;
+  padding: 15px 0 17px;
+  border-top: 1px solid var(--faint);
+  text-decoration: none;
+  color: inherit;
+}
+
+.noteTitel {
+  display: block;
+  font-size: 19px;
+  line-height: 1.3;
+}
+
+.noteUtdrag {
+  display: block;
+  font-size: 16px;
+  color: var(--soft);
+  margin-top: 4px;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.noteMeta {
+  display: block;
+  font-size: 13.5px;
+  color: var(--soft);
+  margin-top: 6px;
+}
+
+.tomlage {
+  margin-top: 46px;
+  border-top: 1px solid var(--faint);
+  padding-top: 18px;
+}
+
+.tomText {
+  font-size: 17px;
+  color: var(--ink);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tomHint {
+  font-size: 16px;
+  color: var(--soft);
+  font-style: italic;
+  line-height: 1.55;
+  margin: 8px 0 0;
+}

@@ -4,6 +4,7 @@ import {
   migreraAnteckningar,
   migreraSparade,
   sorteradeAnteckningar,
+  sparadeIdITidsordning,
   uppdateradAnteckning,
   utdrag,
   type Anteckning,
@@ -108,6 +109,17 @@ describe('sorteradeAnteckningar', () => {
       c: anteckning('c', '2026-07-05T00:00:00.000Z', '  '),
     })
     expect(ut.map((post) => post.ursprungId)).toEqual(['b', 'a'])
+  })
+})
+
+describe('sparadeIdITidsordning', () => {
+  it('sorterar senast sparat först och lägger daterade före odaterade', () => {
+    const ut = sparadeIdITidsordning({
+      gammal: { sparadNar: '2026-07-01T00:00:00.000Z' },
+      utandatum: { sparadNar: null },
+      ny: { sparadNar: '2026-07-10T00:00:00.000Z' },
+    })
+    expect(ut).toEqual(['ny', 'gammal', 'utandatum'])
   })
 })
 

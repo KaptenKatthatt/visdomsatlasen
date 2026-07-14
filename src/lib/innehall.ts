@@ -107,6 +107,9 @@ export const hittaTradition = (id: string): Tradition | undefined =>
 export const hittaVandringViaSlug = (slug: string): Vandring | undefined =>
   allaVandringar.find((vandring) => vandring.slug === slug)
 
+export const hittaVandringViaId = (id: string): Vandring | undefined =>
+  allaVandringar.find((vandring) => vandring.id === id)
+
 export const hittaPassage = (id: string): Kallpassage | undefined =>
   allaPassager.find((passage) => passage.id === id)
 
