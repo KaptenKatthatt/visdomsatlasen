@@ -36,8 +36,10 @@ export type ChatSvar = { text: string; ms: number }
 
 // Ett chatt-anrop med två omförsök (backoff). Tomt svar räknas som fel: resonerande
 // modeller kan bränna hela tokenbudgeten på ett <think>-block som stripThink tar bort
-// (hände i körning 3 med num_predict 4096 — därav den höga standardbudgeten).
-export const chat = async (modell: string, system: string, prompt: string, maxTokens = 20480): Promise<ChatSvar> => {
+// (hände i körning 3 med num_predict 4096). Höjt i steg: 4096→16384→20480→32768, eftersom
+// de resonerande flaggskeppen (deepseek-v4-pro, qwen3.5:397b, glm-5.2) trunkerade de
+// analystunga C-flödena och notrika B-flödena även vid 20480.
+export const chat = async (modell: string, system: string, prompt: string, maxTokens = 32768): Promise<ChatSvar> => {
   let senasteFel: unknown = null
   for (let forsok = 0; forsok < 3; forsok++) {
     const start = Date.now()
