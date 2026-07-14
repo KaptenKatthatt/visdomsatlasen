@@ -1,0 +1,3 @@
+# Bumpa denna fil för att trigga .github/workflows/zen-oversatt.yml på grenen
+# (workflow_dispatch kräver att workflow-filen ligger på main).
+run 1

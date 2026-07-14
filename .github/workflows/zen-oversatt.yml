@@ -1,0 +1,72 @@
+# Kör produktionsöversättningen (scripts/zen-oversatt) mot Hermes-gatewayen:
+# runnern går med i tailnet, tunnlar 11434 från Hetzner-hosten över SSH och
+# committar råresultaten (docs/oversattningar/radata) tillbaka till grenen.
+# Triggas manuellt (workflow_dispatch kräver att filen ligger på main; innan dess
+# startas körningar genom att bumpa .github/zen-oversatt-run på grenen).
+# Ofarlig att köra om — färdiga passager hoppas över (återupptagbar).
+name: Zen oversatt
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/zen-translation-workflow-ifl5w0']
+    paths: ['.github/zen-oversatt-run']
+
+jobs:
+  oversatt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Open SSH tunnel to Hermes gateway
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.HETZNER_SSH_KEY }}" > ~/.ssh/id_hermes
+          chmod 600 ~/.ssh/id_hermes
+          ssh -o StrictHostKeyChecking=accept-new -o ExitOnForwardFailure=yes \
+            -i ~/.ssh/id_hermes -f -N -L 11434:127.0.0.1:11434 \
+            "${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_TS_IP }}"
+          for _ in $(seq 1 15); do
+            curl -sf http://127.0.0.1:11434/api/version && exit 0
+            sleep 2
+          done
+          echo "Nådde inte Ollama genom tunneln" >&2
+          exit 1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run production translation
+        env:
+          OLLAMA_HOST: http://127.0.0.1:11434
+        run: npx tsx scripts/zen-oversatt/run.ts
+
+      - name: Commit results to branch
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/oversattningar/radata
+          git diff --cached --quiet || {
+            git commit -m "zen-oversatt: råresultat från CI-körning [skip ci]"
+            for forsok in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
+              sleep $((forsok * 5))
+            done
+          }

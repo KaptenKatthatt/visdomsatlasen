@@ -123,6 +123,39 @@ export const promptC2 = (passage: Passage, analys: string): string =>
     svenskaSektioner,
   ].join('\n')
 
+// Produktionsgranskning: samma protokoll som flöde D men för en enda översättning
+// (det analytiska C-flödet). Används av produktionskörningen (scripts/zen-oversatt),
+// där bara C finns. Fynden är uppslag för mänsklig kontroll, aldrig facit.
+export const promptGranska = (passage: Passage, oversattning: string): string =>
+  [
+    'Granska en svensk översättning av en klassisk zentext, gjord av en annan modell.',
+    'Jämför varje sats mot originalet. Var strängt kritisk men konkret: peka på exakta',
+    'ställen och citera originalets tecken när du påtalar fel. Om du inte hittar något',
+    'fel under en rubrik, skriv "inget att anmärka" — hitta inte på fel.',
+    '',
+    metadata(passage),
+    '',
+    'Original:',
+    passage.original,
+    '',
+    'Översättning (analytiskt flöde):',
+    oversattning,
+    '',
+    'Svara med exakt dessa rubriker:',
+    '## UTELÄMNAD MENING',
+    '## PÅHITTADE FÖRKLARINGAR',
+    '## FELÖVERSATTA TERMER',
+    '## ÖVERDRIVEN MODERNISERING',
+    '## ENGELSK INTERFERENS',
+    '## ONATURLIG SVENSKA',
+    '## FALSK SÄKERHET',
+    '(påståenden som låter säkrare än originalet medger)',
+    '## DOLD TVETYDIGHET',
+    '(tvetydigheter i originalet som översättningen osynliggör)',
+    '## SAMLAD BEDÖMNING',
+    '(är översättningen en duglig utgångspunkt för mänsklig granskning, och vad bör granskas närmast)',
+  ].join('\n')
+
 export const promptD = (passage: Passage, oversattningA: string, oversattningC: string): string =>
   [
     'Granska två svenska översättningar av samma klassiska zentext, gjorda av en annan',
