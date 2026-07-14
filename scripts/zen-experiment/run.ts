@@ -17,9 +17,14 @@ const ROT = 'docs/research/zen-experiment'
 // modell-rankningsbloggar) och datumstämpla — annars missas nya flaggskepp.
 // Senast verifierad mot library-listningen: 2026-07-14 (flaggskepp först per familj:
 // deepseek-v4-pro, qwen3.5:397b, glm-5.2; äldre generationer kvar som fallback).
+// OBS qwen: qwen3.5:397b testades i körning 5–8 men är i praktiken icke-levererande
+// för denna strukturerade uppgift — dess tankeblock är så stora att även 49152 tokens
+// trunkerar det synliga svaret (A 1/5, B 0/5, C 1/5 kompletta). Familjen är därför
+// utesluten från fortsatta körningar (dess partiella resultat behålls och dokumenteras
+// som fynd); den slukade annars kvot utan utbyte. Återinför om en mindre/snabbare
+// qwen-cloud-tagg blir aktuell.
 const KANDIDATER: Record<string, string[]> = {
   deepseek: ['deepseek-v4-pro:cloud', 'deepseek-v4-flash:cloud', 'deepseek-v3.2:cloud', 'deepseek-v3.2:671b-cloud', 'deepseek-v3.1:671b-cloud'],
-  qwen: ['qwen3.5:397b-cloud', 'qwen3.6:235b-cloud', 'qwen3.6:cloud', 'qwen3.5:cloud', 'qwen3:235b-cloud'],
   // "Annan trovärdig alternativmodell": GLM-flaggskeppet först; kimi/minimax som fallback.
   // Coder-varianten sist: väljs bara om ingen generalistmodell finns (redovisas i rapporten).
   alternativ: ['glm-5.2:cloud', 'glm-5.1:cloud', 'glm-4.6:cloud', 'kimi-k2.6:cloud', 'minimax-m3:cloud', 'kimi-k2.7-code:cloud'],
