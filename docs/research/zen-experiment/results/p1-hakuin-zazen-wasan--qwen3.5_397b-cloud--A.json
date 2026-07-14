@@ -1,0 +1,15 @@
+{
+  "passageId": "p1-hakuin-zazen-wasan",
+  "modell": "qwen3.5:397b-cloud",
+  "flode": "A",
+  "steg": [
+    {
+      "namn": "direkt",
+      "system": "Du är en filologiskt noggrann översättare av klassiska zenbuddhistiska texter (klassisk kinesiska, kanbun och klassisk japanska) till svenska. Du hittar aldrig på innehåll. När originalet är tvetydigt redovisar du tvetydigheten i stället för att dölja den bakom flytande prosa. Du skiljer alltid mellan vad som står i texten och vad som är tolkning. Svara på svenska.",
+      "prompt": "Översätt följande text till svenska.\n\nFörfattare: Hakuin Ekaku (白隠慧鶴), 1686–1769\nVerk: Zazen wasan (坐禅和讃)\nDatering: ca 1750-tal (Edoperioden)\nSpråktyp: japanska (tidigmodern japanska i 7-5-versmått, wasan-form)\n\nOriginal:\n衆生本来仏なり\n水と氷のごとくにて\n水を離れて氷なく\n衆生の外に仏なし\n衆生近きを知らずして\n遠く求むるはかなさよ\nたとえば水の中に居て\n渇を叫ぶがごとくなり\n長者の家の子となりて\n貧里に迷うに異ならず\n（……）\n此の時何をか求むべき\n寂滅現前するゆえに\n当処即ち蓮華国\n此の身即ち仏なり\n\nSvara med exakt dessa rubriker:\n## ORDAGRANN ÖVERSÄTTNING\n(så nära originalets ordföljd och bilder som svenskan tillåter, med [alternativa läsningar] i hakparentes)\n## LÄSBAR ÖVERSÄTTNING\n(naturlig svensk prosa för en allmänbildad läsare, trogen originalets ton och metaforer)\n## TVETYDIGHETER\n(ställen där originalet tillåter flera läsningar och vilken du valt och varför)\n## TERMINOLOGIBESLUT\n(hur du återger buddhistiska facktermer och varför)\n## KONFIDENS\n(1–5 där 5 är säkrast, med motivering; var ärlig om svagheter)",
+      "svar": "## ORDAGRANN ÖVERSÄTTNING\nKänande varelser ursprungligen Buddha är\nVatten och is likt varande\nVatten från-skiljd is ej-existerar\nKänande varelser utanför Buddha ej-existerar\nKänande varelser närhet [det nära] ej-kännande medan\nLångt sökande fåfänga [förgänglighet] åh\nTill exempel vatten inuti vistande\nTörst ropande likt bliver\nStorhushållares [rik mans] hus barn blivande [varande]\nFattig-by i villande [att irra] från ej-skiljd [ej olikt]\n（……）\nDenna stund vad [frågepartikel] söka bör\nNirvana fram-trädande eftersom\nDenna-plats just Lotus-land\nDenna-kropp just Buddha är\n\n## LÄSBAR ÖVERSÄTTNING\nAlla känande varelser är från begynnelsen Buddha,\nlikt vatten och is.\nUtanför vattnet finns ingen is,\nutanför varelserna finns ingen Buddha.\nAtt inte veta att varelserna är nära\noch att söka långt borta – ack, vilken fåfänga!\nDet är som att vistas mitt i vattnet\noch ropa efter att släcka sin törst.\nDet skiljer sig inte från att vara född som barn\ni en rik mans hus, ändå irra runt i en fattig by.\n（……）\nVad finns det att söka i denna stund?\nEftersom Nirvana uppenbarar sig här och nu,\när denna plats just Lotuslandet,\när denna kropp just Buddha.\n\n## TVETYDIGHETER\n*   **Hakanasa yo (はかなさよ):** Ordet *hakanashi* kan betyda \"förgänglig/osäker\" (impermanens) eller \"fåfäng/lönlös\". I denna kontext, där poängen",
+      "ms": 45559
+    }
+  ],
+  "skapad": "2026-07-14T10:43:50.221Z"
+}

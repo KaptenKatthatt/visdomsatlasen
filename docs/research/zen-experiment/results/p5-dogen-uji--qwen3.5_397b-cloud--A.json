@@ -1,0 +1,15 @@
+{
+  "passageId": "p5-dogen-uji",
+  "modell": "qwen3.5:397b-cloud",
+  "flode": "A",
+  "steg": [
+    {
+      "namn": "direkt",
+      "system": "Du är en filologiskt noggrann översättare av klassiska zenbuddhistiska texter (klassisk kinesiska, kanbun och klassisk japanska) till svenska. Du hittar aldrig på innehåll. När originalet är tvetydigt redovisar du tvetydigheten i stället för att dölja den bakom flytande prosa. Du skiljer alltid mellan vad som står i texten och vad som är tolkning. Svara på svenska.",
+      "prompt": "Översätt följande text till svenska.\n\nFörfattare: Dogen Kigen (道元希玄), 1200–1253\nVerk: Shobogenzo (正法眼蔵), kapitlet Uji\nDatering: 1240\nSpråktyp: blandtext: kanbun-citat (tillskrivet Yaoshan Weiyan) följt av klassisk japanska (wabun)\n\nOriginal:\n古仏言、\n有時高高峰頂立、有時深深海底行、有時三頭八臂、有時丈六八尺、有時杖払子、有時露柱灯籠、有時張三李四、有時大地虚空。\nいはゆる有時は、時すでにこれ有なり、有はみな時なり。丈六金身これ時なり、時なるがゆゑに時の荘厳光明あり。いまの十二時に習学すべし。三頭八臂これ時なり、時なるがゆゑにいまの十二時に一如なるべし。\n\nSvara med exakt dessa rubriker:\n## ORDAGRANN ÖVERSÄTTNING\n(så nära originalets ordföljd och bilder som svenskan tillåter, med [alternativa läsningar] i hakparentes)\n## LÄSBAR ÖVERSÄTTNING\n(naturlig svensk prosa för en allmänbildad läsare, trogen originalets ton och metaforer)\n## TVETYDIGHETER\n(ställen där originalet tillåter flera läsningar och vilken du valt och varför)\n## TERMINOLOGIBESLUT\n(hur du återger buddhistiska facktermer och varför)\n## KONFIDENS\n(1–5 där 5 är säkrast, med motivering; var ärlig om svagheter)",
+      "svar": "## ORDAGRANN ÖVERSÄTTNING\nGamle Buddha sade,\nIbland [Varande-Tid] på hög hög bergstopp stående, ibland på djup djup havsbotten gående,\nibland tre huvuden åtta armar, ibland sexton fot åtta fot,\nibland stav [och] flugsmäck, ibland dagg-pelare [och] lykta,\nibland Zhang San Li Si [vanliga namn], ibland stora jorden [och] tomma rymden.\nDet så kallade Ibland [Varande-Tid] är,\nTiden redan detta Varande är,\nVarandet alltsammans Tid är.\nSexton-fots guldkropp detta Tid är,\nTid-varande därför Tids högtidliga ljus [prakt] finns.\nNu de tolv timmarna [dagens perioder] studera-öva bör.\nTre huvuden åtta armar detta Tid är,\nTid-varande därför nu de tolv timmarna en-sådanhet [ichinyo] bör vara.\n\n## LÄSBAR ÖVERSÄTTNING\nEn gammal Buddha sade:\n\"Vid vissa tillfällen [Varande-Tid] står man på den högsta bergstoppen, vid vissa tillfällen vandrar man på havets djupaste botten. Vid vissa tillfällen [har man] tre huvuden och åtta armar, vid vissa tillfällen [är",
+      "ms": 71527
+    }
+  ],
+  "skapad": "2026-07-14T11:36:25.095Z"
+}
