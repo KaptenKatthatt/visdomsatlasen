@@ -70,3 +70,23 @@ Taishō-interpunktionens segmenteringsfråga självständigt.
 **Slutdom P2:** glm B står sig som bästa översättning. qwen C:s filologi är stark
 men språkdräkten diskvalificerar den. Korsgranskningen gav på denna passage sämre
 utbyte än sin tokenkostnad.
+
+## Runda 3 (flaggskepp)
+
+| Cell | Poäng |
+|---|---|
+| deepseek-v4-pro A | 5,4,4,4,4,5,5,4,5,5 |
+| deepseek-v4-pro B | 5,5,5,5,5,5,5,5,5,5 |
+| deepseek-v4-pro C | 5,5,5,5,5,5,5,5,5,5 |
+| glm-5.2 A | 4,4,5,4,4,5,5,4,5,5 |
+| glm-5.2 C | 5,4,5,5,5,5,5,5,5,5 |
+| gemma4 A | 3,3,3,4,3,4,4,3,2,3 |
+| gemma4 B | 2,2,4,4,3,4,4,3,3,2 |
+| gemma4 C | 4,4,4,4,3,4,4,4,3,4 |
+| qwen3.5:397b C | 3,4,4,3,4,3,3,4,3,3 (A/B/D ej levererade) |
+
+- glm B trunkerade i apparaten (översättningen komplett).
+- Fel: gemma B inverterar 者僧 ("munkar som inte lyssnar"); gemma A hallucinerar
+  "hörde klockan men trodde vattenkärl"; glm-D falsk positiv mot den kontrafaktiska versen.
+- **Bästa enskilda: deepseek-v4-pro C** (korrekt 者僧, 甕="kruka", bevarad kontrafaktik).
+  deepseek B och glm C tätt efter.

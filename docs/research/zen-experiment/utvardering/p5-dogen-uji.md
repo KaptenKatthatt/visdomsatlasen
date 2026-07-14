@@ -72,3 +72,25 @@ av qwen (granskare deepseek) citerade text som inte fanns. Två granskningar tom
 
 **Slutdom P5:** deepseek A står, glm A stark tvåa (vinner tvetydighetskriteriet,
 förlorar på leverans). qwen fortsatt fältets svagaste leverantör.
+
+## Runda 3 (flaggskepp)
+
+| Cell | Poäng |
+|---|---|
+| deepseek-v4-pro A | 4,4,4,4,4,4,5,4,4,4 |
+| deepseek-v4-pro B | 5,5,4,4,4,3,3,5,5,4 |
+| deepseek-v4-pro C | 4,4,4,4,4,3,4,4,5,4 |
+| glm-5.2 A | 4,5,3,4,4,4,4,5,4,4 |
+| glm-5.2 B | 4,4,3,4,4,3,3,4,4,3 |
+| glm-5.2 C | 5,5,4,4,4,4,4,5,5,5 |
+| gemma4 A | 2,3,2,3,2,4,4,3,1,2 |
+| gemma4 B | 2,3,2,3,2,3,3,3,1,2 |
+| gemma4 C | 2,3,2,3,2,4,4,3,1,2 |
+| qwen3.5:397b (alla) | EJ LEVERERAD (trunkerad/saknas) |
+
+- deepseek-v4-pro levererade alla fyra flöden komplett här (hög leveranssäkerhet).
+- Fel: gemma hallucinerar "barn" ur 払子 (alla flöden) + måttkollaps 丈六="sex fot";
+  deepseek A tappar 八尺 ("buddhastaty på sexton fot"); glm A 虚空="intet" (rättat i C).
+- glm-D (gemma granskar glm) fångade den dolda 有時-tvetydigheten skarpt.
+- **Bästa enskilda: glm-5.2 C** (有時 dubbeltydig, 丈六八尺 två gestalter, staven+
+  flugviskan utan barn, pelare OCH lykta, 虚空="rymden"). deepseek B tvåa.

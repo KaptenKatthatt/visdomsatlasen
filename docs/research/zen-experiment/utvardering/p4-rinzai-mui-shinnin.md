@@ -74,3 +74,24 @@ uttalat motstånd mot mildring). Tätt efter: glm C och qwen C.
 Mönstret "C-flödet vinner" försvagas: med större tokenbudget är trunkering i
 flerstegsflödena den dominerande felkällan, medan direktflödet A levererar helt.
 Leveranssäkerhet, inte filologi, är den nya skiljelinjen.
+
+## Runda 3 (flaggskepp)
+
+| Cell | Poäng |
+|---|---|
+| deepseek-v4-pro A | 5,4,5,5,5,5,5,4,5,5 |
+| deepseek-v4-pro B | 5,5,5,5,5,5,5,5,5,5 |
+| deepseek-v4-pro C | 4,5,2,4,3,4,4,4,2,4 |
+| glm-5.2 A | 4,4,4,4,4,4,4,4,4,5 |
+| glm-5.2 B | 5,5,4,4,4,4,4,5,5,5 |
+| glm-5.2 C | 5,5,4,3,4,4,4,5,5,5 |
+| gemma4 A | 3,3,2,4,2,2,4,3,1,3 |
+| gemma4 B | 4,4,4,3,4,4,4,4,4,4 |
+| gemma4 C | 4,4,4,4,4,4,4,4,5,4 |
+| qwen3.5:397b (alla) | EJ LEVERERAD (trunkerad/saknas) |
+
+- Fel: gemma A "spillkråka" (fågel!) för 乾屎橛; deepseek C "skitspade" (橛=pinne);
+  gemma A/B 托開 "släppte" (ska vara stötte bort); glm-D falsk positiv mot korrekt 道道.
+- deepseek-D (glm granskar deepseek) fångade "skitspade"-felet men trunkerade.
+- **Bästa enskilda: deepseek-v4-pro B** (alla ankare rätt: "Tala! Tala!", "torr
+  skitpinne" med bevarad grovhet, kropp/hjärta-debatten redovisad). glm C tvåa.

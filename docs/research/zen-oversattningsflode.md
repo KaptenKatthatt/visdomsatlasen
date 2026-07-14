@@ -14,47 +14,60 @@ markerat **[kräver specialistgranskning]**.
 
 ## 1. Exekutiv rekommendation
 
-> **PRELIMINÄR (2026-07-14) — v4-omkörning pågår.** Den första körningen byggde på en
-> kandidatlista från modell-rankningsbloggar och missade nuvarande flaggskepp:
-> `deepseek-v4-pro:cloud` (1.6T), `qwen3.5:397b-cloud` och `glm-5.2:cloud`.
-> Rekommendationen av `deepseek-v3.2:cloud` nedan var alltså "bäst av det som testades",
-> inte "bäst tillgängligt". En full ren omkörning med de aktuella flaggskeppen pågår;
-> §1, §3, §4 och §5 uppdateras när den är klar. Behåll denna markering tills dess.
+*Baserad på omkörningen med de aktuella Ollama Cloud-flaggskeppen (2026-07-14):
+`deepseek-v4-pro:cloud` (512k kontext), `glm-5.2:cloud` (1M), `gemma4:31b-cloud`
+(256k, dagens ingest-modell) och `qwen3.5:397b-cloud`. Den tidigare
+v3.2-rekommendationen är ersatt.*
 
-- **Primär översättningsmodell (preliminär): `deepseek-v3.2:cloud`.** Enda modellen som levererade
-  kompletta svar i alla flöden på alla fem passager, med den mest disciplinerade
-  filologin: redovisade läsningsalternativ, ärligast konfidensangivelser (3–4 med
-  motiverade svagheter, där gemma4 satte 5 på svar med påvisbara fel) och lägst
-  hallucinationsfrekvens. Svagheten är svensk morfologi under tryck ("återvorde",
-  "avförestapp") — den mänskliga språktvätten är obligatorisk, inte valfri.
-- **Granskningsmodell: `glm-5.1:cloud`.** Gav de filologiskt bästa korsgranskningarna
-  när den levererade (fångade bl.a. inverterad kärnmetafor i P1 och didaktisk
-  utslätning i P2). Viktig reservation: *ingen* granskarmodell är pålitlig nog att
-  agera grind ensam — varje granskare producerade minst en självsäker falsk positiv
-  eller en hallucinerad granskning (se §5). Granskningsfynd är uppslag för mänsklig
-  kontroll, aldrig facit.
+- **Primär översättningsmodell: `glm-5.2:cloud`.** Den bästa kombinationen av
+  filologisk kvalitet och leveranssäkerhet: producerade den bästa enskilda svenska
+  översättningen på tre av fem passager — inklusive båda de svåraste Dōgen-texterna
+  (Genjōkōan och Uji) — och levererade komplett i 13 av 15 översättningsceller.
+  Håller genomgående tvetydigheter synliga (t.ex. 有時 dubbeltydig, 者僧-läsningen),
+  bevarar negationsmönster och metaforer, och är mest transparent om osäkerhet.
+  Svagheter: enstaka lexikalfel (払子 "piska", 虚空 "intet") som oftast rättas i dess
+  eget analysflöde, samt stavskavanker — svensk språktvätt förblir obligatorisk.
+- **Kvalitativ medparti: `deepseek-v4-pro:cloud`.** Högst tak i materialet — bästa
+  enskilda översättning på P2 och P4, med flera celler i det närmaste felfria — och
+  gav de mest träffsäkra korsgranskningsfynden (fångade bl.a. "skitspade" för 橛 och
+  en påhittad buddhagestalt). Men leveranssäkerheten är sämre: dess analystunga
+  C-flöde och delar av A trunkerade på de svåraste passagerna (bara 10 av 15 celler
+  kompletta), och som granskare trunkerar den ibland. Utmärkt när den fullföljer,
+  men mindre pålitlig som ensam produktionsmotor.
+- **Granskningsmodell: `deepseek-v4-pro:cloud`** (dess granskningar gav de skarpaste,
+  mest korrekta fynden), med **`gemma4:31b-cloud` som pålitlig reserv** (resonerar
+  inte → trunkerar aldrig, och fångade bl.a. den dolda 有時-tvetydigheten i P5).
+  Ovillkorlig regel: *ingen* granskarmodell duger som automatisk grind — samtliga
+  injicerade minst en självsäker falsk positiv (t.ex. underkände korrekt 道道 =
+  "Tala!" som "borde vara Vägen", eller stämplade den reella 赤肉團-debatten som
+  påhitt). Granskningsfynd är uppslag för mänsklig kontroll, aldrig facit. Använd en
+  annan modell än översättaren (glm-5.2 översätter → deepseek-v4-pro/gemma4 granskar).
 - **Rekommenderat flöde: C (analytiskt) — analys först, sedan svensk översättning ur
-  analysen, direkt från originalet.** C höjde golvet mest konsekvent: svagare modeller
-  disciplinerades märkbart av analyssteget (gemma4:s bästa utdata var C på fyra av fem
-  passager) och tvetydighetsapparaten blev bäst. Därtill flöde D (korsgranskning) som
-  obligatoriskt men människoverifierat steg.
-- **Engelska som mellanled: nej som standard.** Flöde B gav enstaka toppresultat
-  (bästa enskilda översättning på tre passager, alltid med deepseek eller glm), men
-  varje fel i det engelska mellansteget propagerade till svenskan trots uttrycklig
-  instruktion att verifiera mot originalet — dokumenterade exempel finns på alla fem
-  passagerna (se §4). Risken är systematisk och svår att upptäcka i efterhand;
-  nyttan är tillfällig. Undantag: en engelsk arbetsöversättning får gärna *sparas som
-  dokumentation* (transparens), men ska inte vara översättarens underlag.
-- **Största begränsningar:** (1) Alla slutsatser bygger på fem korta passager och en
-  körning per cell — små underlag, inga upprepningar; (2) utvärderingen är gjord av
-  AI (Claude) mot ordböcker och etablerade översättningar, inte av en specialist på
-  klassisk japanska/kinesiska — **[kräver specialistgranskning]**; (3) resonerande
-  modeller kräver stor tokenbudget (≥16k) och även då kvarstod tomma svar (qwen3.5)
-  och trunkerad apparat (glm-5.1) — leveranskontroll med omförsök är ett
-  obligatoriskt pipelinesteg, och leveranssäkerhet vägde lika tungt som filologi
-  vid modellvalet (se §5);
-  (4) kontots Ollama-kvot begränsar hur mycket som kan köras per session;
-  (5) modellversioner är färskvara — omtest krävs vid modellbyte.
+  analysen, direkt från originalet.** C gav den bästa enskilda översättningen på tre
+  av fem passager och den starkaste tvetydighetsapparaten. Avvägning: C är också det
+  mest trunkeringskänsliga flödet (analyssteget är det längsta), så det förutsätter en
+  leveranssäker primärmodell (glm-5.2) och leveranskontroll per steg. **Flöde B
+  (engelskt mellanled) är ett dugligt andraval** (vann P1 och P4) men bär
+  interferens-/propageringsrisk; **flöde A (direkt) är den mest leveranssäkra
+  reserven** när C trunkerar.
+- **Engelska som mellanled: inte som separat standardlager.** Flöde B gav visserligen
+  bästa resultat på två passager, men fel i det engelska steget propagerade till
+  svenskan på flera passager (gemmas barn-hallucination ur 払子 via engelskan i P5,
+  "over-explainer"-läsningen i P2) trots uttrycklig verifieringsinstruktion. Med en
+  stark primärmodell i C-flödet behövs inget engelskt lager; en engelsk
+  arbetsöversättning får sparas som *dokumentation* men inte utgöra underlaget.
+- **Största begränsningar:** (1) fem korta passager, en körning per cell — små
+  underlag, inga upprepningar; (2) utvärderingen är gjord av AI (Claude) mot ordböcker
+  och etablerade översättningar, inte av en specialist på klassisk japanska/kinesiska
+  — **[kräver specialistgranskning]**; (3) **de tunga resonerande flaggskeppen
+  trunkerar** — deras interna tankeblock äter tokenbudgeten och kapar de långa
+  analyssvaren även vid 49 152 tokens; `qwen3.5:397b` visade sig i praktiken
+  icke-levererande för denna strukturerade uppgift (≈2 av 15 kompletta celler) och
+  uteslöts, medan `gemma4` (icke-resonerande) alltid levererade komplett. Leverans-
+  säkerhet vägde därför lika tungt som filologi vid modellvalet (se §5); (4) kontots
+  Ollama-kvot begränsar hur mycket som kan köras per fönster (~5 h reset); (5)
+  modellversioner är färskvara — verifiera utbudet mot `ollama.com/library?c=cloud`
+  och omtesta vid modellbyte.
 
 ---
 
@@ -115,143 +128,112 @@ Hodous, *A Dictionary of Chinese Buddhist Terms* (1937, public domain) samt
 
 ## 3. Modelljämförelse
 
-Testade modeller (exakta taggar, kontextlängder och prob-status dokumenteras
-maskinellt i `results/modeller.json`; testdatum 2026-07-13, Ollama-daemon 0.24.0
-via Hermes-gatewayen; temperatur 0,2, tokenbudget 4 096 i körning 3 och 16 384 i
-omkörningen). Kontots utbud saknade körbara icke-coder-varianter av Kimi och
-MiniMax valdes bort när GLM fanns; `kimi-k2.7-code:cloud` uteslöts som
-coder-specialiserad enligt uppdragets instruktion.
+Testade flaggskepp (exakta taggar, kontextlängder och prob-status maskinellt i
+`results/modeller.json`; testdatum 2026-07-14, Ollama-daemon 0.24.0 via
+Hermes-gatewayen; temperatur 0,2, tokenbudget höjd i steg till 49 152 för att rymma
+tankeblocken). Kandidatlistan verifierades mot `ollama.com/library?c=cloud` och leder
+varje familj med aktuellt flaggskepp. `kimi-k2.7-code:cloud` uteslöts som
+coder-specialiserad; MiniMax fanns som fallback men behövdes ej.
 
-| Modell | Kontext | Leverans (kompletta A/B/C-celler av 15) | Snittpoäng (levererade svenska översättningar, 10 kriterier) | Karakteristik |
+| Modell | Kontext | Kompletta A/B/C (av 15) | Bästa-översättning-vinster (av 5) | Karakteristik |
 |---|---|---|---|---|
-| `deepseek-v3.2:cloud` (671B MoE) | 163 840 | **15/15** | ≈ 3,8 | Mest disciplinerad filologi, ärlig konfidens, bäst kompletta leverans på 4 av 5 passager. Svensk morfologi sviktar under tryck ("återvorde", "avförestapp"); enstaka didaktiska tillägg. |
-| `glm-5.1:cloud` (744B MoE) | 202 752 | 14/15, men apparaten trunkerad i de flesta celler | ≈ 3,9 | Filologiskt vassast per mening: bäst tvetydighetsapparat (者僧, 乾屎橛-debatten, 有時), passagens bästa text på P1/P2. Systemisk trunkering även med 16k-budget; stavfel ("buddhavisen", "abbotrumman"); enstaka lexikalfel ("almskål", "dagg-pelare"). |
-| `gemma4:31b-cloud` (31B tät) | 262 144 | **15/15** (snabbast, 5–95 s/anrop) | ≈ 3,1 | Flytande och alltid komplett — men filologiskt svagast: hallucinationer ("barn" ur 払子, "vissnar" för växer, "Zhōu Zhōu", uppdiktad Dao-läsart) och systematiskt konfidens 5 på svar med påvisbara fel. Flyt utan trohet. |
-| `qwen3.5:cloud` | 262 144 | **8/15** — tomt svar trots 16 384 tokens × 3 försök på flera celler; ytterligare celler trunkerade | ≈ 3,0 (enorm varians: 4,8 på P4 A, oanvändbar på P1/P2) | Stark filologi när den levererar (redovisar ensam hjärt-läsningen av 赤肉團), men opålitlig leverans och ojämn svenska ("monken", "mastern") gör den olämplig för produktion i nuvarande form. |
+| `glm-5.2:cloud` (MoE) | 1 000 000 | **13/15** | **3** (P1, P3, P5) | Bäst helhet: hög filologisk kvalitet + hög leveranssäkerhet. Vann båda svåra Dōgen-passagerna. Håller tvetydigheter synliga, bevarar negation/metafor, mest transparent. Enstaka lexikalfel (払子 "piska", 虚空 "intet") rättas oftast i eget C-flöde. |
+| `deepseek-v4-pro:cloud` (MoE) | 524 288 | 10/15 | **2** (P2, P4) | Högst tak — flera nästan felfria celler och de skarpaste granskningsfynden — men leveranssvag: analystunga C och delar av A trunkerade på de svåraste passagerna. Bäst när den fullföljer. |
+| `gemma4:31b-cloud` (tät) | 262 144 | **15/15** (snabbast) | 0 | Alltid komplett (resonerar inte) och flytande svenska, men filologiskt svagast: hallucinationer (barn ur 払子, "spillkråka"/"skitspade" för 乾屎橛, "vissnar" för växer) och systematiskt konfidens 5 på felaktiga svar. Reserv/granskare snarare än översättare. |
+| `qwen3.5:397b-cloud` (MoE) | 262 144 | **≈2/15** | 0 | I praktiken icke-levererande: tankeblocken trunkerar det synliga svaret även vid 49 152 tokens (A 1/5, B 0/5, C 1/5). Utesluten från de sista körningarna; partiella resultat behållna som belägg. Filologiskt vaken där text finns, men oanvändbar som produktionsmodell i nuläget. |
 
-**Bästa enskilda leverans per passage** (komplett fil med apparat):
-P1 deepseek B · P2 glm B · P3 deepseek A · P4 deepseek C · P5 deepseek A.
-Som *rå översättningstext* utan hänsyn till apparatens kompletthet vann glm på
-P1 och P2 och var tätt efter på P4/P5 — glm är deepseeks naturliga andraläsare.
+**Bästa enskilda leverans per passage** (komplett cell med apparat): P1 `glm-5.2` B ·
+P2 `deepseek-v4-pro` C · P3 `glm-5.2` C · P4 `deepseek-v4-pro` B · P5 `glm-5.2` C.
+Sammantaget: glm-5.2 3, deepseek-v4-pro 2 — och glm-5.2 vann de två filologiskt
+svåraste (Genjōkōan, Uji), där deepseek-v4-pro:s leverans dessutom brast.
 
-**Som granskare (flöde D):** gemma4 var förvånande nog en bättre granskare än
-översättare (kompletta, två gånger bäst kalibrerade granskningar — fångade bl.a.
-den dolda 有時-tvetydigheten och 丈六-måttfelet), men med farliga falska positiver
-(dömde korrekta läsningar av 生仏 och 道道 som "allvarliga fel"). glm var skarpast
-när den levererade men trunkerade ofta; deepseek var ibland ärlig, ibland
-konfabulerande som granskare; qwen levererade mest tomt. Ingen modell duger som
-automatisk grind.
-
----
+**Som granskare (flöde D):** deepseek-v4-pro gav de skarpaste, mest korrekta fynden
+(t.ex. "skitspade"-felet i P4, den påhittade buddhagestalten i P5) men trunkerade
+ibland; gemma4 levererade alltid och fångade den dolda 有時-tvetydigheten i P5, men
+med fler falska positiver; glm-5.2:s granskningar var jämna. Genomgående injicerade
+granskarna dock självsäkra fel — särskilt 道道 = "Tala!" underkänt till förmån för
+"Vägen", och den reella 赤肉團-debatten (hjärta/kropp) avfärdad som påhitt. **Ingen
+duger som automatisk grind.** *Attributionsnot:* resultatfilerna namnger den granskade
+modellen men inte granskaren (harness-begränsning) — granskaren följer ringen
+deepseek→glm→gemma i `run.ts`.
 
 ## 4. Flödesjämförelse
 
-**Flöde A (direkt).** Helt beroende av modellens egen disciplin: utmärkt med deepseek
-(bästa enskilda översättning på P5, komplett apparat), sämst med gemma4 (namnfelet
-"Zhōu Zhōu" i P2, "vissnar" för växer i P3, barnhallucinationen i P5 — alla med hög
-konfidens). Direktflödet ger minst transparens: när det går fel finns inget spår av
-varför.
+**Flöde A (direkt).** Mest leveranssäkert av översättningsflödena (kortast utdata →
+minst trunkering) och gav kompetent svenska hos glm-5.2 och deepseek-v4-pro, men
+tunnast tvetydighetsapparat och lockade svaga modeller till överkonfidens (gemma).
+Bästa reserv när C trunkerar.
 
-**Flöde B (engelskt mellanled).** Det mest tveeggade resultatet i experimentet. Å ena
-sidan producerade B tre av fem passagers bästa enskilda översättningar (deepseek B på
-P1, glm B på P2 och P3) — en bra engelsk arbetsöversättning fungerade där som
-verklig kvalitetshöjare, och avvikelseavsnittet visade att modellen faktiskt
-kontrollerade mot originalet. Å andra sidan var felpropagering från det engelska
-steget systematisk: gemmas engelska "sentient beings are near" gav inverterat subjekt
-i svenskan (P1), "those who over-explain" förgiftade kommentartolkningen (P2), "grass
-withers" gav "vissnar" (P3), "the head" flyttade den filologiska debatten till fel
-kroppsdel (P4) och "staff-sweeping child" blev "stav-sopande barn" (P5). Instruktionen
-att verifiera mot originalet hjälpte de starka modellerna men inte de svaga — och det
-är just de svaga som behöver den. Slutsats: **engelskt mellanled förbättrar taket men
-sänker golvet; för en produktionspipeline där enskilda fel är dyra är det fel byte.**
+**Flöde B (engelskt mellanled).** Vann bästa enskilda översättning på P1 och P4 — en
+god engelsk arbetsöversättning skärpte term- och tvetydighetsbesluten. Men
+felpropagering från det engelska steget var återkommande och svårupptäckt: gemmas
+"barn" ur 払子 (P5) och "over-explainer"-läsningen av 露出心肝者 (P2) föddes i
+engelskan och ärvdes av svenskan, trots uttrycklig verifieringsinstruktion. Höjer
+taket för starka modeller men sänker golvet för svaga — fel byte som separat
+standardlager.
 
-**Flöde C (analytiskt).** Höjde golvet mest konsekvent: gemma4:s och qwens bästa
-utdata var C-flödet på nästan alla passager, tvetydighetsredovisningen var
-genomgående bäst (t.ex. redovisade tre av fyra modeller 者僧-frågan i P2 endast i C),
-och analyssteget gav redaktionellt användbart material (segmentering, termdiskussion,
-olösta osäkerheter). Två viktiga förbehåll: analysen kan *inducera* fel som sedan
-propagerar (glossan "lämna vattnet" gav inverterad kärnmetafor i tre C-utdata på P1;
-gemmas analys födde den uppdiktade Dao-läsarten av 道道 i P4), och för den starkaste
-modellen tillförde C ibland inget över A (deepseek på P3 blev sämre i C än i A).
-**C rekommenderas som produktionsflöde** därför att dess vinster (golv, apparat,
-transparens) väger tyngre än dess risker, som den mänskliga granskningen är bäst
-rustad att fånga just eftersom analysen är synlig.
+**Flöde C (analytiskt).** Gav den bästa enskilda översättningen på tre av fem passager
+(P2, P3, P5) och den starkaste tvetydighets- och transparensapparaten; analyssteget
+disciplinerade term- och läsningsval. Priset är trunkeringskänslighet: analyssteget är
+det längsta utdata och kapades oftast för de resonerande modellerna (deepseek-v4-pro C
+trunkerade på P2/P3/P4; qwen C nästan alltid). **C rekommenderas som produktionsflöde
+tillsammans med en leveranssäker primärmodell (glm-5.2) och leveranskontroll per
+steg** — vinsterna (golv, apparat, transparens) väger tyngre än risken, som den
+mänskliga granskningen är rustad att fånga eftersom analysen är synlig.
 
-**Leveransdimensionen (efter omkörningen).** Med höjd tokenbudget blev trunkering
-i flerstegsflödena den dominerande felkällan: enstegsflödet A levererade oftare
-komplett (t.ex. blev qwen A bästa nya fil på P4 medan qwen B/C trunkerades), medan
-B och C dubblar antalet chanser att ett steg havererar. Detta ändrar inte
-rekommendationen av C — deepseek levererade C komplett på samtliga passager — men
-det skärper kravet: **flödesval och modellval hänger ihop**, och varje steg behöver
-leveranskontroll innan nästa steg får köra.
+**Flöde D (korsgranskning).** Gav verkligt värde på varje passage — fångade bl.a.
+kärnmetaforens inversion, "skitspade" för 橛, den påhittade buddhagestalten och den
+dolda 有時-tvetydigheten — men var också farligast när den fällde fel dom (underkände
+korrekt 道道, dömde den reella 赤肉團-debatten som påhitt). **Behålls som felgenerator
+för mänsklig kontroll, aldrig som automatisk grind**, och körs av en annan modell än
+översättaren.
 
-**Flöde D (korsgranskning).** Gav verkligt värde minst en gång per passage — bl.a.
-fångades den inverterade vattenmetaforen (P1), "Gå då och skålen" (P2), den
-monistiska felläsningen av われにあらざる (P3), 丈六-måttfelet och den dolda
-有時-tvetydigheten (P5) — men var också experimentets farligaste komponent när den
-gick fel: granskare recenserade *tomma* översättningar som om de fanns och
-rekommenderade dem som bäst (P2, P4), och underkände korrekta översättningar med
-självsäker felaktig filologi (道道 "allvarligt fel" i P4, 生仏-domen i P3).
-**D behålls i pipelinen som felgenerator för mänsklig kontroll — aldrig som
-automatisk grind.**
-
----
+**Ändrad slutsats mot v3.2-omgången:** när alla flöden levererar komplett vinner C
+fortfarande oftast, men med de resonerande flaggskeppen blev *leveranssäkerhet* den
+avgörande skiljelinjen — flödesval och modellval hänger ihop, och den analystunga
+C-vägen kräver en modell som faktiskt fullföljer den.
 
 ## 5. Felanalys
 
-Kategoriserade huvudfynd (fullständiga per-passage-protokoll med poängtabeller i
-`docs/research/zen-experiment/utvardering/`; alla utdata i `results/`):
+Kategoriserade huvudfynd (fullständiga per-passage-protokoll med poängtabeller för
+båda omgångarna i `docs/research/zen-experiment/utvardering/`; alla utdata i
+`results/`):
 
-**Språkfel.** deepseek under morfologiskt tryck: "återvorde", "avfödslesticka",
-"avförestapp", "skitpinn" (P4); glm: "buddhavisen" för buddhavägen (P3, ×2),
-"skittpinne", "lanterna"; gemma: "peak" kvar oöversatt i svensk text (P5); qwen:
-"Funkerar", "metaphoriskt" (P1-analysen). Mönster: även de bästa modellerna
-producerar icke-ord i svåra passager — svensk språktvätt är ett obligatoriskt
-pipelinesteg.
+**Leveransfel (den dominerande felkällan i flaggskeppsomgången).** De tunga
+resonerande modellerna trunkerar de långa analyssvaren mitt i ordet därför att
+tankeblocket äter tokenbudgeten: deepseek-v4-pro:s C-flöde kapades på P2/P3/P4 ("...去
+kan tol"), och `qwen3.5:397b` levererade knappt något komplett alls (A 1/5, B 0/5,
+C 1/5) trots 49 152 tokens och tre omförsök per cell. Detta är inte konfiguration
+utan ett drag hos modellerna — den icke-resonerande `gemma4` levererade alltid
+komplett. Slutsats: en modell man inte tillförlitligt får komplett utdata ur är inte
+produktionsklar oavsett latent kvalitet.
 
-**Begreppsfel.** Allvarligast: gemma "gräset *vissnar*" för 草は…おふる = *växer*
-(P3, i alla tre flöden — vänder Dōgens poäng); glm/deepseek/gemma inverterade
-villkorslogiken i 水を離れて氷なく (P1, C-flödet); gemma 道道 som "Säger, säger"
-i stället för imperativt "Tala! Tala!" (P4); glm "en shaku och sex" för 丈六 =
-sexton fot (P5); deepseek "inte skilda från mig själv" för われにあらざる = "inte
-är jag" — negation blev monism (P3).
+**Begreppsfel.** gemma "gräset *vissnar*" för 草…おふる = *växer* (P3, alla flöden,
+befäst i dess egen analys); inversion av 水を離れて氷なく (P1); "skitspade" för 乾屎橛
+(橛 = pinne, deepseek C P4); 丈六 nedskalat till "sex fot"/"1,8 m" (gemma P5, ska vara
+~4,8 m); 払子 som "barn" (gemma P5).
 
-**Stilproblem.** Mildring av det grova 乾屎橛 till "avföringspinne" med motiveringen
-"klinisk precision" (gemma, P4) — grovheten är textens poäng; kristnande "Paradiset"
-för 蓮華国 (deepseek, P1); didaktiska expansioner av den avsiktligt oexplikerade
-slutbilden i Genjōkōan (deepseek A, P3).
+**Stilproblem.** Mildring/förvanskning av grova 乾屎橛 ("spillkråka" hos gemma A P4 —
+en fågel); kristnande ordval; didaktiska expansioner av avsiktligt oexplikerade
+slutbilder; engelsk interferens ("positionslös sann människa" för 無位, "futiliter"
+för はかなさ).
 
-**Hallucinationer.** gemma: "Ibland borstar man bort barn med en stav" ur 杖払子 =
-"staven och flugviskan" (P5, försvarat som "bokstavlig återgivning"); gemma:
-liknelsen attribuerad till "Sutra om det gyllene ljuset" i stället för Lotussutran
-(P1); gemma: uppdiktad Dao-läsart av 道道 presenterad som filologisk tvetydighet
-(P4); deepseek: "klockljudet … dunklet från en lerkruka" — utbroderat utöver 喚鐘作甕
-(P2). Värst av allt: granskarmodeller som recenserade tomma översättningar och
-rekommenderade dem (P2, P4) — konfabulation i själva kvalitetskontrollen.
+**Hallucinationer.** gemmas "barn" ur 払子 och "spillkråka" ur 乾屎橛; utbroderade
+scener ("hörde klockan men trodde det var ett vattenkärl", P2). I granskningarna:
+felaktiga påståenden om att korrekta läsningar vore påhitt.
 
-**Omotiverad säkerhet.** gemma satte konfidens 5 på svar med namnfel, verbfel och
-hallucinationer (P1–P5, systematiskt); granskaren i P4 underkände korrekt 道道-
-översättning som "allvarligt fel" med nybörjarläsningen som facit; gemma B hävdade
-att en felaktig parsning var "bokstavlig" (P1). deepseek var ensam om genomgående
-kalibrerad konfidens (3–4 med konkreta svagheter). **Konfidenssiffror från modeller
-utan kalibrering är sämre än inga alls** — i produktionsformatet sparas de som
-modellutsaga, inte som kvalitetsmått.
+**Omotiverad säkerhet.** gemma satte genomgående konfidens 5 på svar med påvisbara fel
+(namn, mått, verb, hallucinationer); granskarna underkände korrekta läsningar (道道,
+kontrafaktisk vers) med full säkerhet. glm-5.2 och deepseek-v4-pro var bäst
+kalibrerade men inte felfria. Konfidenssiffror från okalibrerade modeller är sämre än
+inga — de sparas som modellutsaga, inte som kvalitetsmått.
 
-**Leveranssäkerhet (viktig metodlärdom i två steg).** I körningen med
-`num_predict 4096` levererade de resonerande modellerna (qwen3.5, glm-5.1) tomma
-eller trunkerade svar på flertalet passager — tankeblocken åt upp tokenbudgeten och
-det synliga svaret försvann. Budgeten höjdes till 16 384, tomt svar gjordes till
-fel med omförsök, och de drabbade cellerna kördes om. **Även då** returnerade
-qwen3.5 tomt på 7 av 15 celler (tre försök per cell), och glm-5.1:s apparat
-trunkerades fortfarande i de flesta celler — det som först såg ut som ren
-konfiguration visade sig delvis vara ett äkta tillförlitlighetsfynd hos modellerna.
-Lärdomar för pipelinen: hög tokenbudget, tomt svar = fel med omförsök,
-leveranskontroll av varje svar (finns alla begärda rubriker?), och väg
-leveranssäkerhet lika tungt som filologisk kvalitet vid modellval — det är därför
-deepseek (15/15 kompletta) och inte glm (vassare men trunkerad) rekommenderas som
-primär modell.
-
----
+**Metodlärdom (leveranssäkerhet i flera steg).** Tokenbudgeten höjdes 4 096 → 16 384 →
+20 480 → 32 768 → 49 152; tomt svar gjordes till fel med omförsök; varje svar
+leveranskontrollerades (slutar det terminalt? finns alla rubriker?). Även vid 49 152
+kvarstod trunkering för de mest verbosa resonerande modellerna — den praktiska
+konsekvensen är att välja en leveranssäker modell (glm-5.2 eller en icke-resonerande
+modell) snarare än att jaga en budget som rymmer godtyckligt långa tankeblock.
 
 ## 6. Rekommenderad produktionspipeline
 
@@ -274,7 +256,8 @@ regeln att AI aldrig publicerar ensamt:
    alla begärda rubriker finns) innan nästa steg får köra.
 5. **Terminologiordlista.** För in valda termåtergivningar i en gemensam ordlista
    så att samma term återges lika i hela atlasen; avvikelser motiveras.
-6. **Korsmodellsgranskning.** Låt granskningsmodellen (glm-5.1) granska mot
+6. **Korsmodellsgranskning.** Låt granskningsmodellen (deepseek-v4-pro, med gemma4 som
+   reserv) granska mot
    originalet med granskningsprotokollet (flöde D-prompten i
    `scripts/zen-experiment/prompter.ts`). Granskningens fynd är uppslag för
    den mänskliga granskningen — varje påstående verifieras, inget åtgärdas
@@ -312,7 +295,7 @@ JSON (eller frontmatter) per översatt passage, förslagsvis under
   "svenskLasbar": "…",
   "terminologinoter": [{ "term": "無位真人", "atergivning": "…", "motivering": "…" }],
   "osakerheter": ["…"],
-  "modell": { "namn": "deepseek-v3.2:cloud", "digest": "…", "flode": "C-analytiskt", "datum": "2026-07-13" },
+  "modell": { "namn": "glm-5.2:cloud", "digest": "…", "flode": "C-analytiskt", "datum": "2026-07-14" },
   "granskning": [
     { "typ": "korsmodell", "modell": "…", "datum": "…", "resultat": "…" },
     { "typ": "mansklig", "granskare": "ägaren", "datum": "…", "beslut": "…" }
@@ -332,14 +315,23 @@ vägen till publicering i stället för att strykas under putsningen.
 
 - Rådata: `docs/research/zen-experiment/results/` (alla prompter och svar,
   latenser, modellmetadata).
-- Utvärderingsprotokoll per passage (två rundor, poängtabeller, felkatalog):
-  `docs/research/zen-experiment/utvardering/`.
+- Utvärderingsprotokoll per passage (poängtabeller, felkatalog; v3.2-omgången och
+  flaggskeppsomgången): `docs/research/zen-experiment/utvardering/`.
 - Harness: `scripts/zen-experiment/run.ts` (återupptagbar; körs via
   `.github/workflows/zen-experiment.yml`).
-- Modellkatalogläget 2026-07: Ollama Cloud omfattar bl.a. deepseek-v3.2 (671B),
-  GLM-5.1, Kimi K2.6, Qwen 3.6-familjen, MiniMax M3, gpt-oss och Gemma 4;
+- Metodhistorik: experimentet kördes i två omgångar. Den första (körning 3–4) testade
+  `deepseek-v3.2`, `qwen3.5:cloud`, `glm-5.1` och `gemma4` och rekommenderade v3.2 —
+  men kandidatlistan byggde på modell-rankningsbloggar och missade de aktuella
+  flaggskeppen. Den andra (körning 5–9) uppdaterade mot den live-listade katalogen och
+  testade `deepseek-v4-pro`, `qwen3.5:397b`, `glm-5.2` och `gemma4`; den ligger till
+  grund för §1/§3/§4/§5. Lärdom: verifiera alltid mot `ollama.com/library?c=cloud`,
+  inte mot sekundärkällor.
+- Modellkatalogläget 2026-07 (verifierat mot library-listningen): Ollama Cloud omfattar
+  bl.a. `deepseek-v4-pro`/`deepseek-v4-flash`, `qwen3.5:397b`, `glm-5.2`, `kimi-k2.6`,
+  `minimax-m3`, `mistral-large-3`, `nemotron-3-ultra`, `gpt-oss` och `gemma4`;
   prissättning per abonnemang (Free/Pro/Max, debiterat efter GPU-tid). Källor:
   [Ollama cloud-katalog](https://ollama.com/search?c=cloud),
+  [Ollama Cloud-docs](https://docs.ollama.com/cloud),
   [ollama/ollama på GitHub](https://github.com/ollama/ollama),
-  [webreactiva: Ollama Cloud-modeller](https://www.webreactiva.com/blog/modelos-ollama-cloud),
-  [angelo-lima: Ollama 2026](https://angelo-lima.fr/en/ollama-2026-state-of-the-art-en/).
+  [MiniMax M3](https://www.minimax.io/blog/minimax-m3),
+  [Gemma 4 model card](https://ai.google.dev/gemma/docs/core/model_card_4).

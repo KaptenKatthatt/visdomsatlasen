@@ -71,3 +71,25 @@ lotusbilden; dokumenterade avvikelser från engelskan). Tvåa: deepseek C.
 
 **Slutdom P1:** som färdig komplett leverans står deepseek B kvar som vinnare; som
 råtext att redigera vidare är glm B förstahandsval.
+
+## Runda 3 (flaggskepp: deepseek-v4-pro, glm-5.2, gemma4, qwen3.5:397b)
+
+Poäng (endast kompletta celler; tio kriterier i standardordning):
+
+| Cell | Poäng |
+|---|---|
+| deepseek-v4-pro A | 4,5,5,5,4,4,5,5,4,5 |
+| deepseek-v4-pro C | 4,5,4,3,3,3,4,5,4,4 |
+| glm-5.2 A | 4,4,4,4,4,4,4,4,5,4 |
+| glm-5.2 B | 5,5,5,5,4,4,5,5,5,5 |
+| glm-5.2 C | 4,4,3,4,4,3,4,4,4,4 |
+| gemma4 A | 3,4,4,5,3,5,5,4,3,4 |
+| gemma4 B | 4,4,5,5,4,5,5,5,4,4 |
+| gemma4 C | 3,4,4,5,4,5,5,4,3,4 |
+| qwen3.5:397b (alla) | EJ LEVERERAD (trunkerad/saknas) |
+
+- deepseek-v4-pro B saknas; deepseek-D trunkerad; gemma-D saknas.
+- Viktiga fel: 水を離れて氷なく inverterad hos gemma (alla) och qwen C ordagrann;
+  近き fellläst; "futiliter" (deepseek C, kalk); 渇を叫ぶ "ropa efter törst" (glm/deepseek C).
+- **Bästa enskilda: glm-5.2 B** (korrekt is/vatten-riktning, öppen 近き-tvetydighet,
+  bevarad lotusbild). deepseek-v4-pro A tvåa.

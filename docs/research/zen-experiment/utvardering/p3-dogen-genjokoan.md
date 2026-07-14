@@ -67,3 +67,21 @@ leverans.
 **Slutdom P3:** deepseek A bäst (enda med fullständig apparat och korrekt
 生仏-identifiering); ny tvåa glm C. Rangordning: deepseek A > glm C > glm A >
 qwen C >> glm B.
+
+## Runda 3 (flaggskepp)
+
+| Cell | Poäng |
+|---|---|
+| deepseek-v4-pro B | 5,4,4,5,5,4,4,3,5,4 |
+| glm-5.2 A | 4,4,4,5,4,4,4,4,3,4 |
+| glm-5.2 C | 5,5,4,5,5,4,4,5,5,5 |
+| gemma4 A | 4,4,4,5,3,5,5,4,4,4 |
+| gemma4 B | 3,3,4,5,3,4,4,4,3,3 |
+| gemma4 C | 4,4,4,5,3,5,5,4,4,4 |
+| deepseek-v4-pro A/C, qwen (alla), glm B | EJ LEVERERAD (trunkerad/saknas) |
+
+- deepseek-v4-pro:s leverans brast här (A trunkerad, C saknas) — bara B poängsättbar.
+- Fel: gemma 草…おふる = "vissnar" (alla flöden, befäst i analysen); gemma B 時節 =
+  "tid och rum"; glm A psykologiserande tillägg; われにあらざる försvagad till "tillhör".
+- **Bästa enskilda: glm-5.2 C** (temporal ram, radikal negation, treställsstruktur,
+  gräset *växer*, のみなり bevarat, inga tillägg).
