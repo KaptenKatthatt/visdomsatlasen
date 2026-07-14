@@ -10,6 +10,7 @@ upphov: okänt
 datering: ungefärlig
 rättigheter: public-domain
 biblioteksverk: bibel-1917
+nyckelord: [Predikaren, Ecclesiastes]
 status: publicerad
 ---
 

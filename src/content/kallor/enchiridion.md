@@ -14,6 +14,7 @@ upphov: tillskrivet
 datering: ungefärlig
 rättigheter: public-domain
 biblioteksverk: enchiridion
+alias: [Epictetus, Handboken]
 status: publicerad
 ---
 

@@ -2,6 +2,7 @@
 id: tradition-taoism
 slug: taoism
 namn: Taoism
+nyckelord: [daoism]
 status: publicerad
 ---
 
