@@ -16,7 +16,7 @@ noteringar: >-
   Dhammapada. Alltså en försvenskning av Sujatos engelska, inte direkt ur
   palin. Obs: Watts-rapporten hänvisar till Müllers översättning, men
   biblioteket använder Sujato (CC0); versnumreringen är densamma.
-  Publiceringsbeslutet är redaktören Jonas Olsons läsning och merge — AI
-  avgör aldrig ensam vad som publiceras.
+  Publiceringsbeslutet är redaktören Jonas Olsons läsning och merge av
+  PR #32 — AI avgör aldrig ensam vad som publiceras.
 status: publicerad
 ---

@@ -33,6 +33,6 @@ noteringar: >-
   getBible; det avslutande citattecknet efter 6:34 (perikopslut i förlagan) är
   utelämnat här eftersom passagen börjar vid 6:25. Förgranskad mot
   verify-sources.md. Publiceringsbeslutet är redaktören Jonas Olsons läsning
-  och merge — AI avgör aldrig ensam vad som publiceras.
+  och merge av PR #32 — AI avgör aldrig ensam vad som publiceras.
 status: publicerad
 ---

@@ -18,6 +18,6 @@ noteringar: >-
   mot Unbound Bibles OSIS-utgåva »Swedish 1917 Version« (via open-bibles),
   samma översättning som bibliotekets ingest hämtar från getBible. Förgranskad
   mot verify-sources.md. Publiceringsbeslutet är redaktören Jonas Olsons
-  läsning och merge — AI avgör aldrig ensam vad som publiceras.
+  läsning och merge av PR #32 — AI avgör aldrig ensam vad som publiceras.
 status: publicerad
 ---

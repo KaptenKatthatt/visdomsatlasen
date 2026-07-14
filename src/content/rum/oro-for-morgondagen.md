@@ -60,8 +60,7 @@ redaktion:
     Inga emojis. Rummet är appens första flerkällsrum; läsrummets kolofon
     ändrades i samma PR så alla tre relationerna syns (etiketten »Källor«).
     Publiceringsbeslutet är redaktören Jonas Olsons läsning och merge av
-    utkast-PR:n som bär denna ändring — AI avgör aldrig ensam vad som
-    publiceras.
+    PR #32 — AI avgör aldrig ensam vad som publiceras.
   version: 1
 ---
 
