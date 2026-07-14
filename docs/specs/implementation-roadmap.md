@@ -564,6 +564,11 @@ A room must not be publishable unless:
 - uncertainty is represented where relevant
 - editorial prose is distinguished from source wording
 
+For in-copyright modern authors (for example Alan Watts, protected until the end of
+2043), rooms may build on their ideas with named attribution, but their wording may
+only appear as short verified quotations inside analysis — see
+`/docs/research/alan-watts.md`, section 4.
+
 ## Verification
 
 The phase is complete when:
@@ -784,6 +789,40 @@ Each path should contain four or five existing rooms.
 Enough verified source records to support every published room.
 
 Do not create placeholder sources.
+
+## Modern Interpreters: Alan Watts
+
+Alan Watts is welcome as an idea source throughout the content work, to the extent
+copyright permits. His ideas may be used freely — ideas are not protected — but his
+wording is protected until the end of 2043. The rules and reasoning are documented in
+`/docs/research/alan-watts.md`; content work should follow its recommendations.
+
+Planned entry points for his themes, each anchored in older public-domain sources:
+
+- **Lugn:** Vattnet (Daodejing 78), Kocken och kniven (Zhuangzi 3), Låt vattnet
+  klarna (Daodejing 15), Oro för morgondagen (Matt 6, Dhammapada, Predikaren —
+  with *The Wisdom of Insecurity* as idea background)
+- **Människan:** Vagnen (Milindapañha, Hume — Watts named in the context section as
+  the twentieth century's interpreter); a possible future room on the self and
+  psychotherapy, presenting the *Psychotherapy East and West* thesis in our own
+  words with named attribution
+- **Mening:** Leken (Zhuangzi 1, līlā — Watts mentioned as the modern voice that
+  popularised the idea; his music analogy is not reproduced)
+- **Historia:** Tolken i väst — a room about Watts himself as the West's most
+  influential populariser of Asian thought, including the criticism of him,
+  possibly with one short verified quotation inside the analysis
+
+Prerequisite: `taoism` and `buddhism` tradition records plus source records for
+Daodejing, Zhuangzi and Dhammapada, following the Phase 6 Stoicism pattern. The
+full works are already ingested in the library.
+
+Rules from the research report:
+
+- no translated passages, no lecture transcripts, no quote collections
+- quotations only from his books, verified against page, year and publisher —
+  never from posthumous compilations or YouTube
+- Watts is presented as an interpreter and populariser, never as a Zen authority
+- any Watts source record uses `rättigheter: skyddad`
 
 ## Content Quality
 
