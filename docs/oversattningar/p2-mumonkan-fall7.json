@@ -31,7 +31,7 @@
   "granskning": [
     { "typ": "korsmodell", "modell": "deepseek-v4-pro:cloud", "datum": "2026-07-14", "resultat": "Äkta fynd: 開口見膽/露出心肝 tappade de konkreta organen (galla/hjärta/lever) — inarbetat i den redaktionella läsbara versionen. 'Dold tvetydighet' för 者僧/洗鉢盂去 avvisas som semi-falsk: glm redovisade båda läsningarna. Samlad dom 'duglig utgångspunkt'. Rådata: radata/p2-mumonkan-fall7.json." },
     { "typ": "mansklig", "granskare": "Claude (förgranskning)", "datum": "2026-07-14", "beslut": "Alla ankare OK; organbildspråket skärpt i läsbar. Duglig som utkast; se granskning.md." },
-    { "typ": "mansklig", "granskare": "ägaren (Jonas Olson)", "datum": null, "beslut": "avvaktar" }
+    { "typ": "mansklig", "granskare": "ägaren (Jonas Olson)", "datum": "2026-07-14", "beslut": "avvisad — ägaren vill inte ha med själva texten (redaktionellt val om innehållet, inte om översättningskvaliteten)" }
   ],
-  "status": "utkast"
+  "status": "avvisad"
 }
