@@ -33,7 +33,7 @@
   "granskning": [
     { "typ": "korsmodell", "modell": "deepseek-v4-pro:cloud", "datum": "2026-07-14", "resultat": "Äkta fynd: 滅 'död' i läsbar — rättat till 'upphörande'. 愛惜/棄嫌-reduktionen återställd. 'Dolda tvetydigheter' (すなはち, に, われにあらざる) avvisas: glm redovisade dem öppet i sin apparat. Samlad dom 'duglig utgångspunkt'. Rådata: radata/p3-dogen-genjokoan.json." },
     { "typ": "mansklig", "granskare": "Claude (förgranskning)", "datum": "2026-07-14", "beslut": "Alla ankare OK (växer/negation/生仏/豊倹); 滅-fixen applicerad. Duglig som utkast; SAT-kollation kvarstår. Se granskning.md." },
-    { "typ": "mansklig", "granskare": "ägaren (Jonas Olson)", "datum": null, "beslut": "avvaktar" }
+    { "typ": "mansklig", "granskare": "ägaren (Jonas Olson)", "datum": "2026-07-14", "beslut": "avvisad — för svårgripbar; ägaren vill bara ha texter läsaren kan greppa (redaktionellt val om innehållet, inte om översättningskvaliteten)" }
   ],
-  "status": "utkast"
+  "status": "avvisad"
 }
