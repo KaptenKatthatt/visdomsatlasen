@@ -1,0 +1,37 @@
+{
+  "id": "p1-hakuin-zazen-wasan",
+  "original": "衆生本来仏なり\n水と氷のごとくにて\n水を離れて氷なく\n衆生の外に仏なし\n衆生近きを知らずして\n遠く求むるはかなさよ\nたとえば水の中に居て\n渇を叫ぶがごとくなり\n長者の家の子となりて\n貧里に迷うに異ならず",
+  "kallreferens": {
+    "verk": "Zazen wasan (坐禅和讃), Hakuin Ekaku (1686–1769) — inledningen (tio första halvverserna)",
+    "utgava": "Standardiserad liturgisk text (Rinzai-shu); ingen kritisk utgåva",
+    "transkription": "Sammanställd ur flera oberoende tempel-/referenspubliceringar; ren självständig inledning (luckan （……） i tidigare utdrag borttagen)",
+    "lank": "https://ja.wikipedia.org/wiki/%E5%9D%90%E7%A6%85%E5%92%8C%E8%AE%83",
+    "upphovsratt": "original public domain (Hakuin d. 1769); liturgisk text utan modern verkshöjd"
+  },
+  "engelskArbetsoversattning": null,
+  "svenskOrdagrann": "Varelserna är ursprungligen Buddha.\nLiksom vatten och is,\nåtskilda från vatten finns ingen is,\nutanför varelserna finns ingen Buddha.\nVarelserna, utan att veta [det som är nära / att det är nära],\n[vilken] fåfänglighet att söka långt borta!\nTill exempel, att befinna sig i vatten\när som att ropa [av / ut] törst.\nAtt bli ett barn i en rik mans hus\nskiljer sig inte från att gå vilse i en fattig by.",
+  "svenskLasbar": "Varelserna är ursprungligen Buddha,\nliksom vatten och is.\nSkild från vattnet finns ingen is,\noch utanför varelserna finns ingen Buddha.\nVarelserna känner inte det som är nära\noch söker det fåfängt i fjärran —\nsom att stå mitt i vattnet\noch ändå ropa av törst,\neller vara barn i en rik mans hus\noch ändå gå vilse som i en fattig by.",
+  "redaktionellaAvsteg": [
+    "Läsbar rad 3: glm:s råutdata 'Utan att skiljas från vatten finns ingen is' är stapplande och vänder villkoret; rättat till 'Skild från vattnet finns ingen is' (den ordagranna versionen var redan korrekt). Verifierat mot korsgranskningen.",
+    "Läsbar rad 5: 'känner inte igen det som är nära' → 'känner inte det som är nära' (närmare 知らず 'vet inte'); tvetydigheten kvarstår i den ordagranna.",
+    "Läsbar slutrader omdisponerade för flyt utan att lägga till innehåll; de bindeord glm införde (och ändå/eller/men) behålls sparsamt som läsbarhetsbindning, inte som originaltext."
+  ],
+  "terminologinoter": [
+    { "term": "本来", "atergivning": "ursprungligen", "motivering": "Anspelar på hongaku (ursprunglig upplysning) utan tolkande omskrivning." },
+    { "term": "衆生", "atergivning": "varelser", "motivering": "Kortform i vers; jfr terminologi.md — enhetlig standard 'kännande varelser' är ett öppet ägarbeslut." },
+    { "term": "長者", "atergivning": "rik man", "motivering": "Gör Lotussutrans liknelse (信解品, den förlorade sonen) begriplig utan förkunskap." }
+  ],
+  "osakerheter": [
+    "近き (rad 5) kan läsas konkret ('det som är nära') eller abstrakt ('att det är nära'); den ordagranna håller båda öppna.",
+    "を i 渇を叫ぶ (rad 8) kan ange orsak ('ropa av törst') eller objekt ('ropa ut sin törst').",
+    "に i 貧里に迷うに異ならず (rad 10) kan vara liknelse- eller tidsmarkör.",
+    "Slutlig teckenverifiering mot tryckt utgåva rekommenderas före publicering."
+  ],
+  "modell": { "namn": "glm-5.2:cloud", "digest": null, "parametrar": "756B (MoE)", "kontext": 1000000, "flode": "C-analytiskt", "datum": "2026-07-14", "not": "Digest exponeras inte av /api/show för cloud-modeller; metadata i radata/modeller.json." },
+  "granskning": [
+    { "typ": "korsmodell", "modell": "deepseek-v4-pro:cloud", "datum": "2026-07-14", "resultat": "Fångade riktigt läsbar rad 3 (vattnet/isen). Samlad dom ('inte duglig, gör om varje rad') bedöms överdriven — en självsäker falsk negativ; översättningen är i huvudsak korrekt. Övriga 'påhitt' (och ändå/eller/men) är läsbarhetsbindning, inte hallucination. Rådata: radata/p1-hakuin-zazen-wasan.json." },
+    { "typ": "mansklig", "granskare": "Claude (förgranskning)", "datum": "2026-07-14", "beslut": "Ordagrann träffar alla ankare; en verifierad läsbar-fix (rad 3) applicerad. Duglig som utkast; se granskning.md." },
+    { "typ": "mansklig", "granskare": "ägaren (Jonas Olson)", "datum": "2026-07-14", "beslut": "godkänd (chattgranskning); publicering till src/content är ett separat steg" }
+  ],
+  "status": "utkast"
+}

@@ -1,0 +1,37 @@
+{
+  "id": "p2-mumonkan-fall7",
+  "original": "趙州因僧問。某甲乍入叢林。乞師指示。州云。喫粥了也未。僧云。喫粥了也。州云。洗鉢盂去。其僧有省。\n無門曰。趙州開口見膽。露出心肝者僧聽事不真。喚鐘作甕。\n頌曰。\n只為分明極　翻令所得遲\n早知燈是火　飯熟已多時",
+  "kallreferens": {
+    "verk": "Wumenguan (無門關, Mumonkan), fall 7 — Zhaozhou tvättar skålen, med Wumens kommentar och vers",
+    "utgava": "Taishō T48n2005, s. 0293c27–0294a05",
+    "transkription": "CBETA xml-p5 (T48n2005.xml, hämtad 2026-07-13); teckenexakt inkl. Taishō-interpunktion",
+    "lank": "https://raw.githubusercontent.com/cbeta-org/xml-p5/master/T/T48/T48n2005.xml",
+    "upphovsratt": "original public domain (Wumen d. 1260); interpunktion Taishō/CBETA (redaktionell)"
+  },
+  "engelskArbetsoversattning": null,
+  "svenskOrdagrann": "Zhaozhou, på grund av att en munk frågade [honom]:\n\"Jag har nyss trätt in i klostersamfundet. Ber mästaren om vägledning.\"\nZhou sade: \"Ätit gröt eller inte ännu?\"\nMunken sade: \"Ätit gröt.\"\nZhou sade: \"Gå och tvätta munkskålen.\"\nDenne munk fick insikt.\n\nWumen sade: Zhaozhou öppnar munnen och visar gallan, blottar hjärta och lever. [Alt. A: Den som blottar hjärta och lever — munken lyssnade inte sant till saken. / Alt. B: denne munk lyssnade inte sant till saken.] Denne munk kallar en klocka för en kruka.\n\nOden säger:\nBara för att [det var] extremt tydligt,\nvände det istället och gjorde det man fick sent.\nTidigt vetat att lampa är eld,\nris färdigkokt redan länge.",
+  "svenskLasbar": "Zhaozhou blev tillfrågad av en munk: \"Jag har nyss trätt in i klostersamfundet. Jag ber mästaren att visa mig vägen.\" Zhaozhou sade: \"Har du ätit gröt än?\" Munken sade: \"Jag har ätit gröt.\" Zhaozhou sade: \"Gå och tvätta skålen.\" Då fick munken insikt.\n\nWumen sade: Zhaozhou öppnar munnen och blottar sin galla, visar hjärta och lever. Denne munk lyssnade inte sant till saken; han kallar en klocka för en kruka.\n\nOden säger:\nJust för att det var alltför tydligt,\nblev insikten i stället fördröjd.\nHade han tidigt vetat att lampan är eld,\nhade riset varit färdigt för länge sedan.",
+  "redaktionellaAvsteg": [
+    "Läsbar, Wumens kommentar: glm:s 'öppnar munnen och visar sitt hjärta, blottar sitt innersta' ersatt med bildspråk närmare de konkreta organen — 見膽 (galla/mod), 心肝 (hjärta/lever) — 'blottar sin galla, visar hjärta och lever'. Verifierat fynd från korsgranskningen.",
+    "Segment 13 (露出心肝者僧): läsbar följer läsningen 者僧 = 'denne munk' (Song-talspråk 這僧); den alternativa nominaliserande läsningen behålls i den ordagranna."
+  ],
+  "terminologinoter": [
+    { "term": "洗鉢盂去", "atergivning": "gå och tvätta (munk)skålen", "motivering": "Verbet 洗 (tvätta) bevaras; 鉢盂 = allmoseskål/munkskål, inte 'almskål'." },
+    { "term": "有省", "atergivning": "fick insikt", "motivering": "Etablerad zenterm för plötslig förståelse." },
+    { "term": "喚鐘作甕", "atergivning": "kallar en klocka för en kruka", "motivering": "Ordagrant; ingen utbroderad scen." },
+    { "term": "頌", "atergivning": "oden", "motivering": "Poetisk kommentar i zenlitteratur." }
+  ],
+  "osakerheter": [
+    "露出心肝者僧: 者 kan nominalisera föregående sats ('Den som blottar hjärta och lever…') eller ingå i 者僧 ('denne munk'); Taishō sätter ingen punkt. Ordagranna versionen redovisar båda.",
+    "洗鉢盂去 kan vara imperativ ('Gå och tvätta skålen!') eller berättande ('[munken] gick för att tvätta skålen').",
+    "所得 i oden ('det man får/uppnår') snävas i läsbar till 'insikten'; den öppnare innebörden står i den ordagranna.",
+    "早知燈是火 saknar subjekt; läsbar inför 'han' (munken) för flyt."
+  ],
+  "modell": { "namn": "glm-5.2:cloud", "digest": null, "parametrar": "756B (MoE)", "kontext": 1000000, "flode": "C-analytiskt", "datum": "2026-07-14", "not": "Digest exponeras inte av /api/show för cloud-modeller; metadata i radata/modeller.json." },
+  "granskning": [
+    { "typ": "korsmodell", "modell": "deepseek-v4-pro:cloud", "datum": "2026-07-14", "resultat": "Äkta fynd: 開口見膽/露出心肝 tappade de konkreta organen (galla/hjärta/lever) — inarbetat i den redaktionella läsbara versionen. 'Dold tvetydighet' för 者僧/洗鉢盂去 avvisas som semi-falsk: glm redovisade båda läsningarna. Samlad dom 'duglig utgångspunkt'. Rådata: radata/p2-mumonkan-fall7.json." },
+    { "typ": "mansklig", "granskare": "Claude (förgranskning)", "datum": "2026-07-14", "beslut": "Alla ankare OK; organbildspråket skärpt i läsbar. Duglig som utkast; se granskning.md." },
+    { "typ": "mansklig", "granskare": "ägaren (Jonas Olson)", "datum": "2026-07-14", "beslut": "avvisad — ägaren vill inte ha med själva texten (redaktionellt val om innehållet, inte om översättningskvaliteten)" }
+  ],
+  "status": "avvisad"
+}

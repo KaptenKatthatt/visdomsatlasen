@@ -5,7 +5,8 @@
     "server/index.ts",
     "scripts/ingest.ts",
     "scripts/validera-innehall.ts",
-    "scripts/zen-experiment/run.ts"
+    "scripts/zen-experiment/run.ts",
+    "scripts/zen-oversatt/run.ts"
   ],
   "duplicates": {
     "minOccurrences": 3

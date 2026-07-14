@@ -1,0 +1,39 @@
+{
+  "id": "p3-dogen-genjokoan",
+  "original": "諸法の仏法なる時節、すなはち迷悟あり、修行あり、生あり死あり、諸仏あり衆生あり。万法ともにわれにあらざる時節、まどひなくさとりなく、諸仏なく衆生なく、生なく滅なし。仏道もとより豊倹より跳出せるゆゑに、生滅あり、迷悟あり、生仏あり。しかもかくのごとくなりといへども、華は愛惜にちり、草は棄嫌におふるのみなり。",
+  "kallreferens": {
+    "verk": "Shōbōgenzō, kapitlet Genjōkōan (現成公案), Dōgen (1200–1253) — öppningsstycket",
+    "utgava": "75-kapitelsredaktionen; motsvarar Taishō T82n2582 (ej i CBETA:s fria XML)",
+    "transkription": "Kryssverifierad mot flera oberoende japanska transkriptioner (2026-07-13); teckenexakt SAT-kollation återstår",
+    "lank": "https://www.zen-essay.com/entry/genjyoukouan",
+    "upphovsratt": "original public domain (Dōgen d. 1253); modern interpunktion/kanaval redaktionell"
+  },
+  "engelskArbetsoversattning": null,
+  "svenskOrdagrann": "Alla dharmors [tidpunkt/tillstånd] att vara Buddhas dharma — [det vill säga/då] finns det illusion och upplysning, finns det praktik, finns det liv och död, finns det buddhor och levande varelser.\nAlla dharmors [tidpunkt/tillstånd] att tillsammans inte vara mig — finns det inte illusion och inte upplysning, inte buddhor och inte levande varelser, inte liv och inte upphörande.\nEftersom Buddha-vägen ursprungligen har hoppat ut/transcenderat [bort från/över] överflöd och brist, finns det liv och död, illusion och upplysning, levande varelser och buddhor.\nMen även om det är på detta sätt, faller blommorna [på grund av/i/som] kärlek och fästelse, och gräset växer [på grund av/i/som] förakt och avvisande, endast så.",
+  "svenskLasbar": "När alla dharmor är Buddhas dharma, finns det förvirring och upplysning, andlig praktik, liv och död, buddhor och levande varelser. När alla dharmor inte är mig, finns det varken förvirring eller upplysning, varken buddhor eller levande varelser, varken födelse eller upphörande. Eftersom Buddha-vägen ursprungligen har transcenderat överflöd och brist, finns det liv och död, förvirring och upplysning, levande varelser och buddhor. Och ändå, även om det förhåller sig så, faller blommorna med vår kärlek och fästelse, och gräset växer med vårt förakt och avvisande — det är helt enkelt så.",
+  "redaktionellaAvsteg": [
+    "Läsbar: glm:s 'varken födelse eller död' för 生なく滅なし rättat till 'varken födelse eller upphörande' — 滅 (upphörande/utslocknande) är skilt från 死 (död). Verifierat fynd från korsgranskningen; den ordagranna hade redan 'upphörande'.",
+    "迷 återges 'förvirring' (inte 'illusion') för att matcha ankarna och terminologi.md.",
+    "愛惜/棄嫌: läsbar återinför dubbelheten ('kärlek och fästelse', 'förakt och avvisande') som glm hade i den ordagranna men reducerat i sin läsbara."
+  ],
+  "terminologinoter": [
+    { "term": "生仏", "atergivning": "levande varelser och buddhor", "motivering": "Sammandragning av 衆生 + 諸仏 — inte 成仏 ('att bli buddha')." },
+    { "term": "豊倹", "atergivning": "överflöd och brist", "motivering": "Poetiskt motsatspar/metonymi för dualiteter; inte 'fullhet och tomhet'." },
+    { "term": "生滅", "atergivning": "födelse och upphörande", "motivering": "滅 = upphörande, skilt från 死 (död)." },
+    { "term": "草…おふる", "atergivning": "gräset växer", "motivering": "生ふ = växa; inte 'vissnar'. Vänder annars Dōgens poäng." }
+  ],
+  "osakerheter": [
+    "われにあらざる kan betyda 'inte är jag' (ontologisk identitet) eller 'inte tillhör mig' (ägande); den radikala negationen bevaras, tvetydigheten redovisas.",
+    "すなはち kan vara temporalt ('då') eller förklarande ('det vill säga'); läsbar väljer temporalt ('När…').",
+    "に i 愛惜に/棄嫌に kan vara kausal, instrumentell eller ontologisk; läsbar väljer 'med' (håller kausal/instrumentell öppen).",
+    "豊倹より跳出: 'transcenderat' är en tolkning av 跳出 ('hoppat ut'); den ordagranna behåller bilden.",
+    "Teckenexakt SAT-kollation av japanskan återstår [kräver specialistgranskning]."
+  ],
+  "modell": { "namn": "glm-5.2:cloud", "digest": null, "parametrar": "756B (MoE)", "kontext": 1000000, "flode": "C-analytiskt", "datum": "2026-07-14", "not": "Digest exponeras inte av /api/show för cloud-modeller; metadata i radata/modeller.json." },
+  "granskning": [
+    { "typ": "korsmodell", "modell": "deepseek-v4-pro:cloud", "datum": "2026-07-14", "resultat": "Äkta fynd: 滅 'död' i läsbar — rättat till 'upphörande'. 愛惜/棄嫌-reduktionen återställd. 'Dolda tvetydigheter' (すなはち, に, われにあらざる) avvisas: glm redovisade dem öppet i sin apparat. Samlad dom 'duglig utgångspunkt'. Rådata: radata/p3-dogen-genjokoan.json." },
+    { "typ": "mansklig", "granskare": "Claude (förgranskning)", "datum": "2026-07-14", "beslut": "Alla ankare OK (växer/negation/生仏/豊倹); 滅-fixen applicerad. Duglig som utkast; SAT-kollation kvarstår. Se granskning.md." },
+    { "typ": "mansklig", "granskare": "ägaren (Jonas Olson)", "datum": "2026-07-14", "beslut": "avvisad — för svårgripbar; ägaren vill bara ha texter läsaren kan greppa (redaktionellt val om innehållet, inte om översättningskvaliteten)" }
+  ],
+  "status": "avvisad"
+}

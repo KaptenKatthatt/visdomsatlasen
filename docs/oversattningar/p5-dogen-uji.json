@@ -1,0 +1,37 @@
+{
+  "id": "p5-dogen-uji",
+  "original": "古仏言、\n有時高高峰頂立、有時深深海底行、有時三頭八臂、有時丈六八尺、有時杖払子、有時露柱灯籠、有時張三李四、有時大地虚空。\nいはゆる有時は、時すでにこれ有なり、有はみな時なり。丈六金身これ時なり、時なるがゆゑに時の荘厳光明あり。いまの十二時に習学すべし。三頭八臂これ時なり、時なるがゆゑにいまの十二時に一如なるべし。",
+  "kallreferens": {
+    "verk": "Shōbōgenzō, kapitlet Uji (有時), Dōgen (1200–1253) — öppningen (kanbun-citat + wabun)",
+    "utgava": "75-kapitelsredaktionen; motsvarar Taishō T82n2582 (ej i CBETA:s fria XML)",
+    "transkription": "Kryssverifierad mot flera oberoende transkriptioner + akademisk kommentar (2026-07-13); teckenexakt SAT-kollation återstår",
+    "lank": "http://hikari-k.ed.jp/zenchoji/sutra/soroku/genzo20.htm",
+    "upphovsratt": "original public domain (Dōgen d. 1253); modern interpunktion/kanaval redaktionell"
+  },
+  "engelskArbetsoversattning": null,
+  "svenskOrdagrann": "Den uråldriga buddhan sade:\n\"Ibland [varande-tid] står på den höga bergstoppen, ibland [varande-tid] går på den djupa havsbotten, ibland [varande-tid] tre huvuden och åtta armar, ibland [varande-tid] sexton fot och åtta fot, ibland [varande-tid] stav och viftare, ibland [varande-tid] bar pelare och lykta, ibland [varande-tid] Zhang den tredje och Li den fjärde, ibland [varande-tid] stora jorden och tomma rymden.\"\nDet vill säga varande-tid: tid är redan detta varande, varande är alltsammans tid. Den sexton fot [höga] gyllene kroppen är detta tid; eftersom den är tid finns tidens majestätiska glans. Bör studeras i nuets tolv timmar. Tre huvuden och åtta armar är detta tid; eftersom de är tid bör de [är de nödvändigtvis] ett sådant i nuets tolv timmar.",
+  "svenskLasbar": "Den uråldriga buddhan sade:\n\"Ibland står [någon] på den höga bergstoppen, ibland går [någon] på den djupa havsbotten, ibland [visar sig som] tre huvuden och åtta armar, ibland [som] sexton fot och åtta fot, ibland [som] stav och viftare, ibland [som] bar pelare och lykta, ibland [som] Zhang den tredje och Li den fjärde, ibland [som] stora jorden och tomma rymden.\"\nDet innebär att varande-tid (uji) är så att tiden redan är varande, och varandet är alltsammans tid. Den sexton fot höga gyllene gestalten är tid; eftersom den är tid, har den tidens majestätiska glans. Detta bör studeras under nuets tolv timmar (dygnet runt). Tre huvuden och åtta armar är tid; eftersom de är tid, bör de vara ett och detsamma i nuets tolv timmar.",
+  "redaktionellaAvsteg": [
+    "Inga korrigerande avsteg krävdes — korsgranskningen fann inget term-, utelämnings- eller interferensfel. Endast normalisering av glm:s '有時' i citatet till 'ibland' i läsbar med dubbelläsningen 'varande-tid' bevarad i den ordagranna/analysen (öppen fråga för ägaren, se osäkerheter)."
+  ],
+  "terminologinoter": [
+    { "term": "有時", "atergivning": "varande-tid (uji) / ibland", "motivering": "Dubbeltydigheten är passagens kärna: filosofiskt 'varande-tid' i Dōgens kommentar, adverbialt 'ibland' i kanbun-citatet. Hålls synlig." },
+    { "term": "丈六八尺", "atergivning": "sexton fot och åtta fot", "motivering": "Två mått/gestalter (~4,8 m resp. ~2,4 m); inte 'sex fot'." },
+    { "term": "払子", "atergivning": "viftare (flugviska)", "motivering": "Ceremoniell flugviska; inte 'barn', 'kvast' eller 'flugsmälla'." },
+    { "term": "露柱灯籠", "atergivning": "bar pelare och lykta", "motivering": "Två ting, får inte slås ihop." },
+    { "term": "虚空", "atergivning": "tomma rymden", "motivering": "Rymden/tomrummet; inte 'intet'." }
+  ],
+  "osakerheter": [
+    "有時 i citatet: ska dubbelläsningen markeras redan där (t.ex. behåll 'uji' eller not), eller reserveras 'varande-tid' för kommentaren? Öppen redaktionell fråga.",
+    "Subjektet i citatets verb (立, 行) saknas; läsbar inför '[någon]' för flyt men kan läsas opersonligt.",
+    "一如なるべし: べし kan vara normativt ('bör vara') eller ontologiskt ('är nödvändigtvis'); läsbar väljer normativt, ordagranna redovisar båda.",
+    "Teckenexakt SAT-kollation av japanskan återstår [kräver specialistgranskning]."
+  ],
+  "modell": { "namn": "glm-5.2:cloud", "digest": null, "parametrar": "756B (MoE)", "kontext": 1000000, "flode": "C-analytiskt", "datum": "2026-07-14", "not": "Digest exponeras inte av /api/show för cloud-modeller; metadata i radata/modeller.json." },
+  "granskning": [
+    { "typ": "korsmodell", "modell": "deepseek-v4-pro:cloud", "datum": "2026-07-14", "resultat": "Inga term-/utelämnings-/interferensfel. 'Dolda tvetydigheter' (subjekt, 有時 i citat, 一如なるべし) är alla redovisade i glm:s apparat — öppna redaktionella val, inte fel. Samlad dom 'mycket duglig utgångspunkt'. Rådata: radata/p5-dogen-uji.json." },
+    { "typ": "mansklig", "granskare": "Claude (förgranskning)", "datum": "2026-07-14", "beslut": "Fältets starkaste — alla ankare OK (有時 dubbel, 丈六八尺, 払子=viftare, pelare+lykta, 虚空=rymden). Duglig som utkast; SAT-kollation kvarstår. Se granskning.md." },
+    { "typ": "mansklig", "granskare": "ägaren (Jonas Olson)", "datum": "2026-07-14", "beslut": "avvisad — för svårtillgänglig; appen ska vara avslappnad och lugn, inte svår. Buddhism ja, men mer lättillgängligt (t.ex. via Alan Watts), inte klassiska primärtexter (redaktionellt val om innehållet, inte om översättningskvaliteten)" }
+  ],
+  "status": "avvisad"
+}
