@@ -19,7 +19,7 @@ källor:
 lästidMinuter: 3
 status: publicerad
 skapad: 2026-07-12
-uppdaterad: 2026-07-13
+uppdaterad: 2026-07-14
 redaktion:
   skribent: Claude (utkast, fas 7)
   källgranskare: Claude (förgranskning)
@@ -45,7 +45,12 @@ redaktion:
     passagen (för att inte utesluta kvinnor) och släktskapsledet kondenseras —
     dokumenterat i passagens noteringar; passagen bär redaktionens namn, inte
     anspråket att vara Epiktetos exakta ord.
-  version: 2
+    Fas 9-uppföljning (2026-07-14, förgranskad, väntar på redaktörens läsning och
+    merge): källans släktskapsskäl återinförs könsneutralt i passagen (»att ni
+    hör ihop, att ni delat ett liv«), så passagen möter rummets prosa som redan
+    bar samma bild (»någon som stått dig nära, som du delat något med«). Rummets
+    text är oförändrad; bara passagen och noteringarna uppdaterade.
+  version: 3
 ---
 
 ## Öppning

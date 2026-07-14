@@ -82,16 +82,18 @@ läsrummet och på källsidor. Efter #28 mergades #25 (Alan Watts-research): rap
 `docs/research/alan-watts.md`, källposter för hela verkläsarens bestånd samt sex
 traditionsposter, plus roadmapens Fas 12-insteg »Modern Interpreters: Alan Watts«.
 
-**Pågår: Fas 9 — Sparat och anteckningar (`docs/specs/notes-and-saved.md`).** Låter
-användaren bevara platser och tankar utan produktivitetspress: spara/ta bort
-vandringar, omgjord Sparat-yta (grupper, preview-kort, spec-enliga tomlägen,
-»Senast besökt«), anteckningsredigering/-radering kopplad till ursprung, tydlig
-autospar samt export/import och förutsägbar rensning av personlig data. Personlig
-data är privat — påverkar aldrig rumsvalet, publik sök, AI eller analytics.
+**Fas 9 — Sparat och anteckningar (`docs/specs/notes-and-saved.md`) klar, mergad till
+`main` (#33).** Låter användaren bevara platser och tankar utan produktivitetspress:
+spara/ta bort vandringar (`sparadeVandringar`), omgjord Sparat-yta (`SamlingPage` +
+`SparatDelar.tsx`: grupper, preview-kort, spec-enliga tomlägen, »Senast besökt«),
+anteckningar med ursprungskoppling (`personligt.ts`: `Anteckning`/`SparadPost`,
+ersätter `notes` — tyst förlustfri migrering vid inläsning), autospar-status och
+radering i `NotesSheet`, samt export/import och förutsägbar rensning (`dataflytt.ts`,
+»Dina data« i Inställningar). Personlig data är privat — påverkar aldrig rumsvalet,
+publik sök, AI eller analytics. `chapterKey`/`ChapterBookmark` bor nu i `personligt.ts`.
 
 ## Kända skulder
 
-- Sparat-ytan görs om i Fas 9 (grupper, export, spec-enliga tomlägen) — **pågår**.
 - BottomSheet saknar fokusfälla/Escape (Fas 11); PWA saknar PNG/maskable-ikoner
   (Fas 13).
 - Sandlådefällor: `getbible.net` ger 403 vid ingest (ofarligt, bara Bibeln);
