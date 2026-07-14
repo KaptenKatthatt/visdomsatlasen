@@ -123,8 +123,8 @@
 
 .radSub {
   display: block;
-  font-size: 13.5px;
-  color: var(--soft);
+  font-size: 15px;
+  color: var(--soft-strong);
   margin-top: 3px;
 }
 

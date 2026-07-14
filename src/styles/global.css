@@ -103,6 +103,9 @@ p {
   --desk: #ece4d2;
   --ink: #2b251b;
   --soft: #8b7f6a;
+  /* Läsbar dämpad ton: --soft klarar inte WCAG AA (4.5:1) för liten text i
+     ljust läge — --soft-strong gör det på alla ljusa bakgrundsvarianter. */
+  --soft-strong: #6b6049;
   --faint: rgba(43, 37, 27, 0.16);
   --accent: #772f35;
   --accsoft: rgba(119, 47, 53, 0.5);
@@ -155,6 +158,7 @@ p {
   --desk: #12100b;
   --ink: #e9e0cc;
   --soft: #9a8e7b;
+  --soft-strong: #9a8e7b;
   --faint: rgba(233, 224, 204, 0.17);
   --accent: #c4878b;
   --accsoft: rgba(196, 135, 139, 0.5);
