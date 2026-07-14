@@ -1,3 +1,4 @@
+import { DinaData } from '../components/DinaData'
 import { BgPicker, DarkToggle, FontPicker, SizeStepper } from '../components/ReadingSettingsControls'
 import { useAtlas } from '../lib/store'
 import styles from './InstallningarPage.module.css'
@@ -28,6 +29,14 @@ export const InstallningarPage = () => {
       <div className={styles.section}>
         <div className="kicker sectionKicker">Tema</div>
         <DarkToggle />
+      </div>
+      <div className={styles.section}>
+        <div className="kicker sectionKicker">Dina data</div>
+        <p className={styles.dataLede}>
+          Dina anteckningar och sparade platser stannar på den här enheten. Exportera dem i öppet
+          format, importera tillbaka, eller rensa allt.
+        </p>
+        <DinaData />
       </div>
     </div>
   )

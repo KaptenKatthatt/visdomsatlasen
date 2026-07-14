@@ -4,12 +4,13 @@ import type { Rum, Vandring } from '../content/redaktion/schema'
 import { findTopic } from '../content/topics'
 import { hittaRumViaId, hittaVandringViaId } from '../lib/innehall'
 import {
+  chapterKey,
   datumEtikett,
   sorteradeAnteckningar,
   sparadeIdITidsordning,
   type Anteckning,
 } from '../lib/personligt'
-import { chapterKey, useAtlas } from '../lib/store'
+import { useAtlas } from '../lib/store'
 import styles from './SamlingPage.module.css'
 import { AnteckningsKort, Grupp, Tomlage, VandringKort, type NoteringsMal } from './SparatDelar'
 

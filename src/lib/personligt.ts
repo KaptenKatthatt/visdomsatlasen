@@ -4,6 +4,20 @@
 // Anteckningar är privata: de påverkar aldrig rumsvalet, publik sök, AI eller
 // analytics (spec Privacy/AI Access).
 
+/** Ett kapitelbokmärke i verkläsaren: pekar på ett kapitel och bär boknamnet
+ * så Sparat kan rendera raden utan ett extra API-anrop. */
+export type ChapterBookmark = {
+  workId: string
+  bookSlug: string
+  chapter: number
+  bookName: string
+  savedAt: number
+}
+
+/** Nyckel för ett kapitelbokmärke — samma form som bok-id:t plus kapitel. */
+export const chapterKey = (workId: string, bookSlug: string, chapter: number): string =>
+  `${workId}/${bookSlug}:${chapter}`
+
 /** En sparad post bär bara när den sparades. `null` = migrerad från gammal
  * boolean utan känt datum; datumet är valfritt i preview-kortet. */
 export type SparadPost = { sparadNar: string | null }

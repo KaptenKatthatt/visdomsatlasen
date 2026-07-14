@@ -23,3 +23,10 @@
   letter-spacing: normal;
   font-style: italic;
 }
+
+.dataLede {
+  font-size: 15.5px;
+  color: var(--soft);
+  line-height: 1.55;
+  margin: 12px 0 18px;
+}

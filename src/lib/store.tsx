@@ -9,12 +9,15 @@ import {
   type SetStateAction,
 } from 'react'
 import type { ReadMode } from '../content/model'
+import { mergaImport, type PersonligaSamlingar, type PersonligExport } from './dataflytt'
 import { hittaRumViaId } from './innehall'
 import {
+  chapterKey,
   migreraAnteckningar,
   migreraSparade,
   uppdateradAnteckning,
   type Anteckning,
+  type ChapterBookmark,
   type SparadPost,
   type Ursprung,
 } from './personligt'
@@ -34,20 +37,6 @@ import {
 const STORAGE_KEY = 'visdomsatlasen'
 
 type LastRead = { id: string; mode: ReadMode }
-
-// Ett bokmärke i biblioteket: pekar på ett kapitel och bär med sig boknamnet
-// så Samling kan rendera raden utan ett extra API-anrop.
-type ChapterBookmark = {
-  workId: string
-  bookSlug: string
-  chapter: number
-  bookName: string
-  savedAt: number
-}
-
-/** Nyckel för ett kapitelbokmärke — samma form som bok-id:t plus kapitel. */
-export const chapterKey = (workId: string, bookSlug: string, chapter: number): string =>
-  `${workId}/${bookSlug}:${chapter}`
 
 const nu = (): string => new Date().toISOString()
 
@@ -100,6 +89,8 @@ type AtlasActions = {
   sattAnteckning: (typ: Ursprung, ursprungId: string, text: string) => void
   taBortAnteckning: (ursprungId: string) => void
   rensaSenastBesokt: () => void
+  importeraPersonligt: (importen: PersonligExport) => void
+  rensaPersonligt: () => void
 }
 
 // Utåt är dark alltid det effektiva värdet (manuellt val eller systemets).
@@ -189,6 +180,7 @@ type PersonligtActions = Pick<
   AtlasActions,
   'vaxlaSparatRum' | 'vaxlaSparadVandring' | 'sattAnteckning' | 'taBortAnteckning' | 'rensaSenastBesokt'
 >
+type DataActions = Pick<AtlasActions, 'importeraPersonligt' | 'rensaPersonligt'>
 
 const useThemeActions = (setState: SetAtlasState): ThemeActions => {
   const toggleDark = useCallback(
@@ -319,10 +311,45 @@ const usePersonligtActions = (setState: SetAtlasState): PersonligtActions => {
   return { vaxlaSparatRum, vaxlaSparadVandring, sattAnteckning, taBortAnteckning, rensaSenastBesokt }
 }
 
+const personligaSamlingar = (s: AtlasState): PersonligaSamlingar => ({
+  anteckningar: s.anteckningar,
+  sparadeRum: s.sparadeRum,
+  sparadeVandringar: s.sparadeVandringar,
+  bookmarks: s.bookmarks,
+  chapterBookmarks: s.chapterBookmarks,
+})
+
+// Allt personligt tömt; utseendet (dark/font/textStep/bg) rörs aldrig. Rensning
+// av lokal data ska bete sig förutsägbart (notes-and-saved.md, Local Storage).
+const tomtPersonligt = {
+  anteckningar: {},
+  sparadeRum: {},
+  sparadeVandringar: {},
+  bookmarks: {},
+  chapterBookmarks: {},
+  lastRead: null,
+  senastLastaRum: [],
+  vandringsplatser: {},
+} satisfies Partial<AtlasState>
+
+const useDataActions = (setState: SetAtlasState): DataActions => {
+  const importeraPersonligt = useCallback(
+    (importen: PersonligExport) =>
+      setState((s) => ({ ...s, ...mergaImport(personligaSamlingar(s), importen) })),
+    [setState],
+  )
+  const rensaPersonligt = useCallback(
+    () => setState((s) => ({ ...s, ...tomtPersonligt })),
+    [setState],
+  )
+  return { importeraPersonligt, rensaPersonligt }
+}
+
 const useAtlasActions = (setState: SetAtlasState): AtlasActions => ({
   ...useThemeActions(setState),
   ...useCollectionActions(setState),
   ...usePersonligtActions(setState),
+  ...useDataActions(setState),
 })
 
 // Speglar temat på <html> (bakgrund utanför skalet) och i webbläsarens chrome
