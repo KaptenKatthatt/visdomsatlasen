@@ -56,18 +56,17 @@ Daodejing har en bild för det.
 
 ## Kärna
 
-Vem kan göra grumligt vatten klart? frågar texten. Svaret är inte att arbeta
-hårdare med det. Låt det vara stilla, säger den, så klarnar det så småningom.
-Slammet som virvlar runt sjunker bara när rörelsen upphör. Ingen kan skynda på
-klarheten genom att röra i den.
+Vad kan göra grumligt vatten klart? Låt det vara stilla, så klarnar det så
+småningom. Slammet som virvlar runt sjunker bara när rörelsen upphör. Ingen kan
+skynda på klarheten genom att röra i den.
 
 Det är sagt om vatten, men det känns igen i mycket annat. En upprörd stund ser
-annorlunda ut nästa morgon, inte för att man löst något utan för att gruset har
+annorlunda ut nästa morgon, inte för att man löst något utan för att grumlet har
 fått lägga sig. Ett svar man letat efter dyker upp först när man slutat jaga
 det. En del saker klarnar inte genom att man bearbetar dem, utan genom att man
 för en stund låter dem vara.
 
-Texten stannar inte i stillhet för stillhetens skull. I samma andetag säger den
+Saker stannar inte i stillhet för stillhetens skull. I samma andetag säger den
 att också rörelsen har sin tid: låt vilan råda, så föds rörelsen ur den när det
 är dags. Stillheten är ingen liknöjdhet — den är att lita på att somligt reder
 ut sig självt om det får rum att göra det.
