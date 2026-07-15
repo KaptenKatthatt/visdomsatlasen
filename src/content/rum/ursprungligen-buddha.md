@@ -61,8 +61,8 @@ finns det du söker inte utanför dig, som något att skaffa, utan i det du reda
 är.
 
 Vi känner inte igen det som är närmast och letar i fjärran efter det. Vi är som
-den som står mitt i vattnet och ändå ropar av törst. Vi är som barnet i en rik
-mans hus som vandrar omkring och tror sig fattig.
+den som, omgiven av vatten, ropar efter något att dricka. Vi är som barnet i en
+rik mans hus som vandrar omkring och tror sig fattig.
 
 Det är inte ett upprop för att sluta anstränga sig. Sången säger något stillare:
 en del av oron kommer av att söka på fel ställe. Om det du längtar efter inte
