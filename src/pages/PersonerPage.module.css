@@ -37,13 +37,13 @@
 
 .years {
   font-size: 13px;
-  color: var(--soft);
+  color: var(--soft-strong);
   white-space: nowrap;
 }
 
 .epithet {
   font-size: 14.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin-top: 2px;
   font-style: italic;
   line-height: 1.4;

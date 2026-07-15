@@ -15,7 +15,7 @@
 .sammanfattning {
   display: block;
   font-size: 15.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   line-height: 1.5;
   margin-top: 5px;
   text-wrap: pretty;
@@ -25,6 +25,6 @@
   display: block;
   font-size: 12.5px;
   letter-spacing: 0.06em;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin-top: 8px;
 }

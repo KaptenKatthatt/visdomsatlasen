@@ -44,7 +44,7 @@
 .rowSub {
   display: block;
   font-size: 13.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin-top: 3px;
 }
 
@@ -135,7 +135,7 @@
 /* Sekundär, dämpad variant för raderingsknappen. */
 .offlineBtnGhost {
   background: none;
-  color: var(--soft);
+  color: var(--soft-strong);
   border: 1px solid var(--faint);
   border-radius: 999px;
   padding: 9px 18px;
@@ -150,7 +150,7 @@
 
 .offlineText {
   font-size: 13.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin: 0 0 12px;
   line-height: 1.5;
 }
@@ -163,7 +163,7 @@
 
 .metaLine {
   font-size: 14px;
-  color: var(--soft);
+  color: var(--soft-strong);
   font-style: italic;
   margin-top: 6px;
 }

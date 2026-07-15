@@ -122,7 +122,7 @@
 }
 
 .darkState {
-  color: var(--soft);
+  color: var(--soft-strong);
   font-style: italic;
 }
 

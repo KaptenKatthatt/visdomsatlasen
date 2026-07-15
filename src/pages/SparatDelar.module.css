@@ -42,7 +42,7 @@
 .noteMeta {
   display: block;
   font-size: 13.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin-top: 6px;
 }
 

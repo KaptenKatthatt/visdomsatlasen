@@ -33,7 +33,7 @@
   cursor: pointer;
   font-family: inherit;
   font-size: 13.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   position: relative;
 }
 

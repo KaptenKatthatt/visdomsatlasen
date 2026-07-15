@@ -17,7 +17,7 @@
 .stod {
   font-size: 15.5px;
   font-style: italic;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin: 14px 0 0;
 }
 
@@ -46,6 +46,6 @@
   min-height: 24px;
   font-size: 15px;
   font-style: italic;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin: 16px 0 0;
 }

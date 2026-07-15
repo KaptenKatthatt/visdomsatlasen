@@ -33,7 +33,7 @@
 
 .status {
   font-size: 13.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin: 22px 0 0;
 }
 
@@ -80,7 +80,7 @@
 .radMeta {
   display: block;
   font-size: 13px;
-  color: var(--soft);
+  color: var(--soft-strong);
   font-style: italic;
   margin-top: 3px;
 }
@@ -122,7 +122,7 @@
 
 .tomhint {
   font-size: 15px;
-  color: var(--soft);
+  color: var(--soft-strong);
   line-height: 1.55;
   margin: 10px 0 0;
 }
@@ -140,7 +140,7 @@
   cursor: pointer;
   font-family: inherit;
   font-size: 14px;
-  color: var(--soft);
+  color: var(--soft-strong);
   position: relative;
 }
 
@@ -161,7 +161,7 @@
   cursor: pointer;
   font-family: inherit;
   font-size: 13.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
 }
 
 .chipVald {
@@ -171,7 +171,7 @@
 
 .filterinfo {
   font-size: 13.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin: 12px 0 0;
 }
 

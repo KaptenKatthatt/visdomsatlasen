@@ -27,7 +27,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--soft);
+  color: var(--soft-strong);
   padding: 2px 6px;
   transition: color 0.3s;
   text-decoration: none;

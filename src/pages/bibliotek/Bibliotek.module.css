@@ -59,7 +59,7 @@
 
 .antal {
   font-size: 13.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin: 8px 0 0;
 }
 
@@ -76,7 +76,7 @@
   cursor: pointer;
   font-family: inherit;
   font-size: 14.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
 }
 
 .sparaknapp[aria-pressed='true'] {
@@ -94,7 +94,7 @@
 
 .originaltitel {
   font-size: 14px;
-  color: var(--soft);
+  color: var(--soft-strong);
   font-style: italic;
   margin: 6px 0 0;
 }
@@ -118,7 +118,7 @@
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--soft);
+  color: var(--soft-strong);
 }
 
 /* Hårfina rader, samma känsla som RowLink men för statiska biblioteksrutter. */
@@ -185,7 +185,7 @@
   font-size: 12px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin: 0;
 }
 
@@ -209,7 +209,7 @@
 
 .passagmeta {
   font-size: 13.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin: 10px 0 0;
   line-height: 1.5;
 }

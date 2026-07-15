@@ -19,7 +19,7 @@
 
 .min {
   font-size: 14.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   font-style: italic;
   margin-top: 8px;
 }
@@ -65,7 +65,7 @@
 
 .notesHint {
   font-size: 14.5px;
-  color: var(--soft);
+  color: var(--soft-strong);
   font-style: italic;
   max-width: 55%;
   overflow: hidden;

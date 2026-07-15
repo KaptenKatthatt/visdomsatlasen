@@ -79,7 +79,7 @@
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--soft);
+  color: var(--soft-strong);
   display: block;
   text-align: left;
 }
@@ -106,7 +106,7 @@
 .detaljlank {
   display: inline-block;
   font-size: calc(var(--rs) - 3px);
-  color: var(--soft);
+  color: var(--soft-strong);
   text-decoration: underline;
   text-underline-offset: 3px;
   margin: 2px 0 4px;
@@ -128,7 +128,7 @@
   cursor: pointer;
   font-family: inherit;
   font-size: calc(var(--rs) - 4px);
-  color: var(--soft);
+  color: var(--soft-strong);
 }
 
 /* Vandringsfoten: två likvärdiga, stilla val — ingen knapp är framhävd, ingen
@@ -150,7 +150,7 @@
   cursor: pointer;
   font-family: inherit;
   font-size: calc(var(--rs) - 4px);
-  color: var(--soft);
+  color: var(--soft-strong);
   text-decoration: none;
 }
 
