@@ -53,16 +53,16 @@ En gammal japansk sång vänder på den förutsättningen.
 
 ## Kärna
 
-Varelserna är ursprungligen Buddha, börjar Hakuins hymn — och tar genast till
-en bild ur vardagen. Vatten och is är inte två ting. Isen är inget annat än
-vattnet i en annan form; skild från vattnet finns ingen is alls. På samma sätt,
-menar sången, finns det du söker inte utanför dig, som något att skaffa, utan i
-det du redan är.
+Varelserna är ursprungligen Buddha, börjar Hakuins hymn:
 
-Sedan följer tre bilder av hur lätt vi missar det. Vi känner inte igen det som
-är närmast och letar i fjärran efter det. Vi liknar den som står mitt i vattnet
-och ändå ropar av törst. Vi är som barnet i en rik mans hus som vandrar omkring
-och tror sig fattigt, utan att veta vad det äger.
+— Vatten och is är inte två ting. Isen är inget annat än vattnet i en annan
+form; skild från vattnet finns ingen is alls. På samma sätt, menar sången,
+finns det du söker inte utanför dig, som något att skaffa, utan i det du redan
+är.
+
+Vi känner inte igen det som är närmast och letar i fjärran efter det. Vi är som
+den som står mitt i vattnet och ändå ropar av törst. Vi är som barnet i en rik
+mans hus som vandrar omkring och tror sig fattig.
 
 Det är inte ett upprop för att sluta anstränga sig. Sången säger något stillare:
 en del av oron kommer av att söka på fel ställe. Om det du längtar efter inte
