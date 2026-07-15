@@ -49,7 +49,7 @@ export const LasPage = ({ id, mode }: { id: string; mode: ReadMode }) => {
       </div>
       <div className={`dots ${styles.dots}`}>···</div>
       <div className={styles.section}>
-        <div className="kicker sectionKicker">Ur källorna</div>
+        <h2 className="kicker sectionKicker">Ur källorna</h2>
         {sources.map((source) => (
           <RowLink
             key={source.id}
@@ -62,7 +62,7 @@ export const LasPage = ({ id, mode }: { id: string; mode: ReadMode }) => {
         ))}
       </div>
       <div className={styles.sectionWide}>
-        <div className="kicker sectionKicker">Läs vidare</div>
+        <h2 className="kicker sectionKicker">Läs vidare</h2>
         {related.map((rel) => (
           <RowLink
             key={rel.id}

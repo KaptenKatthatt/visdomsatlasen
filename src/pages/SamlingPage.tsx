@@ -90,7 +90,7 @@ const SenastBesoktGrupp = ({ rum, onRensa }: { rum: Rum[]; onRensa: () => void }
   rum.length === 0 ? null : (
     <section className={styles.senast}>
       <div className={styles.senastHuvud}>
-        <div className="kicker sectionKicker">Senast besökt</div>
+        <h2 className="kicker sectionKicker">Senast besökt</h2>
         <button type="button" className={styles.rensa} onClick={onRensa}>
           Rensa
         </button>

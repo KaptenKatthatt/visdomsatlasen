@@ -71,7 +71,7 @@ export const Rad = ({ titel, sub }: { titel: string; sub?: string }) => (
 
 export const Sektion = ({ rubrik, children }: { rubrik: string; children: ReactNode }) => (
   <div className={styles.sektion}>
-    <div className="kicker sectionKicker">{rubrik}</div>
+    <h2 className="kicker sectionKicker">{rubrik}</h2>
     {children}
   </div>
 )

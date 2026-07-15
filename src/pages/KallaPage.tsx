@@ -41,7 +41,7 @@ export const KallaPage = ({ id }: { id: string }) => {
         <p className={styles.aboutNote}>{source.note}</p>
       </div>
       <div className={styles.usedIn}>
-        <div className="kicker sectionKicker">Läses i</div>
+        <h2 className="kicker sectionKicker">Läses i</h2>
         {topicsUsingSource(source.id).map((topic) => (
           <RowLink
             key={topic.id}
