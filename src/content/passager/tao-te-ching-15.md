@@ -22,5 +22,5 @@ noteringar: >-
   i utdraget men finns i bibliotekets fulltext. Alltså en försvenskning av Legges
   engelska, samma väg som passage-tao-te-ching-78. Publiceringsbeslutet är
   redaktörens — AI avgör aldrig ensam vad som publiceras.
-status: utkast
+status: publicerad
 ---

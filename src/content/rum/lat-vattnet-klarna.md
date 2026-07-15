@@ -17,7 +17,7 @@ källor:
     primär: true
     redaktionellNot: Bearbetning av kapitlets bild av det grumliga vattnet; inga direkta citat.
 lästidMinuter: 3
-status: utkast
+status: publicerad
 skapad: 2026-07-15
 uppdaterad: 2026-07-15
 redaktion:
@@ -40,9 +40,13 @@ redaktion:
     ingår inte. Passivitetsrisken är medvetet mött: stillheten är en metod, inte
     liknöjdhet, och rörelsen sägs uppstå ur vilan i sin tur. Historisk kontext
     kontrollerad mot källposten (Laozi tillskriven; ca 400–300 f.Kr; Legge 1891).
-    En fråga, en tanke, 2 reflektionsfrågor, ca 3 min, inga emojis. Utkast för
-    ägarens granskning — AI avgör aldrig ensam vad som publiceras.
-  version: 1
+    En fråga, en tanke, 2 reflektionsfrågor, ca 3 min, inga emojis. Godkänd av
+    redaktören Jonas Olson 2026-07-15 vid chattgranskning av PR #39; redaktören
+    strök kärnans meta-referenser till »texten« och förtydligade en syftning.
+    Publiceras tillsammans med frågan och passagen (temat Lugn och källan
+    kalla-tao-te-ching är redan publicerade). AI avgör aldrig ensam vad som
+    publiceras.
+  version: 2
 ---
 
 ## Öppning

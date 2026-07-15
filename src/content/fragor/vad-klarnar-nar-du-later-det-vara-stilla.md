@@ -3,7 +3,7 @@ id: fraga-vad-klarnar-nar-du-later-det-vara-stilla
 slug: vad-klarnar-nar-du-later-det-vara-stilla
 text: Vad klarnar när du låter det vara stilla?
 teman: [tema-lugn]
-status: utkast
+status: publicerad
 ---
 
 När något är grumligt är instinkten att röra om, att göra något åt det. Men en
