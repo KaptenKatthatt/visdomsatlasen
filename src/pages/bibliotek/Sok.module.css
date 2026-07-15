@@ -7,7 +7,7 @@
   border: none;
   border-bottom: 1px solid var(--faint);
   color: var(--ink);
-  font-size: 22px;
+  font-size: 1.375rem;
   font-family: inherit;
   padding: 10px 0;
   margin-top: 8px;
@@ -15,7 +15,7 @@
 }
 
 .falt::placeholder {
-  color: var(--soft);
+  color: var(--soft-strong);
 }
 
 /* Programmatiskt kopplad etikett, dold visuellt men läst av skärmläsare. */
@@ -32,8 +32,8 @@
 }
 
 .status {
-  font-size: 13.5px;
-  color: var(--soft);
+  font-size: 0.84375rem;
+  color: var(--soft-strong);
   margin: 22px 0 0;
 }
 
@@ -65,13 +65,13 @@
 
 .radTitel {
   display: block;
-  font-size: 19px;
+  font-size: 1.1875rem;
   line-height: 1.25;
 }
 
 .radSub {
   display: block;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--soft-strong);
   margin-top: 3px;
   text-wrap: pretty;
@@ -79,15 +79,15 @@
 
 .radMeta {
   display: block;
-  font-size: 13px;
-  color: var(--soft);
+  font-size: 0.8125rem;
+  color: var(--soft-strong);
   font-style: italic;
   margin-top: 3px;
 }
 
 .chev {
   color: var(--accsoft);
-  font-size: 22px;
+  font-size: 1.375rem;
   flex: none;
 }
 
@@ -96,7 +96,7 @@
   border: none;
   color: var(--accent);
   font-family: inherit;
-  font-size: 14.5px;
+  font-size: 0.90625rem;
   padding: 12px 0 0;
   cursor: pointer;
   text-underline-offset: 3px;
@@ -113,16 +113,16 @@
 }
 
 .tomtext {
-  font-size: 16.5px;
-  color: var(--soft);
+  font-size: 1.03125rem;
+  color: var(--soft-strong);
   font-style: italic;
   line-height: 1.55;
   margin: 40px 0 0;
 }
 
 .tomhint {
-  font-size: 15px;
-  color: var(--soft);
+  font-size: 0.9375rem;
+  color: var(--soft-strong);
   line-height: 1.55;
   margin: 10px 0 0;
 }
@@ -133,14 +133,15 @@
 }
 
 .filterknapp {
+  composes: hitArea from global;
   background: none;
   border: 1px solid var(--faint);
   border-radius: 999px;
   padding: 6px 16px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 14px;
-  color: var(--soft);
+  font-size: 0.875rem;
+  color: var(--soft-strong);
 }
 
 .filterrad {
@@ -148,6 +149,14 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
+}
+
+.chip {
+  composes: hitArea from global;
+}
+
+.chipVald {
+  composes: hitArea from global;
 }
 
 .chip,
@@ -158,8 +167,8 @@
   padding: 6px 14px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 13.5px;
-  color: var(--soft);
+  font-size: 0.84375rem;
+  color: var(--soft-strong);
 }
 
 .chipVald {
@@ -168,8 +177,8 @@
 }
 
 .filterinfo {
-  font-size: 13.5px;
-  color: var(--soft);
+  font-size: 0.84375rem;
+  color: var(--soft-strong);
   margin: 12px 0 0;
 }
 
@@ -178,7 +187,7 @@
   border: none;
   color: var(--accent);
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   padding: 0;
   cursor: pointer;
   text-underline-offset: 3px;
@@ -200,14 +209,14 @@
 
 .hitRef {
   display: block;
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   letter-spacing: 0.04em;
   color: var(--accent);
 }
 
 .snippet {
   display: block;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.55;
   margin-top: 4px;
   text-wrap: pretty;
@@ -227,7 +236,7 @@
 
 .privatMarkor {
   display: block;
-  font-size: 11px;
+  font-size: 0.6875rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);

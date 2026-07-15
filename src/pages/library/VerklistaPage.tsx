@@ -2,6 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { SearchIcon } from '../../components/Icons'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
+import { useSidtitel } from '../../lib/useSidtitel'
 import { fetchWorks, type WorkSummary } from '../../lib/api'
 import { OfflineButton } from './OfflineButton'
 import { StateNote } from './StateNote'
@@ -34,6 +35,7 @@ const WorkRow = ({ work }: { work: WorkSummary }) => (
 
 /** Bibliotekets »Hela texter« — verklistan bakom källorna (library.md, Sources). */
 export const VerklistaPage = () => {
+  useSidtitel('Hela texter')
   const { data, loading, error } = useAsync(fetchWorks, [])
   const navigate = useNavigate()
   const goUp = () => navigate({ to: '/bibliotek' })

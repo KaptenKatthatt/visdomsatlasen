@@ -39,15 +39,16 @@
 }
 
 .title {
-  font-size: 19px;
+  font-size: 1.1875rem;
   margin-top: 4px;
 }
 
 .done {
+  composes: hitArea from global;
   background: none;
   border: none;
   color: var(--accent);
-  font-size: 17px;
+  font-size: 1.0625rem;
   cursor: pointer;
   font-style: italic;
   padding: 4px 0;

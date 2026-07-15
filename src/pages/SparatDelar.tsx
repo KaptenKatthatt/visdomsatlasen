@@ -44,7 +44,7 @@ export const anteckningTillKort = (anteckning: Anteckning): Kort => {
 /** En grupp visas bara när den har innehåll (spec Saved Section). */
 export const Grupp = ({ rubrik, children }: { rubrik: string; children: ReactNode }) => (
   <section className={styles.grupp}>
-    <div className="kicker sectionKicker">{rubrik}</div>
+    <h2 className="kicker sectionKicker">{rubrik}</h2>
     {children}
   </section>
 )

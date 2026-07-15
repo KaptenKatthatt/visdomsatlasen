@@ -1,5 +1,5 @@
 .title {
-  font-size: 33px;
+  font-size: 2.0625rem;
   font-weight: 500;
   line-height: 1.16;
   margin: 34px 0 0;
@@ -31,19 +31,19 @@
 }
 
 .name {
-  font-size: 21px;
+  font-size: 1.3125rem;
   line-height: 1.3;
 }
 
 .years {
-  font-size: 13px;
-  color: var(--soft);
+  font-size: 0.8125rem;
+  color: var(--soft-strong);
   white-space: nowrap;
 }
 
 .epithet {
-  font-size: 14.5px;
-  color: var(--soft);
+  font-size: 0.90625rem;
+  color: var(--soft-strong);
   margin-top: 2px;
   font-style: italic;
   line-height: 1.4;

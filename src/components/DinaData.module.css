@@ -6,6 +6,7 @@
 }
 
 .knapp {
+  composes: hitArea from global;
   display: inline-block;
   background: none;
   border: 1px solid var(--faint);
@@ -13,8 +14,8 @@
   padding: 8px 18px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 14.5px;
-  color: var(--soft);
+  font-size: 0.90625rem;
+  color: var(--soft-strong);
 }
 
 .dold {
@@ -27,8 +28,8 @@
 }
 
 .fel {
-  font-size: 14.5px;
-  color: var(--soft);
+  font-size: 0.90625rem;
+  color: var(--soft-strong);
   font-style: italic;
   margin: 12px 0 0;
 }
@@ -38,8 +39,8 @@
 }
 
 .rensText {
-  font-size: 15.5px;
-  color: var(--soft);
+  font-size: 0.96875rem;
+  color: var(--soft-strong);
   line-height: 1.55;
   margin: 0 0 14px;
 }

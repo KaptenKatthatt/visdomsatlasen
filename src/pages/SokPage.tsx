@@ -26,6 +26,8 @@ export const SokPage = () => {
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
+          // Hela skärmen är sök — fältet är sidans enda uppgift och nås avsiktligt.
+          // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus
           placeholder="Sök ämnen, personer, texter…"
           aria-label="Sök i atlasen"

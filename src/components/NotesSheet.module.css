@@ -6,7 +6,7 @@
   border: none;
   outline: none;
   resize: none;
-  font-size: 17.5px;
+  font-size: 1.09375rem;
   line-height: 1.6;
   color: var(--ink);
   padding: 0;
@@ -21,19 +21,20 @@
 }
 
 .status {
-  font-size: 13.5px;
-  color: var(--soft);
+  font-size: 0.84375rem;
+  color: var(--soft-strong);
   font-style: italic;
 }
 
 .taBort {
+  composes: hitArea from global;
   background: none;
   border: none;
   padding: 4px 2px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 13.5px;
-  color: var(--soft);
+  font-size: 0.84375rem;
+  color: var(--soft-strong);
 }
 
 .bekrafta {
@@ -43,17 +44,18 @@
 }
 
 .bekraftaFraga {
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   color: var(--ink);
 }
 
 .bekraftaJa {
+  composes: hitArea from global;
   background: none;
   border: none;
   padding: 4px 2px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 0.84375rem;
   color: var(--ink);
   font-weight: 500;
 }

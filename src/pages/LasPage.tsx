@@ -7,6 +7,7 @@ import type { ReadMode } from '../content/model'
 import { findSource } from '../content/sources'
 import { findTopic } from '../content/topics'
 import { useAtlas } from '../lib/store'
+import { useSidtitel } from '../lib/useSidtitel'
 import { LasActions } from './LasActions'
 import { NotFoundNote } from './NotFoundNote'
 import styles from './LasPage.module.css'
@@ -15,6 +16,7 @@ export const LasPage = ({ id, mode }: { id: string; mode: ReadMode }) => {
   const topic = findTopic(id)
   const { anteckningar, sattAnteckning, taBortAnteckning, recordRead } = useAtlas()
   const [notesOpen, setNotesOpen] = useState(false)
+  useSidtitel(topic?.title)
 
   useEffect(() => {
     if (topic) recordRead(topic.id, mode)
@@ -47,7 +49,7 @@ export const LasPage = ({ id, mode }: { id: string; mode: ReadMode }) => {
       </div>
       <div className={`dots ${styles.dots}`}>···</div>
       <div className={styles.section}>
-        <div className="kicker sectionKicker">Ur källorna</div>
+        <h2 className="kicker sectionKicker">Ur källorna</h2>
         {sources.map((source) => (
           <RowLink
             key={source.id}
@@ -60,7 +62,7 @@ export const LasPage = ({ id, mode }: { id: string; mode: ReadMode }) => {
         ))}
       </div>
       <div className={styles.sectionWide}>
-        <div className="kicker sectionKicker">Läs vidare</div>
+        <h2 className="kicker sectionKicker">Läs vidare</h2>
         {related.map((rel) => (
           <RowLink
             key={rel.id}

@@ -23,9 +23,6 @@ export default tseslint.config(
     ...jsxA11y.flatConfigs.recommended,
     rules: {
       ...jsxA11y.flatConfigs.recommended.rules,
-      // Sökskärmen fokuserar fältet avsiktligt (hela skärmen är sök).
-      // Omprövas i tillgänglighetsgranskningen (roadmap fas 11).
-      'jsx-a11y/no-autofocus': 'off',
     },
   },
 )

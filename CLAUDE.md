@@ -105,9 +105,28 @@ med URL-buret sökstate (`SökParametrar`), söksida `SokBibliotekPage`/`SokDela
 ändliga resultat, »Visa fler«, hopfällda typfilter, gruppen »Ur källtexterna« = verkläsarens
 FTS, sökingång på landningssidan). Legacy `/sok` + `/bibliotek-sok` orörda.
 
+**Fas 11 — Tillgänglighet och läskvalitet (roadmapens »Accessibility and Reading
+Quality«) klar.** Tvärgående remediering: BottomSheet är nu en riktig modal
+(fokusfälla/Escape/fokusåterlämning via `useDialogTangentbord`, aria-modal, egen
+portal till `.shell`, bakgrunden inertas via `useInertBakgrund` — StrictMode-säkert);
+skip-link (»Hoppa till innehåll«); per-sida-dokumenttitlar (`useSidtitel`, bibliotekets
+undersidor via `Sidhuvud`); sektionsrubriker på aktiva sidor är h2; träffytor ≥44px
+(navflikar bär höjden själva, små kontroller får osynlig utökad träffyta via
+pseudoelement, delad global `.hitArea` via composes); all dämpad text bytte `--soft` →
+`--soft-strong` (AA 4.5:1 i ljust läge; `--soft` kvar bara på dekorativa `.dots` och
+ikonknappar som klarar 3:1);
+NotesSheet har kopplad sr-only-etikett och autofokuserar inte längre (globala
+no-autofocus-undantaget borta; sökskärmarna har riktade undantag); aktiv navflik
+markeras även med font-weight 600 (pricken från #20 återinförs inte); all font-size
+i rem med `html { font-size: 100% }` (text-only-zoom funkar; --rs-stegen i rem;
+layoutmått förblir px); TopBar är `<header>`. Testgrinden har jsdom +
+@testing-library/react — komponent-/hook-tester väljer jsdom per fil med
+`// @vitest-environment jsdom` (default node kvar, server/** kräver det).
+E2E-verifierat: tangentbordsflöden, fälla/inert/återlämning, 200 % zoom utan
+horisontell scroll (430/834/1280), role=status vid sökuppdatering, reduced motion.
+
 ## Kända skulder
 
-- BottomSheet saknar fokusfälla/Escape (Fas 11); PWA saknar PNG/maskable-ikoner
-  (Fas 13).
+- PWA saknar PNG/maskable-ikoner (Fas 13).
 - Sandlådefällor: `getbible.net` ger 403 vid ingest (ofarligt, bara Bibeln);
   bakgrunds-Vite/API dör mellan skalkommandon — starta om vid ECONNREFUSED.

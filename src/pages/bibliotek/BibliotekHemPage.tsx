@@ -10,6 +10,7 @@ import {
   rumForVandring,
   vandringLastid,
 } from '../../lib/bibliotek'
+import { useSidtitel } from '../../lib/useSidtitel'
 import {
   allaFragor,
   allaKallor,
@@ -130,26 +131,29 @@ const Traditionssektion = () => {
  * utforskning. Sekundär till läsrummet; lugn, ändlig, utan engagemangsmått.
  * Frågor och teman står före rum, källor och traditioner.
  */
-export const BibliotekHemPage = () => (
-  <div className="screenTab">
-    <div className="kicker">Visdomsatlasen</div>
-    <h1 className={styles.titel}>Biblioteket</h1>
-    <p className={styles.lede}>
-      För den som vill leta vidare på egen hand — bland frågor, teman, rum och källor.
-    </p>
-    <Link to="/bibliotek/sok" className={styles.sokingang}>
-      Sök efter en fråga, tanke eller källa
-    </Link>
-    <Fragesektion />
-    <Temasektion />
-    <Vandringssektion />
-    <Rumsektion />
-    <Kallsektion />
-    <Traditionssektion />
-    <Sektion rubrik="Sparat">
-      <Link to="/samling" className={styles.rad}>
-        <Rad titel="Sparat" sub="Det du sparat och antecknat" />
+export const BibliotekHemPage = () => {
+  useSidtitel('Biblioteket')
+  return (
+    <div className="screenTab">
+      <div className="kicker">Visdomsatlasen</div>
+      <h1 className={styles.titel}>Biblioteket</h1>
+      <p className={styles.lede}>
+        För den som vill leta vidare på egen hand — bland frågor, teman, rum och källor.
+      </p>
+      <Link to="/bibliotek/sok" className={styles.sokingang}>
+        Sök efter en fråga, tanke eller källa
       </Link>
-    </Sektion>
-  </div>
-)
+      <Fragesektion />
+      <Temasektion />
+      <Vandringssektion />
+      <Rumsektion />
+      <Kallsektion />
+      <Traditionssektion />
+      <Sektion rubrik="Sparat">
+        <Link to="/samling" className={styles.rad}>
+          <Rad titel="Sparat" sub="Det du sparat och antecknat" />
+        </Link>
+      </Sektion>
+    </div>
+  )
+}

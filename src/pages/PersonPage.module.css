@@ -4,7 +4,7 @@
 }
 
 .name {
-  font-size: 33px;
+  font-size: 2.0625rem;
   font-weight: 500;
   line-height: 1.15;
   margin: 12px 0 0;
@@ -12,8 +12,8 @@
 }
 
 .years {
-  font-size: 16px;
-  color: var(--soft);
+  font-size: 1rem;
+  color: var(--soft-strong);
   font-style: italic;
   margin-top: 6px;
 }

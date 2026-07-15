@@ -16,7 +16,7 @@
   background: none;
   border: none;
   outline: none;
-  font-size: 21px;
+  font-size: 1.3125rem;
   color: var(--ink);
   border-bottom: 1px solid var(--faint);
   padding: 4px 0;
@@ -24,8 +24,8 @@
 }
 
 .hint {
-  font-size: 17px;
-  color: var(--soft);
+  font-size: 1.0625rem;
+  color: var(--soft-strong);
   font-style: italic;
   line-height: 1.6;
   margin: 40px 0 0;

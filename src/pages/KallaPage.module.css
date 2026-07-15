@@ -4,7 +4,7 @@
 }
 
 .title {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 500;
   line-height: 1.2;
   margin: 12px 0 0;
@@ -13,8 +13,8 @@
 }
 
 .author {
-  font-size: 16px;
-  color: var(--soft);
+  font-size: 1rem;
+  color: var(--soft-strong);
   font-style: italic;
   margin-top: 6px;
 }
@@ -27,14 +27,14 @@
   display: grid;
   grid-template-columns: 110px 1fr;
   gap: 8px 16px;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .metaLabel {
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  font-size: 11px;
-  color: var(--soft);
+  font-size: 0.6875rem;
+  color: var(--soft-strong);
   font-weight: 500;
   padding-top: 3px;
 }
@@ -59,9 +59,9 @@
 }
 
 .aboutNote {
-  font-size: 16.5px;
+  font-size: 1.03125rem;
   line-height: 1.6;
-  color: var(--soft);
+  color: var(--soft-strong);
   font-style: italic;
   margin: 10px 0 0;
   text-wrap: pretty;

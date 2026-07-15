@@ -8,16 +8,16 @@ export const ReadingSettingsSheet = ({ onClose }: { onClose: () => void }) => {
   const { dark } = useAtlas()
   return (
     <BottomSheet label="Läsinställningar" onClose={onClose}>
-      <div className={`kicker ${styles.sectionLabel}`}>Typsnitt</div>
+      <h2 className={`kicker ${styles.sectionLabel}`}>Typsnitt</h2>
       <FontPicker />
-      <div className={`kicker ${styles.sectionLabel}`}>Textstorlek</div>
+      <h2 className={`kicker ${styles.sectionLabel}`}>Textstorlek</h2>
       <SizeStepper />
-      <div className={`kicker ${styles.sectionLabel}`}>
+      <h2 className={`kicker ${styles.sectionLabel}`}>
         Bakgrund
         {dark && <span className={styles.hint}> · Gäller i ljust läge</span>}
-      </div>
+      </h2>
       <BgPicker />
-      <div className={`kicker ${styles.sectionLabel}`}>Tema</div>
+      <h2 className={`kicker ${styles.sectionLabel}`}>Tema</h2>
       <DarkToggle />
     </BottomSheet>
   )

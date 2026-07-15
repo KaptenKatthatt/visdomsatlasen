@@ -3,8 +3,9 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  // Tester samlokaliseras med koden de testar (*.test.ts). Node-miljö räcker
-  // för ren logik; jsdom läggs till först när komponenttester behövs.
+  // Tester samlokaliseras med koden de testar (*.test.ts). Default är node
+  // (server/** kräver det); komponent-/hook-tester väljer jsdom per fil via
+  // docblock-pragmat `// @vitest-environment jsdom`.
   test: {
     include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.ts'],
     environment: 'node',

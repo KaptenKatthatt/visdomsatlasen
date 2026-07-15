@@ -738,12 +738,12 @@ Test at minimum:
 
 The phase is complete when:
 
-- [ ] All core flows work with keyboard navigation.
-- [ ] Text remains readable at 200% zoom.
-- [ ] No important state relies only on colour.
-- [ ] The Reading Room remains calm at all supported sizes.
-- [ ] Dynamic search updates do not overwhelm screen readers.
-- [ ] Reduced motion is respected.
+- [x] All core flows work with keyboard navigation.
+- [x] Text remains readable at 200% zoom.
+- [x] No important state relies only on colour.
+- [x] The Reading Room remains calm at all supported sizes.
+- [x] Dynamic search updates do not overwhelm screen readers.
+- [x] Reduced motion is respected.
 
 ---
 

@@ -11,6 +11,7 @@ import {
   type SparadPost,
 } from '../lib/personligt'
 import { useAtlas } from '../lib/store'
+import { useSidtitel } from '../lib/useSidtitel'
 import styles from './SamlingPage.module.css'
 import {
   AnteckningsKort,
@@ -89,7 +90,7 @@ const SenastBesoktGrupp = ({ rum, onRensa }: { rum: Rum[]; onRensa: () => void }
   rum.length === 0 ? null : (
     <section className={styles.senast}>
       <div className={styles.senastHuvud}>
-        <div className="kicker sectionKicker">Senast besökt</div>
+        <h2 className="kicker sectionKicker">Senast besökt</h2>
         <button type="button" className={styles.rensa} onClick={onRensa}>
           Rensa
         </button>
@@ -123,6 +124,7 @@ const sparadeVandringarna = (
  * på framsteg. Bara grupper med innehåll visas; är inget sparat möter ett lugnt
  * tomläge. Senast besökt ligger separat sist, för orientering. */
 export const SamlingPage = () => {
+  useSidtitel('Sparat')
   const store = useAtlas()
   const rum = sparadeIdITidsordning(store.sparadeRum)
     .map((id) => hittaRumViaId(id))

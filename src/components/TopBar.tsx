@@ -17,7 +17,7 @@ export const TopBar = ({
   const router = useRouter()
   const handleBack = onBack ?? (() => router.history.back())
   return (
-    <div className="topbar">
+    <header className="topbar">
       <button
         type="button"
         onClick={handleBack}
@@ -28,6 +28,6 @@ export const TopBar = ({
         <BackIcon />
       </button>
       {right}
-    </div>
+    </header>
   )
 }

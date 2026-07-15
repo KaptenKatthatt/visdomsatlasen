@@ -8,7 +8,9 @@
   z-index: 30;
   display: flex;
   justify-content: space-around;
-  padding: 12px 8px calc(14px + env(safe-area-inset-bottom));
+  /* Flikarna bär själva 44px träffhöjd; radens padding kompenserar så den
+     synliga navhöjden är oförändrad. */
+  padding: 1px 8px calc(1px + env(safe-area-inset-bottom));
   background: color-mix(in srgb, var(--paper) 90%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -21,17 +23,22 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--soft);
+  color: var(--soft-strong);
   padding: 2px 6px;
   transition: color 0.3s;
   text-decoration: none;
+  min-height: 44px;
+  min-width: 44px;
+  justify-content: center;
 }
 
-/* Aktiv flik markeras med mörkare text — ingen prick. */
+/* Aktiv flik markeras med mörkare text och tyngre vikt — form-cue utöver
+   färg (WCAG 1.4.1). Pricken togs medvetet bort (#20) och återinförs inte. */
 .active {
   color: var(--ink);
+  font-weight: 600;
 }

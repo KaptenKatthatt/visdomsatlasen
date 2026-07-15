@@ -4,7 +4,7 @@
 }
 
 .title {
-  font-size: 33px;
+  font-size: 2.0625rem;
   font-weight: 500;
   line-height: 1.15;
   margin: 12px 0 0;
@@ -13,7 +13,7 @@
 }
 
 .intro {
-  font-size: 20.5px;
+  font-size: 1.28125rem;
   line-height: 1.55;
   font-style: italic;
   margin: 26px 0 0;

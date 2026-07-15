@@ -12,6 +12,7 @@ import { normalisera } from '../../lib/soknormalisering'
 import { useAsync } from '../../lib/useAsync'
 import { useAtlas } from '../../lib/store'
 import { useDebounced } from '../../lib/useDebounced'
+import { useSidtitel } from '../../lib/useSidtitel'
 import { Filter, KalltextGrupp, Resultatvy, Sokfalt, type Kalltextsvar, type Sokläge } from './SokDelar'
 
 // Vilka grupper som expanderats, ihågkommet per normaliserad fråga över
@@ -123,6 +124,7 @@ type Props = {
 }
 
 export const SokBibliotekPage = ({ q, typ, onNavigera }: Props) => {
+  useSidtitel('Sök i Biblioteket')
   const { query, term, nyckel, expanderade, visaFler, ändraFråga, sökDirekt } = useSoktillstand(
     q,
     typ,

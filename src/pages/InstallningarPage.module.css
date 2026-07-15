@@ -1,5 +1,5 @@
 .title {
-  font-size: 33px;
+  font-size: 2.0625rem;
   font-weight: 500;
   line-height: 1.16;
   margin: 56px 0 0;
@@ -7,8 +7,8 @@
 }
 
 .lede {
-  font-size: 17px;
-  color: var(--soft);
+  font-size: 1.0625rem;
+  color: var(--soft-strong);
   font-style: italic;
   margin: 8px 0 0;
   line-height: 1.5;
@@ -25,8 +25,8 @@
 }
 
 .dataLede {
-  font-size: 15.5px;
-  color: var(--soft);
+  font-size: 0.96875rem;
+  color: var(--soft-strong);
   line-height: 1.55;
   margin: 12px 0 18px;
 }

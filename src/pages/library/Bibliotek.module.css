@@ -1,14 +1,14 @@
 .title {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 500;
   letter-spacing: -0.01em;
   margin: 6px 0 0;
 }
 
 .lede {
-  font-size: 16.5px;
+  font-size: 1.03125rem;
   line-height: 1.6;
-  color: var(--soft);
+  color: var(--soft-strong);
   margin: 10px 0 0;
   text-wrap: pretty;
 }
@@ -37,26 +37,26 @@
 
 .rowTitle {
   display: block;
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 1.25;
 }
 
 .rowSub {
   display: block;
-  font-size: 13.5px;
-  color: var(--soft);
+  font-size: 0.84375rem;
+  color: var(--soft-strong);
   margin-top: 3px;
 }
 
 .chev {
   color: var(--accsoft);
-  font-size: 22px;
+  font-size: 1.375rem;
   flex: none;
 }
 
 .badge {
   display: inline-block;
-  font-size: 10.5px;
+  font-size: 0.65625rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent);
@@ -83,7 +83,7 @@
   aspect-ratio: 1;
   border: 1px solid var(--faint);
   border-radius: 10px;
-  font-size: 17px;
+  font-size: 1.0625rem;
   color: inherit;
   text-decoration: none;
 }
@@ -123,7 +123,7 @@
   border: none;
   border-radius: 999px;
   padding: 9px 18px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   cursor: pointer;
 }
 
@@ -135,11 +135,11 @@
 /* Sekundär, dämpad variant för raderingsknappen. */
 .offlineBtnGhost {
   background: none;
-  color: var(--soft);
+  color: var(--soft-strong);
   border: 1px solid var(--faint);
   border-radius: 999px;
   padding: 9px 18px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   cursor: pointer;
 }
 
@@ -149,21 +149,21 @@
 }
 
 .offlineText {
-  font-size: 13.5px;
-  color: var(--soft);
+  font-size: 0.84375rem;
+  color: var(--soft-strong);
   margin: 0 0 12px;
   line-height: 1.5;
 }
 
 .stateNote {
   margin-top: 40px;
-  color: var(--soft);
+  color: var(--soft-strong);
   font-style: italic;
 }
 
 .metaLine {
-  font-size: 14px;
-  color: var(--soft);
+  font-size: 0.875rem;
+  color: var(--soft-strong);
   font-style: italic;
   margin-top: 6px;
 }
@@ -174,13 +174,13 @@
   border: none;
   border-bottom: 1px solid var(--faint);
   color: var(--ink);
-  font-size: 22px;
+  font-size: 1.375rem;
   padding: 10px 0;
   outline: none;
 }
 
 .searchInput::placeholder {
-  color: var(--soft);
+  color: var(--soft-strong);
 }
 
 .hit {
@@ -192,14 +192,14 @@
 }
 
 .hitRef {
-  font-size: 12.5px;
+  font-size: 0.78125rem;
   letter-spacing: 0.04em;
   color: var(--accent);
 }
 
 .hitSnippet {
   display: block;
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 1.55;
   margin-top: 4px;
   text-wrap: pretty;

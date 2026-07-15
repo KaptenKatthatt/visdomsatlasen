@@ -7,7 +7,7 @@
 }
 
 .titel {
-  font-size: 30px;
+  font-size: 1.875rem;
   line-height: 1.2;
   font-weight: 500;
   margin-top: 6px;
@@ -39,7 +39,7 @@
 
 /* Tanken att bära: står ensam, kursiv och centrerad — rummets kärnpunkt. */
 .tanke {
-  font-size: calc(var(--rs) + 2px);
+  font-size: calc(var(--rs) + 0.125rem);
   line-height: 1.6;
   font-style: italic;
   text-align: center;
@@ -53,7 +53,7 @@
 }
 
 .fraga {
-  font-size: calc(var(--rs) - 1.5px);
+  font-size: calc(var(--rs) - 0.09375rem);
   line-height: 1.7;
   color: color-mix(in srgb, var(--ink) 62%, var(--soft));
   margin: 0 0 14px;
@@ -73,12 +73,13 @@
   background: none;
   border: none;
   padding: 12px 0;
+  min-height: 44px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--soft);
+  color: var(--soft-strong);
   display: block;
   text-align: left;
 }
@@ -88,7 +89,7 @@
 }
 
 .detaljrad {
-  font-size: calc(var(--rs) - 3px);
+  font-size: calc(var(--rs) - 0.1875rem);
   line-height: 1.7;
   color: color-mix(in srgb, var(--ink) 55%, var(--soft));
   margin: 0 0 10px;
@@ -104,8 +105,8 @@
 
 .detaljlank {
   display: inline-block;
-  font-size: calc(var(--rs) - 3px);
-  color: var(--soft);
+  font-size: calc(var(--rs) - 0.1875rem);
+  color: var(--soft-strong);
   text-decoration: underline;
   text-underline-offset: 3px;
   margin: 2px 0 4px;
@@ -123,10 +124,11 @@
   background: none;
   border: none;
   padding: 10px 4px;
+  min-height: 44px;
   cursor: pointer;
   font-family: inherit;
-  font-size: calc(var(--rs) - 4px);
-  color: var(--soft);
+  font-size: calc(var(--rs) - 0.25rem);
+  color: var(--soft-strong);
 }
 
 /* Vandringsfoten: två likvärdiga, stilla val — ingen knapp är framhävd, ingen
@@ -147,8 +149,8 @@
   padding: 10px 4px;
   cursor: pointer;
   font-family: inherit;
-  font-size: calc(var(--rs) - 4px);
-  color: var(--soft);
+  font-size: calc(var(--rs) - 0.25rem);
+  color: var(--soft-strong);
   text-decoration: none;
 }
 
@@ -162,7 +164,7 @@
 }
 
 .vandringsslutStycke {
-  font-size: calc(var(--rs) - 1px);
+  font-size: calc(var(--rs) - 0.0625rem);
   line-height: 1.7;
   color: color-mix(in srgb, var(--ink) 70%, var(--soft));
   margin: 0 0 14px;

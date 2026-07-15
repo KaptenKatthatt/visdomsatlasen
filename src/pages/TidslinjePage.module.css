@@ -1,5 +1,5 @@
 .title {
-  font-size: 33px;
+  font-size: 2.0625rem;
   font-weight: 500;
   line-height: 1.16;
   margin: 34px 0 0;
@@ -7,8 +7,8 @@
 }
 
 .lede {
-  font-size: 17px;
-  color: var(--soft);
+  font-size: 1.0625rem;
+  color: var(--soft-strong);
   font-style: italic;
   margin: 8px 0 0;
   line-height: 1.5;
@@ -28,10 +28,10 @@
 }
 
 .year {
-  font-size: 12px;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--soft);
+  color: var(--soft-strong);
   font-weight: 500;
   text-align: right;
   padding-top: 5px;
@@ -62,7 +62,7 @@
 }
 
 .label {
-  font-size: 19px;
+  font-size: 1.1875rem;
   line-height: 1.35;
   padding-bottom: 30px;
   text-wrap: pretty;
