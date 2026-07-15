@@ -18,7 +18,10 @@ noteringar: >-
   av redaktören Jonas Olson 2026-07-14 vid läsning i chatten. Den ordagranna
   versionen och proveniensen finns i samma post. Källhostarna (ja.wikisource,
   tempelsidor) är blockerade i byggmiljön; slutlig teckenverifiering mot tryckt
-  utgåva återstår som redaktionellt steg. Publiceringsbeslutet är redaktörens —
-  AI avgör aldrig ensam vad som publiceras.
+  utgåva återstår som redaktionellt steg. Detta förbehåll togs upp av
+  Codex-granskningen (P2) mot verify-sources.md 2026-07-15; redaktören Jonas Olson
+  tog uttryckligen ställning och valde att publicera med förbehållet dokumenterat,
+  med teckenverifieringen mot tryckt utgåva som kvarstående uppföljning.
+  Publiceringsbeslutet är redaktörens — AI avgör aldrig ensam vad som publiceras.
 status: publicerad
 ---
