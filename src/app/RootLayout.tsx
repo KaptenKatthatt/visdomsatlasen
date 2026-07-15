@@ -21,7 +21,10 @@ export const RootLayout = () => {
     >
       <div className="shell" ref={setShell}>
         <ShellContext.Provider value={shell}>
-          <main>
+          <a href="#innehall" className="srOnlyFokuserbar">
+            Hoppa till innehåll
+          </a>
+          <main id="innehall" tabIndex={-1}>
             <Outlet />
           </main>
           {showNav && <NavTabs />}
