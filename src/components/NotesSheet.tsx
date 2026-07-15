@@ -62,13 +62,16 @@ export const NotesSheet = ({ title, value, onChange, onClose, onDelete }: Props)
   }
   return (
     <BottomSheet label="Anteckningar" title={title} onClose={onClose}>
+      <label htmlFor="anteckningstext" className="srOnly">
+        Din anteckning
+      </label>
       <textarea
+        id="anteckningstext"
         className={styles.textarea}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         rows={7}
         placeholder="Skriv det du vill bära med dig."
-        autoFocus
       />
       <Fot
         sparadVisas={sparadVisas}

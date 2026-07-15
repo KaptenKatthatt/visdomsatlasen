@@ -191,6 +191,8 @@ export const Sokfalt = ({
       value={query}
       onChange={(händelse) => onChange(händelse.target.value)}
       placeholder="Sök efter en fråga, tanke eller källa"
+      // Hela skärmen är sök — fältet är sidans enda uppgift och nås avsiktligt.
+      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
     />
   </form>
