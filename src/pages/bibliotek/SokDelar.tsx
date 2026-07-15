@@ -6,13 +6,22 @@ import { useState, type ReactNode } from 'react'
 import { ToLink } from '../../components/ToLink'
 import { slugOfBook, type BookHit, type SearchHit } from '../../lib/api'
 import type { Anteckning } from '../../lib/personligt'
-import type { Soktyp } from '../../lib/sokindex'
-import { MAX_SYNLIGA_PER_GRUPP, type Soktraff, type SynligGrupp } from '../../lib/soklogik'
+import { SOKTYPER, type Soktyp } from '../../lib/sokindex'
+import { MAX_SYNLIGA_PER_GRUPP, RUBRIK, type Soktraff, type SynligGrupp } from '../../lib/soklogik'
 import { AnteckningsKort, anteckningTillKort } from '../SparatDelar'
 import styles from './Sok.module.css'
 
 /** Verssökets svar från servern (verkläsarens FTS över källtexterna). */
 export type Kalltextsvar = { books: BookHit[]; hits: SearchHit[] }
+
+/** »Visa fler«-kontrollen: röjer de dolda träffarna i en grupp. Renderar inget
+ * när inget är dolt — resultatet är alltid ändligt (search.md, Number of Results). */
+const VisaFler = ({ dolda, onClick }: { dolda: number; onClick: () => void }) =>
+  dolda <= 0 ? null : (
+    <button type="button" className={styles.visaFler} onClick={onClick}>
+      Visa fler ({dolda})
+    </button>
+  )
 
 const TraffRad = ({ traff }: { traff: Soktraff }) => {
   const { titel, underrad, meta, mal } = traff.dokument
@@ -44,20 +53,21 @@ const SokGruppSektion = ({
     {synlig.synliga.map((traff) => (
       <TraffRad key={traff.dokument.id} traff={traff} />
     ))}
-    {synlig.dolda > 0 && (
-      <button type="button" className={styles.visaFler} onClick={onVisaFler}>
-        Visa fler ({synlig.dolda})
-      </button>
-    )}
+    <VisaFler dolda={synlig.dolda} onClick={onVisaFler} />
   </section>
 )
 
 // Privata anteckningsträffar — egen grupp sist, varje kort tydligt märkt privat.
-const AnteckningsGruppSok = ({ anteckningar }: { anteckningar: Anteckning[] }) =>
-  anteckningar.length === 0 ? null : (
+// Ändlig som övriga grupper: som mest fem, resten bakom »Visa fler«. Nollställs
+// per fråga genom att sidan nyckar komponenten (key={nyckel}).
+const AnteckningsGruppSok = ({ anteckningar }: { anteckningar: Anteckning[] }) => {
+  const [visaAlla, setVisaAlla] = useState(false)
+  if (anteckningar.length === 0) return null
+  const synliga = visaAlla ? anteckningar : anteckningar.slice(0, MAX_SYNLIGA_PER_GRUPP)
+  return (
     <section className={styles.grupp}>
       <h2 className="kicker sectionKicker">Anteckningar</h2>
-      {anteckningar.map((anteckning) => {
+      {synliga.map((anteckning) => {
         const kort = anteckningTillKort(anteckning)
         return (
           <div key={kort.key} className={styles.privatKort}>
@@ -66,8 +76,10 @@ const AnteckningsGruppSok = ({ anteckningar }: { anteckningar: Anteckning[] }) =
           </div>
         )
       })}
+      <VisaFler dolda={anteckningar.length - synliga.length} onClick={() => setVisaAlla(true)} />
     </section>
   )
+}
 
 // Renderar FTS-snippeten med ⟦…⟧-markörer som markerade träfford (tillgänglig
 // markup, inte enbart färg).
@@ -146,11 +158,7 @@ export const KalltextGrupp = ({
       {verser.map((hit) => (
         <VersRad key={`${hit.bookId}-${hit.chapter}-${hit.verse}`} hit={hit} />
       ))}
-      {dolda > 0 && (
-        <button type="button" className={styles.visaFler} onClick={() => setVisaAlla(true)}>
-          Visa fler ({dolda})
-        </button>
-      )}
+      <VisaFler dolda={dolda} onClick={() => setVisaAlla(true)} />
     </section>
   )
 }
@@ -222,6 +230,7 @@ export const Resultatvy = ({
   synliga,
   kalltext,
   noteringar,
+  nyckel,
   antal,
   onVisaFler,
 }: {
@@ -230,6 +239,7 @@ export const Resultatvy = ({
   synliga: SynligGrupp[]
   kalltext: ReactNode
   noteringar: Anteckning[]
+  nyckel: string
   antal: number
   onVisaFler: (typ: Soktyp) => void
 }) => {
@@ -251,19 +261,16 @@ export const Resultatvy = ({
         ) : null,
       )}
       {kalltext}
-      <AnteckningsGruppSok anteckningar={noteringar} />
+      <AnteckningsGruppSok key={nyckel} anteckningar={noteringar} />
     </>
   )
 }
 
+// Filtervalen härleds ur den delade söktyplistan och gruppetiketterna, så en ny
+// typ inte behöver läggas till på fler ställen än sokindex/soklogik.
 const TYPVAL: Array<{ värde: Soktyp | 'alla'; etikett: string }> = [
   { värde: 'alla', etikett: 'Alla' },
-  { värde: 'fraga', etikett: 'Frågor' },
-  { värde: 'tema', etikett: 'Teman' },
-  { värde: 'rum', etikett: 'Rum' },
-  { värde: 'vandring', etikett: 'Vandringar' },
-  { värde: 'kalla', etikett: 'Källor' },
-  { värde: 'tradition', etikett: 'Traditioner' },
+  ...SOKTYPER.map((typ) => ({ värde: typ, etikett: RUBRIK[typ] })),
 ]
 
 /** Valfria, hopfällda typfilter (search.md, Filters): aldrig krav före sökning,

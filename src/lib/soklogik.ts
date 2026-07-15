@@ -44,7 +44,8 @@ const TYPBONUS: Record<Soktyp, number> = {
   tradition: 2,
 }
 
-const RUBRIK: Record<Soktyp, string> = {
+/** Svensk gruppetikett per söktyp — delas av resultatsektionerna och typfiltret. */
+export const RUBRIK: Record<Soktyp, string> = {
   fraga: 'Frågor',
   tema: 'Teman',
   rum: 'Rum',

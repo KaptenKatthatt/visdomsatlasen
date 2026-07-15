@@ -38,6 +38,13 @@ import { utdrag } from './personligt'
 
 export type Soktyp = 'fraga' | 'tema' | 'rum' | 'vandring' | 'kalla' | 'tradition'
 
+/** Söktyperna i redaktionell prioritetsordning — en enda källa som router,
+ * rankning och filter delar (så en ny typ läggs till på ett ställe). */
+export const SOKTYPER: readonly Soktyp[] = ['fraga', 'tema', 'rum', 'vandring', 'kalla', 'tradition']
+
+/** Den delbara sökparametern: fråga och valfritt typfilter. Aldrig privata värden. */
+export type SökParametrar = { q?: string; typ?: Soktyp }
+
 /** Sökmål = de To-varianter söket kan öppna (redaktionella sidor). Egen union,
  * strukturellt kompatibel med To, så sökindexet inte kopplas till legacy-eran i
  * model.ts. Traditioner saknar egen sida → olänkade rader, därav valfritt `mal`. */

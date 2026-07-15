@@ -14,7 +14,7 @@ import { TemaPage } from '../pages/bibliotek/TemaPage'
 import { VandringPage } from '../pages/bibliotek/VandringPage'
 import { SokBibliotekPage } from '../pages/bibliotek/SokBibliotekPage'
 import { BibliotekSokPage } from '../pages/library/BibliotekSokPage'
-import type { Soktyp } from '../lib/sokindex'
+import { SOKTYPER, type Soktyp, type SökParametrar } from '../lib/sokindex'
 import { BokPage } from '../pages/library/BokPage'
 import { KapitelPage } from '../pages/library/KapitelPage'
 import { VerklistaPage } from '../pages/library/VerklistaPage'
@@ -230,14 +230,13 @@ const bibliotekSokRoute = createRoute({
 // Bibliotekssöket (fas 10, search.md): frågan och det valfria typfiltret bärs i
 // URL:en (?q=…&typ=…), så sökstate överlever navigation, refresh och delning.
 // Privata anteckningsträffar hamnar aldrig i URL:en.
-const SOKTYPER: readonly Soktyp[] = ['fraga', 'tema', 'rum', 'vandring', 'kalla', 'tradition']
 const ärSoktyp = (värde: unknown): värde is Soktyp =>
   typeof värde === 'string' && (SOKTYPER as readonly string[]).includes(värde)
 
 const sokBibliotekRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/sok',
-  validateSearch: (search: Record<string, unknown>): { q?: string; typ?: Soktyp } => ({
+  validateSearch: (search: Record<string, unknown>): SökParametrar => ({
     ...(typeof search['q'] === 'string' && search['q'] !== '' ? { q: search['q'] } : {}),
     ...(ärSoktyp(search['typ']) ? { typ: search['typ'] } : {}),
   }),

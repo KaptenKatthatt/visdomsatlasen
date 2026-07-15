@@ -6,7 +6,7 @@ import { TopBar } from '../../components/TopBar'
 import { searchLibrary } from '../../lib/api'
 import type { Anteckning } from '../../lib/personligt'
 import { sokAnteckningar } from '../../lib/sokanteckningar'
-import { sokindexet, type Soktyp } from '../../lib/sokindex'
+import { sokindexet, type Soktyp, type SökParametrar } from '../../lib/sokindex'
 import { sokIBiblioteket, synligaTraffar, type Sokgrupp, type SynligGrupp } from '../../lib/soklogik'
 import { normalisera } from '../../lib/soknormalisering'
 import { useAsync } from '../../lib/useAsync'
@@ -20,7 +20,7 @@ const expansionsminne = new Map<string, Set<Soktyp>>()
 const hämtaExpansion = (nyckel: string): Set<Soktyp> => new Set(expansionsminne.get(nyckel))
 
 // Den delbara sökparametern; tom fråga och intet filter utelämnas ur URL:en.
-const sökObjekt = (term: string, typ: Soktyp | undefined): { q?: string; typ?: Soktyp } => ({
+const sökObjekt = (term: string, typ: Soktyp | undefined): SökParametrar => ({
   ...(term ? { q: term } : {}),
   ...(typ ? { typ } : {}),
 })
@@ -85,7 +85,7 @@ const nyExpansion = (
 const useSoktillstand = (
   q: string,
   typ: Soktyp | undefined,
-  onNavigera: (sök: { q?: string; typ?: Soktyp }) => void,
+  onNavigera: (sök: SökParametrar) => void,
 ) => {
   const [query, setQuery] = useState(q)
   const [direkt, setDirekt] = useState<string | null>(null)
@@ -119,7 +119,7 @@ const useSoktillstand = (
 type Props = {
   q: string
   typ: Soktyp | undefined
-  onNavigera: (sök: { q?: string; typ?: Soktyp }) => void
+  onNavigera: (sök: SökParametrar) => void
 }
 
 export const SokBibliotekPage = ({ q, typ, onNavigera }: Props) => {
@@ -163,6 +163,7 @@ export const SokBibliotekPage = ({ q, typ, onNavigera }: Props) => {
           ) : null
         }
         noteringar={noteringar}
+        nyckel={nyckel}
         antal={antal}
         onVisaFler={visaFler}
       />
