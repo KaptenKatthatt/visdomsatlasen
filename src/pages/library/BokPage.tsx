@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
+import { useSidtitel } from '../../lib/useSidtitel'
 import { bookId, fetchWork } from '../../lib/api'
 import { chapterKey } from '../../lib/personligt'
 import { useAtlas } from '../../lib/store'
@@ -14,6 +15,7 @@ export const BokPage = ({ workId, bookSlug }: { workId: string; bookSlug: string
   const goUp = () => navigate({ to: '/bibliotek/verk/$workId', params: { workId } })
   const id = bookId(workId, bookSlug)
   const book = data?.books.find((candidate) => candidate.id === id) ?? null
+  useSidtitel(book?.name)
   if (!book) {
     return (
       <div className="screenSub">

@@ -1,10 +1,12 @@
 import { DinaData } from '../components/DinaData'
 import { BgPicker, DarkToggle, FontPicker, SizeStepper } from '../components/ReadingSettingsControls'
 import { useAtlas } from '../lib/store'
+import { useSidtitel } from '../lib/useSidtitel'
 import styles from './InstallningarPage.module.css'
 
 /** Inställningar (navigation.md: Settings) — utseendet samlat på en egen yta. */
 export const InstallningarPage = () => {
+  useSidtitel('Inställningar')
   const { dark } = useAtlas()
   return (
     <div className="screenTab">

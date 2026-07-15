@@ -18,6 +18,7 @@ import {
   stycken,
 } from '../lib/innehall'
 import { useAtlas } from '../lib/store'
+import { useSidtitel } from '../lib/useSidtitel'
 import { NotFoundNote } from './NotFoundNote'
 import styles from './RumPage.module.css'
 
@@ -275,6 +276,7 @@ export const RumPage = ({ slug, vandringSlug }: { slug: string; vandringSlug?: s
   const rum = hittaRum(slug)
   const vandring = vandringSlug !== undefined ? hittaVandringViaSlug(vandringSlug) : undefined
   useRumsminne(rum, vandring)
+  useSidtitel(rum?.titel)
   if (!rum) return <NotFoundNote subject="Rummet" />
   const tema = hittaTema(rum.teman[0] ?? '')
   return (

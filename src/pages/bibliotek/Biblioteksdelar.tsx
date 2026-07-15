@@ -5,12 +5,15 @@ import type { ReactNode } from 'react'
 import { RumRad } from '../../components/RumRad'
 import type { Rum } from '../../content/redaktion/schema'
 import { stycken } from '../../lib/innehall'
+import { useSidtitel } from '../../lib/useSidtitel'
 import styles from './Bibliotek.module.css'
 
 export const rumsantal = (antal: number): string => (antal === 1 ? 'Ett rum' : `${antal} rum`)
 
 /** Undersidornas huvud. Poster som inte är publicerade märks »Utkast« —
- * de nås bara via direkt länk och är redaktionens granskningsvy. */
+ * de nås bara via direkt länk och är redaktionens granskningsvy.
+ * Sidhuvudets titel blir också dokumenttitel — sidhuvudet är per definition
+ * sidans huvudrubrik, så alla undersidor får rätt fliknamn på köpet. */
 export const Sidhuvud = ({
   kicker,
   titel,
@@ -21,16 +24,19 @@ export const Sidhuvud = ({
   titel: string
   status?: Rum['status']
   children?: ReactNode
-}) => (
-  <header className={styles.huvud}>
-    <div className="kicker">
-      {kicker}
-      {status !== undefined && status !== 'publicerad' && ' · Utkast'}
-    </div>
-    <h1 className={styles.huvudTitel}>{titel}</h1>
-    {children}
-  </header>
-)
+}) => {
+  useSidtitel(titel)
+  return (
+    <header className={styles.huvud}>
+      <div className="kicker">
+        {kicker}
+        {status !== undefined && status !== 'publicerad' && ' · Utkast'}
+      </div>
+      <h1 className={styles.huvudTitel}>{titel}</h1>
+      {children}
+    </header>
+  )
+}
 
 export const Beskrivning = ({ text }: { text?: string }) => (
   <>

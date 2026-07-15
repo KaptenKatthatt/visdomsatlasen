@@ -4,12 +4,14 @@ import type { Tema } from '../content/redaktion/schema'
 import { allaRum, troskelTeman } from '../lib/innehall'
 import { valjRum } from '../lib/rumsval'
 import { useAtlas } from '../lib/store'
+import { useSidtitel } from '../lib/useSidtitel'
 import styles from './HemPage.module.css'
 
 /** Tröskeln (home-and-entry.md): en fråga, några teman, ett val — sedan
  * kliver gränssnittet undan. Inget datum, ingen aktivitet, inget dagligt
  * innehåll; tröskeln är likadan varje gång och börjar alltid i nuet. */
 export const HemPage = () => {
+  useSidtitel('Läsrummet')
   const navigate = useNavigate()
   const { senastLastaRum } = useAtlas()
   const [tomtVal, setTomtVal] = useState(false)

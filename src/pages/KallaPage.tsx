@@ -3,11 +3,13 @@ import { RowLink } from '../components/RowLink'
 import { TopBar } from '../components/TopBar'
 import { findSource } from '../content/sources'
 import { topicsUsingSource } from '../content/topics'
+import { useSidtitel } from '../lib/useSidtitel'
 import { NotFoundNote } from './NotFoundNote'
 import styles from './KallaPage.module.css'
 
 export const KallaPage = ({ id }: { id: string }) => {
   const source = findSource(id)
+  useSidtitel(source?.title)
   if (!source) return <NotFoundNote subject="Originaltexten" />
 
   return (

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
+import { useSidtitel } from '../../lib/useSidtitel'
 import { fetchWork, slugOfBook, type Book } from '../../lib/api'
 import { StateNote } from './StateNote'
 import styles from './Bibliotek.module.css'
@@ -22,6 +23,7 @@ const BookRow = ({ workId, book }: { workId: string; book: Book }) => (
 
 export const VerkPage = ({ workId }: { workId: string }) => {
   const { data, loading, error } = useAsync(() => fetchWork(workId), [workId])
+  useSidtitel(data?.work.title)
   const [filter, setFilter] = useState('')
   const navigate = useNavigate()
   const goUp = () => navigate({ to: '/bibliotek/verk' })

@@ -3,6 +3,7 @@ import { BookmarkButton } from '../../components/BookmarkButton'
 import { ReadingSettingsButton } from '../../components/ReadingSettingsButton'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
+import { useSidtitel } from '../../lib/useSidtitel'
 import { bookId, fetchChapter } from '../../lib/api'
 import { chapterKey } from '../../lib/personligt'
 import { useAtlas } from '../../lib/store'
@@ -69,6 +70,7 @@ export const KapitelPage = ({ workId, bookSlug, chapter }: Props) => {
   const goUp = () =>
     navigate({ to: '/bibliotek/verk/$workId/$bookSlug', params: { workId, bookSlug } })
   const { data, loading, error } = useAsync(() => fetchChapter(id, n), [id, n])
+  useSidtitel(data ? `${data.book.name} ${data.chapter}` : '')
   if (!data) {
     return (
       <div className="screenReader">

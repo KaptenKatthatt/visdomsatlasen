@@ -7,6 +7,7 @@ import type { ReadMode } from '../content/model'
 import { findSource } from '../content/sources'
 import { findTopic } from '../content/topics'
 import { useAtlas } from '../lib/store'
+import { useSidtitel } from '../lib/useSidtitel'
 import { LasActions } from './LasActions'
 import { NotFoundNote } from './NotFoundNote'
 import styles from './LasPage.module.css'
@@ -15,6 +16,7 @@ export const LasPage = ({ id, mode }: { id: string; mode: ReadMode }) => {
   const topic = findTopic(id)
   const { anteckningar, sattAnteckning, taBortAnteckning, recordRead } = useAtlas()
   const [notesOpen, setNotesOpen] = useState(false)
+  useSidtitel(topic?.title)
 
   useEffect(() => {
     if (topic) recordRead(topic.id, mode)
