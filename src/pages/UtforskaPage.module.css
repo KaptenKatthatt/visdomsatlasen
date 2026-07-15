@@ -5,7 +5,7 @@
 }
 
 .title {
-  font-size: 33px;
+  font-size: 2.0625rem;
   font-weight: 500;
   line-height: 1.16;
   margin: 56px 0 0;
@@ -13,7 +13,7 @@
 }
 
 .lede {
-  font-size: 17px;
+  font-size: 1.0625rem;
   color: var(--soft);
   font-style: italic;
   margin: 8px 0 0;
@@ -25,7 +25,7 @@
 }
 
 .groupLine {
-  font-size: 15.5px;
+  font-size: 0.96875rem;
   color: var(--soft-strong);
   font-style: italic;
   margin-top: 5px;
