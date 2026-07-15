@@ -1,0 +1,80 @@
+---
+id: rum-allting-rinner-bort
+slug: allting-rinner-bort
+titel: Allting rinner bort
+sammanfattning: En tanke om att förgängligheten inte bara är en förlust utan också en lättnad.
+primärFråga: fraga-vad-blir-lattare-nar-ingenting-bestar
+teman: [tema-lugn]
+tankeAttBära: Att allt rinner bort är inte bara sorg — det är också det som gör greppet onödigt.
+reflektionsfrågor:
+  - Vad håller du fast vid som om det kunde bestå?
+  - Vad skulle kännas lättare om du visste att också detta går över?
+källor:
+  - källa: kalla-dhammapada
+    passage: passage-dhammapada-277
+    referens: vers 277
+    bruk: bearbetning
+    primär: true
+    redaktionellNot: Bearbetning av versens rad om det förgängliga; inga direkta citat.
+lästidMinuter: 3
+status: utkast
+skapad: 2026-07-15
+uppdaterad: 2026-07-15
+redaktion:
+  skribent: Claude (utkast, Watts-planen rum 6)
+  källgranskare: Claude (förgranskning)
+  språkgranskare: Claude (förgranskning)
+  granskad: 2026-07-15
+  noteringar: >-
+    Rum ur Watts-planen (docs/research/alan-watts.md avsnitt 6, rum 6;
+    roadmapens Fas 12-sektion) — byggt på den fria källan enligt strategi D.
+    Watts (temat obeständighet/anicca i bl.a. The Wisdom of Insecurity) är
+    enbart researchbakgrund och nämns inte i rummet. Förgranskad mot alla fyra
+    checklistorna. Källverifiering: bearbetningen följer Dhammapada 277 i Bhikkhu
+    Sujatos engelska (SuttaCentral, CC0) via passage-dhammapada-277 — »All
+    conditions are impermanent« (sabbe saṅkhārā aniccā); kärnan delar inga
+    meningar med passagens översättning. Nihilism-/uppgivenhetsrisken är medvetet
+    mött: obeständigheten framställs som det som gör greppet onödigt, inte som att
+    ingenting betyder något. Placerad under Lugn (att se förgängligheten som ro);
+    kunde även höra hemma under Lidande. Historisk kontext kontrollerad mot
+    källposten (muntlig tradering, nedtecknad ca 29 f.Kr på Sri Lanka; anicca ett
+    av tillvarons tre kännetecken). En fråga, en tanke, 2 reflektionsfrågor, ca 3
+    min, inga emojis. Utkast för ägarens granskning — AI avgör aldrig ensam vad
+    som publiceras.
+  version: 1
+---
+
+## Öppning
+
+Ett bra ögonblick pågår, och redan mitt i det finns en oro för att det ska ta
+slut. Eller tvärtom: något tungt ligger på, och det känns som om det ska vara
+för alltid. I båda fallen håller vi fast — vid det goda för att behålla det,
+vid det svåra för att det inte släpper.
+
+En av buddhismens äldsta verser vänder blicken mot själva fasthållandet.
+
+## Kärna
+
+Allt sammansatt är förgängligt, står det i Dhammapada. Allt som är satt samman
+av delar och orsaker rör sig, åldras, går över — tankar, känslor, tillstånd,
+ting. Det är ingen dyster nyhet utan en iakttagelse: så ser tillvaron ut.
+
+Det ovanliga är vad versen gör av det. Att se förgängligheten klart, sägs det,
+vänder en bort från lidandet. Inte för att sorgen försvinner, utan för att en
+viss sorts lidande föds ur att kräva att det obeständiga ska bestå. Handen som
+kramar det den är rädd att mista värker. När man verkligen ser att också detta
+går över, lossnar greppet en aning av sig självt.
+
+Det betyder inte att ingenting spelar roll. Det goda ögonblicket är verkligt
+just för att det är flyktigt; det svåra är uthärdligt just för att också det
+rör sig. Förgängligheten tar inte ifrån oss det som är — den befriar oss från
+föreställningen att vi måste hålla fast vid det.
+
+## Historisk kontext
+
+Dhammapada är en samling av Buddhas ord i versform, buren muntligt i
+århundraden innan den skrevs ned på Sri Lanka omkring år 29 f.Kr. Att allt
+sammansatt är obeständigt — anicca — hör till det som traditionen kallar
+tillvarons tre kännetecken, tillsammans med att inget sammansatt bär ett
+bestående jag och att fasthållandet föder lidande. Versen i det här rummet är
+en av dem som återkommer oftast. Hela texten finns i biblioteket.
