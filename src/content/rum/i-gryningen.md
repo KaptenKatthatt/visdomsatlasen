@@ -52,10 +52,8 @@ redaktion:
 
 Klockan ringer och kroppen säger nej. Täcket är varmt, rummet är kallt,
 och allt som väntar därute kan säkert vänta lite till. De flesta morgnar
-börjar med en liten förhandling.
-
-En romersk kejsare kände samma sak — och skrev ner vad han brukade svara
-sig själv.
+börjar med en liten förhandling — mellan den som vill stanna kvar och den
+som vet att dagen ska mötas.
 
 ## Kärna
 
