@@ -17,7 +17,7 @@ källor:
     primär: true
     redaktionellNot: Bearbetning av avsnittets tankegång; inga direkta citat i rummet.
 lästidMinuter: 3
-status: utkast
+status: publicerad
 skapad: 2026-07-15
 uppdaterad: 2026-07-15
 redaktion:
@@ -40,9 +40,12 @@ redaktion:
     passagens svenska översättning. Historisk kontext kontrollerad mot
     källposten (Marcus Aurelius, ca 170–180 e.Kr, Long i biblioteket). Ton,
     rytm, en fråga, en tanke, 2 reflektionsfrågor, ca 3 min. Förgranskad
-    mot alla fyra checklistorna. Publiceringsbeslutet är redaktörens läsning
-    och merge — AI avgör aldrig ensam vad som publiceras.
-  version: 1
+    mot alla fyra checklistorna. Godkänt av redaktören Jonas Olson
+    2026-07-15 vid chattgranskning av batch Sanning (PR #45), efter att
+    öppningen skrivits om så att den bär vändningen mot att ta emot
+    rättelse tacksamt (inte bara den defensiva reaktionen). Publicerat
+    tillsammans med temat Sanning. AI avgör aldrig ensam vad som publiceras.
+  version: 2
 ---
 
 ## Öppning

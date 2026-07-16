@@ -19,5 +19,5 @@ noteringar: >-
   tilltalar. Alltså en försvenskning av Legges engelska, inte direkt ur
   klassisk kinesiska; ingen ändring av meningen. AI avgör aldrig ensam vad
   som publiceras.
-status: utkast
+status: publicerad
 ---

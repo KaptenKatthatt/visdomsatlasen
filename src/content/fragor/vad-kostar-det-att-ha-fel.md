@@ -3,7 +3,7 @@ id: fraga-vad-kostar-det-att-ha-fel
 slug: vad-kostar-det-att-ha-fel
 text: Vad kostar det att ha fel?
 teman: [tema-sanning]
-status: utkast
+status: publicerad
 ---
 
 Att ändra sig känns ofta som att förlora. Men att hålla fast vid det som

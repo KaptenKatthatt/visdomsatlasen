@@ -4,7 +4,7 @@ slug: sanning
 etikett: Sanning
 ordning: 4
 standardRum: rum-oraklet-och-den-som-inte-vet
-status: utkast
+status: publicerad
 ---
 
 Det som håller när du prövar det.

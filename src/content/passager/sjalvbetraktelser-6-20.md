@@ -23,5 +23,5 @@ noteringar: >-
   redaktören. Alltså en försvenskning av den engelska texten, inte direkt
   ur grekiskan; ingen ändring av meningen. AI avgör aldrig ensam vad som
   publiceras.
-status: utkast
+status: publicerad
 ---

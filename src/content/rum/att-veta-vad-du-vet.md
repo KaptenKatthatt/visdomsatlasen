@@ -17,7 +17,7 @@ källor:
     primär: true
     redaktionellNot: Bearbetning av kapitlets lärosats; kärnan återger den nära men utan citatmarkering.
 lästidMinuter: 3
-status: utkast
+status: publicerad
 skapad: 2026-07-15
 uppdaterad: 2026-07-15
 redaktion:
@@ -39,9 +39,10 @@ redaktion:
     kontrollerad mot källposten (tillskrivet, ungefärlig datering; Legge i
     biblioteket). Ton, rytm, en fråga, en tanke, 2 reflektionsfrågor, ca 3
     min — ett medvetet kort rum kring en kort sentens. Förgranskad mot alla
-    fyra checklistorna. Publiceringsbeslutet är redaktörens läsning och
-    merge — AI avgör aldrig ensam vad som publiceras.
-  version: 1
+    fyra checklistorna. Godkänt av redaktören Jonas Olson 2026-07-15 vid
+    chattgranskning av batch Sanning (PR #45) utan ändringar. Publicerat
+    tillsammans med temat Sanning. AI avgör aldrig ensam vad som publiceras.
+  version: 2
 ---
 
 ## Öppning

@@ -29,5 +29,5 @@ noteringar: >-
   Stephanus-referensen 21b–d avser det klassiska ställets läge; bibliotekets
   text saknar Stephanus-marginaler, därför anges även styckenumren. AI avgör
   aldrig ensam vad som publiceras.
-status: utkast
+status: publicerad
 ---

@@ -17,7 +17,7 @@ källor:
     primär: true
     redaktionellNot: Bearbetning av oraklets ställe; inga direkta citat i rummet.
 lästidMinuter: 4
-status: utkast
+status: publicerad
 skapad: 2026-07-15
 uppdaterad: 2026-07-15
 redaktion:
@@ -39,9 +39,11 @@ redaktion:
     rummets tillägg. Historisk kontext kontrollerad mot källposten (Platons
     återgivning, rättegången 399 f.Kr, Jowett i biblioteket). Ton, rytm, en
     fråga, en tanke, 2 reflektionsfrågor, ca 4 min. Förgranskad mot alla
-    fyra checklistorna. Publiceringsbeslutet är redaktörens läsning och
-    merge — AI avgör aldrig ensam vad som publiceras.
-  version: 1
+    fyra checklistorna. Godkänt av redaktören Jonas Olson 2026-07-15 vid
+    chattgranskning av batch Sanning (PR #45) utan ändringar. Publicerat
+    tillsammans med temat Sanning och de två övriga Sanning-rummen. AI
+    avgör aldrig ensam vad som publiceras.
+  version: 2
 ---
 
 ## Öppning
