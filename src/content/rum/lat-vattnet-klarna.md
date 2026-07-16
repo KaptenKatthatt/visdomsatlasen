@@ -45,8 +45,10 @@ redaktion:
     strök kärnans meta-referenser till »texten« och förtydligade en syftning.
     Publiceras tillsammans med frågan och passagen (temat Lugn och källan
     kalla-tao-te-ching är redan publicerade). AI avgör aldrig ensam vad som
-    publiceras.
-  version: 2
+    publiceras. 2026-07-16: redaktören lät ta bort den avslutande teaser-raden i
+    öppningen (»Daodejing har en bild för det«) som lockade vidare utan att berätta
+    vad, i linje med review-language.md; Kärnan tar nu vid direkt.
+  version: 3
 ---
 
 ## Öppning
@@ -55,8 +57,6 @@ Något är grumligt. En känsla som inte går att läsa, ett beslut som inte vil
 klarna, ett gräl vars trådar har trasslat ihop sig. Instinkten är att göra
 något: gå igenom det en gång till, vända på argumenten, röra om tills det reder
 ut sig. Ofta blir vattnet bara grumligare.
-
-Daodejing har en bild för det.
 
 ## Kärna
 
