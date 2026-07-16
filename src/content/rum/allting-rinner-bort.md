@@ -46,8 +46,11 @@ redaktion:
     redan publicerad). Dubbeltaggat med tema-lidande 2026-07-15 (Fas 12 batch
     Lidande, PR #46) enligt planens beslut — rummet hörde tematiskt hemma även
     under Lidande, och taggen ger temat fyra rum. Primärfrågan förblir
-    Lugn-frågan; rummet visas nu i båda temanas rumslistor. AI avgör aldrig
-    ensam vad som publiceras.
+    Lugn-frågan; rummet visas nu i båda temanas rumslistor. 2026-07-16:
+    redaktören lät ta bort den avslutande bryggraden i öppningen (»En av
+    buddhismens äldsta verser vänder blicken mot själva fasthållandet«) i linje
+    med review-language.md; Kärnan tar nu vid direkt. AI avgör aldrig ensam
+    vad som publiceras.
   version: 3
 ---
 
@@ -57,8 +60,6 @@ Ett bra ögonblick pågår, och redan mitt i det finns en oro för att det ska t
 slut. Eller tvärtom: något tungt ligger på, och det känns som om det ska vara
 för alltid. I båda fallen håller vi fast — vid det goda för att behålla det,
 vid det svåra för att det inte släpper.
-
-En av buddhismens äldsta verser vänder blicken mot själva fasthållandet.
 
 ## Kärna
 
