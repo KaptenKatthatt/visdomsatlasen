@@ -45,7 +45,10 @@ redaktion:
     tillsammans med temat Mening (första rummet under Mening; temat får
     standardRum rum-tradet-ingen-ville-ha), frågan och passagen (källan
     kalla-zhuangzi är redan publicerad). AI avgör aldrig ensam vad som publiceras.
-  version: 2
+    2026-07-16: redaktören lät ta bort den avslutande teaser-raden i öppningen
+    (»…berättar om ett träd«) som lockade vidare utan att berätta vad, i linje med
+    review-language.md; Kärnan tar nu vid direkt.
+  version: 3
 ---
 
 ## Öppning
@@ -54,8 +57,6 @@ Räknar man efter blir mycket av dagen till medel. Det här görs för att det
 leder till något, det där för att det lönar sig. Även vilan smyger sig in på
 listan som något som ska göra en mer produktiv sen. Frågan tränger sig på: vad
 är det till för?
-
-Zhuangzi, den lekfullaste av de gamla kinesiska böckerna, berättar om ett träd.
 
 ## Kärna
 
