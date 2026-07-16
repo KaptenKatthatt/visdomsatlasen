@@ -52,9 +52,6 @@ Det finns beslut som aldrig blir färdiga. Du väger, samlar mer underlag,
 frågar en person till — och vissheten kommer ändå inte. Det du egentligen
 väntar på är att få veta hur det slutar. Och det får du inte.
 
-För tjugofyra århundraden sedan stod en man inför en domstol som kunde döma
-honom till döden, och sade något om just detta.
-
 ## Kärna
 
 Sokrates hade kunnat rädda sig. Det hade räckt med att be om nåd, tona ner,
