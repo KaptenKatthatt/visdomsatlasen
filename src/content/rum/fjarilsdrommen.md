@@ -48,12 +48,11 @@ redaktion:
 
 ## Öppning
 
-Vi tvivlar sällan på att vi är vakna. Golvet bär, kaffet är varmt, dagen är på
-riktigt. Det mesta vi lever efter tar vi för givet och vänder aldrig på, och för
-det mesta är det bra så.
+Ibland vaknar man ur en dröm som kändes alldeles verklig. Ett kort ögonblick vet
+man inte riktigt var man är, innan rummet och morgonen faller på plats. Sedan
+börjar dagen, och drömmen glider undan.
 
-Ändå är den säkerheten inte alltid så fast som den känns. Zhuangzi, en av de
-gamla kinesiska böckerna, berättar om en dröm.
+Zhuangzi, en av de gamla kinesiska böckerna, berättar om en dröm.
 
 ## Kärna
 
