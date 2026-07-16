@@ -48,14 +48,12 @@ redaktion:
 
 ## Öppning
 
-För det mesta tvivlar vi inte på att vi är vakna. Golvet bär, kaffet är varmt,
-dagen är på riktigt. Vi lever på en grund av saker vi tar för givna och sällan
-vänder på — och för det mesta är det bra så. Men ibland vaknar man ur en dröm som
-var alldeles verklig ända tills den tog slut, och undrar en kort stund vad man
-egentligen kan vara säker på.
+Vi tvivlar sällan på att vi är vakna. Golvet bär, kaffet är varmt, dagen är på
+riktigt. Det mesta vi lever efter tar vi för givet och vänder aldrig på, och för
+det mesta är det bra så.
 
-Zhuangzi, den lekfullaste av de gamla kinesiska böckerna, berättar om en sådan
-stund.
+Ändå är den säkerheten inte alltid så fast som den känns. Zhuangzi, en av de
+gamla kinesiska böckerna, berättar om en dröm.
 
 ## Kärna
 
@@ -63,9 +61,8 @@ En gång, säger Zhuangzi, drömde han att han var en fjäril. Han fladdrade hit
 dit, helt och hållet en fjäril, och visste ingenting om någon människa vid namn
 Zhuang Zhou. Så vaknade han plötsligt, och där låg han, sig själv igen.
 
-Och så ställer han den fråga som gör stycket omöjligt att glömma: var jag nyss en
-människa som drömde att jag var en fjäril — eller är jag nu en fjäril som drömmer
-att den är en människa?
+Och så ställer han sin fråga: var jag nyss en människa som drömde att jag var en
+fjäril — eller är jag nu en fjäril som drömmer att den är en människa?
 
 Han svarar inte. Poängen är inte att allt är en dröm, eller att ingenting går att
 lita på. Det vore lika tvärsäkert som det han skakar om. Poängen är mildare: den
@@ -82,6 +79,6 @@ den som ser det hela annorlunda.
 Zhuangzi bär namnet efter Zhuang Zhou, en tänkare som levde i Kina på 300-talet
 f.Kr. Fjärilsdrömmen står i slutet av bokens andra kapitel, som kretsar kring hur
 vårt sätt att dela upp världen i motsatser — vaket och drömt, jag och du, rätt och
-fel — är mindre fast än det ser ut. Stycket har lästs och älskats i mer än två
+fel — är mindre fast än det ser ut. Stycket har lästs och tolkats i mer än två
 tusen år. Hela verket finns i biblioteket, efter Herbert Giles engelska
 översättning.
