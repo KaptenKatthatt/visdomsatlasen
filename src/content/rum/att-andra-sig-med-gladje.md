@@ -49,8 +49,11 @@ redaktion:
 
 Någon rättar dig mitt i ett samtal. Först kommer värmen i ansiktet, den
 lilla stöten av att ha blivit tagen på bar gärning. Instinkten är att
-försvara sig, hålla fast, hitta ett skäl till att man ändå hade rätt. Att
-ge med sig känns som att förlora något.
+försvara sig, hålla fast, hitta ett skäl till att man ändå hade rätt.
+
+Men det går att vända på känslan. Den som rättar dig ger dig samtidigt
+något: en chans att se klarare. Tar man emot rättelsen så, blir den inte
+en förlust att värja sig mot utan något att vara tacksam för.
 
 ## Kärna
 
