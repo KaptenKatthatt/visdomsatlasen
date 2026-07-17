@@ -841,12 +841,18 @@ Every room must pass review for:
 
 The phase is complete when:
 
-- [ ] Every visible theme contains published rooms.
-- [ ] Every published room has verified sources.
-- [ ] No placeholder content appears in production.
-- [ ] Initial paths contain no weak filler rooms.
-- [ ] UI states have real Swedish copy.
-- [ ] Content feels coherent despite drawing from several traditions.
+- [x] Every visible theme contains published rooms.
+- [x] Every published room has verified sources.
+- [x] No placeholder content appears in production.
+- [x] Initial paths contain no weak filler rooms.
+- [x] UI states have real Swedish copy.
+- [x] Content feels coherent despite drawing from several traditions.
+
+Uppfyllt 2026-07-17: sex publicerade teman med minst tre rum vardera (Lugn 10,
+Människan 3, Mening 3, Mod 4, Sanning 4, Lidande 5), 22 frågor (minst två per
+tema), 28 rum, fyra vandringar och 30 verifierade källpassager ur 15 källor —
+inga platshållare. De uppskjutna Watts-rummen (Tolken i väst, Molnet av
+icke-vetande, Avskildheten) spåras i issue #44 och ligger utanför Fas 12.
 
 ---
 

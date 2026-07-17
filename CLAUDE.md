@@ -139,6 +139,26 @@ layoutmått förblir px); TopBar är `<header>`. Testgrinden har jsdom +
 E2E-verifierat: tangentbordsflöden, fälla/inert/återlämning, 200 % zoom utan
 horisontell scroll (430/834/1280), role=status vid sökuppdatering, reduced motion.
 
+**Fas 12 — Innehållsförberedelse (`docs/specs/implementation-roadmap.md`, »Content
+Preparation«) klar.** Appen fylld med material enligt fasens kriterier (roadmapen
+bockad): sex publicerade teman med minst tre rum vardera (Lugn 10, Människan 3,
+Mening 3, Mod 4, Sanning 4, Lidande 5), 22 frågor (minst två per tema), 28 rum, fyra
+vandringar (Vägen mot lugn, Tillgänglig buddhism, Att stå i det ovissa, Det som går
+förlorat) och 30 verifierade källpassager ur 15 källor — inga platshållare. Byggt i
+batcher, var och en granskad rum för rum av redaktören i chatt innan publicering
+(#43 Mod, #45 Sanning, #46 Lidande, #47 Människan/Mening, #42 buildout-rum +
+teaser-städning + vandringen Tillgänglig buddhism, #49 två vandringar). Två
+tidigare parallella innehållsspår (#42 och Fas 12-batcherna) konsoliderades till
+ett sekventiellt flöde och #42 ombaserades in. Rummen bygger på fria primärkällor
+(strategi D); de uppskjutna Watts-rummen (Tolken i väst, Molnet av icke-vetande,
+Avskildheten) spåras i issue #44 och ligger utanför fasen. Ny maskinell språkgrind:
+`src/content/redaktion/oppningsvakt.ts` (`ärTeaseröppning`) körs i `check:content`
+och fäller bygget om ett rums öppning teasar/introducerar källan i stället för att
+landa i vardagen — även för utkast. Öppningsreglerna står i
+`docs/checklists/review-language.md` §4b (ingen teaser) och §4c (öppningen bygger en
+egen båge och landar i en slutkläm; Kärnan låter källan bekräfta i stället för att
+introducera).
+
 ## Kända skulder
 
 - PWA saknar PNG/maskable-ikoner (Fas 13).
