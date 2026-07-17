@@ -1,14 +1,14 @@
 ---
-id: passage-zhuangzi-1-gurdan
+id: passage-zhuangzi-1-kalebassen
 källa: kalla-zhuangzi
-referens: kapitel 1 — den stora gurdan
+referens: kapitel 1 — den stora kalebassen
 översättning: >-
   Huizi sade till Zhuangzi: »Kungen av Wei gav mig ett frö till en jättelik
-  gurda. Den växte till en frukt stor som ett fat. Men fylld med vätska blev
+  kalebass. Den växte till en frukt stor som ett fat. Men fylld med vätska blev
   den för tung att lyfta, och skuren till skopor blev skoporna oanvändbara.
   Den var oanvändbart stor, så jag slog sönder den.« Zhuangzi svarade: »Det
   var snarare du som inte visste hur man brukar stora ting. Varför gjorde du
-  inte en båt av gurdan och lät dig driva omkring på flod och sjö? I stället
+  inte en båt av kalebassen och lät dig driva omkring på flod och sjö? I stället
   klagade du över att den inte kunde rymma något.«
 översättare: Visdomsatlasens redaktion
 utgåva: Herbert A. Giles, via Project Gutenberg (public domain)
