@@ -6,15 +6,23 @@ import { Hono } from 'hono'
 import { config } from './config'
 import { libraryRouter } from './api/library'
 import { ingestRouter } from './api/ingest'
+import { createAccessGate } from './gate'
 import { runMissingIngest } from './ingest/run'
 
 const app = new Hono()
 
-// Ingen inloggning: servern nås bara via Tailscale (WireGuard), allt innehåll är
-// public domain och ingen personlig data ligger på servern (bokmärken och
-// anteckningar bor i webbläsarens localStorage). Läsning är därför öppen inom
-// tailnet. Den enda skrivande endpointen, POST /api/ingest, skyddas separat av
-// INGEST_TOKEN i ingest-routern.
+// Testarläget: är ACCESS_CODE satt gömmer en delad kod hela appen (SPA + /api)
+// bakom en kod-sida. Monteras först så den täcker både statiska filer och API.
+// Utan koden är spärren av — servern nås då bara via Tailscale (WireGuard) utan
+// inloggning, som förr.
+if (config.accessCode) {
+  app.use('*', createAccessGate(config.accessCode))
+}
+
+// Ingen inloggning bortom testar-koden: allt innehåll är public domain och ingen
+// personlig data ligger på servern (bokmärken och anteckningar bor i webbläsarens
+// localStorage). Den enda skrivande endpointen, POST /api/ingest, skyddas separat
+// av INGEST_TOKEN i ingest-routern.
 app.route('/api/library', libraryRouter)
 app.route('/api/ingest', ingestRouter)
 

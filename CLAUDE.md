@@ -56,6 +56,20 @@ och **raderades** — `main` bär nu allt `remake` hade. Feature-PR:er baseras d
 på `main` tills en ny mellangren ev. återskapas. Starta om grenen från `origin/main`
 för uppföljningsarbete.
 
+### Testaråtkomst (testarläget)
+
+För att släppa in inbjudna testare utan att öppna appen för alla exponeras servern
+publikt via **Tailscale Funnel** och göms bakom en **delad kod**. Spärren bor i Hono
+(`server/gate.ts`, hjälpare i `server/auth.ts`) och aktiveras bara när `ACCESS_CODE`
+är satt — utan koden är appen öppen inom tailnet som förr (bakåtkompatibelt). Rätt kod
+sätter en HttpOnly-cookie (härledd token, aldrig plaintext); kod-sidan är emojifri och
+`noindex`. Manuellt engångssteg på VPS:en: lägg `ACCESS_CODE=<lång slumpad kod>` i
+`/opt/visdomsatlasen/.env`, starta om containern, kör `tailscale funnel --bg 3001`,
+dela `*.ts.net`-URL:en + koden. "Stäng av alla" = byt koden och starta om (gamla
+cookies dör). **Väg till publikt** (byggs inte nu): ta bort `ACCESS_CODE` (noll kod)
+→ ersätt Funnel med egen domän + Caddy (auto-TLS) → ta bort `robots.txt`/`noindex` →
+städa bort spärr-koden.
+
 ## Status (uppdatera per fas)
 
 Fas 0–6 klara och i produktion (`main`); nav-nedtoningen (#20) och Sparat-fixen (#23)

@@ -15,4 +15,7 @@ export const config = {
   // Bearer-token som skyddar POST /api/ingest (skrivningar mot databasen).
   // newsAggs UPDATE_TOKEN duger som fallback.
   ingestToken: process.env['INGEST_TOKEN'] ?? process.env['UPDATE_TOKEN'],
+  // Delad åtkomstkod som gömmer hela appen bakom en kod-sida (testarläget).
+  // Utelämnad ⇒ spärren av (dev + Tailscale-only är öppet som förr).
+  accessCode: process.env['ACCESS_CODE'],
 } as const
