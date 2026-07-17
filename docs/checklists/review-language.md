@@ -64,6 +64,38 @@ If a sentence sounds like it could appear in any AI-generated article, rewrite i
 
 ---
 
+# 4b. The Opening Must Not Tease
+
+The opening (`## Öppning`) grounds the reader in something ordinary and familiar.
+It must **land in the reader's everyday, or in an open question.** It must never
+introduce the source — that is the job of `## Kärna`.
+
+A **teaser** is any closing line that invites the reader to want more without
+telling them what: a curiosity gap. It is clickbait, and it is not allowed. It
+usually hides in a short final paragraph that points ahead to the source or the
+story.
+
+Forbidden (real examples that were removed):
+
+- "Zhuangzi, den lekfullaste av de gamla kinesiska böckerna, berättar om en kock."
+- "Daodejing har en bild för det."
+- "En av buddhismens äldsta verser vänder blicken mot själva fasthållandet."
+- "En gammal japansk sång vänder på den förutsättningen."
+- "För över två tusen år sedan stod en gammal man inför en domstol i Aten … och vägrade spela med."
+
+The fix: **delete the teaser line.** Let the opening end on the everyday
+observation (or an open question), and let `## Kärna` name the source and tell the
+story directly. Nothing is lost — the source is named in `## Kärna` and
+`## Historisk kontext`.
+
+This rule is enforced automatically: `check:content` (via
+`src/content/redaktion/oppningsvakt.ts`) fails the build when a room's opening
+teases, for drafts as well as published rooms. The check is a heuristic backstop
+for the shapes we have seen — it is not a substitute for reading the opening and
+asking: *does this lure, or does it simply begin?*
+
+---
+
 # 4c. The Opening Builds to a Landing
 
 Decided by the editor 2026-07-17, after reviewing the batch-4 rooms: an opening

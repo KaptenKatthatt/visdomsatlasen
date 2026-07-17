@@ -2,6 +2,7 @@
 // dubbletter, brutna relationer och publiceringskrav. Fältkraven per post tas
 // av zod-schemana vid tolkningen; här kontrolleras det som kräver helheten.
 // Publicerat innehåll får aldrig peka på opublicerat — utkast är fria.
+import { ärTeaseröppning } from './oppningsvakt'
 import type { Fraga, Innehallsmangd, Kalla, Kallpassage, Rum, Tema } from './schema'
 
 type Kallrelation = Rum['källor'][number]
@@ -114,6 +115,16 @@ const publiceringsfel = (rum: Rum, uppslag: Uppslag): string[] => {
     .map((referens) => `rum ${rum.id}: länkar opublicerad(t) ${referens.typ} "${referens.id}"`)
   return [...grindar, ...opublicerade]
 }
+
+// Språkgrind (review-language.md): öppningen ska landa i vardagen, inte teasa
+// eller introducera källan (det gör Kärnan). Gäller alla rum, även utkast, så en
+// teaser aldrig ens kan committas — inte bara stoppas vid publicering.
+const öppningsfel = (rum: Rum): string[] =>
+  ärTeaseröppning(rum.öppning)
+    ? [
+        `rum ${rum.id}: öppningens sista stycke teasar/introducerar källan — låt öppningen landa i det vardagliga (eller en öppen fråga) och Kärnan introducera källan (review-language.md)`,
+      ]
+    : []
 
 const temafel = (tema: Tema, uppslag: Uppslag): string[] => {
   if (tema.standardRum === undefined) return []
@@ -229,6 +240,7 @@ export const valideraInnehall = (mängd: Innehallsmangd): string[] => {
     ...dublettfel('tradition', mängd.traditioner),
     ...dublettfel('person', mängd.personer),
     ...mängd.rum.flatMap((rum) => relationsfel(rum, uppslag)),
+    ...mängd.rum.flatMap((rum) => öppningsfel(rum)),
     ...mängd.rum.flatMap((rum) => publiceringsfel(rum, uppslag)),
     ...mängd.teman.flatMap((tema) => temafel(tema, uppslag)),
     ...mängd.frågor.flatMap((fråga) => fragefel(fråga, uppslag)),
