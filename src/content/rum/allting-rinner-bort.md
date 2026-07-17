@@ -4,7 +4,7 @@ slug: allting-rinner-bort
 titel: Allting rinner bort
 sammanfattning: En tanke om att förgängligheten inte bara är en förlust utan också en lättnad.
 primärFråga: fraga-vad-blir-lattare-nar-ingenting-bestar
-teman: [tema-lugn]
+teman: [tema-lugn, tema-lidande]
 tankeAttBära: Att allt rinner bort är inte bara sorg — det är också det som gör greppet onödigt.
 reflektionsfrågor:
   - Vad håller du fast vid som om det kunde bestå?
@@ -43,8 +43,12 @@ redaktion:
     chattgranskning av PR #39; redaktören strammade kärnan och tog bort »anicca«
     ur den läsbara historiska kontexten (paliterm kvar här för källverifiering).
     Publiceras tillsammans med frågan och passagen (källan kalla-dhammapada är
-    redan publicerad). AI avgör aldrig ensam vad som publiceras.
-  version: 2
+    redan publicerad). Dubbeltaggat med tema-lidande 2026-07-15 (Fas 12 batch
+    Lidande, PR #46) enligt planens beslut — rummet hörde tematiskt hemma även
+    under Lidande, och taggen ger temat fyra rum. Primärfrågan förblir
+    Lugn-frågan; rummet visas nu i båda temanas rumslistor. AI avgör aldrig
+    ensam vad som publiceras.
+  version: 3
 ---
 
 ## Öppning

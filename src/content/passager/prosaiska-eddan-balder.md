@@ -26,5 +26,5 @@ noteringar: >-
   Þökk). Alltså en försvenskning av Andersons engelska, inte direkt ur
   fornisländskan; ingen ändring av meningen. AI avgör aldrig ensam vad som
   publiceras.
-status: utkast
+status: publicerad
 ---

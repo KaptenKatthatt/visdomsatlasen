@@ -17,7 +17,7 @@ källor:
     primär: true
     redaktionellNot: Bearbetning av kapitlets tröstetanke; inga direkta citat i rummet.
 lästidMinuter: 4
-status: utkast
+status: publicerad
 skapad: 2026-07-15
 uppdaterad: 2026-07-15
 redaktion:
@@ -40,9 +40,11 @@ redaktion:
     Metilius dött; Seneca skrev brevet för att trösta henne. Historisk
     kontext mot källposten (Seneca, ca 40 e.Kr; Aubrey Stewarts engelska i
     biblioteket). Ton, rytm, en fråga, en tanke, 2 reflektionsfrågor, ca 4
-    min. Förgranskad mot alla fyra checklistorna. Publiceringsbeslutet är
-    redaktörens läsning och merge — AI avgör aldrig ensam vad som publiceras.
-  version: 1
+    min. Förgranskad mot alla fyra checklistorna. Godkänt av redaktören
+    Jonas Olson 2026-07-15 vid chattgranskning av batch Lidande (PR #46)
+    utan ändringar. Publicerat tillsammans med temat Lidande. AI avgör
+    aldrig ensam vad som publiceras.
+  version: 2
 ---
 
 ## Öppning

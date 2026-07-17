@@ -17,7 +17,7 @@ källor:
     primär: true
     redaktionellNot: Bearbetning av versens tankegång; kärnan speglar den men utan citatmarkering.
 lästidMinuter: 3
-status: utkast
+status: publicerad
 skapad: 2026-07-15
 uppdaterad: 2026-07-15
 redaktion:
@@ -43,9 +43,13 @@ redaktion:
     granskas särskilt. Historisk kontext mot källposten (Buddhas ord i
     versform, nedtecknad ca 29 f.Kr; Piyavagga). Ton, rytm, en fråga, en
     tanke, 2 reflektionsfrågor, ca 3 min. Förgranskad mot alla fyra
-    checklistorna. Publiceringsbeslutet är redaktörens läsning och merge —
-    AI avgör aldrig ensam vad som publiceras.
-  version: 1
+    checklistorna. Godkänt av redaktören Jonas Olson 2026-07-15 vid
+    chattgranskning av batch Lidande (PR #46): öppningen skrevs om för
+    klarhet, och tolkningsförskjutningen gentemot Dhammapada 212 (sorgen
+    som mått på kärleken i stället för versens frigörelsebud) prövades
+    särskilt och godkändes. Publicerat tillsammans med temat Lidande och de
+    två övriga Lidande-rummen. AI avgör aldrig ensam vad som publiceras.
+  version: 2
 ---
 
 ## Öppning

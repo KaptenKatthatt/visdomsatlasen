@@ -3,7 +3,7 @@ id: fraga-varifran-kommer-sorgen
 slug: varifran-kommer-sorgen
 text: Varifrån kommer sorgen?
 teman: [tema-lidande]
-status: utkast
+status: publicerad
 ---
 
 Sorgen känns som något som drabbar oss utifrån. Men flera gamla traditioner

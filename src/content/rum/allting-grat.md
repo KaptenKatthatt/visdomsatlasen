@@ -17,7 +17,7 @@ källor:
     primär: true
     redaktionellNot: Bearbetning av mytens tanke om den delade och den vägrade sorgen; inga direkta citat.
 lästidMinuter: 4
-status: utkast
+status: publicerad
 skapad: 2026-07-15
 uppdaterad: 2026-07-15
 redaktion:
@@ -40,9 +40,12 @@ redaktion:
     tillbaka. Historisk kontext mot källposten (Snorre Sturlasson, ca 1220;
     Rasmus B. Andersons engelska i biblioteket). Andersons »Thok« återges
     som Tökk (Þökk). Ton, rytm, en fråga, en tanke, 2 reflektionsfrågor, ca
-    4 min. Förgranskad mot alla fyra checklistorna. Publiceringsbeslutet är
-    redaktörens läsning och merge — AI avgör aldrig ensam vad som publiceras.
-  version: 1
+    4 min. Förgranskad mot alla fyra checklistorna. Godkänt av redaktören
+    Jonas Olson 2026-07-15 vid chattgranskning av batch Lidande (PR #46),
+    efter att öppningen skrivits om mot checklistorna (bort med en generisk
+    AI-fras och en teaser-mening mot myten). Publicerat tillsammans med
+    temat Lidande. AI avgör aldrig ensam vad som publiceras.
+  version: 2
 ---
 
 ## Öppning
