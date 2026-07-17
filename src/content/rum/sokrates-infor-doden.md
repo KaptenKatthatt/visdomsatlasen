@@ -52,9 +52,6 @@ kommer det att gå«, och målar upp slutet i skarpa färger långt innan något
 hänt. Mycket av det vi drar oss för gör vi inte för att vi vet hur det slutar,
 utan för att rädslan låter så säker på sin sak.
 
-För över två tusen år sedan stod en gammal man inför en domstol i Aten, anklagad
-till döden, och vägrade spela med i den säkerheten.
-
 ## Kärna
 
 Sokrates hade dömts. Han kunde ha bett om nåd, gråtit, tagit med sina barn till
