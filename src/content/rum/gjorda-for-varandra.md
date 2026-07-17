@@ -19,7 +19,7 @@ källor:
 lästidMinuter: 3
 status: utkast
 skapad: 2026-07-15
-uppdaterad: 2026-07-15
+uppdaterad: 2026-07-17
 redaktion:
   skribent: Claude (utkast, Fas 12 batch Människan/Mening)
   källgranskare: Claude (förgranskning)
@@ -49,10 +49,16 @@ redaktion:
 
 ## Öppning
 
-En vanlig dag rymmer en rad små sammanstötningar. Någon är i vägen, någon
-är otacksam, någon vill åt samma sak som du. Det är lätt att börja se
-människorna omkring sig som hinder — var och en med sina egna mål som
-krockar med dina.
+En vanlig dag rymmer en rad små sammanstötningar. Någon tränger sig före i
+kön, någon svarar snävt på ett vänligt menat meddelande, någon tar åt sig
+äran för det du gjorde. Var för sig är de småsaker, knappt värda att nämna.
+Men de samlas. Vid dagens slut kan de ha lagt sig som en tunn hinna över
+allting — en känsla av att människor mest är i vägen.
+
+Det är lätt att börja se dem så: som hinder mellan dig och det du försöker
+göra, var och en med sina egna mål som krockar med dina. Och ur den blicken
+växer ett tyst antagande — att andra i grunden är konkurrenter, och att
+gemenskap är något man kostar på sig när kampen tillåter.
 
 ## Kärna
 
