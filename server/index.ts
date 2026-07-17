@@ -6,7 +6,7 @@ import { Hono } from 'hono'
 import { config } from './config'
 import { libraryRouter } from './api/library'
 import { ingestRouter } from './api/ingest'
-import { createAccessGate } from './gate'
+import { mountAccessGate } from './gate'
 import { runMissingIngest } from './ingest/run'
 
 const app = new Hono()
@@ -15,9 +15,7 @@ const app = new Hono()
 // bakom en kod-sida. Monteras först så den täcker både statiska filer och API.
 // Utan koden är spärren av — servern nås då bara via Tailscale (WireGuard) utan
 // inloggning, som förr.
-if (config.accessCode) {
-  app.use('*', createAccessGate(config.accessCode))
-}
+mountAccessGate(app, config.accessCode)
 
 // Ingen inloggning bortom testar-koden: allt innehåll är public domain och ingen
 // personlig data ligger på servern (bokmärken och anteckningar bor i webbläsarens

@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { describe, expect, it } from 'vitest'
 import { accessCookieValue } from './auth'
-import { createAccessGate } from './gate'
+import { createAccessGate, mountAccessGate } from './gate'
 
 const KOD = 'hemlig-testarkod-1234567890'
 
@@ -65,12 +65,21 @@ describe('createAccessGate', () => {
     expect(res.status).toBe(200)
   })
 
-  it('utan konfigurerad kod monteras ingen spärr (bakåtkompatibelt)', async () => {
-    // Spärren aktiveras bara när config.accessCode finns; monteras den inte är
-    // appen öppen. Verifieras genom att en app utan gate släpper igenom allt.
+  // Speglar server/index.ts: spärren monteras FÖRE routes registreras, annars
+  // täcker Hono-middlewaren dem inte.
+  it('mountAccessGate lämnar appen öppen utan kod (bakåtkompatibelt)', async () => {
     const app = new Hono()
+    mountAccessGate(app, undefined)
     app.get('/api/library/works', (c) => c.json({ works: [] }))
     const res = await app.request('/api/library/works')
     expect(res.status).toBe(200)
+  })
+
+  it('mountAccessGate spärrar när en kod finns', async () => {
+    const app = new Hono()
+    mountAccessGate(app, KOD)
+    app.get('/api/library/works', (c) => c.json({ works: [] }))
+    const res = await app.request('/api/library/works')
+    expect(res.status).toBe(401)
   })
 })

@@ -1,4 +1,4 @@
-import type { Context, MiddlewareHandler } from 'hono'
+import { type Context, Hono, type MiddlewareHandler } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
 import { accessCookieValue, verifyAccessCode, verifyAccessCookie } from './auth'
 
@@ -100,4 +100,13 @@ export const createAccessGate = (accessCode: string): MiddlewareHandler => {
     if (c.req.method === 'GET' && villHaHtml) return c.html(kodSida(false), 200)
     return c.text('Unauthorized', 401)
   }
+}
+
+/**
+ * Monterar spärren på appen bara när en kod finns. Utan kod lämnas appen öppen
+ * (dev + Tailscale-only, bakåtkompatibelt). Samlar den villkorade monteringen på
+ * ett ställe så grenen kan testas.
+ */
+export const mountAccessGate = (app: Hono, accessCode: string | undefined): void => {
+  if (accessCode) app.use('*', createAccessGate(accessCode))
 }
