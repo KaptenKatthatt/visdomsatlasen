@@ -50,10 +50,9 @@ redaktion:
 
 ## Öppning
 
-Sorgen kommer sällan över det man var likgiltig inför. Ingen gråter en
-främling förbi på gatan. Det gör ont just där vi har hållit något kärt —
-en människa, en plats, ett liv vi tänkt oss. Ju mer det betydde, desto
-tyngre väger förlusten.
+Vi sörjer inte det som lämnat oss likgiltiga. Sorgen kommer där något
+varit oss kärt — en människa vi hållit av, en plats vi hört hemma i, ett
+liv vi tänkt oss. Ju mer det betydde, desto tyngre blir förlusten att bära.
 
 ## Kärna
 
