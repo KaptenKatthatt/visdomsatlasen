@@ -47,10 +47,10 @@ redaktion:
 
 ## Öppning
 
-Det finns förluster man skulle ge vad som helst för att göra ogjorda. Om
-det så bara gick att gråta tillräckligt, tänker man, skulle det kanske
-komma tillbaka. Den känslan är lika gammal som människan, och en av de
-nordiska myterna ger den en egen bild.
+Det finns förluster man skulle ge vad som helst för att göra ogjorda.
+Djupt i sorgen bor en tyst förhoppning: att om den bara delades av
+tillräckligt många, om den vore stor nog, skulle det förlorade kunna
+komma tillbaka.
 
 ## Kärna
 
