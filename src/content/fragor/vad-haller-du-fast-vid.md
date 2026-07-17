@@ -3,7 +3,7 @@ id: fraga-vad-haller-du-fast-vid
 slug: vad-haller-du-fast-vid
 text: Vad håller du fast vid?
 teman: [tema-lidande]
-status: utkast
+status: publicerad
 ---
 
 Mycket av det som tynger handlar mindre om vad som händer än om hur hårt vi håller
