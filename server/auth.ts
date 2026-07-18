@@ -1,14 +1,14 @@
 import { createHash, timingSafeEqual } from 'node:crypto'
 import { config } from './config'
 
-// Jämför via SHA-256-hashar: konstant tid oavsett stränglängd (som newsAgg).
+// Compare via SHA-256 hashes: constant time regardless of string length (like newsAgg).
 const constantTimeEquals = (a: string, b: string): boolean => {
   const da = createHash('sha256').update(a, 'utf-8').digest()
   const db = createHash('sha256').update(b, 'utf-8').digest()
   return timingSafeEqual(da, db)
 }
 
-/** Verifierar `Authorization: Bearer <INGEST_TOKEN>` för ingest-anrop. */
+/** Verifies `Authorization: Bearer <INGEST_TOKEN>` for ingest requests. */
 export const verifyIngestToken = (header: string | null): boolean => {
   const token = config.ingestToken
   if (!token || !header || !header.startsWith('Bearer ')) return false
@@ -16,8 +16,8 @@ export const verifyIngestToken = (header: string | null): boolean => {
 }
 
 /**
- * Verifierar en inskickad åtkomstkod (testarläget) mot den delade koden i
- * konstant tid. Koden tas som parameter så funktionen förblir ren och testbar.
+ * Verifies a submitted access code (tester mode) against the shared code in
+ * constant time. The code is taken as a parameter so the function stays pure and testable.
  */
 export const verifyAccessCode = (submitted: string, code: string): boolean => {
   if (!code || !submitted) return false
@@ -25,13 +25,13 @@ export const verifyAccessCode = (submitted: string, code: string): boolean => {
 }
 
 /**
- * Härledd cookie-token = SHA-256 av koden. Plaintext-koden lagras alltså aldrig
- * i cookien, och byte av koden ogiltigförklarar automatiskt gamla cookies.
+ * Derived cookie token = SHA-256 of the code. The plaintext code is therefore never
+ * stored in the cookie, and changing the code automatically invalidates old cookies.
  */
 export const accessCookieValue = (code: string): string =>
   createHash('sha256').update(code, 'utf-8').digest('hex')
 
-/** Verifierar en cookie mot den härledda token i konstant tid. */
+/** Verifies a cookie against the derived token in constant time. */
 export const verifyAccessCookie = (value: string | null, code: string): boolean => {
   if (!code || !value) return false
   return constantTimeEquals(value, accessCookieValue(code))

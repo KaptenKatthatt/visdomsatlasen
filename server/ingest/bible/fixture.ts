@@ -4,9 +4,9 @@ import { z } from 'zod'
 import { BIBLE_META } from './meta'
 import type { NormalizedWork } from '../model'
 
-// Fixture-adapter: läser ett urval av 1917 års bibel från en lokal fil så hela
-// kedjan ingest → API → läsare kan verifieras utan nätverk (getbible är blockerad
-// i sandboxen). På VPS:en används getbible-adaptern för hela bibeln i stället.
+// Fixture adapter: reads a selection of the 1917 Bible from a local file so the
+// whole chain ingest → API → reader can be verified without a network (getbible is
+// blocked in the sandbox). On the VPS the getbible adapter is used for the whole Bible instead.
 const verseSchema = z.object({
   chapter: z.number().int().positive(),
   verse: z.number().int().positive(),

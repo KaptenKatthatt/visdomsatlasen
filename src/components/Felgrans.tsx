@@ -5,12 +5,12 @@ import styles from './Felgrans.module.css'
 type Props = { children: ReactNode }
 type State = { fel: boolean }
 
-/** Felgräns kring de kod-delade sidorna (fas 13/14): fångar när en sidchunk inte
- * går att ladda (t.ex. offline innan cachning) eller när en sida kastar under
- * render. Rapporterar ett sidladdningsfel och visar ett lugnt, begripligt tomläge
- * i stället för en vit skärm. Bara felets meddelande loggas — aldrig sidans
- * innehåll eller användarens text. Boundaryn nycklas per route i RootLayout så
- * den nollställs vid navigation. */
+/** Error boundary around the code-split pages (phase 13/14): catches when a page chunk
+ * can't be loaded (e.g. offline before caching) or when a page throws during
+ * render. Reports a page-load error and shows a calm, understandable empty state
+ * instead of a white screen. Only the error message is logged — never the page's
+ * content or the user's text. The boundary is keyed per route in RootLayout so
+ * it resets on navigation. */
 export class Felgrans extends Component<Props, State> {
   override state: State = { fel: false }
 

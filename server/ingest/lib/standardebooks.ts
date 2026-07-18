@@ -1,9 +1,9 @@
 import { cleanHtml } from './html'
 import type { RawChapter } from './chapters'
 
-// Standard Ebooks lägger varje kapitel i <section epub:type="chapter"> med
-// <p>-stycken; kapitelnumret tas ur id:ts sista siffror (chapter-7,
-// the-enchiridion-7 …). Delas av Tao Te Ching och Epiktetos Handbok.
+// Standard Ebooks puts each chapter in a <section epub:type="chapter"> with
+// <p> paragraphs; the chapter number is taken from the id's trailing digits (chapter-7,
+// the-enchiridion-7 …). Shared by the Tao Te Ching and Epictetus' Handbook.
 export const parseStandardEbook = (xhtml: string): RawChapter[] => {
   const chapters: RawChapter[] = []
   const sectionRe = /<section id="([^"]+)"[^>]*epub:type="[^"]*chapter[^"]*"[^>]*>([\s\S]*?)<\/section>/g

@@ -1,5 +1,5 @@
-// Typad klient mot bibliotekets API (server/api/library.ts). Samma origin;
-// läsning är öppen (servern körs Tailscale-only, se server/index.ts).
+// Typed client for the library API (server/api/library.ts). Same origin;
+// reading is open (the server runs Tailscale-only, see server/index.ts).
 import { report, withoutQuestion } from './telemetry'
 
 export type Work = {
@@ -28,7 +28,7 @@ export type Book = {
   chapterCount: number
 }
 
-// Boken med sina faktiska kapitelnummer (kan ha luckor / inte börja på 1).
+// The book with its actual chapter numbers (may have gaps / not start at 1).
 export type BookWithChapters = Book & { chapters: number[] }
 
 export type Verse = {
@@ -66,11 +66,11 @@ export type BookHit = {
   bookName: string
 }
 
-/** Lugna, svenska felmeddelanden i stället för råa `TypeError: Failed to fetch`
- * eller statuskoder. Källtexterna kommer från biblioteks-API:t (server/), så en
- * bruten uppkoppling ska mötas begripligt (fas 13, provide calm offline errors) —
- * inte som ett tekniskt haveri. Det redaktionella innehållet ligger i bunten och
- * berörs aldrig av detta; bara verkläsarens texter hämtas över nätet. */
+/** Calm, Swedish error messages instead of raw `TypeError: Failed to fetch`
+ * or status codes. The source texts come from the library API (server/), so a
+ * broken connection should be met intelligibly (phase 13, provide calm offline
+ * errors) — not as a technical breakdown. The editorial content lives in the
+ * bundle and is never affected by this; only the reader's texts are fetched over the network. */
 const OFFLINE_TEXT = 'Du verkar vara offline. Texten går att läsa igen när du är ansluten.'
 const NAT_TEXT = 'Texten går inte att hämta just nu. Kontrollera din uppkoppling och försök igen.'
 const SVAR_TEXT = 'Kunde inte hämta texten just nu. Försök igen om en stund.'
@@ -78,14 +78,14 @@ const SVAR_TEXT = 'Kunde inte hämta texten just nu. Försök igen om en stund.'
 const isOffline = (): boolean => typeof navigator !== 'undefined' && navigator.onLine === false
 
 const getJson = async <T>(url: string): Promise<T> => {
-  // Resursen loggas utan frågesträng, så en sökfrågas text aldrig läcker in i
-  // telemetrin via /api/library/search?q=… (fas 14, sensitive query data).
+  // The resource is logged without its query string, so a search query's text
+  // never leaks into telemetry via /api/library/search?q=… (phase 14, sensitive query data).
   const resurs = withoutQuestion(url)
   let response: Response
   try {
     response = await fetch(url, { headers: { Accept: 'application/json' } })
   } catch {
-    // fetch avvisar med TypeError vid nätverksfel (offline, avbruten uppkoppling).
+    // fetch rejects with TypeError on network errors (offline, dropped connection).
     const offline = isOffline()
     report({ type: offline ? 'offline-laddningsfel' : 'sidladdningsfel', resurs })
     throw new Error(offline ? OFFLINE_TEXT : NAT_TEXT)
@@ -97,10 +97,10 @@ const getJson = async <T>(url: string): Promise<T> => {
   return (await response.json()) as T
 }
 
-/** Bok-id i API:t är `${workId}/${slug}`; koda båda leden för URL:en. */
+/** A book id in the API is `${workId}/${slug}`; encode both parts for the URL. */
 export const bookId = (workId: string, slug: string): string => `${workId}/${slug}`
 
-/** Plockar ut bok-sluggen ur ett fullständigt bok-id. */
+/** Extracts the book slug from a full book id. */
 export const slugOfBook = (workId: string, id: string): string =>
   id.startsWith(`${workId}/`) ? id.slice(workId.length + 1) : id
 

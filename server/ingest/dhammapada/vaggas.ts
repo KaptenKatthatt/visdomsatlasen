@@ -1,5 +1,5 @@
-// Dhammapadas 26 vaggas (kapitel) med SuttaCentrals versintervall. Filnamnen i
-// bilara-data följer `dhp{start}-{end}`. Namnen är svenska med pali inom parentes.
+// Dhammapada's 26 vaggas (chapters) with SuttaCentral's verse ranges. The file
+// names in bilara-data follow `dhp{start}-{end}`. The names are Swedish with Pali in parentheses.
 export type Vagga = { index: number; range: string; name: string }
 
 export const DHAMMAPADA_VAGGAS: Vagga[] = [

@@ -1,6 +1,6 @@
-// Bibliotekssökets sida (search.md): ett debouncat fält, URL-buret sökstate,
-// grupperade ändliga resultat och en separat privat anteckningsgrupp. Söket bor
-// i Biblioteket och tar aldrig place i läsrummet. Ingen popularitetssignal.
+// The library search page (search.md): a debounced field, URL-carried search state,
+// grouped finite results and a separate private notes group. Search lives
+// in the Library and never takes place in the reading room. No popularity signal.
 import { useEffect, useState } from 'react'
 import { TopBar } from '../../components/TopBar'
 import { searchLibrary } from '../../lib/api'
@@ -16,12 +16,12 @@ import { useDebounced } from '../../lib/useDebounced'
 import { useSidtitel } from '../../lib/useSidtitel'
 import { Filter, SourceTextGroup, ResultView, SearchField, type SourceTextResponse, type SearchMode } from './SokDelar'
 
-// Vilka grupper som expanderats, ihågkommet per normaliserad fråga över
-// navigation inom sessionen (search.md: sökstate får vara tillfälligt).
+// Which groups are expanded, remembered per normalized query across
+// navigation within the session (search.md: search state may be temporary).
 const expansionsminne = new Map<string, Set<SearchType>>()
 const getExpansion = (key: string): Set<SearchType> => new Set(expansionsminne.get(key))
 
-// Den delbara sökparametern; tom fråga och intet filter utelämnas ur URL:en.
+// The shareable search parameter; an empty query and no filter are omitted from the URL.
 const searchObject = (term: string, type: SearchType | undefined): SearchParams => ({
   ...(term ? { q: term } : {}),
   ...(type ? { type } : {}),
@@ -34,8 +34,8 @@ type Derived = {
   fel: boolean
 }
 
-// Härleder de redaktionella resultaten och den privata anteckningsgruppen ur
-// termen. Ren funktion (utanför komponenten) så sidan hålls liten och läsbar.
+// Derives the editorial results and the private notes group from
+// the term. A pure function (outside the component) so the page stays small and readable.
 const deriveResult = (
   term: string,
   type: SearchType | undefined,
@@ -65,12 +65,12 @@ const TOMT_KALLTEXTSVAR: SourceTextResponse = { books: [], hits: [] }
 const sourceTextCountOf = (svar: SourceTextResponse | null): number =>
   (svar?.books.length ?? 0) + (svar?.hits.length ?? 0)
 
-// Inga träffar alls (och verssöket är inte längre på väg): först då visas
-// no-results, aldrig medan källtextträffar fortfarande laddas.
+// No hits at all (and the verse search is no longer in flight): only then is
+// no-results shown, never while source-text hits are still loading.
 const isCompletelyEmpty = (redaktionellaOchNoter: number, kalltextAntal: number, laddar: boolean): boolean =>
   redaktionellaOchNoter === 0 && kalltextAntal === 0 && !laddar
 
-// Lägger till en expanderad grupp och sparar det i sessionsminnet.
+// Adds an expanded group and saves it in the session memory.
 const nyExpansion = (
   previous: ReadonlySet<SearchType>,
   key: string,
@@ -81,9 +81,9 @@ const nyExpansion = (
   return next
 }
 
-// Sökfältets tillstånd: debouncat värde, Enter söker direkt, termen speglas i
-// URL:en och expanderade grupper minns per fråga. Samlat i en hook så själva
-// sidan blir liten och läsbar.
+// The search field's state: debounced value, Enter searches immediately, the term is mirrored in
+// the URL and expanded groups are remembered per query. Gathered into a hook so the
+// page itself stays small and readable.
 const useSoktillstand = (
   q: string,
   type: SearchType | undefined,
@@ -133,8 +133,8 @@ export const SokBibliotekPage = ({ q, type, onNavigera }: Props) => {
   )
   const anteckningar = useAtlas().notes
 
-  // Verssöket (verkläsarens FTS) körs bara utan typfilter och för fråga ≥ 2
-  // tecken; annars ett tomt svar utan nätanrop. Egen väg, egen laddning.
+  // The verse search (the reader's FTS) runs only without a type filter and for a query ≥ 2
+  // characters; otherwise an empty response with no network call. Its own path, its own loading.
   const searchSourceText = key.length >= 2 && type === undefined
   const kalltext = useAsync<SourceTextResponse>(
     () => (searchSourceText ? searchLibrary(term) : Promise.resolve(TOMT_KALLTEXTSVAR)),
@@ -151,9 +151,9 @@ export const SokBibliotekPage = ({ q, type, onNavigera }: Props) => {
   const antal = redaktionellaOchNoter + kalltextAntal
   const ingaTraffar = isCompletelyEmpty(redaktionellaOchNoter, kalltextAntal, kalltext.loading)
 
-  // Fas 14: rapportera bara tekniskt minimum ur söket — ett index-fel eller en
-  // helt tom sökning (anonymiserat). Anteckningssöket rör detta aldrig, och
-  // frågans text loggas aldrig — bara längd och ordantal.
+  // Phase 14: report only the technical minimum from the search — an index error or a
+  // completely empty search (anonymized). The notes search never touches this, and
+  // the query text is never logged — only length and word count.
   useEffect(() => {
     if (key.length < 2) return
     if (fel) report({ type: 'sokfel', detalj: 'index' })

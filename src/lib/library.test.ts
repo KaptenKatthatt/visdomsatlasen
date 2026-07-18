@@ -16,7 +16,7 @@ import {
   pathReadingTime,
 } from './library'
 
-// Fabricerade poster: bara fälten biblioteket läser behöver vara meningsfulla.
+// Fabricated records: only the fields the library reads need to be meaningful.
 const room = (title: string, status: Room['status'] = 'published', över: Partial<Room> = {}): Room => ({
   id: `rum-${title}`,
   slug: title,
@@ -66,7 +66,7 @@ describe('libraryThemes', () => {
       theme('mening', { order: 2 }),
       theme('lugn', { order: 1 }),
     ]
-    // Ordnade themes först; oordnade sist i svensk order (ö efter a).
+    // Ordered themes first; unordered last in Swedish order (ö after a).
     expect(libraryThemes(themes).map((t) => t.label)).toEqual([
       'lugn',
       'mening',
@@ -130,7 +130,7 @@ describe('questionsForTheme', () => {
       question('Utkastfråga?', { themes: ['tema-a'], status: 'draft' }),
       question('Annat tema?', { themes: ['tema-b'] }),
     ]
-    // Svensk order: Ä sorterar efter V, inte som A.
+    // Swedish order: Ä sorts after V, not like A.
     expect(questionsForTheme('tema-a', all).map((f) => f.text)).toEqual([
       'Vad är sant?',
       'Är detta viktigt?',
@@ -316,7 +316,7 @@ describe('traditionsForPath', () => {
       tradition('buddhism'),
       tradition('taoism', 'draft'),
     ]
-    // taoism är utkast och faller bort; stoicism och buddhism i svensk order.
+    // taoism is a draft and drops out; stoicism and buddhism in Swedish order.
     expect(traditionsForPath(rooms, sources, traditions).map((t) => t.name)).toEqual([
       'buddhism',
       'stoicism',

@@ -40,38 +40,38 @@ type LastRead = { id: string; mode: ReadMode }
 
 const nu = (): string => new Date().toISOString()
 
-// Klassar en anteckningsnyckel vid migrering: rum-id:n (prefixet `rum-`, som
-// alla rum bär) blir `rum`, allt annat (topic-id ur gamla appen, oidentifierbart)
-// hamnar i `amne` — texten bevaras alltid, oavsett ursprung. Prefixkollen håller
-// storen fri från innehållssamlingen så startbunten slipper hela biblioteket (fas 13).
+// Classifies a note key during migration: room ids (the `rum-` prefix, which
+// all rooms carry) become `rum`, everything else (topic ids from the old app, unidentifiable)
+// ends up in `amne` — the text is always preserved, whatever its origin. The prefix check keeps
+// the store free of the content collection so the startup bundle avoids the whole library (phase 13).
 const classifyOrigin = (id: string): Origin => (id.startsWith('rum-') ? 'room' : 'topic')
 
 type AtlasState = {
-  // null = inget manuellt val: temat följer systemets färgschema, även när
-  // det ändras senare. Först en toggle fryser valet i localStorage.
+  // null = no manual choice: the theme follows the system colour scheme, even when
+  // it changes later. Only a toggle freezes the choice in localStorage.
   dark: boolean | null
   font: FontChoice
   textStep: number
   bg: BgChoice
   bookmarks: Record<string, boolean>
   chapterBookmarks: Record<string, ChapterBookmark>
-  // Anteckningar (notes-and-saved.md): privata reflektioner kopplade till sitt
-  // ursprung (rum/topic). Nyckel = ursprungId — en anteckning per place. Privat:
-  // rör aldrig rumsvalet, publik sök, AI eller analytics.
+  // Notes (notes-and-saved.md): private reflections tied to their
+  // origin (room/topic). Key = ursprungId — one note per place. Private:
+  // never touches room selection, public search, AI or analytics.
   notes: Record<string, Note>
   lastRead: LastRead | null
-  // Sparade reflektionsrum (rum-id → post med sparat-datum). Skilt från
-  // bookmarks: rum sparas hela, bokmärken märker kapitelpositioner i biblioteket.
+  // Saved reflection rooms (room id → entry with saved date). Distinct from
+  // bookmarks: rooms are saved whole, bookmarks mark chapter positions in the library.
   savedRooms: Record<string, SavedItem>
-  // Sparade vandringar (vandring-id → post). Aldrig förlopp eller completion —
-  // bara att läsaren vill kunna återvända (notes-and-saved.md, Saved Paths).
+  // Saved paths (path id → entry). Never progress or completion —
+  // only that the reader wants to be able to return (notes-and-saved.md, Saved Paths).
   savedPaths: Record<string, SavedItem>
-  // De senast öppnade rummen (nyast först, max HISTORIKLANGD). Finns bara
-  // för att rumsvalet ska undvika omedelbar upprepning — ingen aktivitetslogg.
+  // The most recently opened rooms (newest first, max HISTORIKLANGD). Exists only
+  // so room selection avoids immediate repetition — not an activity log.
   recentRooms: string[]
-  // Senast öppnade rum per vandring (vandring-id → rum-id). Enbart orientering
-  // så läsaren kan återvända dit hen stannade (paths.md, Returning to a Path) —
-  // aldrig förlopp, procent eller påminnelse.
+  // The most recently opened room per path (path id → room id). Purely orientation
+  // so the reader can return to where they stopped (paths.md, Returning to a Path) —
+  // never progress, percentage or reminder.
   pathPositions: Record<string, string>
 }
 
@@ -94,7 +94,7 @@ type AtlasActions = {
   clearPersonal: () => void
 }
 
-// Utåt är dark alltid det effektiva värdet (manuellt val eller systemets).
+// Externally, dark is always the effective value (a manual choice or the system's).
 type AtlasStore = Omit<AtlasState, 'dark'> & { dark: boolean } & AtlasActions
 
 const systemPrefersDark = (): boolean =>
@@ -103,11 +103,11 @@ const systemPrefersDark = (): boolean =>
 const clampStep = (step: number): number =>
   Math.min(MAX_TEXT_STEP, Math.max(MIN_TEXT_STEP, Math.round(step)))
 
-// Vad `readJson` ger tillbaka innan migrering: samlingsfälten kan bära gammal
-// form (boolean-savedRooms, string-notes) från en tidigare version. `notes`,
-// `savedRooms` och `savedPaths` läses som `unknown` (migreras), och de svenska
-// nycklarna en tidigare version skrev (anteckningar/sparadeRum/…) läses som
-// fallback så äldre lagrad data fortfarande går att läsa in utan förlust.
+// What `readJson` returns before migration: the collection fields may carry an old
+// shape (boolean savedRooms, string notes) from a previous version. `notes`,
+// `savedRooms` and `savedPaths` are read as `unknown` (migrated), and the Swedish
+// keys a previous version wrote (anteckningar/sparadeRum/…) are read as a
+// fallback so older stored data can still be loaded without loss.
 export type SavedRaw = Partial<Omit<AtlasState, 'notes' | 'savedRooms' | 'savedPaths'>> & {
   notes?: unknown
   savedRooms?: unknown
@@ -119,24 +119,24 @@ export type SavedRaw = Partial<Omit<AtlasState, 'notes' | 'savedRooms' | 'savedP
   vandringsplatser?: Record<string, string>
 }
 
-// Anteckningar och sparat-poster migreras tyst och förlustfritt från äldre
-// former — både gammal datastruktur och de svenska nycklarna (anteckningar/
-// sparadeRum/sparadeVandringar) före engelsk-migreringen.
+// Notes and saved entries are migrated silently and losslessly from older
+// shapes — both the old data structure and the Swedish keys (anteckningar/
+// sparadeRum/sparadeVandringar) from before the English migration.
 const restoredPersonal = (saved: SavedRaw): Pick<AtlasState, 'notes' | 'savedRooms' | 'savedPaths'> => ({
   notes: migrateNotes(saved.notes, saved.anteckningar ?? saved.notes, classifyOrigin, nu()),
   savedRooms: migrateSaved(saved.savedRooms ?? saved.sparadeRum),
   savedPaths: migrateSaved(saved.savedPaths ?? saved.sparadeVandringar),
 })
 
-// Orienteringsminnet: senast lästa rum och senast öppnat rum per vandring, med
-// de svenska nycklarna (senastLastaRum/vandringsplatser) som fallback.
+// The orientation memory: recently read rooms and the most recently opened room per path, with
+// the Swedish keys (senastLastaRum/vandringsplatser) as a fallback.
 const restoredOrientation = (saved: SavedRaw): Pick<AtlasState, 'recentRooms' | 'pathPositions'> => ({
   recentRooms: saved.recentRooms ?? saved.senastLastaRum ?? [],
   pathPositions: saved.pathPositions ?? saved.vandringsplatser ?? {},
 })
 
-// Samlingsfälten behöver bara falla tillbaka på tomt — ingen värdevalidering av
-// bokmärken/senast läst, till skillnad från temafälten.
+// The collection fields only need to fall back to empty — no value validation of
+// bookmarks/last read, unlike the theme fields.
 export const restoredCollections = (
   saved: SavedRaw,
 ): Pick<
@@ -157,8 +157,8 @@ export const restoredCollections = (
   ...restoredOrientation(saved),
 })
 
-// Äldre sparad state saknar de nya fälten, och korrupt JSON får inte läcka in
-// i CSS-attributen — merga över defaults och validera varje temavärde.
+// Older saved state lacks the new fields, and corrupt JSON must not leak into
+// the CSS attributes — merge over defaults and validate each theme value.
 const initialState = (): AtlasState => {
   const saved = readJson<SavedRaw>(STORAGE_KEY, {})
   return {
@@ -170,7 +170,7 @@ const initialState = (): AtlasState => {
   }
 }
 
-// Följer systemets färgschema live, så tema utan manuellt val byter med OS:et.
+// Follows the system colour scheme live, so a theme without a manual choice switches with the OS.
 const useSystemDark = (): boolean => {
   const [sysDark, setSysDark] = useState(systemPrefersDark)
   useEffect(() => {
@@ -184,9 +184,9 @@ const useSystemDark = (): boolean => {
 
 type SetAtlasState = Dispatch<SetStateAction<AtlasState>>
 
-// Handlingarna delas i tre hjälpare — utseende, samling (bibliotekets bokmärken
-// och orienteringsminnet) och personligt (sparat, anteckningar, dataflytt) — så
-// ingen av dem växer förbi komplexitetsgränsen.
+// The actions are split into three helpers — appearance, collection (the library's bookmarks
+// and orientation memory) and personal (saved, notes, data transfer) — so
+// none of them grows past the complexity limit.
 type ThemeActions = Pick<AtlasActions, 'toggleDark' | 'setFont' | 'stepText' | 'setBg'>
 type CollectionActions = Pick<
   AtlasActions,
@@ -249,8 +249,8 @@ const useCollectionActions = (setState: SetAtlasState): CollectionActions => {
     [setState],
   )
   const registerLastRoom = useCallback(
-    // Cappen speglar rumsvalets fönster men är bara lagringsstädning —
-    // själva urvalsregeln (vad som räknas som nyligen) bor i rumsval.ts.
+    // The cap mirrors room selection's window but is only storage cleanup —
+    // the selection rule itself (what counts as recent) lives in rumsval.ts.
     (id: string) =>
       setState((s) => ({
         ...s,
@@ -262,7 +262,7 @@ const useCollectionActions = (setState: SetAtlasState): CollectionActions => {
     [setState],
   )
   const registerPathPosition = useCallback(
-    // Sista rummet vinner — ren orientering, ingen historik och inget förlopp.
+    // The last room wins — pure orientation, no history and no progress.
     (pathId: string, roomId: string) =>
       setState((s) => ({
         ...s,
@@ -279,7 +279,7 @@ const useCollectionActions = (setState: SetAtlasState): CollectionActions => {
   }
 }
 
-// Toggle mot ett sparat-record: sätter post med datum, eller tar bort nyckeln.
+// Toggle against a saved record: sets an entry with a date, or removes the key.
 const toggleSaved = (
   items: Record<string, SavedItem>,
   id: string,
@@ -292,8 +292,8 @@ const toggleSaved = (
 
 const usePersonligtActions = (setState: SetAtlasState): PersonligtActions => {
   const toggleSavedRoom = useCallback(
-    // Anteckningen är en egen post och överlever av-sparning, så ingen varning
-    // behövs (notes-and-saved.md: varning bara när borttag även raderar anteckning).
+    // The note is its own entry and survives un-saving, so no warning
+    // is needed (notes-and-saved.md: warn only when removal also deletes a note).
     (id: string) => setState((s) => ({ ...s, savedRooms: toggleSaved(s.savedRooms, id) })),
     [setState],
   )
@@ -322,16 +322,16 @@ const usePersonligtActions = (setState: SetAtlasState): PersonligtActions => {
     [setState],
   )
   const clearRecentlyVisited = useCallback(
-    // Tömmer bara orienteringshistoriken. Ofarligt för rumsvalet: utan historik
-    // undviks ingen upprepning tillfälligt, aldrig ett fel val.
+    // Clears only the orientation history. Harmless for room selection: without history
+    // no repetition is avoided temporarily, never a wrong choice.
     () => setState((s) => ({ ...s, recentRooms: [] })),
     [setState],
   )
   return { toggleSavedRoom, toggleSavedPath, setNote, removeNote, clearRecentlyVisited }
 }
 
-/** Plockar ut den personliga delen av storen — delas av importmerge och av
- * exporten i Inställningar (Dina data), så samma femfältiga form byggs på ett ställe. */
+/** Extracts the personal part of the store — shared by the import merge and by
+ * the export in Settings (Your data), so the same five-field shape is built in one place. */
 export const personalCollections = (s: PersonalCollections): PersonalCollections => ({
   notes: s.notes,
   savedRooms: s.savedRooms,
@@ -340,8 +340,8 @@ export const personalCollections = (s: PersonalCollections): PersonalCollections
   chapterBookmarks: s.chapterBookmarks,
 })
 
-// Allt personligt tömt; utseendet (dark/font/textStep/bg) rörs aldrig. Rensning
-// av lokal data ska bete sig förutsägbart (notes-and-saved.md, Local Storage).
+// Everything personal cleared; the appearance (dark/font/textStep/bg) is never touched. Clearing
+// local data should behave predictably (notes-and-saved.md, Local Storage).
 const emptyPersonal = {
   notes: {},
   savedRooms: {},
@@ -373,8 +373,8 @@ const useAtlasActions = (setState: SetAtlasState): AtlasActions => ({
   ...useDataActions(setState),
 })
 
-// Speglar temat på <html> (bakgrund utanför skalet) och i webbläsarens chrome
-// (theme-color), så PWA:n och statusfältet följer med när temat växlar.
+// Mirrors the theme on <html> (background outside the shell) and in the browser chrome
+// (theme-color), so the PWA and status bar follow along when the theme switches.
 const useThemeMirror = (state: AtlasState, dark: boolean): void => {
   useEffect(() => {
     writeJson(STORAGE_KEY, state)
@@ -388,9 +388,9 @@ const useThemeMirror = (state: AtlasState, dark: boolean): void => {
       ?.setAttribute('content', dark ? DARK_PAPER : BG_PAPER[state.bg])
   }, [dark, state.bg])
 
-  // Registrerar ett valbart typsnitts @font-face när det väljs (och på montering
-  // om ett sparat val inte är standardtypsnittet). Garamond är no-op — redan i
-  // startbunten. Håller start-CSS:en liten utan att någon får fel font (fas 13).
+  // Registers an optional typeface's @font-face when it's chosen (and on mount
+  // if a saved choice isn't the default typeface). Garamond is a no-op — already in
+  // the startup bundle. Keeps the startup CSS small without anyone getting the wrong font (phase 13).
   useEffect(() => {
     loadFont(state.font)
   }, [state.font])

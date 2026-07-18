@@ -4,8 +4,8 @@ import { BackIcon } from './Icons'
 
 /**
  * Sticky translucent top bar with a back button and optional right actions.
- * Pass `onBack` to gå upp en nivå i hierarkin; utan den backas ett steg i
- * historiken.
+ * Pass `onBack` to go up one level in the hierarchy; without it, this goes back one
+ * step in history.
  */
 export const TopBar = ({
   right,

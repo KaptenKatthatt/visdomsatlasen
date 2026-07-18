@@ -4,10 +4,10 @@ import { NotFoundNote } from '../NotFoundNote'
 import styles from './Bibliotek.module.css'
 import { Beskrivning, Sidhuvud } from './Biblioteksdelar'
 
-/** Personsida i biblioteket (library.md, People and Authors): en referenspunkt,
- * inte en ingång — porträtt i lugn prosa, utan auktoritetsanspråk. Skild från
- * legacy-personsidorna under /person (gamla appens people.ts).
- * TopBar utan onBack ⇒ historiksteg bakåt — biblioteksplatsen bevaras. */
+/** Person page in the library (library.md, People and Authors): a reference point,
+ * not an entry — a portrait in calm prose, without authority claims. Separate from
+ * the legacy person pages under /person (the old app's people.ts).
+ * TopBar without onBack ⇒ history step back — the library location is preserved. */
 export const PersonPostPage = ({ slug }: { slug: string }) => {
   const person = findPersonBySlug(slug)
   if (!person) return <NotFoundNote subject="Personen" />

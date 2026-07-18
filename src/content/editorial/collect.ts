@@ -1,8 +1,8 @@
-// Delad innehållsladdningsmekanik: gör om Vites glob-poster till filer och
-// samlar de tolkade värdena (fel loggas lugnt i stället för att fälla appen —
-// grinden har redan stoppat ogiltigt innehåll). Bor här, beroendefritt bortom
-// tolka-typerna, så både innehall.ts och det lätta troskeldata.ts (fas 13) kan
-// dela den utan att koppla ihop tröskeln med rummens datalager.
+// Shared content-loading machinery: turns Vite's glob entries into files and
+// collects the parsed values (errors are logged calmly rather than crashing the
+// app — the gate has already stopped invalid content). Lives here, dependency-free
+// beyond the parse types, so both innehall.ts and the lightweight troskeldata.ts
+// (phase 13) can share it without coupling the threshold to the rooms' data layer.
 import type { ContentFile, Parsed } from './parse'
 
 export const toFiles = (moduler: Record<string, string>): ContentFile[] =>

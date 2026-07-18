@@ -1,11 +1,11 @@
-// Personlig data (notes-and-saved.md): sparade platser och anteckningar.
-// Ren logik utan React eller localStorage — migrering, sortering och etiketter
-// bor här så store.tsx bara kopplar ihop och allt kan enhetstestas som rumsval.ts.
-// Anteckningar är privata: de påverkar aldrig rumsvalet, publik sök, AI eller
+// Personal data (notes-and-saved.md): saved places and notes.
+// Pure logic without React or localStorage — migration, sorting and labels
+// live here so store.tsx just wires things together and everything can be unit-tested like rumsval.ts.
+// Notes are private: they never affect room selection, public search, AI or
 // analytics (spec Privacy/AI Access).
 
-/** Ett kapitelbokmärke i verkläsaren: pekar på ett kapitel och bär boknamnet
- * så Sparat kan rendera raden utan ett extra API-anrop. */
+/** A chapter bookmark in the reader: points to a chapter and carries the book name
+ * so Sparat can render the row without an extra API call. */
 export type ChapterBookmark = {
   workId: string
   bookSlug: string
@@ -14,20 +14,20 @@ export type ChapterBookmark = {
   savedAt: number
 }
 
-/** Nyckel för ett kapitelbokmärke — samma form som bok-id:t plus kapitel. */
+/** Key for a chapter bookmark — same shape as the book id plus chapter. */
 export const chapterKey = (workId: string, bookSlug: string, chapter: number): string =>
   `${workId}/${bookSlug}:${chapter}`
 
-/** En sparad post bär bara när den sparades. `null` = migrerad från gammal
- * boolean utan känt datum; datumet är valfritt i preview-kortet. */
+/** A saved item only carries when it was saved. `null` = migrated from an old
+ * boolean without a known date; the date is optional in the preview card. */
 export type SavedItem = { savedWhen: string | null }
 
-/** Var en anteckning hör hemma. `topic` = kvarvarande topic-poster ur gamla
- * appen; utökas senare med `question`/`source` när de blir sparbara. */
+/** Where a note belongs. `topic` = leftover topic records from the old
+ * app; extended later with `question`/`source` when they become saveable. */
 export type Origin = 'room' | 'path' | 'topic'
 
-/** En anteckning kopplad till sitt ursprung. Nyckeln i store = originId
- * (en anteckning per place — dagens UX). ISO 8601-datum, läsbara i exporten. */
+/** A note tied to its origin. The key in the store = originId
+ * (one note per place — today's UX). ISO 8601 dates, readable in the export. */
 export type Note = {
   originType: Origin
   originId: string
@@ -39,8 +39,8 @@ export type Note = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
-// Kanoniska ursprungsvärden plus de svenska värden en tidigare version lagrade,
-// normaliserade till de nya vid inläsning så en uppgradering aldrig tappar ursprung.
+// Canonical origin values plus the Swedish values an earlier version stored,
+// normalized to the new ones on load so an upgrade never loses an origin.
 const ORIGIN_ALIAS: Record<string, Origin> = {
   room: 'room',
   path: 'path',
@@ -53,9 +53,9 @@ const ORIGIN_ALIAS: Record<string, Origin> = {
 const toOrigin = (value: unknown): Origin | undefined =>
   typeof value === 'string' ? ORIGIN_ALIAS[value] : undefined
 
-// En sparad post ur okänd lagring: gammal `true` → migrerad utan datum, gammal
-// `false` släpps, redan migrerad `{ savedWhen }` passerar orörd (den svenska
-// nyckeln `sparadNar` läses som fallback). Allt annat släpps.
+// A saved item from unknown storage: old `true` → migrated without a date, old
+// `false` is dropped, already-migrated `{ savedWhen }` passes untouched (the Swedish
+// key `sparadNar` is read as a fallback). Everything else is dropped.
 const migrateSavedItem = (value: unknown): SavedItem | null => {
   if (value === true) return { savedWhen: null }
   if (isRecord(value)) {
@@ -65,8 +65,8 @@ const migrateSavedItem = (value: unknown): SavedItem | null => {
   return null
 }
 
-/** Migrerar ett sparat-record (rum eller vandringar) tyst och förlustfritt.
- * Idempotent: redan migrerad form går igenom oförändrad. Kastar aldrig. */
+/** Migrates a saved record (rooms or paths) quietly and losslessly.
+ * Idempotent: already-migrated form passes through unchanged. Never throws. */
 export const migrateSaved = (raw: unknown): Record<string, SavedItem> => {
   const ut: Record<string, SavedItem> = {}
   if (!isRecord(raw)) return ut
@@ -77,15 +77,15 @@ export const migrateSaved = (raw: unknown): Record<string, SavedItem> => {
   return ut
 }
 
-// En redan migrerad anteckning ur okänd lagring, defensivt narrowad. Fält som
-// saknas eller är korrupta får trygga fallbacks — texten bevaras alltid.
+// An already-migrated note from unknown storage, defensively narrowed. Fields that
+// are missing or corrupt get safe fallbacks — the text is always preserved.
 const migrateNoteItem = (id: string, value: unknown, nu: string): Note | null => {
   if (!isRecord(value)) return null
-  // Äldre lagrade anteckningar bär de svenska tidsstämpelnycklarna `skapad`/
-  // `uppdaterad`; läs dem som fallback så en uppgradering aldrig nollställer
-  // kronologin (anteckningsvyn sorterar på `updated`, importkonflikter avgörs på det).
-  // Nya nycklar först, de svenska (originType/originId hette ursprungTyp/ursprungId)
-  // som fallback så en uppgradering aldrig tappar en anteckning.
+  // Older stored notes carry the Swedish timestamp keys `skapad`/
+  // `uppdaterad`; read them as a fallback so an upgrade never resets the
+  // chronology (the notes view sorts on `updated`, import conflicts are decided on it).
+  // New keys first, the Swedish ones (originType/originId were called ursprungTyp/ursprungId)
+  // as a fallback so an upgrade never loses a note.
   const { originType, originId, ursprungTyp, ursprungId, text, created, updated, skapad, uppdaterad } =
     value
   if (typeof text !== 'string' || text.trim().length === 0) return null
@@ -101,7 +101,7 @@ const migrateNoteItem = (id: string, value: unknown, nu: string): Note | null =>
   }
 }
 
-// Gamla `notes` (id→text) → ursprungskopplade poster; tomma prunas.
+// Old `notes` (id→text) → origin-linked records; empty ones are pruned.
 const itemsFromGamlaNotes = (
   gamlaNotes: unknown,
   classify: (id: string) => Origin,
@@ -116,7 +116,7 @@ const itemsFromGamlaNotes = (
   return ut
 }
 
-// Redan migrerade poster ur okänd lagring, defensivt narrowade.
+// Already-migrated records from unknown storage, defensively narrowed.
 const itemsFromMigrerade = (nyaAnteckningar: unknown, nu: string): Record<string, Note> => {
   const ut: Record<string, Note> = {}
   if (!isRecord(nyaAnteckningar)) return ut
@@ -127,10 +127,10 @@ const itemsFromMigrerade = (nyaAnteckningar: unknown, nu: string): Record<string
   return ut
 }
 
-/** Migrerar anteckningar tyst och förlustfritt: gamla `notes` (id→text) blir
- * ursprungskopplade poster via `klassificera`, redan migrerade poster vinner
- * (spridningsordningen). Tomma anteckningar prunas. Kastar aldrig — privat data
- * får aldrig gå förlorad vid en uppgradering. */
+/** Migrates notes quietly and losslessly: old `notes` (id→text) become
+ * origin-linked records via `klassificera`, already-migrated records win
+ * (the spread order). Empty notes are pruned. Never throws — private data
+ * must never be lost on an upgrade. */
 export const migrateNotes = (
   gamlaNotes: unknown,
   nyaAnteckningar: unknown,
@@ -141,9 +141,9 @@ export const migrateNotes = (
   ...itemsFromMigrerade(nyaAnteckningar, nu),
 })
 
-/** Bygger anteckningens nya tillstånd vid en skrivning: `created` bevaras från
- * den befintliga posten (autospar utan synlig versionshistorik), `updated`
- * flyttas fram. */
+/** Builds the note's new state on a write: `created` is preserved from
+ * the existing record (autosave without visible version history), `updated`
+ * is moved forward. */
 export const updatedNote = (
   existing: Note | undefined,
   type: Origin,
@@ -158,27 +158,27 @@ export const updatedNote = (
   updated: nu,
 })
 
-/** Sparade poster i tidsordning: senast sparat först. Migrerade poster utan
- * datum (`sparadNar === null`) sorteras sist via tom nyckel. */
+/** Saved items in chronological order: most recently saved first. Migrated items
+ * without a date (`sparadNar === null`) sort last via an empty key. */
 export const savedIdsByTime = (items: Record<string, SavedItem>): string[] => {
   const key = (id: string): string => items[id]?.savedWhen ?? ''
   return Object.keys(items).sort((a, b) => key(b).localeCompare(key(a)))
 }
 
-/** Anteckningsöversiktens order: senast ändrad först, tomma utelämnade
- * (spec Notes Overview: lugnt kronologisk). ISO 8601 jämförs lexikalt. */
+/** The notes overview's order: most recently changed first, empty ones omitted
+ * (spec Notes Overview: calmly chronological). ISO 8601 is compared lexically. */
 export const sortedNotes = (anteckningar: Record<string, Note>): Note[] =>
   Object.values(anteckningar)
     .filter((anteckning) => anteckning.text.trim().length > 0)
     .sort((a, b) => b.updated.localeCompare(a.updated))
 
-/** Kort utdrag för preview-kort; klipper generöst och osynligt (spec Note Length). */
+/** Short excerpt for preview cards; trims generously and invisibly (spec Note Length). */
 export const utdrag = (text: string, max = 72): string => {
   const cleaned = text.trim()
   return cleaned.length > max ? `${cleaned.slice(0, max)}…` : cleaned
 }
 
-/** Stilla svenskt datum för »sparad«-raden, eller inget vid okänt/ogiltigt datum. */
+/** Quiet Swedish date for the »sparad« row, or nothing for an unknown/invalid date. */
 export const dateLabel = (iso: string | null): string | undefined => {
   if (!iso) return undefined
   const tid = new Date(iso)

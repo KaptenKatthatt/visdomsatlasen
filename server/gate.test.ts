@@ -5,7 +5,7 @@ import { createAccessGate, mountAccessGate } from './gate'
 
 const CODE = 'hemlig-testarkod-1234567890'
 
-/** Bygger en liten app med spärren monterad och en skyddad dummy-route. */
+/** Builds a small app with the gate mounted and a protected dummy route. */
 const byggApp = (): Hono => {
   const app = new Hono()
   app.use('*', createAccessGate(CODE))
@@ -65,8 +65,8 @@ describe('createAccessGate', () => {
     expect(res.status).toBe(200)
   })
 
-  // Speglar server/index.ts: spärren monteras FÖRE routes registreras, annars
-  // täcker Hono-middlewaren dem inte.
+  // Mirrors server/index.ts: the gate is mounted BEFORE routes are registered, otherwise
+  // the Hono middleware doesn't cover them.
   it('mountAccessGate lämnar appen öppen utan kod (bakåtkompatibelt)', async () => {
     const app = new Hono()
     mountAccessGate(app, undefined)

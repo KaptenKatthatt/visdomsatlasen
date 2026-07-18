@@ -1,29 +1,29 @@
-// Sökalgoritmen (search.md, Result Ranking): exakt/partiell matchning, svensk
-// normalisering, kontrollerade synonymer och konservativ stavfelstolerans, vägt
-// så att frågor och themes rankas rätt och en berömd author aldrig slår en
-// mer relevant fråga. Ingen popularitets- eller beteendesignal existerar här.
+// The search algorithm (search.md, Result Ranking): exact/partial matching, Swedish
+// normalisation, controlled synonyms and conservative typo tolerance, weighted
+// so that questions and themes rank correctly and a famous author never beats a
+// more relevant question. No popularity or behaviour signal exists here.
 import type { SearchDoc, SearchType } from './searchIndex'
 import { inomSkrivfel, normalisera, ordlista, searchTokens, stam } from './searchNormalize'
 
-/** Vilket fält en träff kom ur — internt, visas aldrig för användaren. */
+/** Which field a hit came from — internal, never shown to the user. */
 export type HitLevel = 'title-exact' | 'alias-exact' | 'title' | 'keywords' | 'subtitle' | 'text'
 
-/** En träff. `poang`/`traffatFalt` är interna rankningsdetaljer. */
+/** A hit. `poang`/`traffatFalt` are internal ranking details. */
 export type SearchResult = { document: SearchDoc; score: number; matchedField: HitLevel }
 
-/** Träffar av samma type, i relevansordning. */
+/** Hits of the same type, in relevance order. */
 export type SearchGroup = { type: SearchType; heading: string; hits: SearchResult[] }
 
-/** En grupp med det ändliga urval som visas + hur många som döljs bakom »Visa fler«. */
+/** A group with the finite selection shown + how many are hidden behind »Visa fler«. */
 export type VisibleGroup = { group: SearchGroup; visible: SearchResult[]; hidden: number }
 
 export const MAX_VISIBLE_PER_GROUP = 5
 export const MAX_VISIBLE_TOTAL = 20
-// Hårt tak per grupp även efter »Visa fler« — resultatet är alltid ändligt.
+// Hard cap per group even after »Visa fler« — the result is always finite.
 const MAX_PER_GROUP = 20
 
-// Nivåpoäng med gap större än största typbonus (12), så typordningen bara
-// avgör inom samma nivå — exakt title slår alltid en partiell aliasträff.
+// Level scores with a gap larger than the biggest type bonus (12), so type order only
+// decides within the same level — an exact title always beats a partial alias hit.
 const LEVEL_SCORES: Record<HitLevel, number> = {
   'title-exact': 100,
   'alias-exact': 85,
@@ -33,9 +33,9 @@ const LEVEL_SCORES: Record<HitLevel, number> = {
   'text': 12,
 }
 
-// Frågor och themes rankas före rum, vandringar, sources, traditions och
-// personer (search.md, Result Priority — den mänskliga frågan står först;
-// en berömd author får aldrig automatiskt slå en direkt relevant fråga).
+// Questions and themes rank before rooms, paths, sources, traditions and
+// people (search.md, Result Priority — the human question comes first;
+// a famous author must never automatically beat a directly relevant question).
 const TYPE_BONUS: Record<SearchType, number> = {
   fraga: 12,
   tema: 10,
@@ -46,7 +46,7 @@ const TYPE_BONUS: Record<SearchType, number> = {
   person: 1,
 }
 
-/** Svensk gruppetikett per söktyp — delas av resultatsektionerna och typfiltret. */
+/** Swedish group label per search type — shared by the result sections and the type filter. */
 export const HEADINGS: Record<SearchType, string> = {
   fraga: 'Frågor',
   tema: 'Teman',
@@ -60,9 +60,9 @@ export const HEADINGS: Record<SearchType, string> = {
 const SYNONYM_FACTOR = 0.7
 const TYPO_FACTOR = 0.5
 
-// Kontrollerad synonymkarta (search.md, Synonyms): breddar recall utan att
-// kollapsa viktiga skillnader. Redaktionellt underhållen; nyckeln är navet och
-// kopplas dubbelriktat till var och en av sina synonymer.
+// Controlled synonym map (search.md, Synonyms): broadens recall without
+// collapsing important distinctions. Editorially maintained; the key is the hub and
+// links bidirectionally to each of its synonyms.
 const SYNONYMS: Record<string, string[]> = {
   oro: ['ångest', 'ängslan', 'bekymmer', 'rastlöshet'],
   lugn: ['stillhet', 'ro', 'sinnesro'],
@@ -77,8 +77,8 @@ const link = (map: Map<string, Set<string>>, a: string, b: string): void => {
   map.set(a, neighbors)
 }
 
-// Bygger en normaliserad, dubbelriktad synonymkarta: `oro` hittar `ångest` och
-// `ångest` hittar `oro`. Nycklar och värden viks så matchningen är diakritokänslig.
+// Builds a normalised, bidirectional synonym map: `oro` finds `ångest` and
+// `ångest` finds `oro`. Keys and values are folded so matching is diacritic-insensitive.
 const buildSynonymMap = (raw: Record<string, string[]>): Map<string, Set<string>> => {
   const map = new Map<string, Set<string>>()
   for (const [nyckel, värden] of Object.entries(raw)) {
@@ -96,9 +96,9 @@ const SYNONYM_MAP = buildSynonymMap(SYNONYMS)
 
 const synonymsFor = (token: string): string[] => [...(SYNONYM_MAP.get(token) ?? [])]
 
-// Matchfaktor mellan två normaliserade ord: 1 för exakt/prefix/stam/delsträng,
-// nedvägt för skrivfel, 0 för ingen träff. Prefix och delsträng bara för längre
-// tokens, skrivfel bara konservativt (se soknormalisering).
+// Match factor between two normalised words: 1 for exact/prefix/stem/substring,
+// downweighted for typos, 0 for no hit. Prefix and substring only for longer
+// tokens, typos only conservatively (see soknormalisering).
 const bestAgainstWord = (token: string, ord: string): number => {
   if (token === ord) return 1
   if (token.length >= 3 && ord.startsWith(token)) return 1
@@ -108,12 +108,12 @@ const bestAgainstWord = (token: string, ord: string): number => {
   return 0
 }
 
-// Synonymer matchar konservativt — bara hela ord eller samma stam, aldrig
-// godtyckliga prefix/delsträngar (så »ro« inte fastnar i »romersk«).
+// Synonyms match conservatively — only whole words or the same stem, never
+// arbitrary prefixes/substrings (so »ro« doesn't get stuck in »romersk«).
 const synonymHit = (synonym: string, ord: string): boolean =>
   synonym === ord || stam(synonym) === stam(ord)
 
-// Bästa faktor för ett token mot en fältsamling ord, synonymer inräknade.
+// Best factor for a token against a field's collection of words, synonyms included.
 const factorAgainstBucket = (token: string, ord: string[]): number => {
   let best = 0
   for (const o of ord) {
@@ -128,8 +128,8 @@ const factorAgainstBucket = (token: string, ord: string[]): number => {
 
 type Bucket = { level: HitLevel; base: number; words: string[] }
 
-// De sökbara fälten som viktade ordsamlingar. Titel och alias delar den
-// starkaste nivån — bägge är identifierande.
+// The searchable fields as weighted word collections. Title and alias share the
+// strongest level — both are identifying.
 const documentBuckets = (dok: SearchDoc): Bucket[] => [
   {
     level: 'title',
@@ -141,7 +141,7 @@ const documentBuckets = (dok: SearchDoc): Bucket[] => [
   { level: 'text', base: LEVEL_SCORES.text, words: dok.text.flatMap(ordlista) },
 ]
 
-// Ett tokens bästa poäng och nivå över dokumentets fält.
+// A token's best score and level across the document's fields.
 const tokenBest = (token: string, buckets: Bucket[]): { score: number; level: HitLevel } => {
   let score = 0
   let level: HitLevel = 'text'
@@ -155,15 +155,15 @@ const tokenBest = (token: string, buckets: Bucket[]): { score: number; level: Hi
   return { score, level }
 }
 
-// Exakt helfrågsträff (interpunktion och diakriter bortnormaliserade).
+// Exact whole-query hit (punctuation and diacritics normalised away).
 const exactLevel = (keyQuery: string, dok: SearchDoc): HitLevel | undefined => {
   if (ordlista(dok.title).join(' ') === keyQuery) return 'title-exact'
   if (dok.alias.some((alias) => ordlista(alias).join(' ') === keyQuery)) return 'alias-exact'
   return undefined
 }
 
-// En dokumentträff eller inget. Alla tokens måste träffa (AND) — söket hittar
-// det man menar utan att bredda med löst besläktade resultat.
+// A document hit or nothing. All tokens must match (AND) — search finds
+// what you mean without broadening with loosely related results.
 const matchDocument = (
   keyQuery: string,
   tokens: string[],
@@ -185,8 +185,8 @@ const compareTitleSv = (a: SearchResult, b: SearchResult): number =>
 
 const bestScore = (grupp: SearchGroup): number => grupp.hits[0]?.score ?? 0
 
-// Grupperar träffar per type; inom gruppen på poäng och sedan svensk titelordning;
-// grupperna efter bästa träff, så den mest relevanta gruppen står först.
+// Groups hits by type; within a group by score and then Swedish title order;
+// the groups by best hit, so the most relevant group comes first.
 const groupHits = (hits: SearchResult[]): SearchGroup[] => {
   const map = new Map<SearchType, SearchResult[]>()
   for (const hit of hits) {
@@ -202,8 +202,8 @@ const groupHits = (hits: SearchResult[]): SearchGroup[] => {
   return grupper.sort((a, b) => bestScore(b) - bestScore(a))
 }
 
-/** Hela sökningen: en fråga kortare än två tecken ger inget. Grupperna kommer i
- * relevansordning; varje grupp är ändlig (aldrig oändlig scroll). */
+/** The whole search: a query shorter than two characters returns nothing. The groups come in
+ * relevance order; each group is finite (never infinite scroll). */
 export const searchInLibrary = (question: string, index: SearchDoc[]): SearchGroup[] => {
   const keyQuery = ordlista(question).join(' ')
   if (keyQuery.length < 2) return []
@@ -215,8 +215,8 @@ export const searchInLibrary = (question: string, index: SearchDoc[]): SearchGro
   return groupHits(hits)
 }
 
-/** Den ändliga initialvyn: som mest fem per grupp och tjugo totalt; en expanderad
- * grupp visar hela sin (hårt begränsade) lista. »Visa fler« röjer resten. */
+/** The finite initial view: at most five per group and twenty total; an expanded
+ * group shows its whole (hard-capped) list. »Visa fler« reveals the rest. */
 export const visibleHits = (
   grupper: SearchGroup[],
   expanderade: ReadonlySet<SearchType>,

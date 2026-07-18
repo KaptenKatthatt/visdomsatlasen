@@ -16,8 +16,8 @@ const screenPath = (id: string) => {
   return '/utforska' as const
 }
 
-// Bibliotekets mål är alla slug-adresserade — en karta räcker, och ett nytt
-// mål är en rad här plus unionsmedlemmen i model.ts.
+// The library's targets are all slug-addressed — one map is enough, and a new
+// target is one line here plus the union member in model.ts.
 const LIBRARY_PATH = {
   rum: '/rum/$slug',
   tema: '/bibliotek/tema/$slug',

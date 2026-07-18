@@ -4,8 +4,8 @@ import { allRooms } from '../../lib/content'
 import styles from './Bibliotek.module.css'
 import { RoomList, roomCount, Sidhuvud } from './Biblioteksdelar'
 
-/** Alla publicerade rum — en ändlig lista (library.md, Browsing): antalet
- * står överst så man ser hur mycket som finns. Ingen oändlig rullning. */
+/** All published rooms — a finite list (library.md, Browsing): the count
+ * stands at the top so you can see how much there is. No infinite scroll. */
 export const RumlistaPage = () => {
   const rooms = libraryRooms(allRooms)
   return (

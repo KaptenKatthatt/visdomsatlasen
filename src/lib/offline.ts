@@ -3,28 +3,28 @@ import { readJson, writeJson } from './storage'
 
 export type OfflineProgress = { done: number; total: number }
 
-// Namnet på service-workerns runtime-cache (se runtimeCaching i vite.config.ts).
+// The name of the service worker's runtime cache (see runtimeCaching in vite.config.ts).
 const CACHE_NAME = 'library-api'
-// Nyckel för flaggan som markerar en genomförd bulk-nedladdning.
+// Key for the flag that marks a completed bulk download.
 const STATE_KEY = 'offline-download'
 
 type OfflineDownload = { chapters: number }
 
 /**
- * Läser antalet kapitel från en tidigare genomförd nedladdning, eller null om ingen
- * gjorts. En explicit flagga (till skillnad från att räkna cache-poster) skiljer en
- * riktig bulk-nedladdning från enstaka kapitel som cachats vid vanlig läsning, och
- * läses synkront så statusen överlever omladdning utan flimmer.
+ * Reads the number of chapters from a previously completed download, or null if none
+ * has been done. An explicit flag (as opposed to counting cache entries) distinguishes a
+ * real bulk download from individual chapters cached during ordinary reading, and is
+ * read synchronously so the status survives a reload without flicker.
  */
 export const readOfflineDownload = (): number | null =>
   readJson<OfflineDownload | null>(STATE_KEY, null)?.chapters ?? null
 
-/** Sparar (eller nollar, med null) flaggan för genomförd nedladdning. */
+/** Saves (or clears, with null) the flag for a completed download. */
 export const writeOfflineDownload = (chapters: number | null): void => {
   writeJson(STATE_KEY, chapters === null ? null : { chapters })
 }
 
-/** Raderar offline-nedladdningen: tömmer runtime-cachen och nollar flaggan. */
+/** Deletes the offline download: empties the runtime cache and clears the flag. */
 export const deleteOfflineDownload = async (): Promise<void> => {
   writeOfflineDownload(null)
   try {
@@ -34,11 +34,11 @@ export const deleteOfflineDownload = async (): Promise<void> => {
       names.filter((name) => name.includes(CACHE_NAME)).map((name) => caches.delete(name)),
     )
   } catch {
-    // Sväljs: går inget att radera fungerar appen ändå.
+    // Swallowed: if there's nothing to delete the app works anyway.
   }
 }
 
-// Samla alla kapitel-URL:er (verk → böcker → kapitel) via metadatan.
+// Collect all chapter URLs (work → books → chapters) via the metadata.
 const collectChapterUrls = async (): Promise<string[]> => {
   const { works } = await fetchWorks()
   const urls: string[] = []
@@ -55,8 +55,8 @@ const collectChapterUrls = async (): Promise<string[]> => {
 }
 
 /**
- * Hämtar hem alla kapitel så service-workerns runtime-cache fylls och texterna
- * går att läsa offline. Anropas medan enheten är ansluten (via Tailscale).
+ * Fetches all chapters so the service worker's runtime cache fills up and the texts
+ * can be read offline. Called while the device is connected (via Tailscale).
  */
 export const downloadForOffline = async (
   onProgress: (progress: OfflineProgress) => void,
@@ -68,7 +68,7 @@ export const downloadForOffline = async (
     try {
       await fetch(url, { headers: { Accept: 'application/json' } })
     } catch {
-      // Ett misslyckat kapitel hoppas över; resten cachas ändå.
+      // A failed chapter is skipped; the rest are cached anyway.
     }
     done += 1
     onProgress({ done, total: urls.length })

@@ -9,11 +9,11 @@ const FOKUSERBAR_VALJARE = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(', ')
 
-/** Tangentbordsfokuserbara element inom roten, i dokumentordning. */
+/** Keyboard-focusable elements within the root, in document order. */
 const fokuserbaraI = (rot: HTMLElement): HTMLElement[] =>
   Array.from(rot.querySelectorAll<HTMLElement>(FOKUSERBAR_VALJARE))
 
-/** Håller Tab/Skift+Tab cyklande inom arket. */
+/** Keeps Tab/Shift+Tab cycling within the sheet. */
 const trapTab = (ark: HTMLElement, händelse: KeyboardEvent) => {
   const fokuserbara = fokuserbaraI(ark)
   const first = fokuserbara.at(0)
@@ -34,10 +34,10 @@ const trapTab = (ark: HTMLElement, händelse: KeyboardEvent) => {
 }
 
 /**
- * Modal tangentbordshantering för ett ark/dialog: flyttar fokus in i arket
- * vid opening, stänger på Escape, håller Tab-fokus fångat inom arket och
- * återlämnar fokus till det tidigare fokuserade elementet vid stängning.
- * Arket behöver tabIndex={-1} för att kunna ta emot initialfokus.
+ * Modal keyboard handling for a sheet/dialog: moves focus into the sheet
+ * on opening, closes on Escape, keeps Tab focus trapped within the sheet and
+ * returns focus to the previously focused element on closing.
+ * The sheet needs tabIndex={-1} to be able to receive the initial focus.
  */
 export const useDialogTangentbord = (
   arkRef: RefObject<HTMLElement | null>,
@@ -47,8 +47,8 @@ export const useDialogTangentbord = (
   useEffect(() => {
     closeRef.current = onStäng
   })
-  // Utlösaren sparas i en ref som överlever StrictMode-remontering; vid
-  // remonteringen är fokus redan i arket och får inte skriva över minnet.
+  // The trigger is stored in a ref that survives StrictMode remounting; on
+  // remount focus is already in the sheet and must not overwrite the memory.
   const tidigareRef = useRef<Element | null>(null)
 
   useEffect(() => {
@@ -68,9 +68,9 @@ export const useDialogTangentbord = (
     return () => {
       document.removeEventListener('keydown', vidTangent)
       const tidigare = tidigareRef.current
-      // Mikrotask: låter en samtidig inert-städning hinna före, annars kan
-      // utlösaren fortfarande vara oåtkomlig när fokus ska tillbaka. Arket
-      // finns kvar i DOM vid StrictMode-remontering — då ska inget hända.
+      // Microtask: lets a concurrent inert cleanup go first, otherwise the
+      // trigger may still be unreachable when focus should return. The sheet
+      // remains in the DOM on StrictMode remounting — then nothing should happen.
       queueMicrotask(() => {
         if (!document.contains(ark) && tidigare instanceof HTMLElement) tidigare.focus()
       })

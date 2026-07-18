@@ -1,8 +1,8 @@
-// Det publika sökindexet (search.md, Indexing): ett genererat dokument per
-// publicerad post. Byggs UTESLUTANDE via bibliotek.ts-urvalen och slår bara upp
-// referenser bland publicerade poster, så utkast och intern metadata aldrig kan
-// nå ett sökbart fält. Privata anteckningar hör inte hemma här — de har en helt
-// egen väg (sokanteckningar.ts).
+// The public search index (search.md, Indexing): one generated document per
+// published entry. Built EXCLUSIVELY via the bibliotek.ts selections and only looks up
+// references among published entries, so drafts and internal metadata can never
+// reach a searchable field. Private notes have no place here — they follow an
+// entirely separate path (sokanteckningar.ts).
 import type {
   Question,
   ContentSet,
@@ -40,14 +40,14 @@ import {
 import { utdrag } from './personal'
 import { SEARCH_TYPES, type SearchType, type SearchParams } from './searchTypes'
 
-// Söktyperna bor i soktyper.ts (utan innehållsberoenden) så routern kan
-// validera URL:en utan att dra in indexbygget; här återexporteras de så
-// befintliga importvägar (soklogik, sidor) fortsatt kan gå via sokindex.
+// The search types live in soktyper.ts (without content dependencies) so the router can
+// validate the URL without pulling in the index build; here they are re-exported so
+// existing import paths (soklogik, pages) can still go through sokindex.
 export { SEARCH_TYPES, type SearchType, type SearchParams }
 
-/** Sökmål = de To-varianter söket kan öppna (redaktionella sidor). Egen union,
- * strukturellt kompatibel med To, så sökindexet inte kopplas till legacy-eran i
- * model.ts. Traditioner saknar egen sida → olänkade rader, därav valfritt `mal`. */
+/** Search targets = the To variants search can open (editorial pages). A separate union,
+ * structurally compatible with To, so the search index isn't tied to the legacy era in
+ * model.ts. Traditions have no page of their own → unlinked rows, hence the optional `mal`. */
 export type SearchTarget =
   | { kind: 'fraga'; slug: string }
   | { kind: 'tema'; slug: string }
@@ -56,9 +56,9 @@ export type SearchTarget =
   | { kind: 'personpost'; slug: string }
   | { kind: 'vandring'; slug: string }
 
-/** Ett sökdokument. `title`/`underrad`/`meta` visas oviket (korrekt stavning);
- * `alias`/`keywords`/`text` är sökbara fält med fallande vikt. `poang` finns
- * aldrig här — rankningen lever i soklogik.ts. */
+/** A search document. `title`/`underrad`/`meta` are shown unfolded (correct spelling);
+ * `alias`/`keywords`/`text` are searchable fields with descending weight. `poang` never
+ * appears here — ranking lives in soklogik.ts. */
 export type SearchDoc = {
   type: SearchType
   id: string
@@ -213,10 +213,10 @@ const docFromTradition = (tradition: Tradition): SearchDoc => ({
   text: tradition.description ? [tradition.description] : [],
 })
 
-// Personresultatet visar name, period och kort igenkännande description
-// (search.md, Person Result); personer rankas alltid sist (Result Priority).
-// Underraden tar den redaktionella kortbeskrivningen — porträttkroppens
-// första mening är födelsedata och dubblerar årtalet i meta.
+// The person result shows name, period and a short recognisable description
+// (search.md, Person Result); people always rank last (Result Priority).
+// The subtitle takes the editorial short description — the portrait body's
+// first sentence is birth data and duplicates the year in meta.
 const docFromPerson = (person: Person): SearchDoc => ({
   type: 'person',
   id: person.id,
@@ -237,8 +237,8 @@ type IndexContent = Pick<
   'rooms' | 'themes' | 'questions' | 'paths' | 'sources' | 'passages' | 'traditions' | 'people'
 >
 
-/** Bygger det publika indexet. Uppslagskartorna byggs ur de PUBLICERADE
- * urvalen, så ingen utkasttext kan följa med in i ett sökbart fält ens via en
+/** Builds the public index. The lookup maps are built from the PUBLISHED
+ * selections, so no draft text can slip into a searchable field even via a
  * reference. */
 export const buildSearchIndex = (innehall: IndexContent): SearchDoc[] => {
   const questions = mapById(libraryQuestions(innehall.questions))
@@ -260,7 +260,7 @@ export const buildSearchIndex = (innehall: IndexContent): SearchDoc[] => {
   ]
 }
 
-/** Appens index, byggt en gång vid moduladdning ur allt laddat innehåll. */
+/** The app's index, built once at module load from all loaded content. */
 export const searchIndexData: SearchDoc[] = buildSearchIndex({
   rooms: allRooms,
   themes: allThemes,

@@ -3,9 +3,9 @@ import { findTheme } from '../lib/content'
 import { ToLink } from './ToLink'
 import styles from './RumRad.module.css'
 
-/** Rumsförhandsvisning i biblioteket (library.md, Reflection Rooms): title,
- * kort summary, tema och ungefärlig lästid. Inget mer — inga mått,
- * ingen brådska. Länken öppnar rummet i läsrumsläge. */
+/** Room preview in the library (library.md, Reflection Rooms): title,
+ * short summary, theme and approximate reading time. Nothing more — no metrics,
+ * no rush. The link opens the room in reading-room mode. */
 export const RoomRow = ({ rum }: { rum: Room }) => {
   const theme = findTheme(rum.themes[0] ?? '')
   const meta = [theme?.label, `${rum.readingTimeMinutes} min`].filter(Boolean).join(' · ')

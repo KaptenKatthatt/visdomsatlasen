@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { isTeaserOpening } from './openingGuard'
 
-// De sex teaser-rader som redaktören lät ta bort 2026-07-16 — regressionsskydd.
-// Var och en avslutade en opening och lockade vidare utan att berätta vad.
+// The six teaser lines the editor had removed on 2026-07-16 — regression guard.
+// Each one closed an opening and lured the reader on without saying what.
 const BORTTAGNA_TEASERS = [
   'En vardaglig upptakt om motstånd.\n\nZhuangzi, den lekfullaste av de gamla kinesiska böckerna, berättar om en kock.',
   'En vardaglig upptakt om nytta.\n\nZhuangzi, den lekfullaste av de gamla kinesiska böckerna, berättar om ett träd.',
@@ -12,8 +12,8 @@ const BORTTAGNA_TEASERS = [
   'Rädslan talar med stor säkerhet.\n\nFör över två tusen år sedan stod en gammal man inför en domstol i Aten, anklagad till döden, och vägrade spela med i den säkerheten.',
 ]
 
-// Öppningar som ska passera: de landar i vardagen eller i en öppen fråga och
-// introducerar aldrig källan (Kärnan gör det).
+// Openings that should pass: they land in everyday life or in an open question and
+// never introduce the source (the Core does that).
 const GOOD_OPENINGS = [
   'Vi tvivlar sällan på att vi är vakna. Golvet bär, kaffet är varmt, dagen är på riktigt. Det mesta vi lever efter tar vi för givet och vänder aldrig på, och för det mesta är det bra så.',
   'Rädslan talar med stor säkerhet. Den säger inte »kanske«, den säger »så här kommer det att gå«. Mycket av det vi drar oss för gör vi inte för att vi vet hur det slutar, utan för att rädslan låter så säker på sin sak.',

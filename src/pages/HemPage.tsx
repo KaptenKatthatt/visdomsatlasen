@@ -8,14 +8,14 @@ import { thresholdThemes } from '../lib/homeData'
 import { useSidtitel } from '../lib/useSidtitel'
 import styles from './HemPage.module.css'
 
-/** Tröskeln (home-and-entry.md): en fråga, några themes, ett val — sedan
- * kliver gränssnittet undan. Inget datum, ingen aktivitet, inget dagligt
- * innehåll; tröskeln är likadan varje gång och börjar alltid i nuet.
+/** The threshold (home-and-entry.md): one question, a few themes, one choice —
+ * then the interface steps aside. No date, no activity, no daily
+ * content; the threshold is the same every time and always starts in the present.
  *
- * Prestanda (fas 13): hemskärmen laddar bara temana (troskeldata.ts), aldrig
- * hela innehållssamlingen. Rummen — brödtext, sources, allt — hämtas först när
- * ett tema väljs, via en dynamisk import. Chunken är oftast redan precachad av
- * service-workern, så steget märks knappt; läsrummet delar samma chunk. */
+ * Performance (phase 13): the home screen loads only the themes (troskeldata.ts),
+ * never the whole content collection. The rooms — body text, sources, all of it —
+ * are fetched only when a theme is chosen, via a dynamic import. The chunk is
+ * usually already precached by the service worker; the reading room shares it. */
 export const HemPage = () => {
   useSidtitel('Läsrummet')
   const navigate = useNavigate()
@@ -35,8 +35,8 @@ export const HemPage = () => {
       }
       setTomtVal(true)
     } catch {
-      // Innehållschunken gick inte att hämta (t.ex. offline före första cachning).
-      // Släpp knappen igen så valet kan göras om — inget kraschar, inget hänger.
+      // The content chunk could not be fetched (e.g. offline before first caching).
+      // Release the button again so the choice can be retried — nothing crashes, nothing hangs.
       report({ type: 'sidladdningsfel', resurs: 'innehall' })
     }
     setVäljer(false)

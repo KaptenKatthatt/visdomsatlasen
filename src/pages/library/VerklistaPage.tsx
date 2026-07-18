@@ -33,7 +33,7 @@ const WorkRow = ({ work }: { work: WorkSummary }) => (
   </Link>
 )
 
-/** Bibliotekets »Hela texter« — verklistan bakom källorna (library.md, Sources). */
+/** The library's »Hela texter« — the works list behind the sources (library.md, Sources). */
 export const VerklistaPage = () => {
   useSidtitel('Hela texter')
   const { data, loading, error } = useAsync(fetchWorks, [])

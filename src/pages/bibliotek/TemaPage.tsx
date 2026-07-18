@@ -21,8 +21,8 @@ const QuestionPart = ({ temaId }: { temaId: string }) => {
   )
 }
 
-/** Temasida (library.md, Themes): description, temats frågor och publicerade
- * rum. TopBar utan onBack ⇒ historiksteg bakåt — biblioteksplatsen bevaras. */
+/** Theme page (library.md, Themes): description, the theme's questions and published
+ * rooms. TopBar without onBack ⇒ history step back — the library location is preserved. */
 export const TemaPage = ({ slug }: { slug: string }) => {
   const theme = findThemeBySlug(slug)
   if (!theme) return <NotFoundNote subject="Temat" />

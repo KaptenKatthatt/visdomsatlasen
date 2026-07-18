@@ -3,9 +3,9 @@ import { cleanHtml } from '../lib/html'
 import { buildTranslatedMultiBook, type NamedBook, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
-// Epiktetos Samtal (Discourses), George Longs engelska (public domain) via
-// Standard Ebooks. Fyra böcker (en fil per bok); inre kapitel `chapter-<b>-<c>`.
-// Kapiteltiteln (`<p epub:type="title">`) hoppas över; brödtextstycken blir verser.
+// Epictetus' Discourses, George Long's English (public domain) via
+// Standard Ebooks. Four books (one file per book); inner chapters `chapter-<b>-<c>`.
+// The chapter title (`<p epub:type="title">`) is skipped; body paragraphs become verses.
 const BASE =
   'https://raw.githubusercontent.com/standardebooks/epictetus_discourses_george-long/master/src/epub/text'
 const ROMAN = ['I', 'II', 'III', 'IV']

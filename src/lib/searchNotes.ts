@@ -1,13 +1,13 @@
-// Privat anteckningssök (search.md, Notes Search): en helt egen väg. Söker BARA
-// den aktuella användarens anteckningar och delar ingenting med det publika
-// indexet — den importerar aldrig sokindex/soklogik, så ingen anteckningstext
-// kan påverka eller läcka in i publika resultat (Fas 9 Privacy/AI Access).
+// Private notes search (search.md, Notes Search): an entirely separate path. Searches ONLY
+// the current user's notes and shares nothing with the public
+// index — it never imports sokindex/soklogik, so no note text
+// can affect or leak into public results (Phase 9 Privacy/AI Access).
 import type { Note } from './personal'
 import { ordlista, searchTokens } from './searchNormalize'
 
-// Alla meningsbärande ord måste förekomma i anteckningen (AND), som exakt ord,
-// prefix eller — för längre ord — delsträng. Samma svenska normalisering som
-// publika söket, men utan synonymer/rankning: privat text ska hittas, inte vägas.
+// All meaningful words must occur in the note (AND), as an exact word,
+// prefix or — for longer words — substring. The same Swedish normalisation as
+// the public search, but without synonyms/ranking: private text should be found, not weighted.
 const matchar = (tokens: string[], text: string): boolean => {
   const ord = ordlista(text)
   return tokens.every((token) =>
@@ -17,8 +17,8 @@ const matchar = (tokens: string[], text: string): boolean => {
   )
 }
 
-/** Söker användarens anteckningar, senast ändrad först. Tomma anteckningar och
- * frågor kortare än två meningsbärande tecken ger inget. */
+/** Searches the user's notes, most recently changed first. Empty notes and
+ * queries shorter than two meaningful characters return nothing. */
 export const searchNotes = (
   question: string,
   anteckningar: Record<string, Note>,

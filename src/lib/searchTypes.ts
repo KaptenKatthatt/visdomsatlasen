@@ -1,14 +1,14 @@
-// Söktyperna och den delbara sökparametern — utbrutna ur sokindex.ts så att
-// routern (som validerar URL:ens ?type= mot SOKTYPER) kan importera dem utan att
-// dra in indexbygget. sokindex.ts bygger hela det publika indexet ur allt
-// innehåll vid moduladdning; skulle routern importera därifrån skulle varje
-// sidladdning bygga indexet i onödan. Denna modul har inga innehållsberoenden.
+// The search types and the shareable search parameter — extracted from sokindex.ts so that
+// the router (which validates the URL's ?type= against SOKTYPER) can import them without
+// pulling in the index build. sokindex.ts builds the entire public index from all
+// content at module load; were the router to import from there, every
+// page load would build the index needlessly. This module has no content dependencies.
 
 export type SearchType = 'fraga' | 'tema' | 'rum' | 'vandring' | 'kalla' | 'tradition' | 'person'
 
-/** Söktyperna i redaktionell prioritetsordning — en enda source som router,
- * rankning och filter delar (så en ny type läggs till på ett ställe). */
+/** The search types in editorial priority order — a single source shared by router,
+ * ranking and filter (so a new type is added in one place). */
 export const SEARCH_TYPES: readonly SearchType[] = ['fraga', 'tema', 'rum', 'vandring', 'kalla', 'tradition', 'person']
 
-/** Den delbara sökparametern: fråga och valfritt typfilter. Aldrig privata värden. */
+/** The shareable search parameter: query and optional type filter. Never private values. */
 export type SearchParams = { q?: string; type?: SearchType }

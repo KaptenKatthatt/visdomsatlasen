@@ -19,18 +19,18 @@ export type IngestResult = {
   id: string
   title: string
   verses: number
-  // Översättningsverifiering. translatedVerses = antal verser som faktiskt fick
-  // svensk text (null för verk som redan är på svenska, t.ex. Bibeln).
+  // Translation verification. translatedVerses = number of verses that actually got
+  // Swedish text (null for works that are already in Swedish, e.g. the Bible).
   translated: boolean
   translatedVerses: number | null
 }
 
-// `translatable` = verket ska maskinöversättas (och bör därför ingest:as om det
-// lagrats men inte översatts). Bibeln är redan på svenska och märks false.
+// `translatable` = the work should be machine-translated (and should therefore be
+// re-ingested if it was stored but not translated). The Bible is already in Swedish and is marked false.
 type WorkBuilder = { id: string; translatable: boolean; build: () => Promise<NormalizedWork> }
 
-// Bibeln kan byggas antingen från getbible (VPS, hela bibeln) eller från
-// fixture-filen (lokal verifiering). Styrs av BIBLE_SOURCE=fixture.
+// The Bible can be built either from getbible (VPS, the whole bible) or from
+// the fixture file (local verification). Controlled by BIBLE_SOURCE=fixture.
 const buildBible = (): Promise<NormalizedWork> =>
   process.env['BIBLE_SOURCE'] === 'fixture' ? fixtureBible() : getbibleBible()
 
@@ -49,7 +49,7 @@ const WORK_BUILDERS: WorkBuilder[] = [
   { id: 'forsvarstalet', translatable: true, build: platoApology },
 ]
 
-// Ett verk i taget; ett fel på ett verk stjälper inte de andra utan loggas.
+// One work at a time; an error on one work does not bring down the others but is logged.
 const ingestOne = async (builder: WorkBuilder): Promise<IngestResult | null> => {
   try {
     const work = await builder.build()
@@ -67,8 +67,8 @@ const ingestOne = async (builder: WorkBuilder): Promise<IngestResult | null> => 
   }
 }
 
-// In-process-vakt: bara en ingest åt gången i samma process, så auto-ingest och
-// ett samtidigt POST /api/ingest inte dubbelöversätter samma verk.
+// In-process guard: only one ingest at a time in the same process, so auto-ingest and
+// a concurrent POST /api/ingest do not double-translate the same work.
 let ingestActive = false
 
 const ingestBuilders = async (builders: WorkBuilder[]): Promise<IngestResult[]> => {
@@ -86,7 +86,7 @@ const ingestBuilders = async (builders: WorkBuilder[]): Promise<IngestResult[]> 
   }
 }
 
-/** Kör ingest för valda verk (eller alla) och skriver dem till databasen. */
+/** Runs ingest for the selected works (or all) and writes them to the database. */
 export const runIngest = (only?: string[]): Promise<IngestResult[]> => {
   const targets =
     only && only.length > 0 ? WORK_BUILDERS.filter((w) => only.includes(w.id)) : WORK_BUILDERS
@@ -94,10 +94,10 @@ export const runIngest = (only?: string[]): Promise<IngestResult[]> => {
 }
 
 /**
- * Ingest:ar de registrerade verk som saknas i databasen, samt översättbara verk
- * som lagrats men ännu inte översatts. Körs i bakgrunden vid serverstart, så ett
- * nyinlagt verk fylls på automatiskt och ett verk som fastnat på källspråket
- * (Ollama nere) fylls på nästa gång utan att redan översatta verk körs om.
+ * Ingests the registered works that are missing from the database, along with translatable
+ * works that were stored but not yet translated. Runs in the background at server start, so a
+ * newly added work is filled in automatically and a work stuck in the source language
+ * (Ollama down) is filled in next time without re-running already translated works.
  */
 export const runMissingIngest = (): Promise<IngestResult[]> => {
   const status = workTranslatedById()

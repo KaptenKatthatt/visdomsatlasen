@@ -3,9 +3,9 @@ import { gutenbergBody } from '../lib/gutenberg'
 import { buildTranslatedMultiBook, type NamedBook, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
-// Poetiska Eddan, Henry Adams Bellows engelska (public domain) via Project
-// Gutenberg. Vi tar Gudakvädena (de mytologiska dikterna). Bellows tunga noter
-// sållas bort: bara numrerade strofer (rad `N.` med cesuren `|`) behålls.
+// The Poetic Edda, Henry Adams Bellows' English (public domain) via Project
+// Gutenberg. We take the Mythological Poems (the divine lays). Bellows' heavy notes
+// are filtered out: only numbered stanzas (line `N.` with the caesura `|`) are kept.
 const URL =
   'https://raw.githubusercontent.com/GITenberg/The-poetic-Edda-b-Translated-from-the-Icelandic-with-an-Introduction-and-notes_73533/master/73533-0.txt'
 
@@ -27,8 +27,8 @@ const POEMS: Poem[] = [
   { title: 'SVIPDAGSMOL', name: 'Svipdagsmål', slug: 'svipdagsmal' },
 ]
 
-// En strof = ett block som börjar med `N.` och innehåller cesuren `|`. Bellows
-// prosanoter saknar båda och sållas bort. Cesuren ersätts med mellanslag.
+// A stanza = a block that starts with `N.` and contains the caesura `|`. Bellows'
+// prose notes lack both and are filtered out. The caesura is replaced with a space.
 const stanzas = (text: string): { verse: number; source: string }[] =>
   text
     .split(/\n\s*\n/)

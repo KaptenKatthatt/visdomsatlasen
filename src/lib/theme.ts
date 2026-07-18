@@ -1,8 +1,8 @@
-/** Läsinställningarnas valmöjligheter och färger — delas av store och panel.
- * Färgerna dupliceras i global.css och i pre-paint-skriptet i index.html
- * (som inte kan läsa CSS-variabler) — håll dem i synk. */
+/** The reading settings' options and colours — shared by store and panel.
+ * The colours are duplicated in global.css and in the pre-paint script in index.html
+ * (which can't read CSS variables) — keep them in sync. */
 
-/** Etikett + fontstack per typsnitt, så panelens knappar kan visas i sin egen font. */
+/** Label + font stack per typeface, so the panel's buttons can be shown in their own font. */
 export const FONT_OPTIONS = [
   { id: 'garamond', label: 'EB Garamond', stack: "'EB Garamond', Georgia, serif" },
   { id: 'literata', label: 'Literata', stack: "'Literata', Georgia, serif" },
@@ -16,7 +16,7 @@ export const FONT_OPTIONS = [
 
 export type FontChoice = (typeof FONT_OPTIONS)[number]['id']
 
-/** Papperet är läsytans färg — även webbläsarens theme-color i ljust läge. */
+/** The paper is the reading surface's colour — also the browser's theme-color in light mode. */
 export const BG_OPTIONS = [
   { id: 'kram', label: 'Krämvit', paper: '#faf6ed' },
   { id: 'sepia', label: 'Sepia', paper: '#f7eed9' },

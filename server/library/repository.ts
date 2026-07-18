@@ -4,13 +4,13 @@ import { books, verses, works } from '../db/schema'
 import type { Book, Verse, Work } from '../db/schema'
 
 export type WorkSummary = Work & { bookCount: number }
-// Boken med sina faktiska kapitelnummer, så vyerna inte antar 1..N i följd.
+// The book with its actual chapter numbers, so the views don't assume 1..N in sequence.
 export type BookWithChapters = Book & { chapters: number[] }
 
 /**
- * Lagrade verk och om de är översatta (id → translated). Auto-ingesten använder
- * detta för att avgöra vad som saknas *och* vad som lagrats men ännu inte
- * översatts (t.ex. om Ollama var nere vid förra försöket).
+ * Stored works and whether they're translated (id → translated). Auto-ingest uses
+ * this to determine what's missing *and* what has been stored but not yet
+ * translated (e.g. if Ollama was down on the last attempt).
  */
 export const workTranslatedById = (): Map<string, boolean> =>
   new Map(
@@ -23,7 +23,7 @@ export const workTranslatedById = (): Map<string, boolean> =>
 
 export const listWorks = (): WorkSummary[] => {
   const rows = db.select().from(works).orderBy(asc(works.position), asc(works.title)).all()
-  // Räkna böcker per verk i en enda fråga i stället för en per verk.
+  // Count books per work in a single query instead of one per work.
   const counts = new Map<string, number>()
   for (const b of db.select({ workId: books.workId }).from(books).all()) {
     counts.set(b.workId, (counts.get(b.workId) ?? 0) + 1)
@@ -31,7 +31,7 @@ export const listWorks = (): WorkSummary[] => {
   return rows.map((w) => ({ ...w, bookCount: counts.get(w.id) ?? 0 }))
 }
 
-// Faktiska kapitelnummer per bok (kan ha luckor eller inte börja på 1).
+// Actual chapter numbers per book (may have gaps or not start at 1).
 const chapterNumbers = (workId: string): Map<string, number[]> => {
   const rows = sqlite
     .prepare(

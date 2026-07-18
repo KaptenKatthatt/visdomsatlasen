@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { restoredCollections, type SavedRaw } from './store'
 
-// Fas: engelsk kodbas. De persisterade samlingsfälten bytte namn (anteckningar→
+// Phase: English codebase. The persisted collection fields were renamed (anteckningar→
 // notes, sparadeRum→savedRooms, sparadeVandringar→savedPaths, senastLastaRum→
-// recentRooms, vandringsplatser→pathPositions) och anteckningarnas/sparat-
-// posternas interna nycklar likaså. En redan deployad app har lagrat de svenska
-// nycklarna — inläsningen måste läsa dem som fallback så ingen personlig data går
-// förlorad vid uppgraderingen.
+// recentRooms, vandringsplatser→pathPositions) and the internal keys of the notes/saved
+// entries likewise. An already-deployed app has stored the Swedish
+// keys — loading must read them as a fallback so no personal data is
+// lost on the upgrade.
 describe('restoredCollections (localStorage-migrering till engelska fält)', () => {
   it('läser äldre svenska fältnycklar in i de nya utan förlust', () => {
     const gammal: SavedRaw = {

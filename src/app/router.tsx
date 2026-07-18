@@ -10,14 +10,15 @@ import { HemPage } from '../pages/HemPage'
 import { NotFoundNote } from '../pages/NotFoundNote'
 import { RootLayout } from './RootLayout'
 
-// Kod-delning (fas 13): bara tröskeln (HemPage), skalet (RootLayout) och den
-// lilla NotFoundNote laddas i startbunten. Övriga sidor — biblioteket, läsrummet,
-// verkläsaren, söket, de gamla sidorna — laddas som egna chunkar när routen
-// öppnas, så hemskärmen slipper hela appens JavaScript på en gång. Chunkarna
-// precachas av service-workern (workbox globPatterns), så de finns offline och
-// öppnas oftast direkt. `defaultPreload: 'intent'` förladdar dem vid hovring/touch.
-// Selektorn plockar den namngivna exporten med statisk åtkomst (m.X), så både
-// bundlaren och dead-code-analysen (fallow) ser vilken export som används.
+// Code splitting (phase 13): only the threshold (HemPage), the shell (RootLayout)
+// and the small NotFoundNote are loaded in the startup bundle. The other pages —
+// the library, the reading room, the work reader, search, the old pages — load as
+// their own chunks when the route opens, so the home screen is spared the whole
+// app's JavaScript at once. The chunks are precached by the service worker (workbox
+// globPatterns), so they exist offline and usually open instantly. `defaultPreload:
+// 'intent'` preloads them on hover/touch. The selector picks the named export with
+// static access (m.X), so both the bundler and the dead-code analysis (fallow) can
+// see which export is used.
 const lazyPage = <Props extends object>(
   valj: () => Promise<ComponentType<Props>>,
 ): LazyExoticComponent<ComponentType<Props>> => lazy(async () => ({ default: await valj() }))
@@ -150,7 +151,7 @@ const searchRoute = createRoute({
   component: SokPage,
 })
 
-// Bibliotekets landning (omgörningen, fas 6): frågor, themes, rum, sources.
+// The library's landing (the remake, phase 6): questions, themes, rooms, sources.
 const libraryRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek',
@@ -193,7 +194,7 @@ const sourceItemRoute = createRoute({
   },
 })
 
-// Bibliotekets personsidor (nya modellen) — skilda från legacy /person/$id.
+// The library's person pages (the new model) — distinct from legacy /person/$id.
 const personPostRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/person/$slug',
@@ -210,8 +211,8 @@ const pathRoute = createRoute({
   },
 })
 
-// Verkläsaren bor under det statiska segmentet `verk`, så landningens
-// undersidor aldrig kan skuggas av ett verks id.
+// The work reader lives under the static segment `verk`, so the landing's
+// subpages can never be shadowed by a work's id.
 const verklistaRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/verk',
@@ -222,8 +223,8 @@ const workRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/verk/$workId',
   component: function VerkRoute() {
-    // key ⇒ komponenten monteras om per verk, så filterfältet inte hänger kvar
-    // när man byter till ett annat verk (TanStack återanvänder annars instansen).
+    // key ⇒ the component remounts per work, so the filter field doesn't linger
+    // when switching to another work (TanStack would otherwise reuse the instance).
     const { workId } = workRoute.useParams()
     return <VerkPage key={workId} workId={workId} />
   },
@@ -253,9 +254,9 @@ const chapterRoute = createRoute({
   },
 })
 
-// Läsrummet (omgörningen, fas 3): rum ur det redaktionella innehållet.
-// Sökparametern `vandring` bär den enda vandringskontexten — utan den läses
-// rummet fristående, utan vandrings-UI (paths.md, Relationship to the Library).
+// The reading room (the remake, phase 3): rooms from the editorial content.
+// The `vandring` search param carries the only path context — without it the room
+// is read standalone, without path UI (paths.md, Relationship to the Library).
 const roomRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/rum/$slug',
@@ -272,9 +273,9 @@ const librarySearchRoute = createRoute({
   component: BibliotekSokPage,
 })
 
-// Bibliotekssöket (fas 10, search.md): frågan och det valfria typfiltret bärs i
-// URL:en (?q=…&type=…), så sökstate överlever navigation, refresh och delning.
-// Privata anteckningsträffar hamnar aldrig i URL:en.
+// The library search (phase 10, search.md): the query and the optional type filter
+// are carried in the URL (?q=…&type=…), so search state survives navigation, refresh
+// and sharing. Private note matches never end up in the URL.
 const isSearchType = (value: unknown): value is SearchType =>
   typeof value === 'string' && (SEARCH_TYPES as readonly string[]).includes(value)
 
@@ -331,8 +332,8 @@ const routeTree = rootRoute.addChildren([
 export const router = createRouter({
   routeTree,
   scrollRestoration: true,
-  // Förladda en routes chunk redan vid hovring/touch-intention, så navigeringen
-  // känns omedelbar trots kod-delningen (fas 13).
+  // Preload a route's chunk already on hover/touch intent, so navigation feels
+  // instant despite the code splitting (phase 13).
   defaultPreload: 'intent',
 })
 

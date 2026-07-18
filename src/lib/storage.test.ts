@@ -2,9 +2,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { readJson, writeJson } from './storage'
 
-// Fas 13, testa localStorage-gränser: lagringen ska bete sig förutsägbart och
-// lugnt när den är full (kvot slut) eller otillgänglig (privat läge) — appen
-// fungerar vidare, den kastar aldrig och tappar aldrig läsvärden i onödan.
+// Phase 13, testing localStorage limits: storage should behave predictably and
+// calmly when it's full (quota exhausted) or unavailable (private mode) — the app
+// keeps working, it never throws and never loses read values needlessly.
 describe('storage', () => {
   afterEach(() => {
     window.localStorage.clear()

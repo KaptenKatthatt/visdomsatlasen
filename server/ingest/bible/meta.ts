@@ -1,7 +1,7 @@
 import type { WorkMeta } from '../model'
 
-// Delad metadata för verket "Bibeln" — samma oavsett om texten kommer från
-// getbible (VPS) eller fixture-filen (lokal verifiering).
+// Shared metadata for the work "Bibeln" — the same whether the text comes from
+// getbible (VPS) or the fixture file (local verification).
 export const BIBLE_META: WorkMeta = {
   id: 'bibel-1917',
   title: 'Bibeln',

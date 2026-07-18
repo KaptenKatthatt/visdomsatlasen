@@ -4,7 +4,7 @@ import { useAtlas } from '../lib/store'
 import { useSidtitel } from '../lib/useSidtitel'
 import styles from './InstallningarPage.module.css'
 
-/** Inställningar (navigation.md: Settings) — utseendet samlat på en egen yta. */
+/** Settings (navigation.md: Settings) — appearance gathered on its own surface. */
 export const InstallningarPage = () => {
   useSidtitel('Inställningar')
   const { dark } = useAtlas()

@@ -2,12 +2,12 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from '@tanstack/react-router'
 import { registerSW } from 'virtual:pwa-register'
-// Standardtypsnittet EB Garamond laddas i startbunten — det är läsytans och
-// gränssnittets förval. De kombinerade @fontsource-filerna registrerar varje
-// subset (latin, latin-ext, grekiska …) med unicode-range, så webbläsaren
-// hämtar bara de delar texten faktiskt använder. De tre valbara typsnitten
-// (Literata, Source Sans, Atkinson) laddas först när läsaren väljer dem, via
-// laddaFont i fonter.ts, så start-CSS:en inte bär fyra familjer i onödan (fas 13).
+// The default typeface EB Garamond loads in the startup bundle — it is the default
+// for the reading surface and the interface. The combined @fontsource files register
+// each subset (latin, latin-ext, greek …) with a unicode-range, so the browser
+// fetches only the parts the text actually uses. The three optional typefaces
+// (Literata, Source Sans, Atkinson) load only when the reader chooses them, via
+// laddaFont in fonter.ts, so the startup CSS doesn't carry four families needlessly (phase 13).
 import '@fontsource/eb-garamond/400.css'
 import '@fontsource/eb-garamond/500.css'
 import '@fontsource/eb-garamond/600.css'
@@ -19,8 +19,8 @@ import { installeraGlobalaFelfangare } from './lib/telemetry'
 import './styles/global.css'
 
 registerSW()
-// Fas 14: fånga globala, annars osynliga fel (okaught-fel, avvisade promises)
-// och logga dem lugnt till konsolen. Ingen tredjepart, inget engagemang.
+// Phase 14: catch global, otherwise invisible errors (uncaught errors, rejected
+// promises) and log them calmly to the console. No third party, no engagement.
 installeraGlobalaFelfangare()
 
 const rootElement = document.getElementById('root')

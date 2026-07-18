@@ -1,7 +1,7 @@
-// Export, import och sammanslagning av personlig data (notes-and-saved.md,
-// Export/Import). Ren logik utan React/localStorage — allt round-trip:bart och
-// enhetstestbart. JSON är kanoniskt (återimporterbart); Markdown är en läsbar
-// spegel. Läsarens reflektioner ska aldrig låsas in i en implementation.
+// Export, import and merging of personal data (notes-and-saved.md,
+// Export/Import). Pure logic without React/localStorage — everything round-trippable
+// and unit-testable. JSON is canonical (re-importable); Markdown is a readable
+// mirror. The reader's reflections should never be locked into an implementation.
 import { z } from 'zod'
 import {
   chapterKey,
@@ -15,7 +15,7 @@ import {
 
 export const EXPORT_FORMAT = 'visdomsatlasen-personligt'
 
-/** Den personliga delen av storen — det som exporteras, importeras och rensas. */
+/** The personal part of the store — what gets exported, imported and cleared. */
 export type PersonalCollections = {
   notes: Record<string, Note>
   savedRooms: Record<string, SavedItem>
@@ -27,11 +27,11 @@ export type PersonalCollections = {
 const isRecord = (v: unknown): v is Record<string, unknown> =>
   typeof v === 'object' && v !== null && !Array.isArray(v)
 
-// Äldre v1-exporter (samma format/version) bär de svenska nycklarna en tidigare
-// version skrev: anteckningsfältens `ursprungTyp`/`ursprungId` (med värdena
-// `rum`/`vandring`/`amne`) och tidsstämplarna `skapad`/`uppdaterad`. Mappa dem
-// till de engelska namnen/värdena före validering så en tidigare backup
-// fortfarande går att importera utan att tappa anteckningar.
+// Older v1 exports (same format/version) carry the Swedish keys an earlier
+// version wrote: the note fields' `ursprungTyp`/`ursprungId` (with the values
+// `rum`/`vandring`/`amne`) and the timestamps `skapad`/`uppdaterad`. Map them
+// to the English names/values before validation so an earlier backup
+// can still be imported without losing notes.
 const LEGACY_ORIGIN: Record<string, string> = { rum: 'room', vandring: 'path', amne: 'topic' }
 
 const withLegacyNote = (v: unknown): unknown => {
@@ -59,7 +59,7 @@ const noteSchema = z.preprocess(
   }),
 )
 
-// Äldre exporter bär `sparadNar` i stället för `savedWhen`.
+// Older exports carry `sparadNar` instead of `savedWhen`.
 const withLegacySaved = (v: unknown): unknown =>
   isRecord(v) ? { ...v, savedWhen: 'savedWhen' in v ? v.savedWhen : v.sparadNar } : v
 
@@ -80,9 +80,9 @@ const chapterSchema = z.object({
   savedAt: z.number(),
 })
 
-// Äldre exporter bär de svenska container-nycklarna (exporterad/anteckningar/
-// sparadeRum/sparadeVandringar/bokmarken{kapitel,amnen}); mappa dem till de
-// engelska namnen före validering så en tidigare backup fortfarande importeras.
+// Older exports carry the Swedish container keys (exporterad/anteckningar/
+// sparadeRum/sparadeVandringar/bokmarken{kapitel,amnen}); map them to the
+// English names before validation so an earlier backup still imports.
 const withLegacyExport = (v: unknown): unknown => {
   if (!isRecord(v)) return v
   const bookmarks = v.bookmarks ?? v.bokmarken
@@ -102,8 +102,8 @@ const withLegacyExport = (v: unknown): unknown => {
   }
 }
 
-// Versionsfältet gör framtida format skiljbara; format-literalen gör att
-// främmande filer avvisas i stället för att tolkas fel.
+// The version field makes future formats distinguishable; the format literal
+// makes foreign files get rejected instead of misinterpreted.
 const exportSchema = z.preprocess(
   withLegacyExport,
   z.object({
@@ -130,8 +130,8 @@ const savedItems = (
     savedWhen: items[id]?.savedWhen ?? null,
   }))
 
-/** Bygger en exportpost. `titelFor` slår upp läsbara titlar för anteckningarnas
- * ursprung och de sparade posterna, så exporten går att läsa fristående. */
+/** Builds an export record. `titelFor` looks up readable titles for the notes'
+ * origins and the saved items, so the export can be read standalone. */
 export const toExport = (
   samlingar: PersonalCollections,
   titelFor: (type: Origin, id: string) => string | undefined,
@@ -152,14 +152,14 @@ export const toExport = (
   },
 })
 
-/** Tolkar en importfil. Fel format, fel version eller korrupt JSON → null, så
- * anroparen kan visa ett stilla felbesked utan att något går sönder. */
+/** Parses an import file. Wrong format, wrong version or corrupt JSON → null, so
+ * the caller can show a quiet error message without anything breaking. */
 export const readImport = (json: unknown): PersonalExport | null => {
   const result = exportSchema.safeParse(json)
   return result.success ? result.data : null
 }
 
-// Anteckningskonflikt: den nyast uppdaterade vinner (spec: konflikter löses säkert).
+// Note conflict: the most recently updated wins (spec: conflicts are resolved safely).
 const mergeNotes = (
   current: Record<string, Note>,
   importerade: PersonalExport['notes'],
@@ -205,9 +205,9 @@ const mergeChapterBookmarks = (
   return ut
 }
 
-/** Slår ihop en import med nuvarande data (spec: lokala kopian förblir användbar,
- * konflikter löses säkert). Union av sparade poster och bokmärken; anteckningar
- * löses med nyast-vinner. Aldrig destruktivt mot befintlig data. */
+/** Merges an import with the current data (spec: the local copy stays usable,
+ * conflicts are resolved safely). Union of saved items and bookmarks; notes
+ * are resolved with newest-wins. Never destructive toward existing data. */
 export const mergeImport = (
   current: PersonalCollections,
   importen: PersonalExport,
@@ -228,8 +228,8 @@ const noteToMarkdown = (post: PersonalExport['notes'][number]): string =>
     `_Skapad ${post.created} · uppdaterad ${post.updated}_`,
   ].join('\n')
 
-/** Läsbar Markdown-spegel av exporten (spec föredrar öppna format). Inte
- * återimporterbar — JSON är round-trip-formatet. */
+/** Readable Markdown mirror of the export (spec prefers open formats). Not
+ * re-importable — JSON is the round-trip format. */
 export const toMarkdown = (exporten: PersonalExport): string => {
   const delar: string[] = ['# Visdomsatlasen — mina anteckningar och sparat', '']
   if (exporten.notes.length > 0) {

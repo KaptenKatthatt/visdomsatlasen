@@ -26,7 +26,7 @@ export const SokPage = () => {
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          // Hela skärmen är sök — fältet är sidans enda uppgift och nås avsiktligt.
+          // The whole screen is search — the field is the page's sole purpose and is reached deliberately.
           // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus
           placeholder="Sök ämnen, personer, texter…"

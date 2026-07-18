@@ -3,9 +3,9 @@ import { parseStandardEbook } from '../lib/standardebooks'
 import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
-// Epiktetos Handbok (Enchiridion), George Longs engelska translation (public
-// domain) via Standard Ebooks. 53 korta kapitel; varje kapitel blir ett kapitel,
-// varje stycke en vers. Översätts till svenska.
+// Epictetus' Handbook (Enchiridion), George Long's English translation (public
+// domain) via Standard Ebooks. 53 short chapters; each chapter becomes a chapter,
+// each paragraph a verse. Translated into Swedish.
 const URL =
   'https://raw.githubusercontent.com/standardebooks/epictetus_short-works_george-long/master/src/epub/text/the-enchiridion.xhtml'
 

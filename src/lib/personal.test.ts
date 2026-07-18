@@ -76,9 +76,9 @@ describe('migreraAnteckningar', () => {
   })
 
   it('läser äldre poster med svenska nycklar och värden (ursprungTyp/ursprungId, rum→room)', () => {
-    // Deployad app före engelsk-migreringen lagrade ursprungTyp/ursprungId med
-    // värdena rum/vandring/amne samt skapad/uppdaterad — inget av det får tappas
-    // eller nollställas vid uppgradering.
+    // A deployed app before the English migration stored ursprungTyp/ursprungId with
+    // the values rum/vandring/amne plus skapad/uppdaterad — none of that may be lost
+    // or reset on upgrade.
     const gammal = {
       x: {
         ursprungTyp: 'rum',

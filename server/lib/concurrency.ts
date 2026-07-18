@@ -1,4 +1,4 @@
-// Kör upp till `concurrency` uppgifter parallellt (samma hjälpare som newsAgg).
+// Runs up to `concurrency` tasks in parallel (same helper as newsAgg).
 export const mapPool = async <T, R>(
   items: T[],
   concurrency: number,

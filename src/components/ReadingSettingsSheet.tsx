@@ -3,7 +3,7 @@ import { BottomSheet } from './BottomSheet'
 import { BgPicker, DarkToggle, FontPicker, SizeStepper } from './ReadingSettingsControls'
 import styles from './ReadingSettingsSheet.module.css'
 
-/** Bottom-sheet med läsinställningar: typsnitt, textstorlek, bakgrund, tema. */
+/** Bottom sheet with reading settings: font, text size, background, theme. */
 export const ReadingSettingsSheet = ({ onClose }: { onClose: () => void }) => {
   const { dark } = useAtlas()
   return (

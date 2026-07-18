@@ -3,10 +3,10 @@ import { cleanHtml } from '../lib/html'
 import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
-// Platons Försvarstal (Apology), Benjamin Jowetts engelska (public domain) via
-// Standard Ebooks samlingsvolym Dialogues. Vi tar själva talet (`apology-text`)
-// och hoppar över Jowetts inledning (`apology-introduction`). Talet är
-// sammanhängande: ett kapitel, varje stycke en vers.
+// Plato's Apology (Försvarstal), Benjamin Jowett's English (public domain) via
+// Standard Ebooks' collected volume Dialogues. We take the speech itself (`apology-text`)
+// and skip Jowett's introduction (`apology-introduction`). The speech is
+// continuous: one chapter, each paragraph a verse.
 const URL =
   'https://raw.githubusercontent.com/standardebooks/plato_dialogues_benjamin-jowett/master/src/epub/text/apology.xhtml'
 

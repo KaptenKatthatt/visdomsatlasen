@@ -7,7 +7,7 @@ import * as schema from './schema'
 import { runMigrations } from './migrate'
 
 const dbPath = path.resolve(config.dbPath)
-// Skapa data-katalogen om den saknas (första start i en tom volym).
+// Create the data directory if it's missing (first start in an empty volume).
 mkdirSync(path.dirname(dbPath), { recursive: true })
 
 export const sqlite: Database.Database = new Database(dbPath)

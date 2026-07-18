@@ -83,9 +83,9 @@ const NoteGroup = ({ kort }: { kort: Kort[] }) =>
     </Group>
   )
 
-/** Senast besökt (spec Recently Opened Items): bara orientering, aldrig en
- * krävande kö. Skild från Sparat och rensbar av läsaren. Ingen »Fortsätt
- * läsa«-formulering. */
+/** Recently visited (spec Recently Opened Items): only orientation, never a
+ * demanding queue. Separate from Saved and clearable by the reader. No »Fortsätt
+ * läsa« phrasing. */
 const RecentlyVisitedGroup = ({ rum, onRensa }: { rum: Room[]; onRensa: () => void }) =>
   rum.length === 0 ? null : (
     <section className={styles.recent}>
@@ -119,10 +119,10 @@ const savedPathsList = (
       senastRum: findRoomById(vandringsplatser[path.id] ?? '')?.title,
     }))
 
-/** Sparat (notes-and-saved.md): en stilla place för det läsaren valt att bevara,
- * grupperat och lätt att överblicka — aldrig ett innehållsflöde, aldrig ett mått
- * på framsteg. Bara grupper med innehåll visas; är inget sparat möter ett lugnt
- * tomläge. Senast besökt ligger separat sist, för orientering. */
+/** Saved (notes-and-saved.md): a quiet place for what the reader chose to keep,
+ * grouped and easy to take in — never a content feed, never a measure
+ * of progress. Only groups with content are shown; if nothing is saved a calm
+ * empty state greets you. Recently visited sits separately last, for orientation. */
 export const SamlingPage = () => {
   useSidtitel('Sparat')
   const store = useAtlas()

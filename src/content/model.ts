@@ -9,13 +9,13 @@ export type To =
   | { kind: 'las'; id: string; mode: ReadMode }
   | { kind: 'kapitel'; workId: string; bookSlug: string; chapter: number }
   | { kind: 'screen'; id: ScreenId }
-  // Omgörningens redaktionella mål (fas 6): läsrummet och bibliotekets sidor.
+  // The remake's editorial targets (phase 6): the reading room and the library pages.
   | { kind: 'rum'; slug: string }
   | { kind: 'tema'; slug: string }
   | { kind: 'kallpost'; slug: string }
   | { kind: 'personpost'; slug: string }
   | { kind: 'fraga'; slug: string }
-  // Vandringar (fas 7).
+  // Paths (phase 7).
   | { kind: 'vandring'; slug: string }
 
 export type LinkSegment = { t: string; to: To }

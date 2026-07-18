@@ -1,13 +1,13 @@
-// Översättning till svenska via Ollama (Hermes-gateway), samma transport som
-// newsAggs llm.ts. Sätt TRANSLATE=off för att hoppa över (t.ex. lokal
-// verifiering utan Ollama) — då lagras källtexten oförändrad.
+// Translation into Swedish via Ollama (Hermes gateway), the same transport as
+// newsAggs llm.ts. Set TRANSLATE=off to skip it (e.g. local
+// verification without Ollama) — the source text is then stored unchanged.
 
 const ollamaUrl = (): string => process.env['OLLAMA_URL'] ?? 'http://127.0.0.1:11434/api/generate'
 const ollamaModel = (): string => process.env['OLLAMA_MODEL'] ?? 'gemma4:31b-cloud'
 
 const translationEnabled = (): boolean => process.env['TRANSLATE'] !== 'off'
 
-// Ta bort ett eventuellt <think>-block (även oavslutat) innan svaret används.
+// Remove any <think> block (even an unclosed one) before the response is used.
 const stripThink = (text: string): string =>
   text
     .replace(/<think>[\s\S]*?<\/think>/g, '')
@@ -36,8 +36,8 @@ const buildPrompt = (lines: string[]): string => {
   return `Du översätter andlig litteratur till svenska. Översätt varje numrerad rad nedan. Behåll exakt samma numrering och lika många rader — en översatt rad per numrerad rad, inga tillägg, ingen kommentar.\n\n${numbered}`
 }
 
-// Ett Ollama-anrop för ett litet block rader. null om anropet misslyckas eller
-// ger fel radantal (så inget par förskjuts).
+// A single Ollama call for a small block of lines. null if the call fails or
+// returns the wrong number of lines (so no pairing is thrown off).
 const translateBlock = async (lines: string[]): Promise<string[] | null> => {
   try {
     const raw = await callOllama(buildPrompt(lines))
@@ -54,11 +54,11 @@ const translateBlock = async (lines: string[]): Promise<string[] | null> => {
 export type Translation = { lines: string[]; translatedCount: number }
 
 /**
- * Översätter rader till svenska i småbatchar (så långa stycken inte spränger
- * modellens tokengräns). Misslyckas en batch behålls dess källtext.
- * `translatedCount` = antal rader som faktiskt ändrades — det fångar både
- * batchar som föll tillbaka och rader modellen ekade oöversatta, och är
- * underlaget för översättningsverifieringen. Med TRANSLATE=off översätts inget.
+ * Translates lines into Swedish in small batches (so long paragraphs do not blow past
+ * the model's token limit). If a batch fails, its source text is kept.
+ * `translatedCount` = number of lines that actually changed — it captures both
+ * batches that fell back and lines the model echoed untranslated, and is
+ * the basis for the translation verification. With TRANSLATE=off nothing is translated.
  */
 export const translateMany = async (lines: string[], batchSize = 8): Promise<Translation> => {
   if (!translationEnabled() || lines.length === 0) return { lines, translatedCount: 0 }

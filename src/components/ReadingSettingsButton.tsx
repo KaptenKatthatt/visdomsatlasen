@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { TypeIcon } from './Icons'
 import { ReadingSettingsSheet } from './ReadingSettingsSheet'
 
-/** "Aa"-knapp för läsvyernas topbar — öppnar panelen med läsinställningar.
- * BottomSheet portalas numera själv till skalelementet, så topbarens
- * backdrop-filter kan inte göra den till containing block för arket. */
+/** "Aa" button for the reading views' top bar — opens the reading-settings panel.
+ * BottomSheet now portals itself into the shell element, so the top bar's
+ * backdrop-filter can't make it the containing block for the sheet. */
 export const ReadingSettingsButton = () => {
   const [open, setOpen] = useState(false)
   return (

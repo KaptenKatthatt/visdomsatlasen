@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 const GRUNDTITEL = 'Visdomsatlasen'
 
 /**
- * Sätter dokumenttiteln till »<title> · Visdomsatlasen« medan sidan är
- * monterad och återställer grundtiteln när den lämnas — så att flikar,
- * historik och skärmläsare kan skilja sidorna åt.
+ * Sets the document title to »<title> · Visdomsatlasen« while the page is
+ * mounted and restores the base title when it's left — so that tabs,
+ * history and screen readers can tell the pages apart.
  */
 export const useSidtitel = (title: string | undefined): void => {
   useEffect(() => {

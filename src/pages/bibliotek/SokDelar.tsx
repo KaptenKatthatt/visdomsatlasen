@@ -1,6 +1,6 @@
-// Presentationsdelar för bibliotekssöket (search.md): grupperade resultat,
-// ändliga med »Visa fler«, samt lugna tom-/no-results-/fellägen. Ingen del visar
-// popularitet, förlopp eller orelaterade rekommendationer.
+// Presentation parts for the library search (search.md): grouped results,
+// finite with »Visa fler«, plus calm empty/no-results/error states. No part shows
+// popularity, progress or unrelated recommendations.
 import { Link } from '@tanstack/react-router'
 import { useState, type ReactNode } from 'react'
 import { ToLink } from '../../components/ToLink'
@@ -11,11 +11,11 @@ import { MAX_VISIBLE_PER_GROUP, HEADINGS, type SearchResult, type VisibleGroup }
 import { NoteCard, noteToCard } from '../SparatDelar'
 import styles from './Sok.module.css'
 
-/** Verssökets svar från servern (verkläsarens FTS över källtexterna). */
+/** The verse search's response from the server (the reader's FTS over the source texts). */
 export type SourceTextResponse = { books: BookHit[]; hits: SearchHit[] }
 
-/** »Visa fler«-kontrollen: röjer de dolda träffarna i en grupp. Renderar inget
- * när inget är dolt — resultatet är alltid ändligt (search.md, Number of Results). */
+/** The »Visa fler« control: reveals the hidden hits in a group. Renders nothing
+ * when nothing is hidden — the result is always finite (search.md, Number of Results). */
 const VisaFler = ({ dolda, onClick }: { dolda: number; onClick: () => void }) =>
   dolda <= 0 ? null : (
     <button type="button" className={styles.visaFler} onClick={onClick}>
@@ -57,9 +57,9 @@ const SearchGroupSection = ({
   </section>
 )
 
-// Privata anteckningsträffar — egen grupp sist, varje kort tydligt märkt privat.
-// Ändlig som övriga grupper: som mest fem, resten bakom »Visa fler«. Nollställs
-// per fråga genom att sidan nyckar komponenten (key={nyckel}).
+// Private note hits — their own group last, each card clearly marked private.
+// Finite like the other groups: at most five, the rest behind »Visa fler«. Reset
+// per query by the page keying the component (key={nyckel}).
 const NoteGroupSearch = ({ anteckningar }: { anteckningar: Note[] }) => {
   const [visaAlla, setVisaAlla] = useState(false)
   if (anteckningar.length === 0) return null
@@ -81,8 +81,8 @@ const NoteGroupSearch = ({ anteckningar }: { anteckningar: Note[] }) => {
   )
 }
 
-// Renderar FTS-snippeten med ⟦…⟧-markörer som markerade träfford (tillgänglig
-// markup, inte enbart färg).
+// Renders the FTS snippet with ⟦…⟧ markers as highlighted hit words (accessible
+// markup, not color alone).
 const Snippet = ({ text }: { text: string }) => (
   <span className={styles.snippet}>
     {text.split(/⟦|⟧/).map((del, i) =>
@@ -128,9 +128,9 @@ const VerseRow = ({ hit }: { hit: SearchHit }) => (
   </Link>
 )
 
-/** Gruppen »Ur källtexterna«: verkläsarens FTS-verssök som en del av det samlade
- * söket (behåller /bibliotek-sok orörd). Tyst laddning — gruppen dyker upp när
- * data finns; vid fel en lugn rad, aldrig orelaterat innehåll. */
+/** The »Ur källtexterna« group: the reader's FTS verse search as part of the combined
+ * search (keeps /bibliotek-sok untouched). Silent loading — the group appears when
+ * data exists; on error a calm line, never unrelated content. */
 export const SourceTextGroup = ({
   svar,
   fel,
@@ -163,8 +163,8 @@ export const SourceTextGroup = ({
   )
 }
 
-/** Sökfältet: programmatiskt kopplad label, Enter söker direkt, Escape rensar
- * (type=search). Normal tab-order. */
+/** The search field: programmatically linked label, Enter searches immediately, Escape clears
+ * (type=search). Normal tab order. */
 export const SearchField = ({
   query,
   onChange,
@@ -191,7 +191,7 @@ export const SearchField = ({
       value={query}
       onChange={(händelse) => onChange(händelse.target.value)}
       placeholder="Sök efter en fråga, tanke eller källa"
-      // Hela skärmen är sök — fältet är sidans enda uppgift och nås avsiktligt.
+      // The whole screen is search — the field is the page's sole purpose and is reached deliberately.
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
     />
@@ -222,10 +222,10 @@ export type SearchMode = 'tom' | 'fel' | 'klar'
 
 const hitCount = (antal: number): string => (antal === 1 ? '1 träff' : `${antal} träffar`)
 
-/** Resultatvyn: tomläge före sökning, felläge, no-results eller de grupperade,
- * ändliga träffarna — redaktionella grupper, sedan »Ur källtexterna«, sist den
- * privata anteckningsgruppen. `ingaTraffar` avgörs av sidan (räknar även in
- * verssöket) så no-results aldrig visas medan källtextträffar är på väg. */
+/** The result view: empty state before searching, error state, no-results or the grouped,
+ * finite hits — editorial groups, then »Ur källtexterna«, last the
+ * private notes group. `ingaTraffar` is decided by the page (which also counts
+ * the verse search) so no-results is never shown while source-text hits are on the way. */
 export const ResultView = ({
   läge,
   ingaTraffar,
@@ -268,15 +268,15 @@ export const ResultView = ({
   )
 }
 
-// Filtervalen härleds ur den delade söktyplistan och gruppetiketterna, så en ny
-// type inte behöver läggas till på fler ställen än sokindex/soklogik.
+// The filter options are derived from the shared search-type list and the group labels, so a new
+// type doesn't need to be added in more places than sokindex/soklogik.
 const TYPVAL: Array<{ värde: SearchType | 'alla'; label: string }> = [
   { värde: 'alla', label: 'Alla' },
   ...SEARCH_TYPES.map((type) => ({ värde: type, label: HEADINGS[type] })),
 ]
 
-/** Valfria, hopfällda typfilter (search.md, Filters): aldrig krav före sökning,
- * aktivt filter tydligt och lätt att rensa. */
+/** Optional, collapsed type filters (search.md, Filters): never required before searching,
+ * an active filter clear and easy to reset. */
 export const Filter = ({
   aktiv,
   antal,

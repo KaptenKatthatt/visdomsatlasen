@@ -1,8 +1,8 @@
 import { createContext, useContext } from 'react'
 
-/** Skalelementet (.shell), satt av RootLayout via ref. Portalmål för
- * bottenark som öppnas inifrån topbaren — dess backdrop-filter gör den
- * annars till containing block för fixed-positionerade overlays. */
+/** The shell element (.shell), set by RootLayout via ref. Portal target for
+ * bottom sheets opened from within the topbar — its backdrop-filter otherwise
+ * makes it the containing block for fixed-positioned overlays. */
 export const ShellContext = createContext<HTMLElement | null>(null)
 
 export const useShell = (): HTMLElement | null => useContext(ShellContext)

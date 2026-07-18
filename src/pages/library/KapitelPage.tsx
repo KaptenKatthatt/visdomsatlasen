@@ -12,8 +12,8 @@ import styles from './KapitelPage.module.css'
 
 type Props = { workId: string; bookSlug: string; chapter: string }
 
-/** Bokmärke + "Aa" i kapitelläsarens topbar. Kräver boknamnet för att kunna
- * spara ett bokmärke som Samling kan visa, så den lever i den laddade grenen. */
+/** Bookmark + "Aa" in the chapter reader's topbar. Needs the book name to be able
+ * to save a bookmark that Samling can show, so it lives in the loaded branch. */
 const ChapterActions = ({
   workId,
   bookSlug,

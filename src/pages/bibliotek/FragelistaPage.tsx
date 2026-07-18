@@ -5,8 +5,8 @@ import { allQuestions } from '../../lib/content'
 import styles from './Bibliotek.module.css'
 import { questionCount, Row, Sidhuvud } from './Biblioteksdelar'
 
-/** Alla publicerade frågor — en ändlig lista (library.md, Browsing): antalet
- * står överst så man ser hur mycket som finns. Ingen oändlig rullning. */
+/** All published questions — a finite list (library.md, Browsing): the count
+ * stands at the top so you can see how much there is. No infinite scroll. */
 export const FragelistaPage = () => {
   const questions = libraryQuestions(allQuestions)
   return (

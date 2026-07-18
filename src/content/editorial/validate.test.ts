@@ -204,7 +204,7 @@ describe('valideraInnehall', () => {
   })
 
   it('hindrar publicerade frågor från att länka opublicerade teman och frågor', () => {
-    // Frågan är publicerad men temat den pekar på (tema-a) är utkast.
+    // The question is published but the theme it points to (tema-a) is a draft.
     const unpublishedTheme = validateContent(
       grund({
         rooms: [room({ themes: ['tema-b'] })],
@@ -227,7 +227,7 @@ describe('valideraInnehall', () => {
         (f) => f.includes('fraga-a') && f.includes('opublicerad(t) relaterad fråga'),
       ),
     ).toBe(true)
-    // Utkastfrågor är fria att peka på opublicerat.
+    // Draft questions are free to point to unpublished content.
     const draftQuestion = validateContent(
       grund({
         rooms: [room({ themes: ['tema-a'], primaryQuestion: 'fraga-a' })],
@@ -260,7 +260,7 @@ describe('valideraInnehall', () => {
       }),
     )
     expect(publicerad).toEqual([])
-    // Utkastkällor är fria — grinden gäller bara publicerat.
+    // Draft sources are free — the gate applies only to published content.
     const draftSource = validateContent(
       grund({
         rooms: [room({ sources: [{ source: 'kalla-b', use: 'adaptation', primary: true }] })],
@@ -298,13 +298,13 @@ describe('valideraInnehall', () => {
 
   it('kräver källpassage med utgåva för citat och översättning i publicerade rum', () => {
     const withoutPassage = [{ source: 'kalla-a', use: 'quote' as const, primary: true }]
-    // Utkast får sakna passage — grinden gäller bara publicerat.
+    // Drafts may lack a passage — the gate applies only to published content.
     expect(validateContent(grund({ rooms: [room({ sources: withoutPassage })] }))).toEqual([])
     const publishedWithout = validateContent(
       grund({ rooms: [room({ status: 'published', sources: withoutPassage })] }),
     )
     expect(publishedWithout.some((f) => f.includes('quote') && f.includes('källpassage'))).toBe(true)
-    // Passage utan edition räcker inte.
+    // A passage without an edition is not enough.
     const medPassage = [
       { source: 'kalla-a', passage: 'passage-a', use: 'quote' as const, primary: true },
     ]
@@ -315,7 +315,7 @@ describe('valideraInnehall', () => {
       }),
     )
     expect(withoutUtgava.some((f) => f.includes('quote') && f.includes('edition'))).toBe(true)
-    // Med reference + edition passerar citatet.
+    // With reference + edition the quote passes.
     const komplett = validateContent(
       grund({
         rooms: [room({ status: 'published', sources: medPassage })],
@@ -353,7 +353,7 @@ describe('valideraInnehall', () => {
     )
     expect(without.some((f) => f.includes('kalla-a') && f.includes('attribution'))).toBe(true)
     expect(without.some((f) => f.includes('kalla-a') && f.includes('dating'))).toBe(true)
-    // Utkastkällor slipper grinden.
+    // Draft sources are exempt from the gate.
     const draft = validateContent(
       grund({
         rooms: [room({ sources: [{ source: 'kalla-b', use: 'adaptation', primary: true }] })],
@@ -369,8 +369,8 @@ describe('valideraInnehall', () => {
   it('hindrar publicerade vandringar från att länka en opublicerad central fråga', () => {
     const fel = validateContent(
       grund({
-        // fraga-b är utkast och central; rummen är publicerade så bara den
-        // centrala frågan bryter grinden.
+        // fraga-b is a draft and central; the rooms are published, so only the
+        // central question breaks the gate.
         questions: [question(), question({ id: 'fraga-b', slug: 'fraga-b', status: 'draft' })],
         rooms: [
           room({ status: 'published' }),

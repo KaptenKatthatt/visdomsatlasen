@@ -26,7 +26,7 @@ const actionLabel = (
 export const OfflineButton = () => {
   const [progress, setProgress] = useState<OfflineProgress | null>(null)
   const [running, setRunning] = useState(false)
-  // Läses synkront ur flaggan vid montering, så statusen överlever omladdning.
+  // Read synchronously from the flag on mount, so the status survives a reload.
   const [downloaded, setDownloaded] = useState<number | null>(readOfflineDownload)
 
   const start = async (): Promise<void> => {
@@ -40,7 +40,7 @@ export const OfflineButton = () => {
       writeOfflineDownload(total)
       setDownloaded(total)
     } catch {
-      // Sväljs: knappen återställs i finally och kan provas igen.
+      // Swallowed: the button resets in finally and can be retried.
     } finally {
       setRunning(false)
     }

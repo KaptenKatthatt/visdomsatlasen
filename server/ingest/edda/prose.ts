@@ -3,15 +3,15 @@ import { gutenbergBody } from '../lib/gutenberg'
 import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
-// Prosaiska Eddan (Snorres Edda), Rasmus B. Andersons engelska (public domain)
-// via Project Gutenberg. Vi tar Gylfaginning ("The Fooling of Gylfe") — den
-// sammanhållna mytologiska berättelsen (skapelsen, gudarna, Ragnarök). Brages
-// samtal och den efterföljande kommentarapparaten (noter, register) hoppas över.
+// The Prose Edda (Snorri's Edda), Rasmus B. Anderson's English (public domain)
+// via Project Gutenberg. We take Gylfaginning ("The Fooling of Gylfe") — the
+// coherent mythological narrative (the creation, the gods, Ragnarök). Bragi's
+// dialogue and the commentary apparatus that follows (notes, index) are skipped.
 const URL =
   'https://raw.githubusercontent.com/GITenberg/The-Younger-EddaAlso-called-Snorre-s-Edda-or-The-Prose-Edda_18947/master/18947-0.txt'
 
-// Första matchningen av `re` från och med `from` (så vi hittar brödtextens
-// rubrik, inte innehållsförteckningens tidigare förekomst av samma ord).
+// The first match of `re` from `from` onward (so we find the body text's
+// heading, not the table of contents' earlier occurrence of the same word).
 const after = (body: string, re: string, from: number): number => {
   const rx = new RegExp(re, 'mg')
   rx.lastIndex = from
@@ -19,9 +19,9 @@ const after = (body: string, re: string, from: number): number => {
   return m ? m.index : -1
 }
 
-// Ett kapitel → verser. Blankradsseparerade stycken; Andersons `[Footnote …]`-
-// block och kapiteltiteln (första stycket) sållas bort, fotnotshänvisningar
-// ([8]) och stycknumret ("1. ") tas bort.
+// A chapter → verses. Blank-line-separated paragraphs; Anderson's `[Footnote …]`
+// blocks and the chapter title (the first paragraph) are filtered out, footnote
+// references ([8]) and the paragraph number ("1. ") are removed.
 const chapterVerses = (chunk: string): string[] =>
   chunk
     .split(/\n\s*\n/)

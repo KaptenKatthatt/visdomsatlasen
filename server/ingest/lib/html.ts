@@ -14,9 +14,9 @@ const NAMED: Record<string, string> = {
   rdquo: '”',
 }
 
-// Avkoda en numerisk kodpunkt, men bara om den är giltig — annars släpps den
-// (fromCodePoint kastar RangeError för värden > 0x10FFFF, vilket annars skulle
-// stjälpa hela ingesten).
+// Decode a numeric code point, but only if it is valid — otherwise it is dropped
+// (fromCodePoint throws RangeError for values > 0x10FFFF, which would otherwise
+// bring down the whole ingest).
 const codePoint = (n: number): string => (n >= 0 && n <= 0x10ffff ? String.fromCodePoint(n) : '')
 
 const decodeEntities = (text: string): string =>
@@ -26,9 +26,9 @@ const decodeEntities = (text: string): string =>
     .replace(/&([a-zA-Z]+);/g, (m, name: string) => NAMED[name] ?? m)
 
 /**
- * Ta bort tags (radbrytningar → mellanslag), avkoda entiteter, normalisera.
- * Notreferenser (`<a epub:type="noteref">37</a>`) tas bort *med* sin innertext,
- * så slutnots-siffror inte hamnar i verstexten.
+ * Strip tags (line breaks → spaces), decode entities, normalize.
+ * Note references (`<a epub:type="noteref">37</a>`) are removed *along with* their inner text,
+ * so endnote digits do not end up in the verse text.
  */
 export const cleanHtml = (fragment: string): string =>
   decodeEntities(

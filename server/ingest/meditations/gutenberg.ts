@@ -3,9 +3,9 @@ import { gutenbergBody } from '../lib/gutenberg'
 import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
-// Marcus Aurelius Självbetraktelser, George Longs engelska translation (public
-// domain) via Project Gutenberg. Tolv böcker med romerskt numrerade sektioner;
-// varje bok blir ett kapitel, varje sektion en vers. Översätts till svenska.
+// Marcus Aurelius' Meditations, George Long's English translation (public
+// domain) via Project Gutenberg. Twelve books with Roman-numbered sections;
+// each book becomes a chapter, each section a verse. Translated into Swedish.
 const URL = 'https://raw.githubusercontent.com/GITenberg/Meditations_2680/master/2680.txt'
 const ORDINALS = 'FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH|TENTH|ELEVENTH|TWELFTH'
 const HEADER = new RegExp(`^THE (?:${ORDINALS}) BOOK\\s*$`, 'm')
@@ -34,7 +34,7 @@ const parseMeditations = (raw: string): RawChapter[] => {
   const text = gutenbergBody(raw)
   const start = text.indexOf('THE FIRST BOOK')
   const rest = text.slice(start < 0 ? 0 : start)
-  // Bok XII följs av APPENDIX/NOTES (Longs noter) — klipp där så de inte tas med.
+  // Book XII is followed by APPENDIX/NOTES (Long's notes) — cut there so they are not included.
   const endMatch = /\n(?:THE APPENDIX|APPENDIX|NOTES)\s*\n/.exec(rest)
   const body = endMatch ? rest.slice(0, endMatch.index) : rest
   const chapters = body

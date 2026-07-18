@@ -1,6 +1,6 @@
 import type Database from 'better-sqlite3'
 
-// Rå SQL-migrering (samma mönster som newsAgg): idempotent, körs vid uppstart.
+// Raw SQL migration (same pattern as newsAgg): idempotent, runs at startup.
 export const runMigrations = (sqlite: Database.Database): void => {
   sqlite.exec(`
     CREATE TABLE IF NOT EXISTS works (
@@ -41,8 +41,8 @@ export const runMigrations = (sqlite: Database.Database): void => {
     CREATE INDEX IF NOT EXISTS verses_work_idx ON verses(work_id);
   `)
 
-  // FTS5-index för snabb fritextsök över verser. External-content mot verses,
-  // så vi slipper dubbellagra texten; join tillbaka på rowid för metadata.
+  // FTS5 index for fast full-text search over verses. External-content against verses,
+  // so we avoid storing the text twice; join back on rowid for metadata.
   sqlite.exec(`
     CREATE VIRTUAL TABLE IF NOT EXISTS verses_fts USING fts5(
       text,

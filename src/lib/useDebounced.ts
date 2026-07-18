@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-/** Fördröjer ett värde tills det varit oförändrat i `delayMs` (t.ex. sökfält). */
+/** Delays a value until it's been unchanged for `delayMs` (e.g. a search field). */
 export const useDebounced = <T>(value: T, delayMs = 250): T => {
   const [debounced, setDebounced] = useState(value)
   useEffect(() => {

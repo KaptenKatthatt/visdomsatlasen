@@ -3,16 +3,16 @@ import { gutenbergBody } from '../lib/gutenberg'
 import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
-// Zhuangzi, Herbert A. Giles engelska translation (public domain) via Project
-// Gutenberg. 33 kapitel, vart och ett med en title + Giles "_Argument_"-
-// summary (bägge redaktionella, hoppas över) och brödtext i stycken.
+// Zhuangzi, Herbert A. Giles' English translation (public domain) via Project
+// Gutenberg. 33 chapters, each with a title + Giles' "_Argument_"
+// summary (both editorial, skipped) and body text in paragraphs.
 const URL =
   'https://raw.githubusercontent.com/GITenberg/Chuang-Tzu-Mystic-Moralist-and-Social-Reformer_59709/master/59709-0.txt'
 const HEADER = /^CHAPTER [IVXLCM]+\.\s*$/m
 
-// Rensa ett kapitel till brödtextstycken. Indragna block är Giles glosor/
-// fotnoter (inkl. "_Argument_") och hoppas över; hakparentes-editorial likaså;
-// fotnotshänvisningar ([12]) tas bort; första stycket (titeln) slängs.
+// Reduce a chapter to body-text paragraphs. Indented blocks are Giles' glosses/
+// footnotes (incl. "_Argument_") and are skipped; bracketed editorial likewise;
+// footnote references ([12]) are removed; the first paragraph (the title) is discarded.
 const chapterVerses = (chunk: string): string[] => {
   const verses = chunk
     .split(/\n\s*\n/)
@@ -24,7 +24,7 @@ const chapterVerses = (chunk: string): string[] => {
 
 const parseZhuangzi = (raw: string): RawChapter[] => {
   let body = gutenbergBody(raw)
-  // Klipp bort register (_INDEX_) och transkriberingsnot som ligger före END.
+  // Cut away the index (_INDEX_) and the transcriber's note that sit before END.
   for (const marker of [/\n_INDEX_/, /\nTranscriber.s Notes/]) {
     const hit = marker.exec(body)
     if (hit) body = body.slice(0, hit.index)

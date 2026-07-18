@@ -23,8 +23,8 @@ import { useSidtitel } from '../lib/useSidtitel'
 import { NotFoundNote } from './NotFoundNote'
 import styles from './RumPage.module.css'
 
-/** En rad i rummets kolofon: spärrade versaler med nedåtpil. Öppnas på place
- * och leder aldrig bort — pilen lovar fördjupning här, inte förflyttning. */
+/** A row in the room's colophon: letter-spaced caps with a downward arrow. Opens in place
+ * and never leads away — the arrow promises depth here, not navigation. */
 const ColophonRow = ({
   label,
   öppen,
@@ -54,15 +54,15 @@ const ColophonRow = ({
   </div>
 )
 
-// Bibliografiraden: verk, reference och härkomst (language · dating) i en följd.
+// The bibliography row: work, reference and provenance (language · dating) in sequence.
 const sourceRow = (source: Source, reference: string | undefined): string => {
   const title = [source.title, reference].filter(Boolean).join(', ')
   const origin = [source.originalLanguage, source.approximateDating].filter(Boolean).join(' · ')
   return [title, origin].filter(Boolean).join(' · ')
 }
 
-// Editionsraden syns bara när en passage anger edition (source-and-context.md,
-// Translation Policy): edition och, för egen translation, ansvarig hand.
+// The edition row shows only when a passage specifies an edition (source-and-context.md,
+// Translation Policy): edition and, for an in-house translation, the responsible hand.
 const editionsrad = (passage: SourcePassage | undefined): string | undefined => {
   if (!passage?.edition) return undefined
   const translation = passage.translator ? ` · translation ${passage.translator}` : ''
@@ -71,9 +71,9 @@ const editionsrad = (passage: SourcePassage | undefined): string | undefined => 
 
 type SourceRelation = Room['sources'][number]
 
-// Relationerna grupperade per källpost i frontmatterordning, så att ett rum
-// med flera nedslag i samma verk (t.ex. två bibelställen) får ett block med
-// en osäkerhetsdeklaration och en »Om texten«-länk — inte upprepade.
+// The relations grouped per source entry in frontmatter order, so that a room
+// with several references into the same work (e.g. two Bible passages) gets one block with
+// a single uncertainty declaration and one »Om texten« link — not repeated.
 const groupBySource = (relations: SourceRelation[]): [Source, SourceRelation[]][] => {
   const grupper: [Source, SourceRelation[]][] = []
   for (const relation of relations) {
@@ -88,8 +88,8 @@ const groupBySource = (relations: SourceRelation[]): [Source, SourceRelation[]][
   return grupper
 }
 
-// En källas rader i detaljen: bibliografi + use + edition per relation,
-// därefter källans osäkerhet en gång och länken till källsidan.
+// A source's rows in the detail: bibliography + use + edition per relation,
+// then the source's uncertainty once and the link to the source page.
 const SourceBlock = ({ source, relationer }: { source: Source; relationer: SourceRelation[] }) => {
   const rows = [
     ...relationer.flatMap((relation) => {
@@ -116,11 +116,11 @@ const SourceBlock = ({ source, relationer }: { source: Source; relationer: Sourc
   )
 }
 
-/** Källdetaljen bakom namnet: verk, reference, bruksdeklaration och ärlig
- * osäkerhet — synligt först på begäran (source-and-context.md, Source
- * Visibility). Håller sig bibliografisk; källans ord och full passagetext
- * bor på källsidan, dit »Om texten« leder efter ett medvetet val. Rum med
- * flera sources visar alla relationer, grupperade per källpost. */
+/** The source detail behind the name: work, reference, use declaration and honest
+ * uncertainty — visible only on request (source-and-context.md, Source
+ * Visibility). Stays bibliographic; the source's words and full passage text
+ * live on the source page, where »Om texten« leads after a deliberate choice. Rooms with
+ * several sources show all relations, grouped per source entry. */
 const SourceDetail = ({ rum }: { rum: Room }) => (
   <>
     {groupBySource(rum.sources).map(([source, relationer]) => (
@@ -129,8 +129,8 @@ const SourceDetail = ({ rum }: { rum: Room }) => (
   </>
 )
 
-// Kolofonens label: källans röst när rummet bygger på ett verk,
-// »Källor« när det bygger på flera (första flerkällsrummet: Fas 12).
+// The colophon's label: the source's voice when the room builds on one work,
+// »Källor« when it builds on several (the first multi-source room: phase 12).
 const kolofonetikett = (room: Room, source: Source): string =>
   new Set(room.sources.map((relation) => relation.source)).size > 1 ? 'Källor' : sourceName(source)
 
@@ -202,10 +202,10 @@ const RoomEnding = ({ rum }: { rum: Room }) => {
   )
 }
 
-/** Vandringens fot: syns bara när rummet läses inom en vandring (sökparametern
- * `vandring`). Två likvärdiga, stilla val — aldrig autoplay, aldrig ett »rätt«
- * val (paths.md, Moving Between Stops). Sista rummet får den valfria avslutande
- * reflektionen i stället, utan gratulation eller förloppsmått. */
+/** The path's footer: shown only when the room is read within a path (the search
+ * parameter `vandring`). Two equivalent, quiet choices — never autoplay, never a »rätt«
+ * choice (paths.md, Moving Between Stops). The last room gets the optional closing
+ * reflection instead, without congratulation or progress metric. */
 const Vandringsfot = ({ vandring, rum }: { vandring: Path; rum: Room }) => {
   const navigate = useNavigate()
   const order = roomsForPath(vandring, allRooms)
@@ -224,8 +224,8 @@ const Vandringsfot = ({ vandring, rum }: { vandring: Path; rum: Room }) => {
       </div>
     )
   }
-  // »Stanna här« tömmer vandringskontexten: foten försvinner och rummet blir
-  // fristående igen. Läsaren stannar kvar — inget navigeras bort.
+  // »Stanna här« clears the path context: the footer disappears and the room becomes
+  // standalone again. The reader stays put — nothing is navigated away.
   const stanna = () =>
     navigate({ to: '/rum/$slug', params: { slug: rum.slug }, search: {}, replace: true })
   return (
@@ -245,11 +245,11 @@ const Vandringsfot = ({ vandring, rum }: { vandring: Path; rum: Room }) => {
   )
 }
 
-/** Skriver orienteringsminnet: senast lästa rum (så rumsvalet undviker
- * omedelbar upprepning) och senast öppnade rum i vandringen (så läsaren kan
- * återvända). Bara publicerat registreras — utkast som förhandsgranskas via
- * direkt länk ska varken tränga ut publicerade rum ur det lilla fönstret eller
- * skriva vandringsminne (paths.md: minnet är orientering, aldrig förlopp). */
+/** Writes the orientation memory: last-read room (so room selection avoids
+ * immediate repetition) and the last-opened room in the path (so the reader can
+ * return). Only published content is recorded — drafts previewed via a
+ * direct link should neither push published rooms out of the small window nor
+ * write path memory (paths.md: the memory is orientation, never progress). */
 const useRumsminne = (room: Room | undefined, path: Path | undefined): void => {
   const { registerLastRoom, registerPathPosition } = useAtlas()
   const publishedRoomId = room?.status === 'published' ? room.id : undefined
@@ -268,10 +268,10 @@ const useRumsminne = (room: Room | undefined, path: Path | undefined): void => {
   }, [pathPositionId, publishedRoomId, registerPathPosition])
 }
 
-/** Fas 14: fångar brutna källrelationer — ett rum som pekar på en source eller
- * passage som inte kan slås upp. Build-grinden (check:content) ska hindra det
- * för publicerat innehåll, så detta är ett skyddsnät mot drift/regressions.
- * Loggar bara id:n, aldrig text. */
+/** Phase 14: catches broken source relations — a room pointing at a source or
+ * passage that cannot be resolved. The build gate (check:content) should prevent it
+ * for published content, so this is a safety net against drift/regressions.
+ * Logs only ids, never text. */
 const useRelationskontroll = (room: Room | undefined): void => {
   useEffect(() => {
     if (!room) return
@@ -289,11 +289,11 @@ const useRelationskontroll = (room: Room | undefined): void => {
   }, [room])
 }
 
-/** Läsrummet (reading-room.md): en text, en tanke, ett naturligt slut.
- * Inga rekommendationer, inget nästa rum. Tröskeln öppnar hit via rumsvalet,
- * som bara väljer publicerade rum; utkast nås märkta via direkt länk och
- * fungerar som redaktionens granskningsvy. Sökparametern `vandringSlug` sätts
- * bara när rummet nås inifrån en vandring och styr vandringsfoten. */
+/** The reading room (reading-room.md): one text, one thought, a natural end.
+ * No recommendations, no next room. The threshold opens here via room selection,
+ * which chooses only published rooms; drafts are reached labelled via a direct link and
+ * serve as the editorial review view. The search parameter `vandringSlug` is set
+ * only when the room is reached from within a path and controls the path footer. */
 export const RumPage = ({ slug, vandringSlug }: { slug: string; vandringSlug?: string }) => {
   const room = findRoom(slug)
   const path = vandringSlug !== undefined ? findPathBySlug(vandringSlug) : undefined

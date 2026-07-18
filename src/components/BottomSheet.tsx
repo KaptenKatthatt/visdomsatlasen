@@ -12,10 +12,10 @@ type Props = {
   children: ReactNode
 }
 
-/** Delat bottenark: scrim, uppglidande ram och rubrikrad med "Klar"-knapp.
- * Portalas till skalelementet (.shell) så arket alltid ligger som syskon till
- * main och nav — då kan bakgrunden inertas och fixed-positionering påverkas
- * inte av förfäder med backdrop-filter. Faller tillbaka till inline utan skal. */
+/** Shared bottom sheet: scrim, slide-up frame and a header row with a "Klar" button.
+ * Portaled into the shell element (.shell) so the sheet always sits as a sibling of
+ * main and nav — that way the background can be inerted and fixed positioning isn't
+ * affected by ancestors with backdrop-filter. Falls back to inline when there's no shell. */
 export const BottomSheet = ({ label, title, onClose, children }: Props) => {
   const arkRef = useRef<HTMLDivElement>(null)
   const shell = useShell()

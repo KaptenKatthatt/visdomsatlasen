@@ -26,7 +26,7 @@ export const BookmarkIcon = ({ filled = false }: { filled?: boolean }) => (
   </svg>
 )
 
-/** "Aa" — läsinställningar (typsnitt, storlek, bakgrund, tema). */
+/** "Aa" — reading settings (font, size, background, theme). */
 export const TypeIcon = ({ size = 18 }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
     <path d="M2.5 19 8.5 4.5 14.5 19" />

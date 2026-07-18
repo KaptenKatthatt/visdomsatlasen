@@ -1,6 +1,6 @@
-// Små byggstenar som bibliotekets sidor delar: sidhuvudet, sektionsrubriken,
-// radinnehållet, beskrivningsprosan och rumslistan. Länken runt en rad
-// varierar (statisk route eller ToLink).
+// Small building blocks that the library's pages share: the page header, the section heading,
+// the row content, the description prose and the room list. The link around a row
+// varies (static route or ToLink).
 import type { ReactNode } from 'react'
 import { RoomRow } from '../../components/RumRad'
 import type { Room } from '../../content/editorial/schema'
@@ -13,10 +13,10 @@ export const roomCount = (antal: number): string => (antal === 1 ? 'Ett rum' : `
 export const questionCount = (antal: number): string =>
   antal === 1 ? 'En fråga' : `${antal} frågor`
 
-/** Undersidornas huvud. Poster som inte är publicerade märks »Utkast« —
- * de nås bara via direkt länk och är redaktionens granskningsvy.
- * Sidhuvudets title blir också dokumenttitel — sidhuvudet är per definition
- * sidans huvudrubrik, så alla undersidor får rätt fliknamn på köpet. */
+/** The subpages' header. Entries that aren't published are marked »Utkast« —
+ * they're reached only via a direct link and are the editorial review view.
+ * The header's title also becomes the document title — the header is by definition
+ * the page's main heading, so every subpage gets the right tab name for free. */
 export const Sidhuvud = ({
   kicker,
   title,

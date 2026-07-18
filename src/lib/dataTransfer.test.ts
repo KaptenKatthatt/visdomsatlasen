@@ -53,9 +53,9 @@ describe('lasImport', () => {
   })
 
   it('importerar en äldre export med svenska nycklar och värden utan förlust', () => {
-    // Backup skapad före engelsk-migreringen: container-, anteckningsfält- och
-    // bokmärkesnycklarna är svenska (exporterad/anteckningar/sparadeRum/…,
-    // ursprungTyp/ursprungId med rum/vandring, sparadNar, bokmarken/kapitel/amnen).
+    // Backup created before the English migration: the container, note-field and
+    // bookmark keys are Swedish (exporterad/anteckningar/sparadeRum/…,
+    // ursprungTyp/ursprungId with rum/vandring, sparadNar, bokmarken/kapitel/amnen).
     const gammal = {
       format: EXPORT_FORMAT,
       version: 1,

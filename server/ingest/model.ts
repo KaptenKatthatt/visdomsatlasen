@@ -1,16 +1,16 @@
-// Normaliserad mellanmodell som alla källadaptrar producerar. Håller ingest-
-// koden oberoende av varje källas egna format (getbible, Gutenberg, SuttaCentral …).
+// Normalized intermediate model that all source adapters produce. Keeps the ingest
+// code independent of each source's own format (getbible, Gutenberg, SuttaCentral …).
 
 export type NormalizedVerse = {
   chapter: number
   verse: number
   text: string
-  // Valfri originalText (pali, grekiska …) bevarad vid sidan av översättningen.
+  // Optional original text (Pali, Greek …) kept alongside the translation.
   origText?: string
 }
 
 export type NormalizedBook = {
-  // Stabilt bok-id, unikt inom verket (t.ex. "joh", "kap").
+  // Stable book id, unique within the work (e.g. "joh", "kap").
   slug: string
   name: string
   abbrev: string
@@ -33,7 +33,7 @@ export type WorkMeta = {
 export type NormalizedWork = {
   meta: WorkMeta
   books: NormalizedBook[]
-  // Verifieringsunderlag: hur många verser som faktiskt översattes (för
-  // översatta verk). Saknas för verk som redan är på svenska (Bibeln).
+  // Verification data: how many verses were actually translated (for
+  // translated works). Absent for works that are already in Swedish (the Bible).
   stats?: { translatedVerses: number }
 }

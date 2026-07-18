@@ -1,5 +1,5 @@
-// Hämtar JSON med några återförsök och exponentiell backoff. Används av
-// nätverksadaptrarna (getbible m.fl.). Tidsgräns per försök via AbortSignal.
+// Fetches JSON with a few retries and exponential backoff. Used by
+// the network adapters (getbible and others). Per-attempt timeout via AbortSignal.
 export const fetchJson = async (url: string, attempts = 4, timeoutMs = 30000): Promise<unknown> => {
   let readError: unknown
   for (let attempt = 1; attempt <= attempts; attempt++) {

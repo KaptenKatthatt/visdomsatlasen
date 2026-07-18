@@ -3,10 +3,10 @@ import { cleanHtml } from '../lib/html'
 import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
-// Konfucius Samtal (Analekterna), James Legges engelska (public domain) via
-// Standard Ebooks. 20 böcker (en fil per bok) blir 20 numrerade kapitel; varje
-// underavsnitt (`z3998:subchapter`) är ett traditionellt yttrande = en vers.
-// Underavsnittets `<h3>`-ordningsrubrik hoppas över; dess stycken blir versen.
+// Confucius' Analects, James Legge's English (public domain) via Standard
+// Ebooks. 20 books (one file per book) become 20 numbered chapters; each
+// subsection (`z3998:subchapter`) is a traditional saying = one verse.
+// The subsection's `<h3>` ordinal heading is skipped; its paragraphs become the verse.
 const BASE =
   'https://raw.githubusercontent.com/standardebooks/confucius_analects_james-legge/master/src/epub/text'
 

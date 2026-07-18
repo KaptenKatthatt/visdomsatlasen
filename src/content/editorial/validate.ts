@@ -1,7 +1,7 @@
-// Korsvalidering av hela innehållsmängden (roadmap fas 2, Content Validation):
-// dubbletter, brutna relationer och publiceringskrav. Fältkraven per post tas
-// av zod-schemana vid tolkningen; här kontrolleras det som kräver helheten.
-// Publicerat innehåll får aldrig peka på opublicerat — utkast är fria.
+// Cross-validation of the entire content set (roadmap phase 2, Content Validation):
+// duplicates, broken relations and publication requirements. Per-post field
+// requirements are handled by the zod schemas during parsing; here we check what
+// requires the whole. Published content may never point to unpublished — drafts are free.
 import { isTeaserOpening } from './openingGuard'
 import type { Question, ContentSet, Source, SourcePassage, Room, Theme } from './schema'
 
@@ -36,7 +36,7 @@ const duplicateError = (type: string, items: { id: string; slug?: string }[]): s
 
 const publicerad = (status: string | undefined): boolean => status === 'published'
 
-// En refererad post: finns den, och (för publicerade rum) är den publicerad?
+// A referenced post: does it exist, and (for published rooms) is it published?
 type Reference = { type: string; id: string; finns: boolean; publicerad: boolean }
 
 const roomReferences = (room: Room, lookup: Lookup): Reference[] => {
@@ -77,10 +77,10 @@ const relationError = (room: Room, lookup: Lookup): string[] =>
     .filter((reference) => !reference.finns)
     .map((reference) => `rum ${room.id}: ${reference.type} "${reference.id}" finns inte`)
 
-// Citat och egen translation kräver en källpassage med exakt reference och
-// edition (source-and-context.md, Types of Source Use): så hålls källans ord
-// belagda och åtskilda från redaktionell prosa. Bearbetning/parafras/inspiration
-// får nöja sig med fritextreferens och passerar orörda.
+// Quotes and own translations require a source passage with an exact reference and
+// edition (source-and-context.md, Types of Source Use): this keeps the source's words
+// documented and separate from editorial prose. Adaptation/paraphrase/inspiration
+// may make do with a free-text reference and pass untouched.
 const REQUIRES_PASSAGE: ReadonlySet<SourceRelation['use']> = new Set(['quote', 'translation'])
 
 const sourceUseError = (room: Room, relation: SourceRelation, lookup: Lookup): string[] => {
@@ -89,7 +89,7 @@ const sourceUseError = (room: Room, relation: SourceRelation, lookup: Lookup): s
   if (relation.passage === undefined)
     return [`${mark} kräver en källpassage med exakt reference och edition`]
   const passage = lookup.passages.get(relation.passage)
-  if (!passage) return [] // saknad passage rapporteras redan som bruten relation
+  if (!passage) return [] // a missing passage is already reported as a broken relation
   return [
     ...(passage.edition ? [] : [`${mark} kräver edition (edition) på passagen "${passage.id}"`]),
     ...(relation.use === 'translation' && !passage.translator
@@ -98,7 +98,7 @@ const sourceUseError = (room: Room, relation: SourceRelation, lookup: Lookup): s
   ]
 }
 
-// Publiceringskraven (source-and-context.md Publication Gate, room-schema.md).
+// The publication requirements (source-and-context.md Publication Gate, room-schema.md).
 const publishError = (room: Room, lookup: Lookup): string[] => {
   if (!publicerad(room.status)) return []
   const grindar = [
@@ -116,9 +116,9 @@ const publishError = (room: Room, lookup: Lookup): string[] => {
   return [...grindar, ...unpublished]
 }
 
-// Språkgrind (review-language.md): öppningen ska landa i vardagen, inte teasa
-// eller introducera källan (det gör Kärnan). Gäller alla rum, även utkast, så en
-// teaser aldrig ens kan committas — inte bara stoppas vid publicering.
+// Language gate (review-language.md): the opening should land in the everyday, not
+// tease or introduce the source (the Core does that). Applies to all rooms, even
+// drafts, so a teaser can never even be committed — not just stopped at publication.
 const openingError = (room: Room): string[] =>
   isTeaserOpening(room.opening)
     ? [
@@ -138,8 +138,8 @@ const themeError = (theme: Theme, lookup: Lookup): string[] => {
   return fel
 }
 
-// Samma grindprincip som rummen: en publicerad fråga är en synlig ingång
-// i biblioteket och får inte leda till opublicerat innehåll.
+// Same gate principle as the rooms: a published question is a visible entry point
+// in the library and must not lead to unpublished content.
 const questionReference = (
   question: Question,
   type: string,
@@ -162,8 +162,8 @@ const questionError = (question: Question, lookup: Lookup): string[] => [
 const pathError = (set: ContentSet, lookup: Lookup): string[] =>
   set.paths.flatMap((path) => {
     const fel: string[] = []
-    // Central fråga: samma grind som rummen — en publicerad vandring är en
-    // synlig ingång och får inte länka en opublicerad fråga.
+    // Central question: same gate as the rooms — a published path is a visible
+    // entry point and must not link an unpublished question.
     const central = lookup.questions.get(path.centralQuestion)
     if (!central)
       fel.push(`vandring ${path.id}: central fråga "${path.centralQuestion}" finns inte`)
@@ -180,8 +180,8 @@ const pathError = (set: ContentSet, lookup: Lookup): string[] =>
     return fel
   })
 
-// En publicerad source måste ta ställning till attribution och dating (även svaret
-// "okänt"/"omtvistat") så osäkerhet representeras i stället för att döljas
+// A published source must take a stance on attribution and dating (even the answer
+// "unknown"/"disputed") so uncertainty is represented rather than hidden
 // (source-and-context.md, Uncertainty; Publication Gate).
 const sourceUncertainty = (source: Source): string[] =>
   publicerad(source.status)
@@ -217,8 +217,8 @@ const passageError = (set: ContentSet, lookup: Lookup): string[] =>
       : [`passage ${passage.id}: source "${passage.source}" finns inte`],
   )
 
-/** Validerar relationer och publiceringskrav över hela innehållsmängden.
- * Tom lista = konsistent innehåll. */
+/** Validates relations and publication requirements across the entire content set.
+ * An empty list = consistent content. */
 export const validateContent = (set: ContentSet): string[] => {
   const lookup: Lookup = {
     rooms: perId(set.rooms),

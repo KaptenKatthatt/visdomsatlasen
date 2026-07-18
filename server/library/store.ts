@@ -17,7 +17,7 @@ const insertBookVerses = (workId: string, bookId: string, book: NormalizedBook):
 
 const replaceWork = (work: NormalizedWork): number => {
   const { meta } = work
-  // Byt ut verket i sin helhet — idempotent omkörning ger samma resultat.
+  // Replace the work in its entirety — an idempotent re-run yields the same result.
   sqlite.prepare(`DELETE FROM verses WHERE work_id = ?`).run(meta.id)
   db.delete(books).where(eq(books.workId, meta.id)).run()
   db.delete(works).where(eq(works.id, meta.id)).run()
@@ -51,7 +51,7 @@ const replaceWork = (work: NormalizedWork): number => {
   return verseTotal
 }
 
-/** Skriver ett normaliserat verk till databasen i en transaktion. */
+/** Writes a normalized work to the database in a transaction. */
 export const storeWork = (work: NormalizedWork): number => {
   const tx = sqlite.transaction(() => replaceWork(work))
   return tx()

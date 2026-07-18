@@ -1,5 +1,5 @@
-// Läsinställningarnas kontroller — delas av läsvyernas bottenark
-// (ReadingSettingsSheet) och Inställningar-sidan.
+// The reading-settings controls — shared by the reading views' bottom sheet
+// (ReadingSettingsSheet) and the Inställningar page.
 import { useAtlas } from '../lib/store'
 import { BG_OPTIONS, FONT_OPTIONS, MAX_TEXT_STEP, MIN_TEXT_STEP } from '../lib/theme'
 import { MoonIcon } from './Icons'

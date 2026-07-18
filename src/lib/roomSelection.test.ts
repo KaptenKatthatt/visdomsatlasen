@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Room, Theme } from '../content/editorial/schema'
 import { valbaraRoom, selectRoom } from './roomSelection'
 
-// Fabricerade poster: bara fälten urvalet läser behöver vara meningsfulla.
+// Fabricated records: only the fields the selection reads need to be meaningful.
 const room = (id: string, themes: string[], status: Room['status'] = 'published'): Room => ({
   id,
   slug: id,
@@ -65,19 +65,19 @@ describe('valjRum', () => {
 
   it('föredrar aldrig lästa alternativ före längst-sedan-lästa', () => {
     const all = [room('a', ['lugn']), room('b', ['lugn']), room('c', ['lugn'])]
-    // a är standard men nyss läst; b lästes tidigare; c har aldrig lästs.
+    // a is the default but just read; b was read earlier; c has never been read.
     expect(selectRoom(theme('lugn', 'a'), all, ['a', 'b'])?.id).toBe('c')
   })
 
   it('glömmer historik bortom de tre senaste', () => {
     const all = [room('a', ['lugn']), room('b', ['lugn'])]
-    // a lästes för länge sedan (fjärde platsen) — får väljas som standard igen.
+    // a was read long ago (fourth position) — may be chosen as the default again.
     expect(selectRoom(theme('lugn', 'a'), all, ['x1', 'x2', 'x3', 'a'])?.id).toBe('a')
   })
 
   it('väljer deterministiskt bland lika kandidater i innehållsordning', () => {
     const all = [room('a', ['lugn']), room('b', ['lugn'])]
-    // Inget standardrum, ingen historik: första i innehållsordningen vinner.
+    // No default room, no history: the first in content order wins.
     expect(selectRoom(theme('lugn'), all, [])?.id).toBe('a')
   })
 })

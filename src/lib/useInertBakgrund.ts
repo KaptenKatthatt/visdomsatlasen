@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 
 /**
- * Gör skalets övriga barn (main och nav) inerta medan ett ark är öppet, så
- * att bakgrunden varken kan fokuseras eller läsas av skärmläsare bakom den
- * modala dialogen. Arkets eget överlägg märks med data-overlay och lämnas
- * åtkomligt. Återställer vid stängning; barn som redan var inerta rörs inte.
+ * Makes the shell's other children (main and nav) inert while a sheet is open, so
+ * that the background can neither be focused nor read by screen readers behind the
+ * modal dialog. The sheet's own overlay is marked with data-overlay and left
+ * accessible. Restores on closing; children that were already inert are untouched.
  */
 export const useInertBakgrund = (skal: HTMLElement | null): void => {
   useEffect(() => {

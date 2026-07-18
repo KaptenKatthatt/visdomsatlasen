@@ -27,8 +27,8 @@ export const RootLayout = () => {
             Hoppa till innehåll
           </a>
           <main id="innehall" tabIndex={-1}>
-            {/* Nyckeln per route nollställer felgränsen vid navigation, så ett
-                enstaka chunk-fel inte fastnar när läsaren går vidare (fas 14). */}
+            {/* The per-route key resets the error boundary on navigation, so a
+                single chunk error doesn't stick when the reader moves on (phase 14). */}
             <Felgrans key={pathname}>
               <Suspense fallback={<Sidladdning />}>
                 <Outlet />

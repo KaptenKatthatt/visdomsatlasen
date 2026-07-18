@@ -1,24 +1,24 @@
-// Redaktionella innehållsmodeller (roadmap fas 2). Strukturen följer specarna
-// (room-schema.md, source-and-context.md, paths.md, room-selection.md) men
-// fältnamn och värden är svenska — frontmattern är redaktörens language.
-// Innehållet bor i Markdown med frontmatter under src/content/<type>/.
+// Editorial content models (roadmap phase 2). The structure follows the specs
+// (room-schema.md, source-and-context.md, paths.md, room-selection.md) but the
+// field names and values are Swedish — the frontmatter is the editor's language.
+// The content lives in Markdown with frontmatter under src/content/<type>/.
 import { z } from 'zod'
 
-/** Publiceringsstatus — endast `publicerad` får synas för läsare. */
+/** Publication status — only `published` may be shown to readers. */
 const statusSchema = z.enum(['draft', 'review', 'published', 'archived'])
 
-// Sluggar är ascii-kebab (svenska ord skrivs utan åäö: "det-du-inte-kan-styra")
-// eftersom de används i URL:er.
+// Slugs are ascii-kebab (Swedish words written without åäö: "det-du-inte-kan-styra")
+// since they are used in URLs.
 const slugSchema = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'ogiltig slug (ascii-kebab)')
 const idSchema = z.string().min(1)
 const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}/, 'datum som ÅÅÅÅ-MM-DD')
 
-// Redaktionella sök-keywords (search.md, Editorial Keywords): synonymer, vanligt
-// användarspråk och alternativa stavningar som bara förbättrar upptäckt i söket.
-// Aldrig synliga i det vanliga gränssnittet; söket viker dem för matchning.
+// Editorial search keywords (search.md, Editorial Keywords): synonyms, common
+// user language and alternative spellings that only improve discoverability in search.
+// Never visible in the regular UI; search folds them in for matching.
 const keywordsSchema = z.array(z.string().min(1)).optional()
 
-/** Hur ett rum använder en source (source-and-context.md, Types of Source Use). */
+/** How a room uses a source (source-and-context.md, Types of Source Use). */
 const useSchema = z.enum([
   'quote',
   'translation',
@@ -29,18 +29,18 @@ const useSchema = z.enum([
   'historical-context',
 ])
 
-/** Relation rum → source; deklareras i rummets frontmatter under `sources:`. */
+/** Relation room → source; declared in the room's frontmatter under `sources:`. */
 const sourceRelationSchema = z.object({
   source: idSchema,
   passage: idSchema.optional(),
-  // Fritextreferens tills källpassager finns som egna poster, t.ex. "avsnitt 1".
+  // Free-text reference until source passages exist as their own posts, e.g. "avsnitt 1".
   reference: z.string().min(1).optional(),
   use: useSchema,
   primary: z.boolean().default(false),
   editorialNote: z.string().optional(),
 })
 
-/** Redaktionellt ansvar (source-and-context.md, Editorial Responsibility). */
+/** Editorial responsibility (source-and-context.md, Editorial Responsibility). */
 const editorialSchema = z.object({
   writer: z.string().optional(),
   sourceReviewer: z.string().optional(),
@@ -50,8 +50,8 @@ const editorialSchema = z.object({
   version: z.number().int().min(1).default(1),
 })
 
-/** Ett reflektionsrum. `opening`/`core`/`historicalContext` fylls från
- * markdown-kroppens ##-sektioner av tolken, inte från frontmatter. */
+/** A reflection room. `opening`/`core`/`historicalContext` are filled from the
+ * markdown body's ## sections by the parser, not from frontmatter. */
 export const roomSchema = z.object({
   id: idSchema,
   slug: slugSchema,
@@ -76,14 +76,14 @@ export const roomSchema = z.object({
 })
 export type Room = z.infer<typeof roomSchema>
 
-/** Tema — bred mänsklig ingång på tröskeln (home-and-entry.md). Rummen äger
- * relationen via `themes`; temat pekar bara ut sitt redaktionella standardrum. */
+/** Theme — a broad human entry point at the threshold (home-and-entry.md). The
+ * rooms own the relation via `themes`; the theme only points to its editorial default room. */
 export const themeSchema = z.object({
   id: idSchema,
   slug: slugSchema,
   label: z.string().min(1),
   defaultRoom: idSchema.optional(),
-  // Redaktionell order på tröskeln (home-and-entry.md); lägst först.
+  // Editorial order at the threshold (home-and-entry.md); lowest first.
   order: z.number().int().min(1).optional(),
   status: statusSchema,
   description: z.string().optional(),
@@ -91,7 +91,7 @@ export const themeSchema = z.object({
 })
 export type Theme = z.infer<typeof themeSchema>
 
-/** Mänsklig fråga — taxonomins hjärta (question-taxonomy.md). */
+/** Human question — the heart of the taxonomy (question-taxonomy.md). */
 export const questionSchema = z.object({
   id: idSchema,
   slug: slugSchema,
@@ -104,7 +104,7 @@ export const questionSchema = z.object({
 })
 export type Question = z.infer<typeof questionSchema>
 
-/** Vandring — kuraterad följd av rum (paths.md, Data Requirements). */
+/** Path — a curated sequence of rooms (paths.md, Data Requirements). */
 export const pathSchema = z.object({
   id: idSchema,
   slug: slugSchema,
@@ -121,7 +121,7 @@ export const pathSchema = z.object({
 })
 export type Path = z.infer<typeof pathSchema>
 
-/** Kanonisk källpost (source-and-context.md, Suggested Source Model). */
+/** Canonical source record (source-and-context.md, Suggested Source Model). */
 export const sourceSchema = z.object({
   id: idSchema,
   slug: slugSchema,
@@ -148,18 +148,18 @@ export const sourceSchema = z.object({
   attribution: z.enum(['known', 'attributed', 'disputed', 'unknown']).optional(),
   dating: z.enum(['known', 'approximate', 'disputed', 'unknown']).optional(),
   rights: z.enum(['public-domain', 'licensed', 'protected', 'unknown']),
-  // Verk i biblioteksdatabasen kopplas hit, så rum kan nå exakta verser.
+  // Works in the library database link here, so rooms can reach exact verses.
   libraryWork: z.string().optional(),
   status: statusSchema,
   description: z.string().optional(),
-  // Alternativa name för källan (search.md): originalspråkiga eller översatta
-  // titlar och etablerade förkortningar, t.ex. "Epictetus", "Handboken".
+  // Alternative names for the source (search.md): original-language or translated
+  // titles and established abbreviations, e.g. "Epictetus", "Handboken".
   alias: z.array(z.string().min(1)).optional(),
   keywords: keywordsSchema,
 })
 export type Source = z.infer<typeof sourceSchema>
 
-/** Källpassage (source-and-context.md, Suggested Passage Model). */
+/** Source passage (source-and-context.md, Suggested Passage Model). */
 export const sourcePassageSchema = z.object({
   id: idSchema,
   source: idSchema,
@@ -175,7 +175,7 @@ export const sourcePassageSchema = z.object({
 })
 export type SourcePassage = z.infer<typeof sourcePassageSchema>
 
-/** Tradition — stödpost, aldrig primary navigation (library.md). */
+/** Tradition — a supporting record, never primary navigation (library.md). */
 export const traditionSchema = z.object({
   id: idSchema,
   slug: slugSchema,
@@ -186,15 +186,15 @@ export const traditionSchema = z.object({
 })
 export type Tradition = z.infer<typeof traditionSchema>
 
-/** Person — referenspunkt, inte ingång (library.md, People and Authors). */
+/** Person — a reference point, not an entry point (library.md, People and Authors). */
 export const personSchema = z.object({
   id: idSchema,
   slug: slugSchema,
   name: z.string().min(1),
   years: z.string().optional(),
-  // Kort igenkännande rad för sökresultat och listor (search.md, Person
-  // Result: »short identifying description«) — porträttets brödtext är för
-  // lång och börjar ofta med födelsedata.
+  // Short identifying line for search results and lists (search.md, Person
+  // Result: »short identifying description«) — the portrait's body text is too
+  // long and often starts with birth data.
   shortDescription: z.string().optional(),
   traditions: z.array(idSchema).optional(),
   status: statusSchema,
@@ -202,7 +202,7 @@ export const personSchema = z.object({
 })
 export type Person = z.infer<typeof personSchema>
 
-/** Hela den redaktionella innehållsmängden, som korsvalideringen arbetar på. */
+/** The entire editorial content set, which cross-validation operates on. */
 export type ContentSet = {
   rooms: Room[]
   themes: Theme[]

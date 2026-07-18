@@ -1,5 +1,5 @@
-// Hämtar rå text (Gutenberg-txt, XHTML …) med återförsök och backoff, som
-// fetchJson men utan JSON-parsning.
+// Fetches raw text (Gutenberg txt, XHTML …) with retries and backoff, like
+// fetchJson but without JSON parsing.
 export const fetchText = async (url: string, attempts = 4, timeoutMs = 30000): Promise<string> => {
   let readError: unknown
   for (let attempt = 1; attempt <= attempts; attempt++) {

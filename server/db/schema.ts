@@ -1,25 +1,25 @@
 import { integer, sqliteTable, text, index } from 'drizzle-orm/sqlite-core'
 
-// Ett verk = en hel källtext (t.ex. Bibeln 1917, Självbetraktelser, Dhammapada).
+// A work = an entire source text (e.g. the Bible 1917, Meditations, Dhammapada).
 export const works = sqliteTable('works', {
   id: text('id').primaryKey(),
   title: text('title').notNull(),
   subtitle: text('subtitle'),
   tradition: text('tradition').notNull(),
   author: text('author').notNull(),
-  // Källspråk att visa (t.ex. "Grekiska", "Pali").
+  // Source language to display (e.g. "Grekiska", "Pali").
   lang: text('lang').notNull(),
-  // Vilken translation texten kommer från.
+  // Which translation the text comes from.
   translation: text('translation').notNull(),
   license: text('license').notNull(),
   sourceUrl: text('source_url').notNull(),
-  // 1 om texten maskinöversatts (via Ollama) och alltså bör läsas med urskillning.
+  // 1 if the text was machine-translated (via Ollama) and should therefore be read with discernment.
   translated: integer('translated').notNull().default(0),
   position: integer('position').notNull().default(0),
   verseCount: integer('verse_count').notNull().default(0),
 })
 
-// En bok/avdelning inom ett verk (Bibelns 66 böcker; ett kort verk har en bok).
+// A book/section within a work (the Bible's 66 books; a short work has one book).
 export const books = sqliteTable(
   'books',
   {
@@ -33,8 +33,8 @@ export const books = sqliteTable(
   (table) => [index('books_work_idx').on(table.workId, table.position)],
 )
 
-// En enskild vers/rad. `text` är läsversionen (svensk); `origText` är valfri
-// originalText (t.ex. pali/grekiska) för verk vi översatt.
+// A single verse/line. `text` is the reading version (Swedish); `origText` is the optional
+// original text (e.g. Pali/Greek) for works we translated.
 export const verses = sqliteTable(
   'verses',
   {

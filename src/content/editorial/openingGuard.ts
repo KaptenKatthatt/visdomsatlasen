@@ -1,24 +1,24 @@
-// Öppningsvakt: öppningen ska landa i läsarens vardag (eller en öppen fråga) och
-// aldrig introducera källan — det gör Kärnan (docs/checklists/review-language.md,
-// "Öppningen får inte teasa"). Den här vakten fångar teaser-öppningar:
-// nyfikenhetsluckor som lockar vidare utan att berätta vad ("Zhuangzi berättar om
-// en kock.", "Daodejing har en bild för det."). Det är en heuristik, inte ett
-// orakel — den fångar de mönster vi sett återkomma och växer med nya. Den läser
-// bara öppningens SISTA stycke, för det är där bryggan till källan brukar smyga
-// sig in.
+// Opening guard: the opening should land in the reader's everyday life (or an open
+// question) and never introduce the source — that is the Core's job
+// (docs/checklists/review-language.md, "Öppningen får inte teasa"). This guard
+// catches teaser openings: curiosity gaps that lure the reader on without saying
+// what ("Zhuangzi berättar om en kock.", "Daodejing har en bild för det."). It is a
+// heuristic, not an oracle — it catches the patterns we have seen recur and grows
+// with new ones. It reads only the opening's LAST paragraph, because that is where
+// the bridge to the source tends to sneak in.
 
-// Källan presenteras som något på väg ("berättar/skildrar/har en bild för …").
-// Ordgränserna använder \p{L} (u-flaggan) — JS \b räknar å/ä/ö som icke-ord och
-// skulle missa t.ex. "vänder på" och "återger".
+// The source is presented as something underway ("berättar/skildrar/har en bild för …").
+// The word boundaries use \p{L} (the u flag) — JS \b treats å/ä/ö as non-word chars
+// and would miss e.g. "vänder på" and "återger".
 const PRESENTERANDE =
   /(?<!\p{L})(?:berättar|skildrar|återger|förtäljer|tar upp)(?!\p{L})|har en bild för|vänder (?:blicken|på)(?!\p{L})/iu
 
-// Sagoaktig temporal upptakt som dinglar en berättelse ("För över tusen år sedan …").
+// Fairytale-like temporal lead-in that dangles a story ("För över tusen år sedan …").
 const TEMPORAL_UPPTAKT =
   /^(för (över |nästan |drygt )?[\wåäö-]+ (tusen|hundra|år)[^.?!]*sedan|en gång i tiden|för länge sedan)\b/i
 
-// En öppen fråga bjuder in i stället för att locka; den är alltid tillåten,
-// även om den råkar innehålla ett annars presenterande ord.
+// An open question invites rather than lures; it is always allowed, even if it
+// happens to contain an otherwise presenting word.
 const IS_QUESTION = /\?[»«"'”’)\]]*$/
 
 const sistaStycket = (opening: string): string => {
@@ -30,8 +30,8 @@ const sistaStycket = (opening: string): string => {
   return paragraphs[paragraphs.length - 1] ?? ''
 }
 
-/** Sant om öppningens sista stycke teasar/introducerar källan i stället för att
- * landa i det vardagliga. Tom eller frågeavslutad opening är aldrig en teaser. */
+/** True if the opening's last paragraph teases/introduces the source instead of
+ * landing in the everyday. An empty or question-ended opening is never a teaser. */
 export const isTeaserOpening = (opening: string): boolean => {
   const sista = sistaStycket(opening)
   if (sista.length === 0) return false

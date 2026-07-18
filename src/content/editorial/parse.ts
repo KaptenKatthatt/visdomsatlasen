@@ -1,7 +1,7 @@
-// Tolkar redaktionella Markdown-filer: YAML-frontmatter mellan `---`-linjer,
-// därefter brödtext. Rum delar upp kroppen i ##-sektioner (Öppning/Kärna/
-// Historisk kontext); enkla poster (tema, fråga, source …) låter kroppen bli
-// description. Fel rapporteras med filsökväg så de går att åtgärda direkt.
+// Parses editorial Markdown files: YAML frontmatter between `---` lines, then
+// body text. Rooms split the body into ## sections (Opening/Core/Historical
+// context); simple posts (theme, question, source …) let the body become the
+// description. Errors are reported with the file path so they can be fixed directly.
 import { parse as tolkaYaml } from 'yaml'
 import type { z } from 'zod'
 import { roomSchema, type Room } from './schema'
@@ -9,8 +9,8 @@ import { roomSchema, type Room } from './schema'
 export type ContentFile = { filePath: string; rawText: string }
 export type Parsed<T> = { value: T | null; errors: string[] }
 
-// Sektionsrubrik i markdown → fält på rummet. Okända rubriker är fel, så
-// stavfel inte tyst sväljer text.
+// Markdown section heading → field on the room. Unknown headings are errors, so
+// a typo doesn't silently swallow text.
 const SECTIONS: Record<string, 'opening' | 'core' | 'historicalContext'> = {
   'Opening': 'opening',
   'Core': 'core',
@@ -45,8 +45,8 @@ const formateraError = (filePath: string, issues: readonly z.core.$ZodIssue[]): 
     return `${filePath}: ${field} — ${issue.message}`
   })
 
-/** Delar en markdown-kropp i sektioner per `## Rubrik`. Text före första
- * rubriken ignoreras (används inte i rumsformatet). */
+/** Splits a markdown body into sections by `## Heading`. Text before the first
+ * heading is ignored (unused in the room format). */
 const splitSections = (body: string): Map<string, string> => {
   const sections = new Map<string, string>()
   let current: string | null = null
@@ -85,7 +85,7 @@ const roomSections = (filePath: string, body: string): Parsed<RoomFields> => {
   return fel.length > 0 ? { value: null, errors: fel } : { value: field, errors: [] }
 }
 
-/** Tolkar och validerar ett rum (frontmatter + ##-sektioner). */
+/** Parses and validates a room (frontmatter + ## sections). */
 export const parseRoomFile = (fil: ContentFile): Parsed<Room> => {
   const split = splitFrontmatter(fil)
   if (!split.value) return { value: null, errors: split.errors }
@@ -96,8 +96,8 @@ export const parseRoomFile = (fil: ContentFile): Parsed<Room> => {
   return { value: parsed.data, errors: [] }
 }
 
-/** Tolkar och validerar en enkel post (tema, fråga, source, vandring …).
- * Brödtexten blir `description` när den inte är tom. */
+/** Parses and validates a simple post (theme, question, source, path …).
+ * The body text becomes `description` when it is not empty. */
 export const parsePostFile = <T>(schema: z.ZodType<T>, fil: ContentFile): Parsed<T> => {
   const split = splitFrontmatter(fil)
   if (!split.value) return { value: null, errors: split.errors }

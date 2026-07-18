@@ -2,16 +2,16 @@ import { type Context, Hono, type MiddlewareHandler } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
 import { accessCookieValue, verifyAccessCode, verifyAccessCookie } from './auth'
 
-// Testarläget: en delad kod gömmer hela appen (SPA + /api) bakom en enkel
-// kod-sida. Rätt kod sätter en HttpOnly-cookie med en härledd token. Spärren
-// aktiveras bara när en kod är konfigurerad (se server/index.ts) — utan kod är
-// appen öppen som förr (dev + Tailscale-only).
+// Tester mode: a shared code hides the whole app (SPA + /api) behind a simple
+// code page. The correct code sets an HttpOnly cookie with a derived token. The gate
+// is only enabled when a code is configured (see server/index.ts) — without a code the
+// app is open as before (dev + Tailscale-only).
 
 const COOKIE = 'va_access'
 const LOGIN_PATH = '/api/access'
 const ONE_MONTH = 60 * 60 * 24 * 30
 
-/** Läser den inskickade koden ur ett formulär eller en JSON-kropp. */
+/** Reads the submitted code from a form or a JSON body. */
 const readCode = async (c: Context): Promise<string> => {
   const type = c.req.header('Content-Type') ?? ''
   if (type.includes('application/json')) {
@@ -23,7 +23,7 @@ const readCode = async (c: Context): Promise<string> => {
   return typeof code === 'string' ? code : ''
 }
 
-/** Minimal, mobilvänlig och emojifri kod-sida (inga externa beroenden). */
+/** Minimal, mobile-friendly and emoji-free code page (no external dependencies). */
 const codePage = (hasError: boolean): string => `<!doctype html>
 <html lang="sv">
 <head>
@@ -67,13 +67,13 @@ const codePage = (hasError: boolean): string => `<!doctype html>
 </html>`
 
 /**
- * Bygger spärr-middleware för en given kod. Hanterar login-POST:en, kollar
- * cookien och serverar annars kod-sidan (för HTML-navigering) eller 401.
+ * Builds gate middleware for a given code. Handles the login POST, checks
+ * the cookie, and otherwise serves the code page (for HTML navigation) or 401.
  */
 export const createAccessGate = (accessCode: string): MiddlewareHandler => {
   const token = accessCookieValue(accessCode)
   return async (c, next) => {
-    // Login: verifiera koden, sätt cookie, tillbaka till appen.
+    // Login: verify the code, set the cookie, back to the app.
     if (c.req.method === 'POST' && c.req.path === LOGIN_PATH) {
       const submitted = await readCode(c)
       if (verifyAccessCode(submitted, accessCode)) {
@@ -89,13 +89,13 @@ export const createAccessGate = (accessCode: string): MiddlewareHandler => {
       return c.html(codePage(true), 401)
     }
 
-    // robots.txt släpps alltid igenom (säger ändå Disallow: /).
+    // robots.txt always passes through (it says Disallow: / anyway).
     if (c.req.path === '/robots.txt') return next()
 
-    // Redan inne?
+    // Already inside?
     if (verifyAccessCookie(getCookie(c, COOKIE) ?? null, accessCode)) return next()
 
-    // Neka: HTML-navigering får kod-sidan, allt annat (t.ex. /api) får 401.
+    // Deny: HTML navigation gets the code page, everything else (e.g. /api) gets 401.
     const wantsHtml = (c.req.header('Accept') ?? '').includes('text/html')
     if (c.req.method === 'GET' && wantsHtml) return c.html(codePage(false), 200)
     return c.text('Unauthorized', 401)
@@ -103,9 +103,9 @@ export const createAccessGate = (accessCode: string): MiddlewareHandler => {
 }
 
 /**
- * Monterar spärren på appen bara när en kod finns. Utan kod lämnas appen öppen
- * (dev + Tailscale-only, bakåtkompatibelt). Samlar den villkorade monteringen på
- * ett ställe så grenen kan testas.
+ * Mounts the gate on the app only when a code is present. Without a code the app is left open
+ * (dev + Tailscale-only, backward-compatible). Collects the conditional mounting in
+ * one place so the branch can be tested.
  */
 export const mountAccessGate = (app: Hono, accessCode: string | undefined): void => {
   if (accessCode) app.use('*', createAccessGate(accessCode))

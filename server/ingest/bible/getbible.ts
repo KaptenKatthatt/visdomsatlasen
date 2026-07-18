@@ -4,8 +4,8 @@ import { BIBLE_BOOKS, type BibleBook } from './books'
 import { BIBLE_META } from './meta'
 import type { NormalizedBook, NormalizedVerse, NormalizedWork } from '../model'
 
-// getbible v2, public domain 1917 års bibel. Nås från VPS:en; sandbox-proxyn
-// blockerar värden, därför verifieras pipelinen lokalt med fixture-adaptern.
+// getbible v2, public domain 1917 Bible. Reached from the VPS; the sandbox proxy
+// blocks the host, so the pipeline is verified locally with the fixture adapter.
 const BASE = process.env['GETBIBLE_BASE'] ?? 'https://api.getbible.net/v2'
 const TRANSLATION = 'swedish'
 const FETCH_CONCURRENCY = 6
@@ -15,8 +15,8 @@ const asRecords = (v: unknown): Rec[] => (Array.isArray(v) ? (v as Rec[]) : [])
 const toNum = (v: unknown): number | null =>
   typeof v === 'number' ? v : typeof v === 'string' && v.trim() !== '' ? Number(v) : null
 
-// getbible kapslar kapitlen under antingen "book" eller "chapters" beroende på
-// endpoint — plocka det som finns. Verstexten ligger stabilt i chapter/verse/text.
+// getbible nests the chapters under either "book" or "chapters" depending on the
+// endpoint — pick whichever is present. The verse text sits reliably in chapter/verse/text.
 const chaptersOf = (data: Rec): Rec[] => asRecords(data['book'] ?? data['chapters'])
 
 const versesOfChapter = (chapter: Rec): NormalizedVerse[] => {
@@ -38,7 +38,7 @@ const fetchBook = async (book: BibleBook): Promise<NormalizedBook> => {
   return { slug: book.slug, name: book.name, abbrev: book.abbrev, verses }
 }
 
-/** Hämtar hela 1917 års bibel från getbible och normaliserar den. */
+/** Fetches the entire 1917 Bible from getbible and normalizes it. */
 export const getbibleBible = async (): Promise<NormalizedWork> => {
   const books = await mapPool(BIBLE_BOOKS, FETCH_CONCURRENCY, fetchBook)
   return { meta: BIBLE_META, books }

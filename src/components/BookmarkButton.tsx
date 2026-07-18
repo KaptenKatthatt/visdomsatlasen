@@ -7,8 +7,8 @@ type Props = {
   style?: CSSProperties
 }
 
-/** Presentationsknappen för ett bokmärke — delas av ämnes- och kapitelläsarna
- * så ikon, a11y-attribut och stil hålls i synk på alla ställen. */
+/** Presentational button for a bookmark — shared by the topic and chapter readers
+ * so the icon, a11y attributes and styling stay in sync everywhere. */
 export const BookmarkButton = ({ marked, onToggle, style }: Props) => (
   <button
     type="button"

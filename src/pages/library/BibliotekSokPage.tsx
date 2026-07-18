@@ -6,7 +6,7 @@ import { useDebounced } from '../../lib/useDebounced'
 import { searchLibrary, slugOfBook, type BookHit, type SearchHit } from '../../lib/api'
 import styles from './Bibliotek.module.css'
 
-// Rendera FTS-snippeten med ⟦…⟧-markörer som markerade träfford.
+// Render the FTS snippet with ⟦…⟧ markers as highlighted hit words.
 const Snippet = ({ text }: { text: string }) => (
   <span className={styles.hitSnippet}>
     {text.split(/⟦|⟧/).map((part, i) =>
@@ -21,7 +21,7 @@ const Snippet = ({ text }: { text: string }) => (
   </span>
 )
 
-// Boktreff: leder till bokens kapitelöversikt (t.ex. sök "matteus" → boken).
+// Book hit: leads to the book's chapter overview (e.g. search "matteus" → the book).
 const BookHitRow = ({ hit }: { hit: BookHit }) => (
   <Link
     to="/bibliotek/verk/$workId/$bookSlug"
@@ -55,7 +55,7 @@ const HitRow = ({ hit }: { hit: SearchHit }) => (
 
 export const BibliotekSokPage = () => {
   const [query, setQuery] = useState('')
-  // Debounce så vi inte skickar en sökning per tangenttryck.
+  // Debounce so we don't send one search per keystroke.
   const term = useDebounced(query.trim(), 250)
   const { data } = useAsync(
     () => (term.length >= 2 ? searchLibrary(term) : Promise.resolve({ books: [], hits: [] })),
@@ -72,7 +72,7 @@ export const BibliotekSokPage = () => {
         onChange={(event) => setQuery(event.target.value)}
         placeholder="Sök böcker och verser …"
         aria-label="Sök i biblioteket"
-        // Hela skärmen är sök — fältet är sidans enda uppgift och nås avsiktligt.
+        // The whole screen is search — the field is the page's sole purpose and is reached deliberately.
         // eslint-disable-next-line jsx-a11y/no-autofocus
         autoFocus
       />

@@ -16,7 +16,7 @@ const dok = (
   extra: Partial<SearchDoc> = {},
 ): SearchDoc => ({ type, id, title, alias: [], keywords: [], text: [], ...extra })
 
-// Ett litet blandat index som täcker rankningsscenarierna.
+// A small mixed index covering the ranking scenarios.
 const index: SearchDoc[] = [
   dok('fraga', 'fq-styra', 'Vad kan du styra?'),
   dok('fraga', 'fq-oro', 'Vad gör oron med dagen?', { text: ['oro inför framtiden'] }),
@@ -91,7 +91,7 @@ describe('sokIBiblioteket — språk och tolerans', () => {
   })
 
   it('låter inte en kort synonym prefix-matcha ett orelaterat ord', () => {
-    // »lugn« har synonymen »ro« — den får inte fastna i »romersk«.
+    // »lugn« has the synonym »ro« — it must not get stuck in »romersk«.
     const medRomersk = [...index, dok('tradition', 't-rom', 'Antik tradition', { text: ['romersk tid'] })]
     expect(finns(searchInLibrary('lugn', medRomersk), 't-rom')).toBe(false)
   })

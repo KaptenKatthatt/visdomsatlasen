@@ -1,13 +1,13 @@
-// Fas 14 (docs/specs/analytics.md): appen samlar BARA det tekniska minimum som
-// krävs för att hålla kvaliteten uppe — aldrig engagemang. Sänkan är medvetet
-// enkel: klientens tekniska fel loggas lugnt till webbläsarens konsol, serverns
-// till serverloggen. Ingen tredjepart, ingen endpoint, ingen DSN (ägarens beslut
-// 2026-07-18). Privata anteckningar rör detta aldrig; sökfrågor loggas bara
-// anonymiserat (längd och ordantal, aldrig texten).
+// Phase 14 (docs/specs/analytics.md): the app collects ONLY the technical minimum
+// needed to keep quality up — never engagement. The sink is deliberately
+// simple: the client's technical errors are logged calmly to the browser console, the server's
+// to the server log. No third party, no endpoint, no DSN (owner's decision
+// 2026-07-18). Private notes never touch this; search queries are only logged
+// anonymised (length and word count, never the text).
 
-/** De enda händelser appen får rapportera (analytics.md, Allowed Measurements).
- * Inget här mäter session, återkomst, sparande, anteckningar eller vandringsavslut
- * — och inget matar tillbaka in i rumsvalet. */
+/** The only events the app may report (analytics.md, Allowed Measurements).
+ * Nothing here measures session, return, saving, notes or path completion
+ * — and nothing feeds back into room selection. */
 export type TechnicalEvent =
   | { type: 'sidladdningsfel'; resurs: string; detalj?: string }
   | { type: 'offline-laddningsfel'; resurs: string }
@@ -17,37 +17,37 @@ export type TechnicalEvent =
   | { type: 'sok-nolltraff'; langd: number; ord: number }
   | { type: 'okaught-fel'; meddelande: string; source?: string }
 
-/** Rapporterar en teknisk händelse. Sänkan är konsolen — ett enkelt, granskbart
- * spår utan tredjepart. `console.warn` så det syns i loggen men aldrig fäller
- * appen. Bara händelsens egna, redan minimerade fält loggas: ingen personlig
- * text, ingen rå sökfråga, aldrig anteckningsinnehåll. */
+/** Reports a technical event. The sink is the console — a simple, auditable
+ * trace without a third party. `console.warn` so it shows in the log but never brings
+ * the app down. Only the event's own, already minimised fields are logged: no personal
+ * text, no raw search query, never note content. */
 export const report = (handelse: TechnicalEvent): void => {
   console.warn('[telemetri]', handelse.type, handelse)
 }
 
-/** Anonymiserar en sökfråga till ofarliga mått (analytics.md, Sensitive Query
- * Data): bara längd och ordantal, aldrig själva texten. */
+/** Anonymises a search query into harmless measures (analytics.md, Sensitive Query
+ * Data): only length and word count, never the text itself. */
 export const anonymizeQuestion = (question: string): { langd: number; ord: number } => {
   const trimmad = question.trim()
   return { langd: trimmad.length, ord: trimmad === '' ? 0 : trimmad.split(/\s+/).length }
 }
 
-/** Rensar bort en frågesträng ur en resurs-URL innan den loggas, så en sökfrågas
- * text aldrig läcker in via ett fel-anrop (t.ex. /api/library/search?q=…). */
+/** Strips a query string out of a resource URL before it's logged, so a search query's
+ * text never leaks in via an error call (e.g. /api/library/search?q=…). */
 export const withoutQuestion = (url: string): string => url.split('?')[0] ?? url
 
 let installerad = false
 
-/** Fångar globala, annars osynliga fel (analytics.md): okaught-fel och avvisade
- * promises. Registreras en gång vid appstart. Loggar bara felets meddelande och
- * place — aldrig sidans innehåll eller användarens text. */
+/** Catches global, otherwise invisible errors (analytics.md): uncaught errors and rejected
+ * promises. Registered once at app start. Logs only the error's message and
+ * place — never the page's content or the user's text. */
 export const installeraGlobalaFelfangare = (): void => {
   if (installerad || typeof window === 'undefined') return
   installerad = true
   window.addEventListener('error', (event) => {
-    // Bara riktiga skriptfel: hoppa över tomma/resurshändelser utan meddelande,
-    // så loggen bär meningsfulla poster i stället för brus. event.error är `any`
-    // i DOM-typerna; smalna av till unknown innan use.
+    // Only real script errors: skip empty/resource events without a message,
+    // so the log carries meaningful entries instead of noise. event.error is `any`
+    // in the DOM types; narrow to unknown before use.
     const fel = (event as { error?: unknown }).error
     if (!event.message && !fel) return
     report({
@@ -57,7 +57,7 @@ export const installeraGlobalaFelfangare = (): void => {
     })
   })
   window.addEventListener('unhandledrejection', (event) => {
-    // event.reason är `any` i DOM-typerna; smalna av till unknown innan use.
+    // event.reason is `any` in the DOM types; narrow to unknown before use.
     const cause = (event as { reason?: unknown }).reason
     report({ type: 'okaught-fel', meddelande: cause instanceof Error ? cause.message : String(cause) })
   })

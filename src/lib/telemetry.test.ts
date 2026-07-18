@@ -5,7 +5,7 @@ describe('telemetri', () => {
   afterEach(() => vi.restoreAllMocks())
 
   it('anonymiserar en sökfråga till bara längd och ordantal', () => {
-    // Aldrig själva texten (analytics.md, känslig sökdata minimeras).
+    // Never the text itself (analytics.md, sensitive search data is minimised).
     expect(anonymizeQuestion('vad är meningen')).toEqual({ langd: 15, ord: 3 })
     expect(anonymizeQuestion('   ')).toEqual({ langd: 0, ord: 0 })
     expect(anonymizeQuestion('lugn')).toEqual({ langd: 4, ord: 1 })
@@ -21,7 +21,7 @@ describe('telemetri', () => {
     const händelse: TechnicalEvent = { type: 'sok-nolltraff', langd: 4, ord: 1 }
     report(händelse)
     expect(spy).toHaveBeenCalledWith('[telemetri]', 'sok-nolltraff', händelse)
-    // Ingenting utöver de deklarerade fälten följer med.
+    // Nothing beyond the declared fields tags along.
     expect(Object.keys(händelse).sort()).toEqual(['langd', 'ord', 'type'])
   })
 })

@@ -11,33 +11,33 @@ import { runMissingIngest } from './ingest/run'
 
 const app = new Hono()
 
-// Fas 14 (analytics.md): serverns tekniska minimum. Oväntade fel loggas till
-// serverloggen (inget engagemang, ingen tredjepart, ingen personlig text — bara
-// felet och den träffade sökvägen) och läsaren får ett rent, lugnt svar.
+// Phase 14 (analytics.md): the server's technical minimum. Unexpected errors are logged to
+// the server log (no engagement, no third party, no personal text — just
+// the error and the path that was hit) and the reader gets a clean, calm response.
 app.onError((err, c) => {
   console.error('[server] fel:', c.req.method, new URL(c.req.url).pathname, '—', err.message)
   return c.json({ error: 'Något gick fel på servern.' }, 500)
 })
 
-// Testarläget: är ACCESS_CODE satt gömmer en delad kod hela appen (SPA + /api)
-// bakom en kod-sida. Monteras först så den täcker både statiska filer och API.
-// Utan koden är spärren av — servern nås då bara via Tailscale (WireGuard) utan
-// inloggning, som förr.
+// Tester mode: if ACCESS_CODE is set, a shared code hides the whole app (SPA + /api)
+// behind a code page. Mounted first so it covers both static files and the API.
+// Without the code the gate is off — the server is then reachable only via Tailscale
+// (WireGuard) without a login, as before.
 mountAccessGate(app, config.accessCode)
 
-// Ingen inloggning bortom testar-koden: allt innehåll är public domain och ingen
-// personlig data ligger på servern (bokmärken och anteckningar bor i webbläsarens
-// localStorage). Den enda skrivande endpointen, POST /api/ingest, skyddas separat
-// av INGEST_TOKEN i ingest-routern.
+// No login beyond the tester code: all content is public domain and no
+// personal data lives on the server (bookmarks and notes live in the browser's
+// localStorage). The only writing endpoint, POST /api/ingest, is protected separately
+// by INGEST_TOKEN in the ingest router.
 app.route('/api/library', libraryRouter)
 app.route('/api/ingest', ingestRouter)
 
-// Statiska SPA-filer, med fallback till index.html för klientrutter.
+// Static SPA files, with a fallback to index.html for client routes.
 const staticRoot = path.relative(process.cwd(), config.staticDir) || '.'
 app.use('/*', serveStatic({ root: staticRoot }))
 
-// Läs index.html en gång vid start (den är oföränderlig efter bygget) i stället
-// för vid varje obesvarad request. Null om SPA:t inte är byggt.
+// Read index.html once at startup (it's immutable after the build) instead
+// of on every unhandled request. Null if the SPA isn't built.
 const indexHtml = ((): string | null => {
   try {
     return readFileSync(path.join(config.staticDir, 'index.html'), 'utf-8')
@@ -53,8 +53,8 @@ serve({ fetch: app.fetch, port: config.port, hostname: config.host }, (info) => 
   console.log(`Visdomsatlasen lyssnar på ${info.address}:${info.port}`)
 })
 
-// Fyll på verk som saknas i databasen (t.ex. efter att ett nytt verk lagts till
-// och deployats) i bakgrunden. Blockerar inte uppstarten. AUTO_INGEST=off stänger av.
+// Fill in works missing from the database (e.g. after a new work has been added
+// and deployed) in the background. Doesn't block startup. AUTO_INGEST=off disables it.
 if (process.env['AUTO_INGEST'] !== 'off') {
   void runMissingIngest()
     .then((results) => {

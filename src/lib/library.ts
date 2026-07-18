@@ -1,8 +1,8 @@
-// Bibliotekets urval (roadmap fas 6, library.md): i bibliotekets listor får
-// bara publicerat innehåll synas — striktare än tröskelns temafilter
-// (!== 'arkiverad'), som visar utkastteman i väntan på deras första rum.
-// Rätta inte "åt andra hållet": utkast nås enbart via direkt länk och är
-// redaktionens granskningsvy, aldrig en del av utforskningen.
+// The library's selection (roadmap phase 6, library.md): in the library's lists
+// only published content may be shown — stricter than the threshold's theme filter
+// (!== 'arkiverad'), which shows draft themes while awaiting their first room.
+// Don't "fix" it the other way: drafts are reached only via direct link and are
+// the editorial team's review view, never part of exploration.
 import type {
   Question,
   Source,
@@ -24,7 +24,7 @@ const svOrdning =
 
 const SIST = Number.MAX_SAFE_INTEGER
 
-/** Slår upp id-referenser och behåller de publicerade posterna. */
+/** Looks up id references and keeps the published records. */
 export const publishedThrough = <T extends { status: Room['status'] }>(
   ids: string[],
   hitta: (id: string) => T | undefined,
@@ -34,39 +34,39 @@ export const publishedThrough = <T extends { status: Room['status'] }>(
     return post !== undefined && post.status === 'published' ? [post] : []
   })
 
-/** Bibliotekets themes: publicerade, i samma redaktionella order som tröskeln. */
+/** The library's themes: published, in the same editorial order as the threshold. */
 export const libraryThemes = (themes: Theme[]): Theme[] =>
   onlyPublished(themes).sort(
     (a, b) => (a.order ?? SIST) - (b.order ?? SIST) || svOrdning<Theme>((t) => t.label)(a, b),
   )
 
-/** Den ändliga rumslistan: publicerade rum i svensk titelordning. */
+/** The finite room list: published rooms in Swedish title order. */
 export const libraryRooms = (rooms: Room[]): Room[] =>
   onlyPublished(rooms).sort(svOrdning((r) => r.title))
 
-/** Bibliotekets källposter: publicerade, i svensk titelordning. */
+/** The library's source records: published, in Swedish title order. */
 export const librarySources = (sources: Source[]): Source[] =>
   onlyPublished(sources).sort(svOrdning((k) => k.title))
 
-/** Traditionerna: publicerade, i svensk namnordning. Sekundär ingång —
- * de hjälper till med sammanhang men äger inte frågorna (library.md). */
+/** The traditions: published, in Swedish name order. A secondary entry point —
+ * they help with context but don't own the questions (library.md). */
 export const libraryTraditions = (traditions: Tradition[]): Tradition[] =>
   onlyPublished(traditions).sort(svOrdning((t) => t.name))
 
-/** Bibliotekets personer: publicerade, i svensk namnordning. Referenspunkter,
- * aldrig primary navigation (library.md, People and Authors). */
+/** The library's people: published, in Swedish name order. Reference points,
+ * never primary navigation (library.md, People and Authors). */
 export const libraryPeople = (people: Person[]): Person[] =>
   onlyPublished(people).sort(svOrdning((p) => p.name))
 
-/** Bibliotekets frågor: publicerade, i svensk textordning. */
+/** The library's questions: published, in Swedish text order. */
 export const libraryQuestions = (questions: Question[]): Question[] =>
   onlyPublished(questions).sort(svOrdning((f) => f.text))
 
 const compareTitleSv = svOrdning<Room>((r) => r.title)
 
-/** Frågesidans rum: rum som bär frågan som sitt eget anspråk (primaryQuestion)
- * står först; rum som bara pekar på den bland relatedQuestions breddar
- * efteråt. En ändlig lista — aldrig en sekvens. */
+/** The question page's rooms: rooms that carry the question as their own claim
+ * (primaryQuestion) come first; rooms that only point to it among relatedQuestions
+ * broaden it afterward. A finite list — never a sequence. */
 export const roomsForQuestion = (questionId: string, rooms: Room[]): Room[] => {
   const published = onlyPublished(rooms)
   const primary = published.filter((room) => room.primaryQuestion === questionId).sort(compareTitleSv)
@@ -79,14 +79,15 @@ export const roomsForQuestion = (questionId: string, rooms: Room[]): Room[] => {
   return [...primary, ...relaterade]
 }
 
-/** Temasidans frågor: publicerade frågor taggade med temat. */
+/** The theme page's questions: published questions tagged with the theme. */
 export const questionsForTheme = (themeId: string, questions: Question[]): Question[] =>
   onlyPublished(questions)
     .filter((question) => question.themes.includes(themeId))
     .sort(svOrdning((f) => f.text))
 
-/** Frågans källmaterial: källorna bakom frågans rum — frågeschemat har inga
- * egna källreferenser, så materialet härleds ur rummens relationer. */
+/** The question's source material: the sources behind the question's rooms — the
+ * question schema has no source references of its own, so the material is derived
+ * from the rooms' relations. */
 export const sourcesForQuestion = (questionId: string, rooms: Room[], sources: Source[]): Source[] => {
   const ids = new Set(
     roomsForQuestion(questionId, rooms).flatMap((room) =>
@@ -96,29 +97,29 @@ export const sourcesForQuestion = (questionId: string, rooms: Room[], sources: S
   return librarySources(sources.filter((source) => ids.has(source.id)))
 }
 
-/** Bibliotekets vandringar: publicerade, i svensk titelordning (paths.md,
- * Discoverability — en stilla sektion, aldrig framhävd). */
+/** The library's paths: published, in Swedish title order (paths.md,
+ * Discoverability — a quiet section, never highlighted). */
 export const libraryPaths = (paths: Path[]): Path[] =>
   onlyPublished(paths).sort(svOrdning((v) => v.title))
 
-/** Vandringens rum i redaktionell order — `rum`-listan ÄR sekvensen
- * (paths.md, Data Requirements), så inget sorteras om. Rummen behålls oavsett
- * status: valideringsgrinden ser till att en publicerad vandring bara rymmer
- * publicerade rum, och utkastvandringen är redaktionens granskningsvy där hela
- * följden ska gå att läsa. Saknade id (redaktionellt fel) hoppas tyst över. */
+/** The path's rooms in editorial order — the `rum` list IS the sequence
+ * (paths.md, Data Requirements), so nothing is re-sorted. The rooms are kept
+ * regardless of status: the validation gate ensures a published path only holds
+ * published rooms, and the draft path is the editorial team's review view where the
+ * whole sequence should be readable. Missing ids (editorial error) are quietly skipped. */
 export const roomsForPath = (path: Path, rooms: Room[]): Room[] =>
   path.rooms.flatMap((id) => {
     const hit = rooms.find((room) => room.id === id)
     return hit ? [hit] : []
   })
 
-/** Ungefärlig sammanlagd lästid för vandringens rum (paths.md, Path Overview). */
+/** Approximate total reading time for the path's rooms (paths.md, Path Overview). */
 export const pathReadingTime = (rooms: Room[]): number =>
   rooms.reduce((sum, room) => sum + room.readingTimeMinutes, 0)
 
-/** Vandringens traditions, stilla härledda ur rummens sources (paths.md,
- * source traditions shown quietly): rum → source → traditions, bara
- * publicerade, unika, i svensk namnordning. */
+/** The path's traditions, quietly derived from the rooms' sources (paths.md,
+ * source traditions shown quietly): room → source → traditions, published
+ * only, unique, in Swedish name order. */
 export const traditionsForPath = (
   pathRooms: Room[],
   sources: Source[],
@@ -135,15 +136,15 @@ export const traditionsForPath = (
   return libraryTraditions(traditions.filter((tradition) => traditionIds.has(tradition.id)))
 }
 
-/** Källans publicerade passager, i naturlig referensordning (»avsnitt 5« före
- * »avsnitt 43«, inte tvärtom). Bara publicerade passager når biblioteket;
- * utkast är redaktionens granskningsvy. */
+/** The source's published passages, in natural reference order (»avsnitt 5« before
+ * »avsnitt 43«, not the reverse). Only published passages reach the library;
+ * drafts are the editorial team's review view. */
 export const passagesForSource = (sourceId: string, passager: SourcePassage[]): SourcePassage[] =>
   onlyPublished(passager)
     .filter((passage) => passage.source === sourceId)
     .sort((a, b) => a.reference.localeCompare(b.reference, 'sv', { numeric: true }))
 
-/** Publicerade rum som använder källan — rum med primary relation först. */
+/** Published rooms that use the source — rooms with a primary relation first. */
 export const roomsForSource = (sourceId: string, rooms: Room[]): Room[] => {
   const primaryWeight = (room: Room): number =>
     room.sources.some((relation) => relation.source === sourceId && relation.primary) ? 0 : 1

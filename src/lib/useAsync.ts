@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 export type AsyncState<T> = { data: T | null; error: string | null; loading: boolean }
 
-/** Liten datahämtningshook: laddar om när `deps` ändras, avbryter gammalt svar. */
+/** Small data-fetching hook: reloads when `deps` change, cancels stale responses. */
 export const useAsync = <T>(run: () => Promise<T>, deps: readonly unknown[]): AsyncState<T> => {
   const [state, setState] = useState<AsyncState<T>>({ data: null, error: null, loading: true })
 

@@ -60,9 +60,9 @@ const Narliggande = ({ fråga }: { fråga: Question }) => {
   )
 }
 
-/** Frågesida (library.md, Questions): description, rum, themes och
- * källmaterial. En place att välja från — aldrig en automatisk lässekvens.
- * TopBar utan onBack ⇒ historiksteg bakåt — biblioteksplatsen bevaras. */
+/** Question page (library.md, Questions): description, rooms, themes and
+ * source material. A place to choose from — never an automatic reading sequence.
+ * TopBar without onBack ⇒ history step back — the library location is preserved. */
 export const FragaPage = ({ slug }: { slug: string }) => {
   const question = findQuestionBySlug(slug)
   if (!question) return <NotFoundNote subject="Frågan" />
