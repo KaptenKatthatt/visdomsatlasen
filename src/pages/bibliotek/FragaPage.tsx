@@ -1,10 +1,10 @@
 import { ToLink } from '../../components/ToLink'
 import { TopBar } from '../../components/TopBar'
 import type { Question } from '../../content/editorial/schema'
-import { sourcesForQuestion, publishedThrough, roomForQuestion } from '../../lib/library'
+import { sourcesForQuestion, publishedThrough, roomsForQuestion } from '../../lib/library'
 import {
   allSources,
-  allaRum,
+  allRooms,
   findQuestion,
   findQuestionBySlug,
   findTheme,
@@ -29,7 +29,7 @@ const Temadel = ({ fråga }: { fråga: Question }) => {
 }
 
 const Kalldel = ({ fråga }: { fråga: Question }) => {
-  const sources = sourcesForQuestion(fråga.id, allaRum, allSources)
+  const sources = sourcesForQuestion(fråga.id, allRooms, allSources)
   if (sources.length === 0) return null
   return (
     <Section rubrik="Källor">
@@ -73,7 +73,7 @@ export const FragaPage = ({ slug }: { slug: string }) => {
       <Beskrivning text={fråga.description} />
       <Section rubrik="Rum">
         <Rumslista
-          rum={roomForQuestion(fråga.id, allaRum)}
+          rum={roomsForQuestion(fråga.id, allRooms)}
           tomtBesked="Det finns inga färdiga rum kring frågan ännu."
         />
       </Section>

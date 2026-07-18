@@ -1,13 +1,13 @@
 import { Link } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
 import type { Source, SourcePassage } from '../../content/editorial/schema'
-import { passagesForSource, publishedThrough, roomForSource } from '../../lib/library'
+import { passagesForSource, publishedThrough, roomsForSource } from '../../lib/library'
 import {
   allPassages,
-  allaRum,
+  allRooms,
   findSourceBySlug,
   findTradition,
-  osakerheter,
+  uncertainties,
   paragraphs,
 } from '../../lib/content'
 import { NotFoundNote } from '../NotFoundNote'
@@ -117,7 +117,7 @@ const Passageblock = ({ passage }: { passage: SourcePassage }) => {
 export const KallaPostPage = ({ slug }: { slug: string }) => {
   const source = findSourceBySlug(slug)
   if (!source) return <NotFoundNote subject="Källan" />
-  const uncertainty = osakerheter(source)
+  const uncertainty = uncertainties(source)
   const passager = passagesForSource(source.id, allPassages)
   return (
     <div className="screenSub">
@@ -157,7 +157,7 @@ export const KallaPostPage = ({ slug }: { slug: string }) => {
       )}
       <Section rubrik="Rum ur denna källa">
         <Rumslista
-          rum={roomForSource(source.id, allaRum)}
+          rum={roomsForSource(source.id, allRooms)}
           tomtBesked="Det finns inga färdiga rum ur källan ännu."
         />
       </Section>

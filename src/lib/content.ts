@@ -26,7 +26,7 @@ import { allThemes, thresholdThemes } from './homeData'
 
 export { allThemes, thresholdThemes }
 
-export const allaRum: Room[] = collect(
+export const allRooms: Room[] = collect(
   toFiles(import.meta.glob<string>('../content/rooms/*.md', { query: '?raw', import: 'default', eager: true })),
   parseRoomFile,
 )
@@ -60,10 +60,10 @@ export const allTraditions: Tradition[] = collect(
 )
 
 export const findRoom = (slug: string): Room | undefined =>
-  allaRum.find((rum) => rum.slug === slug)
+  allRooms.find((rum) => rum.slug === slug)
 
 export const findRoomById = (id: string): Room | undefined =>
-  allaRum.find((rum) => rum.id === id)
+  allRooms.find((rum) => rum.id === id)
 
 export const findTheme = (id: string): Theme | undefined =>
   allThemes.find((tema) => tema.id === id)
@@ -109,7 +109,7 @@ export const sourceName = (source: Source): string =>
 /** Ärliga osäkerhetsmeningar i klartext (source-and-context.md, Uncertainty):
  * dold osäkerhet försvagar tilliten, inte källan. Delas av läsrummet och
  * källsidan så samma formulering möter läsaren på båda ställena. */
-export const osakerheter = (source: Source): string[] => {
+export const uncertainties = (source: Source): string[] => {
   const name = source.attributedAuthor ?? source.author ?? 'annan hand'
   const rows: string[] = []
   if (source.attribution === 'attributed')

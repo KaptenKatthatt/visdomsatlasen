@@ -4,13 +4,13 @@ import { TopBar } from '../../components/TopBar'
 import type { Room, Path } from '../../content/editorial/schema'
 import {
   publishedThrough,
-  roomForPath,
+  roomsForPath,
   traditionsForPath,
   pathReadingTime,
 } from '../../lib/library'
 import {
   allSources,
-  allaRum,
+  allRooms,
   allTraditions,
   findQuestion,
   findPathBySlug,
@@ -116,7 +116,7 @@ const Rumdel = ({ vandring, rummen }: { vandring: Path; rummen: Room[] }) => {
 export const VandringPage = ({ slug }: { slug: string }) => {
   const vandring = findPathBySlug(slug)
   if (!vandring) return <NotFoundNote subject="Vandringen" />
-  const rummen = roomForPath(vandring, allaRum)
+  const rummen = roomsForPath(vandring, allRooms)
   return (
     <div className="screenSub">
       <TopBar />

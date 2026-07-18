@@ -27,8 +27,8 @@ export const HemPage = () => {
     setVäljer(true)
     setTomtVal(false)
     try {
-      const { allaRum } = await import('../lib/content')
-      const rum = selectRoom(tema, allaRum, senastLastaRum)
+      const { allRooms } = await import('../lib/content')
+      const rum = selectRoom(tema, allRooms, senastLastaRum)
       if (rum) {
         void navigate({ to: '/rum/$slug', params: { slug: rum.slug } })
         return

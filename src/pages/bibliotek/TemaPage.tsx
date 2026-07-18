@@ -1,7 +1,7 @@
 import { ToLink } from '../../components/ToLink'
 import { TopBar } from '../../components/TopBar'
 import { questionsForTheme } from '../../lib/library'
-import { allQuestions, allaRum, findThemeBySlug } from '../../lib/content'
+import { allQuestions, allRooms, findThemeBySlug } from '../../lib/content'
 import { valbaraRoom } from '../../lib/roomSelection'
 import { NotFoundNote } from '../NotFoundNote'
 import styles from './Bibliotek.module.css'
@@ -34,7 +34,7 @@ export const TemaPage = ({ slug }: { slug: string }) => {
       <Fragedel temaId={tema.id} />
       <Section rubrik="Rum">
         <Rumslista
-          rum={valbaraRoom(tema.id, allaRum)}
+          rum={valbaraRoom(tema.id, allRooms)}
           tomtBesked="Det finns inga färdiga rum här ännu."
         />
       </Section>

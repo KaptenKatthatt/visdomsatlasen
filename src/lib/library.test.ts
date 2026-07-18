@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Question, Source, SourcePassage, Room, Theme, Tradition, Path } from '../content/editorial/schema'
 import {
-  libraryRoom,
+  libraryRooms,
   libraryThemes,
   libraryTraditions,
   libraryPaths,
@@ -9,9 +9,9 @@ import {
   sourcesForQuestion,
   passagesForSource,
   publishedThrough,
-  roomForQuestion,
-  roomForSource,
-  roomForPath,
+  roomsForQuestion,
+  roomsForSource,
+  roomsForPath,
   traditionsForPath,
   pathReadingTime,
 } from './library'
@@ -48,7 +48,7 @@ const tema = (
   ...extra,
 })
 
-describe('bibliotekTeman', () => {
+describe('libraryThemes', () => {
   it('släpper bara igenom publicerade teman — utkast hör inte hemma i biblioteket', () => {
     const themes = [
       tema('lugn'),
@@ -76,7 +76,7 @@ describe('bibliotekTeman', () => {
   })
 })
 
-describe('bibliotekRum', () => {
+describe('libraryRooms', () => {
   it('släpper bara igenom publicerade rum, i svensk titelordning', () => {
     const all = [
       rum('över tröskeln'),
@@ -85,7 +85,7 @@ describe('bibliotekRum', () => {
       rum('granskningen', 'review'),
       rum('arkivet', 'archived'),
     ]
-    expect(libraryRoom(all).map((r) => r.title)).toEqual(['att vänta', 'över tröskeln'])
+    expect(libraryRooms(all).map((r) => r.title)).toEqual(['att vänta', 'över tröskeln'])
   })
 })
 
@@ -98,7 +98,7 @@ const fråga = (text: string, över: Partial<Question> = {}): Question => ({
   ...över,
 })
 
-describe('rumForFraga', () => {
+describe('roomsForQuestion', () => {
   it('sätter rum med frågan som primär först, sedan relaterade — bara publicerade', () => {
     const all = [
       rum('önskan', 'published', { primaryQuestion: 'fraga-b', relatedQuestions: ['fraga-a'] }),
@@ -107,7 +107,7 @@ describe('rumForFraga', () => {
       rum('other', 'published', { primaryQuestion: 'fraga-b' }),
       rum('avstånd', 'published', { primaryQuestion: 'fraga-a' }),
     ]
-    expect(roomForQuestion('fraga-a', all).map((r) => r.title)).toEqual([
+    expect(roomsForQuestion('fraga-a', all).map((r) => r.title)).toEqual([
       'avstånd',
       'besked',
       'önskan',
@@ -118,11 +118,11 @@ describe('rumForFraga', () => {
     const all = [
       rum('dubblerat', 'published', { primaryQuestion: 'fraga-a', relatedQuestions: ['fraga-a'] }),
     ]
-    expect(roomForQuestion('fraga-a', all).map((r) => r.title)).toEqual(['dubblerat'])
+    expect(roomsForQuestion('fraga-a', all).map((r) => r.title)).toEqual(['dubblerat'])
   })
 })
 
-describe('fragorForTema', () => {
+describe('questionsForTheme', () => {
   it('släpper bara igenom publicerade frågor taggade med temat, i svensk ordning', () => {
     const all = [
       fråga('Vad är sant?', { themes: ['tema-a'] }),
@@ -138,7 +138,7 @@ describe('fragorForTema', () => {
   })
 })
 
-describe('kallorForFraga', () => {
+describe('sourcesForQuestion', () => {
   const source = (id: string, status: Source['status'] = 'published'): Source => ({
     id,
     slug: id,
@@ -185,7 +185,7 @@ describe('publiceradeVia', () => {
   })
 })
 
-describe('rumForKalla', () => {
+describe('roomsForSource', () => {
   const relation = (source: string, primary: boolean) => ({
     source,
     use: 'adaptation' as const,
@@ -200,7 +200,7 @@ describe('rumForKalla', () => {
       rum('vilar på källan', 'published', { sources: [relation('kalla-a', true)] }),
       rum('andrahandsbruk', 'published', { sources: [relation('kalla-a', false)] }),
     ]
-    expect(roomForSource('kalla-a', all).map((r) => r.title)).toEqual([
+    expect(roomsForSource('kalla-a', all).map((r) => r.title)).toEqual([
       'vilar på källan',
       'andrahandsbruk',
       'bygger på källan',
@@ -208,7 +208,7 @@ describe('rumForKalla', () => {
   })
 })
 
-describe('bibliotekTraditioner', () => {
+describe('libraryTraditions', () => {
   const tradition = (name: string, status: Tradition['status'] = 'published'): Tradition => ({
     id: `tradition-${name}`,
     slug: name,
@@ -235,7 +235,7 @@ const vandring = (title: string, över: Partial<Path> = {}): Path => ({
   ...över,
 })
 
-describe('bibliotekVandringar', () => {
+describe('libraryPaths', () => {
   it('släpper bara igenom publicerade vandringar, i svensk titelordning', () => {
     const all = [
       vandring('över tröskeln'),
@@ -247,7 +247,7 @@ describe('bibliotekVandringar', () => {
   })
 })
 
-describe('rumForVandring', () => {
+describe('roomsForPath', () => {
   it('följer den redaktionella ordningen i rum-listan, inte titelordning', () => {
     const all = [
       rum('sist', 'published', { id: 'rum-c' }),
@@ -255,7 +255,7 @@ describe('rumForVandring', () => {
       rum('mitten', 'published', { id: 'rum-b' }),
     ]
     const v = vandring('v', { rum: ['rum-a', 'rum-b', 'rum-c'] })
-    expect(roomForPath(v, all).map((r) => r.title)).toEqual(['först', 'mitten', 'sist'])
+    expect(roomsForPath(v, all).map((r) => r.title)).toEqual(['först', 'mitten', 'sist'])
   })
 
   it('behåller opublicerade rum — granskningsvyn ska gå att vandra', () => {
@@ -264,17 +264,17 @@ describe('rumForVandring', () => {
       rum('draft', 'draft', { id: 'rum-b' }),
     ]
     const v = vandring('v', { rum: ['rum-a', 'rum-b'] })
-    expect(roomForPath(v, all).map((r) => r.title)).toEqual(['publikt', 'draft'])
+    expect(roomsForPath(v, all).map((r) => r.title)).toEqual(['publikt', 'draft'])
   })
 
   it('hoppar tyst över id som saknar rum', () => {
     const all = [rum('finns', 'published', { id: 'rum-a' })]
     const v = vandring('v', { rum: ['rum-a', 'rum-saknas'] })
-    expect(roomForPath(v, all).map((r) => r.title)).toEqual(['finns'])
+    expect(roomsForPath(v, all).map((r) => r.title)).toEqual(['finns'])
   })
 })
 
-describe('vandringLastid', () => {
+describe('pathReadingTime', () => {
   it('summerar rummens lästid', () => {
     const rummen = [
       rum('a', 'published', { readingTimeMinutes: 4 }),
@@ -285,7 +285,7 @@ describe('vandringLastid', () => {
   })
 })
 
-describe('traditionerForVandring', () => {
+describe('traditionsForPath', () => {
   const source = (id: string, traditions: string[]): Source => ({
     id,
     slug: id,
@@ -324,7 +324,7 @@ describe('traditionerForVandring', () => {
   })
 })
 
-describe('passagerForKalla', () => {
+describe('passagesForSource', () => {
   const passage = (reference: string, över: Partial<SourcePassage> = {}): SourcePassage => ({
     id: `passage-${reference}`,
     source: 'kalla-a',

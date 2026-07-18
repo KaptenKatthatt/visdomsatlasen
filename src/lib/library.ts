@@ -40,7 +40,7 @@ export const libraryThemes = (themes: Theme[]): Theme[] =>
   )
 
 /** Den ändliga rumslistan: publicerade rum i svensk titelordning. */
-export const libraryRoom = (rum: Room[]): Room[] =>
+export const libraryRooms = (rum: Room[]): Room[] =>
   onlyPublished(rum).sort(svOrdning((r) => r.title))
 
 /** Bibliotekets källposter: publicerade, i svensk titelordning. */
@@ -61,7 +61,7 @@ const svTitel = svOrdning<Room>((r) => r.title)
 /** Frågesidans rum: rum som bär frågan som sitt eget anspråk (primaryQuestion)
  * står först; rum som bara pekar på den bland relatedQuestions breddar
  * efteråt. En ändlig lista — aldrig en sekvens. */
-export const roomForQuestion = (fragaId: string, rum: Room[]): Room[] => {
+export const roomsForQuestion = (fragaId: string, rum: Room[]): Room[] => {
   const published = onlyPublished(rum)
   const primary = published.filter((ettRum) => ettRum.primaryQuestion === fragaId).sort(svTitel)
   const relaterade = published
@@ -83,7 +83,7 @@ export const questionsForTheme = (temaId: string, frågor: Question[]): Question
  * egna källreferenser, så materialet härleds ur rummens relationer. */
 export const sourcesForQuestion = (fragaId: string, rum: Room[], sources: Source[]): Source[] => {
   const ids = new Set(
-    roomForQuestion(fragaId, rum).flatMap((ettRum) =>
+    roomsForQuestion(fragaId, rum).flatMap((ettRum) =>
       ettRum.sources.map((relation) => relation.source),
     ),
   )
@@ -100,7 +100,7 @@ export const libraryPaths = (vandringar: Path[]): Path[] =>
  * status: valideringsgrinden ser till att en publicerad vandring bara rymmer
  * publicerade rum, och utkastvandringen är redaktionens granskningsvy där hela
  * följden ska gå att läsa. Saknade id (redaktionellt fel) hoppas tyst över. */
-export const roomForPath = (vandring: Path, rum: Room[]): Room[] =>
+export const roomsForPath = (vandring: Path, rum: Room[]): Room[] =>
   vandring.rum.flatMap((id) => {
     const hit = rum.find((ettRum) => ettRum.id === id)
     return hit ? [hit] : []
@@ -138,7 +138,7 @@ export const passagesForSource = (kallaId: string, passager: SourcePassage[]): S
     .sort((a, b) => a.reference.localeCompare(b.reference, 'sv', { numeric: true }))
 
 /** Publicerade rum som använder källan — rum med primary relation först. */
-export const roomForSource = (kallaId: string, rum: Room[]): Room[] => {
+export const roomsForSource = (kallaId: string, rum: Room[]): Room[] => {
   const primaryWeight = (ettRum: Room): number =>
     ettRum.sources.some((relation) => relation.source === kallaId && relation.primary) ? 0 : 1
   return onlyPublished(rum)

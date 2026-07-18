@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  allaRum,
+  allRooms,
   findQuestionBySlug,
   findSource,
   findSourceBySlug,
@@ -14,7 +14,7 @@ import {
 
 describe('innehållsladdaren', () => {
   it('laddar exempelrummet från markdown', () => {
-    expect(allaRum.length).toBeGreaterThan(0)
+    expect(allRooms.length).toBeGreaterThan(0)
     const rum = findRoom('det-du-inte-kan-styra')
     expect(rum?.title).toBe('Det du inte kan styra')
     expect(rum?.opening.length).toBeGreaterThan(0)

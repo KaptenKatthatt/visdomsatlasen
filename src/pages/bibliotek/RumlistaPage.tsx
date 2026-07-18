@@ -1,13 +1,13 @@
 import { TopBar } from '../../components/TopBar'
-import { libraryRoom } from '../../lib/library'
-import { allaRum } from '../../lib/content'
+import { libraryRooms } from '../../lib/library'
+import { allRooms } from '../../lib/content'
 import styles from './Bibliotek.module.css'
 import { Rumslista, roomCount, Sidhuvud } from './Biblioteksdelar'
 
 /** Alla publicerade rum — en ändlig lista (library.md, Browsing): antalet
  * står överst så man ser hur mycket som finns. Ingen oändlig rullning. */
 export const RumlistaPage = () => {
-  const rum = libraryRoom(allaRum)
+  const rum = libraryRooms(allRooms)
   return (
     <div className="screenSub">
       <TopBar />

@@ -4,9 +4,9 @@ import { NotesSheet } from '../components/NotesSheet'
 import { ReadingSettingsButton } from '../components/ReadingSettingsButton'
 import { TopBar } from '../components/TopBar'
 import type { Source, SourcePassage, Room, Path } from '../content/editorial/schema'
-import { roomForPath } from '../lib/library'
+import { roomsForPath } from '../lib/library'
 import {
-  allaRum,
+  allRooms,
   useLabel,
   findSource,
   findPassage,
@@ -14,7 +14,7 @@ import {
   findTheme,
   findPathBySlug,
   sourceName,
-  osakerheter,
+  uncertainties,
   paragraphs,
 } from '../lib/content'
 import { useAtlas } from '../lib/store'
@@ -100,7 +100,7 @@ const Kallblock = ({ source, relationer }: { source: Source; relationer: SourceR
         editionsrad(passage),
       ]
     }),
-    ...osakerheter(source),
+    ...uncertainties(source),
   ].filter((rad): rad is string => Boolean(rad))
   return (
     <div className={styles.kallblock}>
@@ -208,7 +208,7 @@ const Rumsavslut = ({ rum }: { rum: Room }) => {
  * reflektionen i stället, utan gratulation eller förloppsmått. */
 const Vandringsfot = ({ vandring, rum }: { vandring: Path; rum: Room }) => {
   const navigate = useNavigate()
-  const order = roomForPath(vandring, allaRum)
+  const order = roomsForPath(vandring, allRooms)
   const index = order.findIndex((ettRum) => ettRum.id === rum.id)
   if (index === -1) return null
   const next = order[index + 1]

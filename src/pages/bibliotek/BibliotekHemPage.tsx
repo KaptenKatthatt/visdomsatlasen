@@ -3,18 +3,18 @@ import { ToLink } from '../../components/ToLink'
 import {
   libraryQuestions,
   librarySources,
-  libraryRoom,
+  libraryRooms,
   libraryThemes,
   libraryTraditions,
   libraryPaths,
-  roomForPath,
+  roomsForPath,
   pathReadingTime,
 } from '../../lib/library'
 import { useSidtitel } from '../../lib/useSidtitel'
 import {
   allQuestions,
   allSources,
-  allaRum,
+  allRooms,
   allThemes,
   allTraditions,
   allPaths,
@@ -43,7 +43,7 @@ const Temasektion = () => {
       ) : (
         themes.map((tema) => (
           <ToLink key={tema.id} to={{ kind: 'tema', slug: tema.slug }} className={styles.rad}>
-            <Row title={tema.label} sub={roomCount(valbaraRoom(tema.id, allaRum).length)} />
+            <Row title={tema.label} sub={roomCount(valbaraRoom(tema.id, allRooms).length)} />
           </ToLink>
         ))
       )}
@@ -61,7 +61,7 @@ const Vandringssektion = () => {
   return (
     <Section rubrik="Vandringar">
       {vandringar.map((vandring) => {
-        const rummen = roomForPath(vandring, allaRum)
+        const rummen = roomsForPath(vandring, allRooms)
         const sub = `${roomCount(rummen.length)} · ca ${pathReadingTime(rummen)} min`
         return (
           <ToLink
@@ -80,7 +80,7 @@ const Vandringssektion = () => {
 const Rumsektion = () => (
   <Section rubrik="Rum">
     <Link to="/bibliotek/rum" className={styles.rad}>
-      <Row title="Alla rum" sub={roomCount(libraryRoom(allaRum).length)} />
+      <Row title="Alla rum" sub={roomCount(libraryRooms(allRooms).length)} />
     </Link>
   </Section>
 )

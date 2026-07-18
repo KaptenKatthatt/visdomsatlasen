@@ -16,19 +16,19 @@ import type {
 import {
   libraryQuestions,
   librarySources,
-  libraryRoom,
+  libraryRooms,
   libraryThemes,
   libraryTraditions,
   libraryPaths,
   passagesForSource,
-  roomForPath,
+  roomsForPath,
   pathReadingTime,
 } from './library'
 import {
   allQuestions,
   allSources,
   allPassages,
-  allaRum,
+  allRooms,
   allThemes,
   allTraditions,
   allPaths,
@@ -225,9 +225,9 @@ export const byggSokindex = (innehall: Innehall): SearchDoc[] => {
   return [
     ...libraryQuestions(innehall.frågor).map(docFromQuestion),
     ...libraryThemes(innehall.themes).map(docFromTheme),
-    ...libraryRoom(innehall.rum).map((rum) => docFromRoom(rum, frågor, themes, sources)),
+    ...libraryRooms(innehall.rum).map((rum) => docFromRoom(rum, frågor, themes, sources)),
     ...libraryPaths(innehall.vandringar).map((vandring) =>
-      docFromPath(vandring, frågor, roomForPath(vandring, innehall.rum)),
+      docFromPath(vandring, frågor, roomsForPath(vandring, innehall.rum)),
     ),
     ...librarySources(innehall.sources).map((source) =>
       docFromSource(source, traditions, passagesForSource(source.id, innehall.passager)),
@@ -238,7 +238,7 @@ export const byggSokindex = (innehall: Innehall): SearchDoc[] => {
 
 /** Appens index, byggt en gång vid moduladdning ur allt laddat innehåll. */
 export const searchIndexData: SearchDoc[] = byggSokindex({
-  rum: allaRum,
+  rum: allRooms,
   themes: allThemes,
   frågor: allQuestions,
   vandringar: allPaths,
