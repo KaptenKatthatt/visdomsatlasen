@@ -8,6 +8,7 @@ import { AmnePage } from '../pages/AmnePage'
 import { AtlasPage } from '../pages/AtlasPage'
 import { BibliotekHemPage } from '../pages/bibliotek/BibliotekHemPage'
 import { FragaPage } from '../pages/bibliotek/FragaPage'
+import { FragelistaPage } from '../pages/bibliotek/FragelistaPage'
 import { KallaPostPage } from '../pages/bibliotek/KallaPostPage'
 import { RumlistaPage } from '../pages/bibliotek/RumlistaPage'
 import { TemaPage } from '../pages/bibliotek/TemaPage'
@@ -149,6 +150,12 @@ const rumlistaRoute = createRoute({
   component: RumlistaPage,
 })
 
+const fragelistaRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/fragor',
+  component: FragelistaPage,
+})
+
 const kallaPostRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/kalla/$slug',
@@ -270,6 +277,7 @@ const routeTree = rootRoute.addChildren([
   fragaRoute,
   temaRoute,
   rumlistaRoute,
+  fragelistaRoute,
   kallaPostRoute,
   vandringRoute,
   verklistaRoute,

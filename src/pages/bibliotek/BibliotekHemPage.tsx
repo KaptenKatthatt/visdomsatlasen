@@ -22,26 +22,17 @@ import {
 } from '../../lib/innehall'
 import { valbaraRum } from '../../lib/rumsval'
 import styles from './Bibliotek.module.css'
-import { Rad, rumsantal, Sektion } from './Biblioteksdelar'
+import { frågeantal, Rad, rumsantal, Sektion } from './Biblioteksdelar'
 
-// Frågorna står överst — biblioteket ordnas efter mänsklig erfarenhet,
-// inte efter verk eller upphovsmän (library.md, Primary Organization).
-const Fragesektion = () => {
-  const frågor = bibliotekFragor(allaFragor)
-  return (
-    <Sektion rubrik="Frågor">
-      {frågor.length === 0 ? (
-        <p className={styles.tomt}>Inga frågor ännu.</p>
-      ) : (
-        frågor.map((fråga) => (
-          <ToLink key={fråga.id} to={{ kind: 'fraga', slug: fråga.slug }} className={styles.rad}>
-            <Rad titel={fråga.text} />
-          </ToLink>
-        ))
-      )}
-    </Sektion>
-  )
-}
+// Frågorna samlas bakom en enda ingång (som rummen) — hela listan bor på
+// undersidan, så landningssidan förblir kort och lugn (library.md).
+const Fragesektion = () => (
+  <Sektion rubrik="Frågor">
+    <Link to="/bibliotek/fragor" className={styles.rad}>
+      <Rad titel="Alla frågor" sub={frågeantal(bibliotekFragor(allaFragor).length)} />
+    </Link>
+  </Sektion>
+)
 
 const Temasektion = () => {
   const teman = bibliotekTeman(allaTeman)
@@ -129,7 +120,8 @@ const Traditionssektion = () => {
 /**
  * Bibliotekets landningssida (library.md) — den medvetna ingången till
  * utforskning. Sekundär till läsrummet; lugn, ändlig, utan engagemangsmått.
- * Frågor och teman står före rum, källor och traditioner.
+ * Traditioner och källor står överst som bibliotekets lugna ram (redaktörens
+ * beslut 2026-07-18), frågorna samlade längst ner. Sparat nås via navfliken.
  */
 export const BibliotekHemPage = () => {
   useSidtitel('Biblioteket')
@@ -138,22 +130,17 @@ export const BibliotekHemPage = () => {
       <div className="kicker">Visdomsatlasen</div>
       <h1 className={styles.titel}>Biblioteket</h1>
       <p className={styles.lede}>
-        För den som vill leta vidare på egen hand — bland frågor, teman, rum och källor.
+        För den som vill leta vidare på egen hand — bland traditioner, källor, teman och frågor.
       </p>
       <Link to="/bibliotek/sok" className={styles.sokingang}>
         Sök efter en fråga, tanke eller källa
       </Link>
-      <Fragesektion />
+      <Traditionssektion />
+      <Kallsektion />
       <Temasektion />
       <Vandringssektion />
       <Rumsektion />
-      <Kallsektion />
-      <Traditionssektion />
-      <Sektion rubrik="Sparat">
-        <Link to="/samling" className={styles.rad}>
-          <Rad titel="Sparat" sub="Det du sparat och antecknat" />
-        </Link>
-      </Sektion>
+      <Fragesektion />
     </div>
   )
 }

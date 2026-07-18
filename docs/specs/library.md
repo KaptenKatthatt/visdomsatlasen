@@ -79,48 +79,62 @@ Entering it should feel like standing up from the reading chair and walking towa
 
 The Library home should provide a small number of clear entry points.
 
-Suggested sections:
+Sections, in order (editorial decision 2026-07-18):
 
-- Questions
-- Themes
-- Rooms
-- Sources
 - Traditions
-- Saved items
+- Sources
+- Themes
+- Paths
+- Rooms
+- Questions
 
 The interface should use Swedish labels:
 
-- Frågor
-- Teman
-- Rum
-- Källor
 - Traditioner
-- Sparat
+- Källor
+- Teman
+- Vandringar
+- Rum
+- Frågor
 
 Not every section needs to be equally prominent.
 
-Questions and themes should normally appear before people, books or traditions.
+Traditions and sources open the page as the library's calm frame — the shelves
+one walks past first. Questions are gathered behind a single entry point
+("Alla frågor") at the bottom, with the full list on its own subpage, so the
+landing page stays short.
+
+Saved items are not a Library home section — they are reached through the
+Sparat tab in the main navigation.
 
 ---
 
 ## Primary Organization
 
-The Library should prioritize content in this order:
+The Library home presents content in this order (editorial decision 2026-07-18,
+replacing the earlier "human experience first" ordering):
 
-1. Human questions
-2. Themes
-3. Reflection rooms
-4. Original sources
-5. Traditions
-6. Historical people and authors
+1. Traditions
+2. Original sources
+3. Themes
+4. Paths
+5. Reflection rooms
+6. Human questions (as a single "Alla frågor" entry point)
 
-The main structure should reflect the idea that Visdomsatlasen is organized around human experience rather than authority or authorship.
+Traditions and sources form the calm, stable frame of the library; questions
+remain an important entry point, but the full list lives on its own subpage
+rather than dominating the landing page. Elsewhere in the app — the reading
+room, search, theme pages — questions and themes keep their central role:
+Visdomsatlasen is still organized around human experience rather than
+authority or authorship.
 
 ---
 
 ## Questions
 
-Questions are the most important entry point in the Library.
+Questions are a central way into the Library's content. On the Library home
+they are gathered behind a single "Alla frågor" entry; the full list lives on
+its own subpage.
 
 Examples:
 

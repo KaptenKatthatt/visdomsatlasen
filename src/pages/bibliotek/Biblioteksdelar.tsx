@@ -10,6 +10,9 @@ import styles from './Bibliotek.module.css'
 
 export const rumsantal = (antal: number): string => (antal === 1 ? 'Ett rum' : `${antal} rum`)
 
+export const frågeantal = (antal: number): string =>
+  antal === 1 ? 'En fråga' : `${antal} frågor`
+
 /** Undersidornas huvud. Poster som inte är publicerade märks »Utkast« —
  * de nås bara via direkt länk och är redaktionens granskningsvy.
  * Sidhuvudets titel blir också dokumenttitel — sidhuvudet är per definition
