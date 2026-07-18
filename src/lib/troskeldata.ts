@@ -4,17 +4,8 @@
 // in hela innehållssamlingen i startbunten. Rummen laddas först när ett tema
 // väljs (dynamisk import i HemPage) eller när läsrummet/biblioteket öppnas.
 import { temaSchema, type Tema } from '../content/redaktion/schema'
-import { tolkaPostfil, type Innehallsfil, type Tolkning } from '../content/redaktion/tolka'
-
-const tillFiler = (moduler: Record<string, string>): Innehallsfil[] =>
-  Object.entries(moduler).map(([sökväg, råtext]) => ({ sökväg, råtext }))
-
-const samla = <T>(filer: Innehallsfil[], tolka: (fil: Innehallsfil) => Tolkning<T>): T[] =>
-  filer.flatMap((fil) => {
-    const tolkning = tolka(fil)
-    for (const fel of tolkning.fel) console.error('[innehåll]', fel)
-    return tolkning.värde ? [tolkning.värde] : []
-  })
+import { samla, tillFiler } from '../content/redaktion/samla'
+import { tolkaPostfil } from '../content/redaktion/tolka'
 
 export const allaTeman: Tema[] = samla(
   tillFiler(import.meta.glob<string>('../content/teman/*.md', { query: '?raw', import: 'default', eager: true })),

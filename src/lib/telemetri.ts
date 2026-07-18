@@ -45,9 +45,14 @@ export const installeraGlobalaFelfangare = (): void => {
   if (installerad || typeof window === 'undefined') return
   installerad = true
   window.addEventListener('error', (event) => {
+    // Bara riktiga skriptfel: hoppa över tomma/resurshändelser utan meddelande,
+    // så loggen bär meningsfulla poster i stället för brus. event.error är `any`
+    // i DOM-typerna; smalna av till unknown innan bruk.
+    const fel = (event as { error?: unknown }).error
+    if (!event.message && !fel) return
     rapportera({
       typ: 'okaught-fel',
-      meddelande: event.message,
+      meddelande: event.message || 'Okänt fel',
       ...(event.filename ? { källa: `${event.filename}:${event.lineno}` } : {}),
     })
   })
