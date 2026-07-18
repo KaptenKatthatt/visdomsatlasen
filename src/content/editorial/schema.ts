@@ -16,7 +16,7 @@ const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}/, 'datum som ÅÅÅÅ-MM
 // Redaktionella sök-keywords (search.md, Editorial Keywords): synonymer, vanligt
 // användarspråk och alternativa stavningar som bara förbättrar upptäckt i söket.
 // Aldrig synliga i det vanliga gränssnittet; söket viker dem för matchning.
-const nyckelordSchema = z.array(z.string().min(1)).optional()
+const keywordsSchema = z.array(z.string().min(1)).optional()
 
 /** Hur ett rum använder en source (source-and-context.md, Types of Source Use). */
 const useSchema = z.enum([
@@ -30,7 +30,7 @@ const useSchema = z.enum([
 ])
 
 /** Relation rum → source; deklareras i rummets frontmatter under `sources:`. */
-const kallrelationSchema = z.object({
+const sourceRelationSchema = z.object({
   source: idSchema,
   passage: idSchema.optional(),
   // Fritextreferens tills källpassager finns som egna poster, t.ex. "avsnitt 1".
@@ -41,7 +41,7 @@ const kallrelationSchema = z.object({
 })
 
 /** Redaktionellt ansvar (source-and-context.md, Editorial Responsibility). */
-const redaktionSchema = z.object({
+const editorialSchema = z.object({
   writer: z.string().optional(),
   sourceReviewer: z.string().optional(),
   languageReviewer: z.string().optional(),
@@ -61,13 +61,13 @@ export const roomSchema = z.object({
   themes: z.array(idSchema).min(1),
   thoughtToCarry: z.string().min(1),
   reflectionQuestions: z.array(z.string().min(1)).min(1).max(5),
-  sources: z.array(kallrelationSchema).min(1),
+  sources: z.array(sourceRelationSchema).min(1),
   readingTimeMinutes: z.number().int().min(1),
   language: z.string().default('sv'),
   status: statusSchema,
   created: dateSchema,
   updated: dateSchema,
-  editorial: redaktionSchema.optional(),
+  editorial: editorialSchema.optional(),
   tags: z.array(z.string().min(1)).optional(),
   relatedQuestions: z.array(idSchema).optional(),
   opening: z.string().min(1),
@@ -87,7 +87,7 @@ export const themeSchema = z.object({
   order: z.number().int().min(1).optional(),
   status: statusSchema,
   description: z.string().optional(),
-  keywords: nyckelordSchema,
+  keywords: keywordsSchema,
 })
 export type Theme = z.infer<typeof themeSchema>
 
@@ -100,7 +100,7 @@ export const questionSchema = z.object({
   relatedQuestions: z.array(idSchema).optional(),
   status: statusSchema,
   description: z.string().optional(),
-  keywords: nyckelordSchema,
+  keywords: keywordsSchema,
 })
 export type Question = z.infer<typeof questionSchema>
 
@@ -111,13 +111,13 @@ export const pathSchema = z.object({
   title: z.string().min(1),
   introduction: z.string().min(1),
   centralQuestion: idSchema,
-  rum: z.array(idSchema).min(3).max(7),
+  rooms: z.array(idSchema).min(3).max(7),
   closingReflection: z.string().optional(),
   status: statusSchema,
   created: dateSchema,
   updated: dateSchema,
   editorialNotes: z.string().optional(),
-  keywords: nyckelordSchema,
+  keywords: keywordsSchema,
 })
 export type Path = z.infer<typeof pathSchema>
 
@@ -155,12 +155,12 @@ export const sourceSchema = z.object({
   // Alternativa name för källan (search.md): originalspråkiga eller översatta
   // titlar och etablerade förkortningar, t.ex. "Epictetus", "Handboken".
   alias: z.array(z.string().min(1)).optional(),
-  keywords: nyckelordSchema,
+  keywords: keywordsSchema,
 })
 export type Source = z.infer<typeof sourceSchema>
 
 /** Källpassage (source-and-context.md, Suggested Passage Model). */
-export const kallpassageSchema = z.object({
+export const sourcePassageSchema = z.object({
   id: idSchema,
   source: idSchema,
   reference: z.string().min(1),
@@ -173,7 +173,7 @@ export const kallpassageSchema = z.object({
   notes: z.string().optional(),
   status: statusSchema,
 })
-export type SourcePassage = z.infer<typeof kallpassageSchema>
+export type SourcePassage = z.infer<typeof sourcePassageSchema>
 
 /** Tradition — stödpost, aldrig primary navigation (library.md). */
 export const traditionSchema = z.object({
@@ -182,7 +182,7 @@ export const traditionSchema = z.object({
   name: z.string().min(1),
   status: statusSchema,
   description: z.string().optional(),
-  keywords: nyckelordSchema,
+  keywords: keywordsSchema,
 })
 export type Tradition = z.infer<typeof traditionSchema>
 
@@ -204,12 +204,12 @@ export type Person = z.infer<typeof personSchema>
 
 /** Hela den redaktionella innehållsmängden, som korsvalideringen arbetar på. */
 export type ContentSet = {
-  rum: Room[]
+  rooms: Room[]
   themes: Theme[]
-  frågor: Question[]
-  vandringar: Path[]
+  questions: Question[]
+  paths: Path[]
   sources: Source[]
-  passager: SourcePassage[]
+  passages: SourcePassage[]
   traditions: Tradition[]
-  personer: Person[]
+  people: Person[]
 }

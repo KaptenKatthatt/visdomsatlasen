@@ -10,7 +10,7 @@ introduction: >-
   kvar och heter du. Du kan följa dem i ordning, återvända en annan dag eller
   stanna vid ett enda rum. Ingenting brådskar.
 centralQuestion: fraga-vad-haller-du-fast-vid
-rum:
+rooms:
   - rum-ursprungligen-buddha
   - rum-de-tva-pilarna
   - rum-allting-rinner-bort

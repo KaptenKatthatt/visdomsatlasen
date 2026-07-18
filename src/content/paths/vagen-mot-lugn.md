@@ -10,7 +10,7 @@ introduction: >-
   svåra. Du kan följa dem i ordning, återvända en annan dag eller stanna vid ett
   enda rum. Ingenting brådskar.
 centralQuestion: fraga-vad-kan-du-styra
-rum:
+rooms:
   - rum-det-du-inte-kan-styra
   - rum-inte-tingen-utan-tanken
   - rum-att-onska-det-som-sker

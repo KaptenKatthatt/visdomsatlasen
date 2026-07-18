@@ -94,7 +94,7 @@ const vandring = (
   title: `Vandring ${id}`,
   introduction: 'En stilla introduktion till vandringen.',
   centralQuestion: 'fraga-1',
-  rum: ['rum-1', 'rum-2', 'rum-3'],
+  rooms: ['rum-1', 'rum-2', 'rum-3'],
   status,
   created: '2026-07-14',
   updated: '2026-07-14',
@@ -102,14 +102,14 @@ const vandring = (
 })
 
 const tomtIndex = {
-  rum: [],
+  rooms: [],
   themes: [],
-  frågor: [],
-  vandringar: [],
+  questions: [],
+  paths: [],
   sources: [],
-  passager: [],
+  passages: [],
   traditions: [],
-  personer: [],
+  people: [],
 }
 
 const hitta = (index: SearchDoc[], id: string): SearchDoc | undefined =>
@@ -119,10 +119,10 @@ describe('byggSokindex — publiceringsgrind', () => {
   it('släpper aldrig in utkast, granskning eller arkiverat av någon typ', () => {
     const index = byggSokindex({
       ...tomtIndex,
-      frågor: [fraga('fraga-pub'), fraga('fraga-utkast', 'draft')],
+      questions: [fraga('fraga-pub'), fraga('fraga-utkast', 'draft')],
       themes: [tema('tema-pub'), tema('tema-granskning', 'review')],
-      rum: [rum('rum-pub'), rum('rum-arkiv', 'archived')],
-      vandringar: [vandring('vandring-utkast', 'draft')],
+      rooms: [rum('rum-pub'), rum('rum-arkiv', 'archived')],
+      paths: [vandring('vandring-utkast', 'draft')],
       sources: [kalla('kalla-pub'), kalla('kalla-utkast', 'draft')],
       traditions: [tradition('trad-pub'), tradition('trad-granskning', 'review')],
     })
@@ -134,7 +134,7 @@ describe('byggSokindex — publiceringsgrind', () => {
     const index = byggSokindex({
       ...tomtIndex,
       sources: [kalla('kalla-1')],
-      passager: [
+      passages: [
         passage('p-pub', 'kalla-1', 'published', { translation: 'synligt citat' }),
         passage('p-utkast', 'kalla-1', 'draft', { translation: 'hemligt utkast' }),
       ],
@@ -163,22 +163,22 @@ describe('byggSokindex — fält per typ', () => {
   it('ger rummet en meta med primärfrågans text och lästid', () => {
     const index = byggSokindex({
       ...tomtIndex,
-      frågor: [fraga('fraga-1', 'published', { text: 'Vad kan du styra?' })],
-      rum: [rum('rum-1', 'published', { primaryQuestion: 'fraga-1', readingTimeMinutes: 8 })],
+      questions: [fraga('fraga-1', 'published', { text: 'Vad kan du styra?' })],
+      rooms: [rum('rum-1', 'published', { primaryQuestion: 'fraga-1', readingTimeMinutes: 8 })],
     })
     expect(hitta(index, 'rum-1')?.meta).toBe('Vad kan du styra? · ca 8 min')
   })
 
   it('sätter frågans titel till frågetexten och pekar mot frågesidan', () => {
-    const index = byggSokindex({ ...tomtIndex, frågor: [fraga('fraga-1', 'published', { text: 'Hur lever man?' })] })
+    const index = byggSokindex({ ...tomtIndex, questions: [fraga('fraga-1', 'published', { text: 'Hur lever man?' })] })
     const dok = hitta(index, 'fraga-1')
     expect(dok?.title).toBe('Hur lever man?')
-    expect(dok?.mal).toEqual({ kind: 'fraga', slug: 'fraga-1' })
+    expect(dok?.target).toEqual({ kind: 'fraga', slug: 'fraga-1' })
   })
 
   it('lämnar traditioner utan sökmål (de har inga egna sidor)', () => {
     const index = byggSokindex({ ...tomtIndex, traditions: [tradition('trad-1')] })
-    expect(hitta(index, 'trad-1')?.mal).toBeUndefined()
+    expect(hitta(index, 'trad-1')?.target).toBeUndefined()
   })
 })
 

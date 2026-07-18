@@ -256,7 +256,7 @@ const useRumsminne = (rum: Room | undefined, vandring: Path | undefined): void =
   const pathPositionId =
     vandring?.status === 'published' &&
     publishedRoomId !== undefined &&
-    vandring.rum.includes(publishedRoomId)
+    vandring.rooms.includes(publishedRoomId)
       ? vandring.id
       : undefined
   useEffect(() => {

@@ -6,11 +6,11 @@
 import type { ContentFile, Parsed } from './parse'
 
 export const toFiles = (moduler: Record<string, string>): ContentFile[] =>
-  Object.entries(moduler).map(([sökväg, råtext]) => ({ sökväg, råtext }))
+  Object.entries(moduler).map(([filePath, rawText]) => ({ filePath, rawText }))
 
 export const collect = <T>(filer: ContentFile[], tolka: (fil: ContentFile) => Parsed<T>): T[] =>
   filer.flatMap((fil) => {
     const tolkning = tolka(fil)
-    for (const fel of tolkning.fel) console.error('[innehåll]', fel)
-    return tolkning.värde ? [tolkning.värde] : []
+    for (const fel of tolkning.errors) console.error('[innehåll]', fel)
+    return tolkning.value ? [tolkning.value] : []
   })

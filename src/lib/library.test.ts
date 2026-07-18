@@ -228,7 +228,7 @@ const vandring = (title: string, över: Partial<Path> = {}): Path => ({
   title,
   introduction: 'x',
   centralQuestion: 'fraga-x',
-  rum: ['rum-a', 'rum-b', 'rum-c'],
+  rooms: ['rum-a', 'rum-b', 'rum-c'],
   status: 'published',
   created: '2026-07-12',
   updated: '2026-07-12',
@@ -254,7 +254,7 @@ describe('roomsForPath', () => {
       rum('först', 'published', { id: 'rum-a' }),
       rum('mitten', 'published', { id: 'rum-b' }),
     ]
-    const v = vandring('v', { rum: ['rum-a', 'rum-b', 'rum-c'] })
+    const v = vandring('v', { rooms: ['rum-a', 'rum-b', 'rum-c'] })
     expect(roomsForPath(v, all).map((r) => r.title)).toEqual(['först', 'mitten', 'sist'])
   })
 
@@ -263,13 +263,13 @@ describe('roomsForPath', () => {
       rum('publikt', 'published', { id: 'rum-a' }),
       rum('draft', 'draft', { id: 'rum-b' }),
     ]
-    const v = vandring('v', { rum: ['rum-a', 'rum-b'] })
+    const v = vandring('v', { rooms: ['rum-a', 'rum-b'] })
     expect(roomsForPath(v, all).map((r) => r.title)).toEqual(['publikt', 'draft'])
   })
 
   it('hoppar tyst över id som saknar rum', () => {
     const all = [rum('finns', 'published', { id: 'rum-a' })]
-    const v = vandring('v', { rum: ['rum-a', 'rum-saknas'] })
+    const v = vandring('v', { rooms: ['rum-a', 'rum-saknas'] })
     expect(roomsForPath(v, all).map((r) => r.title)).toEqual(['finns'])
   })
 })

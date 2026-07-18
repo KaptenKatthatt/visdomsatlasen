@@ -6,8 +6,8 @@ import { parse as tolkaYaml } from 'yaml'
 import type { z } from 'zod'
 import { roomSchema, type Room } from './schema'
 
-export type ContentFile = { sökväg: string; råtext: string }
-export type Parsed<T> = { värde: T | null; fel: string[] }
+export type ContentFile = { filePath: string; rawText: string }
+export type Parsed<T> = { value: T | null; errors: string[] }
 
 // Sektionsrubrik i markdown → fält på rummet. Okända rubriker är fel, så
 // stavfel inte tyst sväljer text.
@@ -22,21 +22,21 @@ const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/
 type SplitFile = { frontmatter: Record<string, unknown>; kropp: string }
 
 const splitFrontmatter = (fil: ContentFile): Parsed<SplitFile> => {
-  const hit = FRONTMATTER.exec(fil.råtext)
+  const hit = FRONTMATTER.exec(fil.rawText)
   if (!hit || hit[1] === undefined || hit[2] === undefined) {
-    return { värde: null, fel: [`${fil.sökväg}: saknar frontmatter (--- ... ---)`] }
+    return { value: null, errors: [`${fil.filePath}: saknar frontmatter (--- ... ---)`] }
   }
   let data: unknown
   try {
     data = tolkaYaml(hit[1]) as unknown
   } catch (orsak: unknown) {
     const description = orsak instanceof Error ? orsak.message : String(orsak)
-    return { värde: null, fel: [`${fil.sökväg}: ogiltig yaml i frontmatter — ${description}`] }
+    return { value: null, errors: [`${fil.filePath}: ogiltig yaml i frontmatter — ${description}`] }
   }
   if (typeof data !== 'object' || data === null || Array.isArray(data)) {
-    return { värde: null, fel: [`${fil.sökväg}: frontmatter måste vara nyckel–värde-par`] }
+    return { value: null, errors: [`${fil.filePath}: frontmatter måste vara nyckel–värde-par`] }
   }
-  return { värde: { frontmatter: { ...data }, kropp: hit[2] }, fel: [] }
+  return { value: { frontmatter: { ...data }, kropp: hit[2] }, errors: [] }
 }
 
 const formateraError = (sökväg: string, brister: readonly z.core.$ZodIssue[]): string[] =>
@@ -82,29 +82,29 @@ const rumssektioner = (sökväg: string, kropp: string): Parsed<RoomFields> => {
     const name = SEKTIONER[required]
     if (name && field[name] === undefined) fel.push(`${sökväg}: saknar sektionen "## ${required}"`)
   }
-  return fel.length > 0 ? { värde: null, fel } : { värde: field, fel: [] }
+  return fel.length > 0 ? { value: null, errors: fel } : { value: field, errors: [] }
 }
 
 /** Tolkar och validerar ett rum (frontmatter + ##-sektioner). */
 export const parseRoomFile = (fil: ContentFile): Parsed<Room> => {
   const split = splitFrontmatter(fil)
-  if (!split.värde) return { värde: null, fel: split.fel }
-  const sektioner = rumssektioner(fil.sökväg, split.värde.kropp)
-  if (!sektioner.värde) return { värde: null, fel: sektioner.fel }
-  const parsed = roomSchema.safeParse({ ...split.värde.frontmatter, ...sektioner.värde })
-  if (!parsed.success) return { värde: null, fel: formateraError(fil.sökväg, parsed.error.issues) }
-  return { värde: parsed.data, fel: [] }
+  if (!split.value) return { value: null, errors: split.errors }
+  const sektioner = rumssektioner(fil.filePath, split.value.kropp)
+  if (!sektioner.value) return { value: null, errors: sektioner.errors }
+  const parsed = roomSchema.safeParse({ ...split.value.frontmatter, ...sektioner.value })
+  if (!parsed.success) return { value: null, errors: formateraError(fil.filePath, parsed.error.issues) }
+  return { value: parsed.data, errors: [] }
 }
 
 /** Tolkar och validerar en enkel post (tema, fråga, source, vandring …).
  * Brödtexten blir `description` när den inte är tom. */
 export const parsePostFile = <T>(schema: z.ZodType<T>, fil: ContentFile): Parsed<T> => {
   const split = splitFrontmatter(fil)
-  if (!split.värde) return { värde: null, fel: split.fel }
-  const kropp = split.värde.kropp.trim()
+  if (!split.value) return { value: null, errors: split.errors }
+  const kropp = split.value.kropp.trim()
   const kandidat =
-    kropp.length > 0 ? { ...split.värde.frontmatter, description: kropp } : split.värde.frontmatter
+    kropp.length > 0 ? { ...split.value.frontmatter, description: kropp } : split.value.frontmatter
   const parsed = schema.safeParse(kandidat)
-  if (!parsed.success) return { värde: null, fel: formateraError(fil.sökväg, parsed.error.issues) }
-  return { värde: parsed.data, fel: [] }
+  if (!parsed.success) return { value: null, errors: formateraError(fil.filePath, parsed.error.issues) }
+  return { value: parsed.data, errors: [] }
 }

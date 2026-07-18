@@ -10,7 +10,7 @@ introduction: >-
   ibland är att veta hur lite man vet. Du kan följa dem i ordning, återvända en
   annan dag eller stanna vid ett enda rum. Ingenting brådskar.
 centralQuestion: fraga-kan-man-handla-utan-att-veta
-rum:
+rooms:
   - rum-att-inte-veta-hur-det-slutar
   - rum-den-som-undviker-striden
   - rum-i-gryningen

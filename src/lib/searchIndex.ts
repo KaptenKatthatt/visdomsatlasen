@@ -63,9 +63,9 @@ export type SearchDoc = {
   type: SearchType
   id: string
   title: string
-  underrad?: string
+  subtitle?: string
   meta?: string
-  mal?: SearchTarget
+  target?: SearchTarget
   alias: string[]
   keywords: string[]
   text: string[]
@@ -78,8 +78,8 @@ const docFromQuestion = (fraga: Question): SearchDoc => ({
   type: 'fraga',
   id: fraga.id,
   title: fraga.text,
-  underrad: fraga.description ? utdrag(fraga.description, 110) : undefined,
-  mal: { kind: 'fraga', slug: fraga.slug },
+  subtitle: fraga.description ? utdrag(fraga.description, 110) : undefined,
+  target: { kind: 'fraga', slug: fraga.slug },
   alias: [],
   keywords: fraga.keywords ?? [],
   text: fraga.description ? [fraga.description] : [],
@@ -89,8 +89,8 @@ const docFromTheme = (tema: Theme): SearchDoc => ({
   type: 'tema',
   id: tema.id,
   title: tema.label,
-  underrad: tema.description,
-  mal: { kind: 'tema', slug: tema.slug },
+  subtitle: tema.description,
+  target: { kind: 'tema', slug: tema.slug },
   alias: [],
   keywords: tema.keywords ?? [],
   text: tema.description ? [tema.description] : [],
@@ -124,9 +124,9 @@ const docFromRoom = (
     type: 'rum',
     id: rum.id,
     title: rum.title,
-    underrad: rum.summary,
+    subtitle: rum.summary,
     meta: roomMeta(rum, fråga),
-    mal: { kind: 'rum', slug: rum.slug },
+    target: { kind: 'rum', slug: rum.slug },
     alias: [],
     keywords: rum.tags ?? [],
     text: [
@@ -154,9 +154,9 @@ const docFromPath = (
     type: 'vandring',
     id: vandring.id,
     title: vandring.title,
-    underrad: utdrag(vandring.introduction, 110),
+    subtitle: utdrag(vandring.introduction, 110),
     meta: pathMeta(rummen),
-    mal: { kind: 'vandring', slug: vandring.slug },
+    target: { kind: 'vandring', slug: vandring.slug },
     alias: [],
     keywords: vandring.keywords ?? [],
     text: [vandring.introduction, ...(central ? [central.text] : [])],
@@ -190,9 +190,9 @@ const docFromSource = (
   type: 'kalla',
   id: source.id,
   title: source.title,
-  underrad: sourceName(source),
+  subtitle: sourceName(source),
   meta: source.approximateDating,
-  mal: { kind: 'kallpost', slug: source.slug },
+  target: { kind: 'kallpost', slug: source.slug },
   alias: sourceAlias(source),
   keywords: source.keywords ?? [],
   text: [
@@ -206,8 +206,8 @@ const docFromTradition = (tradition: Tradition): SearchDoc => ({
   type: 'tradition',
   id: tradition.id,
   title: tradition.name,
-  underrad: tradition.description,
-  mal: undefined,
+  subtitle: tradition.description,
+  target: undefined,
   alias: [],
   keywords: tradition.keywords ?? [],
   text: tradition.description ? [tradition.description] : [],
@@ -221,9 +221,9 @@ const docFromPerson = (person: Person): SearchDoc => ({
   type: 'person',
   id: person.id,
   title: person.name,
-  underrad: person.shortDescription ?? (person.description ? utdrag(person.description, 110) : undefined),
+  subtitle: person.shortDescription ?? (person.description ? utdrag(person.description, 110) : undefined),
   meta: person.years,
-  mal: { kind: 'personpost', slug: person.slug },
+  target: { kind: 'personpost', slug: person.slug },
   alias: [],
   keywords: [],
   text: [
@@ -234,40 +234,40 @@ const docFromPerson = (person: Person): SearchDoc => ({
 
 type Innehall = Pick<
   ContentSet,
-  'rum' | 'themes' | 'frågor' | 'vandringar' | 'sources' | 'passager' | 'traditions' | 'personer'
+  'rooms' | 'themes' | 'questions' | 'paths' | 'sources' | 'passages' | 'traditions' | 'people'
 >
 
 /** Bygger det publika indexet. Uppslagskartorna byggs ur de PUBLICERADE
  * urvalen, så ingen utkasttext kan följa med in i ett sökbart fält ens via en
  * reference. */
 export const byggSokindex = (innehall: Innehall): SearchDoc[] => {
-  const frågor = kartaById(libraryQuestions(innehall.frågor))
+  const frågor = kartaById(libraryQuestions(innehall.questions))
   const themes = kartaById(libraryThemes(innehall.themes))
   const sources = kartaById(librarySources(innehall.sources))
   const traditions = kartaById(libraryTraditions(innehall.traditions))
   return [
-    ...libraryQuestions(innehall.frågor).map(docFromQuestion),
+    ...libraryQuestions(innehall.questions).map(docFromQuestion),
     ...libraryThemes(innehall.themes).map(docFromTheme),
-    ...libraryRooms(innehall.rum).map((rum) => docFromRoom(rum, frågor, themes, sources)),
-    ...libraryPaths(innehall.vandringar).map((vandring) =>
-      docFromPath(vandring, frågor, roomsForPath(vandring, innehall.rum)),
+    ...libraryRooms(innehall.rooms).map((rum) => docFromRoom(rum, frågor, themes, sources)),
+    ...libraryPaths(innehall.paths).map((vandring) =>
+      docFromPath(vandring, frågor, roomsForPath(vandring, innehall.rooms)),
     ),
     ...librarySources(innehall.sources).map((source) =>
-      docFromSource(source, traditions, passagesForSource(source.id, innehall.passager)),
+      docFromSource(source, traditions, passagesForSource(source.id, innehall.passages)),
     ),
     ...libraryTraditions(innehall.traditions).map(docFromTradition),
-    ...libraryPeople(innehall.personer).map(docFromPerson),
+    ...libraryPeople(innehall.people).map(docFromPerson),
   ]
 }
 
 /** Appens index, byggt en gång vid moduladdning ur allt laddat innehåll. */
 export const searchIndexData: SearchDoc[] = byggSokindex({
-  rum: allRooms,
+  rooms: allRooms,
   themes: allThemes,
-  frågor: allQuestions,
-  vandringar: allPaths,
+  questions: allQuestions,
+  paths: allPaths,
   sources: allSources,
-  passager: allPassages,
+  passages: allPassages,
   traditions: allTraditions,
-  personer: allPeople,
+  people: allPeople,
 })

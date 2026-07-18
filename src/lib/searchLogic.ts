@@ -6,16 +6,16 @@ import type { SearchDoc, SearchType } from './searchIndex'
 import { inomSkrivfel, normalisera, ordlista, soktokens, stam } from './searchNormalize'
 
 /** Vilket fält en träff kom ur — internt, visas aldrig för användaren. */
-export type HitLevel = 'title-exakt' | 'alias-exakt' | 'title' | 'keywords' | 'underrad' | 'text'
+export type HitLevel = 'title-exact' | 'alias-exact' | 'title' | 'keywords' | 'subtitle' | 'text'
 
 /** En träff. `poang`/`traffatFalt` är interna rankningsdetaljer. */
-export type SearchResult = { dokument: SearchDoc; poang: number; traffatFalt: HitLevel }
+export type SearchResult = { document: SearchDoc; score: number; matchedField: HitLevel }
 
 /** Träffar av samma type, i relevansordning. */
-export type SearchGroup = { type: SearchType; rubrik: string; traffar: SearchResult[] }
+export type SearchGroup = { type: SearchType; heading: string; hits: SearchResult[] }
 
 /** En grupp med det ändliga urval som visas + hur många som döljs bakom »Visa fler«. */
-export type VisibleGroup = { grupp: SearchGroup; synliga: SearchResult[]; dolda: number }
+export type VisibleGroup = { group: SearchGroup; visible: SearchResult[]; hidden: number }
 
 export const MAX_SYNLIGA_PER_GRUPP = 5
 export const MAX_SYNLIGA_TOTALT = 20
@@ -25,11 +25,11 @@ const MAX_PER_GRUPP = 20
 // Nivåpoäng med gap större än största typbonus (12), så typordningen bara
 // avgör inom samma nivå — exakt title slår alltid en partiell aliasträff.
 const NIVAPOANG: Record<HitLevel, number> = {
-  'title-exakt': 100,
-  'alias-exakt': 85,
+  'title-exact': 100,
+  'alias-exact': 85,
   'title': 60,
   'keywords': 44,
-  'underrad': 28,
+  'subtitle': 28,
   'text': 12,
 }
 
@@ -126,19 +126,19 @@ const faktorMotBucket = (token: string, ord: string[]): number => {
   return hit ? Math.max(best, SYNONYM_FAKTOR) : best
 }
 
-type Bucket = { niva: HitLevel; bas: number; ord: string[] }
+type Bucket = { level: HitLevel; base: number; words: string[] }
 
 // De sökbara fälten som viktade ordsamlingar. Titel och alias delar den
 // starkaste nivån — bägge är identifierande.
 const documentBuckets = (dok: SearchDoc): Bucket[] => [
   {
-    niva: 'title',
-    bas: NIVAPOANG.title,
-    ord: [...ordlista(dok.title), ...dok.alias.flatMap(ordlista)],
+    level: 'title',
+    base: NIVAPOANG.title,
+    words: [...ordlista(dok.title), ...dok.alias.flatMap(ordlista)],
   },
-  { niva: 'keywords', bas: NIVAPOANG.keywords, ord: dok.keywords.flatMap(ordlista) },
-  { niva: 'underrad', bas: NIVAPOANG.underrad, ord: dok.underrad ? ordlista(dok.underrad) : [] },
-  { niva: 'text', bas: NIVAPOANG.text, ord: dok.text.flatMap(ordlista) },
+  { level: 'keywords', base: NIVAPOANG.keywords, words: dok.keywords.flatMap(ordlista) },
+  { level: 'subtitle', base: NIVAPOANG.subtitle, words: dok.subtitle ? ordlista(dok.subtitle) : [] },
+  { level: 'text', base: NIVAPOANG.text, words: dok.text.flatMap(ordlista) },
 ]
 
 // Ett tokens bästa poäng och nivå över dokumentets fält.
@@ -146,10 +146,10 @@ const tokenBest = (token: string, buckets: Bucket[]): { poang: number; niva: Hit
   let poang = 0
   let niva: HitLevel = 'text'
   for (const bucket of buckets) {
-    const p = bucket.bas * faktorMotBucket(token, bucket.ord)
+    const p = bucket.base * faktorMotBucket(token, bucket.words)
     if (p > poang) {
       poang = p
-      niva = bucket.niva
+      niva = bucket.level
     }
   }
   return { poang, niva }
@@ -157,8 +157,8 @@ const tokenBest = (token: string, buckets: Bucket[]): { poang: number; niva: Hit
 
 // Exakt helfrågsträff (interpunktion och diakriter bortnormaliserade).
 const exactLevel = (nyckelfrågan: string, dok: SearchDoc): HitLevel | undefined => {
-  if (ordlista(dok.title).join(' ') === nyckelfrågan) return 'title-exakt'
-  if (dok.alias.some((alias) => ordlista(alias).join(' ') === nyckelfrågan)) return 'alias-exakt'
+  if (ordlista(dok.title).join(' ') === nyckelfrågan) return 'title-exact'
+  if (dok.alias.some((alias) => ordlista(alias).join(' ') === nyckelfrågan)) return 'alias-exact'
   return undefined
 }
 
@@ -170,34 +170,34 @@ const matchaDocument = (
   dok: SearchDoc,
 ): SearchResult | undefined => {
   const exact = exactLevel(nyckelfrågan, dok)
-  if (exact) return { dokument: dok, poang: NIVAPOANG[exact] + TYPBONUS[dok.type], traffatFalt: exact }
+  if (exact) return { document: dok, score: NIVAPOANG[exact] + TYPBONUS[dok.type], matchedField: exact }
   if (tokens.length === 0) return undefined
   const buckets = documentBuckets(dok)
   const perToken = tokens.map((token) => tokenBest(token, buckets))
   if (perToken.some((pt) => pt.poang <= 0)) return undefined
   const medel = perToken.reduce((summa, pt) => summa + pt.poang, 0) / perToken.length
   const best = perToken.reduce((b, pt) => (pt.poang > b.poang ? pt : b))
-  return { dokument: dok, poang: medel + TYPBONUS[dok.type], traffatFalt: best.niva }
+  return { document: dok, score: medel + TYPBONUS[dok.type], matchedField: best.niva }
 }
 
 const svTitel = (a: SearchResult, b: SearchResult): number =>
-  a.dokument.title.localeCompare(b.dokument.title, 'sv')
+  a.document.title.localeCompare(b.document.title, 'sv')
 
-const bestScore = (grupp: SearchGroup): number => grupp.traffar[0]?.poang ?? 0
+const bestScore = (grupp: SearchGroup): number => grupp.hits[0]?.score ?? 0
 
 // Grupperar träffar per type; inom gruppen på poäng och sedan svensk titelordning;
 // grupperna efter bästa träff, så den mest relevanta gruppen står först.
 const groupHits = (träffar: SearchResult[]): SearchGroup[] => {
   const karta = new Map<SearchType, SearchResult[]>()
   for (const hit of träffar) {
-    const lista = karta.get(hit.dokument.type) ?? []
+    const lista = karta.get(hit.document.type) ?? []
     lista.push(hit)
-    karta.set(hit.dokument.type, lista)
+    karta.set(hit.document.type, lista)
   }
   const grupper = [...karta.entries()].map(([type, lista]): SearchGroup => ({
     type,
-    rubrik: RUBRIK[type],
-    traffar: lista.sort((a, b) => b.poang - a.poang || svTitel(a, b)).slice(0, MAX_PER_GRUPP),
+    heading: RUBRIK[type],
+    hits: lista.sort((a, b) => b.score - a.score || svTitel(a, b)).slice(0, MAX_PER_GRUPP),
   }))
   return grupper.sort((a, b) => bestScore(b) - bestScore(a))
 }
@@ -225,8 +225,8 @@ export const visibleHits = (
   return grupper.map((grupp) => {
     const expanderad = expanderade.has(grupp.type)
     const limit = expanderad ? MAX_PER_GRUPP : Math.min(MAX_SYNLIGA_PER_GRUPP, Math.max(kvar, 0))
-    const synliga = grupp.traffar.slice(0, limit)
+    const synliga = grupp.hits.slice(0, limit)
     if (!expanderad) kvar -= synliga.length
-    return { grupp, synliga, dolda: grupp.traffar.length - synliga.length }
+    return { group: grupp, visible: synliga, hidden: grupp.hits.length - synliga.length }
   })
 }

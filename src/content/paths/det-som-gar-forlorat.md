@@ -11,7 +11,7 @@ introduction: >-
   ordning, återvända en annan dag eller stanna vid ett enda rum. Ingenting
   brådskar.
 centralQuestion: fraga-varifran-kommer-sorgen
-rum:
+rooms:
   - rum-allting-rinner-bort
   - rum-sorgens-rot
   - rum-trost-till-marcia

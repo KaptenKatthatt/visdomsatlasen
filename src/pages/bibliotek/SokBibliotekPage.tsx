@@ -53,7 +53,7 @@ const deriveResult = (
   const synliga = visibleHits(filtrerade, expanderade)
   const notes = type ? [] : searchNotes(term, anteckningar)
   const redaktionellaOchNoter =
-    filtrerade.reduce((summa, grupp) => summa + grupp.traffar.length, 0) + notes.length
+    filtrerade.reduce((summa, grupp) => summa + grupp.hits.length, 0) + notes.length
   return { synliga, notes, redaktionellaOchNoter, fel }
 }
 

@@ -60,14 +60,14 @@ const passage = (över: Partial<SourcePassage> = {}): SourcePassage => ({
 })
 
 const grund = (över: Partial<ContentSet> = {}): ContentSet => ({
-  rum: [rum()],
+  rooms: [rum()],
   themes: [tema()],
-  frågor: [fråga()],
-  vandringar: [],
+  questions: [fråga()],
+  paths: [],
   sources: [source()],
-  passager: [],
+  passages: [],
   traditions: [],
-  personer: [],
+  people: [],
   ...över,
 })
 
@@ -82,14 +82,14 @@ describe('valideraInnehall', () => {
   })
 
   it('fångar rum vars primära fråga inte finns', () => {
-    const fel = validateContent(grund({ rum: [rum({ primaryQuestion: 'saknas' })] }))
+    const fel = validateContent(grund({ rooms: [rum({ primaryQuestion: 'saknas' })] }))
     expect(fel.some((f) => f.includes('rum-a') && f.includes('saknas'))).toBe(true)
   })
 
   it('fångar rum med okänt tema och okänd källa', () => {
     const fel = validateContent(
       grund({
-        rum: [
+        rooms: [
           rum({
             themes: ['tema-x'],
             sources: [{ source: 'kalla-x', use: 'adaptation', primary: true }],
@@ -103,10 +103,10 @@ describe('valideraInnehall', () => {
 
   it('kräver primär källa för publicerade rum men inte för utkast', () => {
     const withoutPrimary = [{ source: 'kalla-a', use: 'adaptation' as const, primary: false }]
-    const draft = validateContent(grund({ rum: [rum({ sources: withoutPrimary })] }))
+    const draft = validateContent(grund({ rooms: [rum({ sources: withoutPrimary })] }))
     expect(draft).toEqual([])
     const published = validateContent(
-      grund({ rum: [rum({ status: 'published', sources: withoutPrimary })] }),
+      grund({ rooms: [rum({ status: 'published', sources: withoutPrimary })] }),
     )
     expect(published.some((f) => f.includes('primary source'))).toBe(true)
   })
@@ -114,8 +114,8 @@ describe('valideraInnehall', () => {
   it('hindrar publicerade rum från att länka opublicerat innehåll', () => {
     const fel = validateContent(
       grund({
-        rum: [rum({ status: 'published' })],
-        frågor: [fråga({ status: 'draft' })],
+        rooms: [rum({ status: 'published' })],
+        questions: [fråga({ status: 'draft' })],
         sources: [source({ status: 'review' })],
       }),
     )
@@ -135,8 +135,8 @@ describe('valideraInnehall', () => {
     }
     const draftPassage = validateContent(
       grund({
-        rum: [rum({ status: 'published', sources: medPassage })],
-        passager: [{ ...passagen, status: 'draft' }],
+        rooms: [rum({ status: 'published', sources: medPassage })],
+        passages: [{ ...passagen, status: 'draft' }],
       }),
     )
     expect(
@@ -144,8 +144,8 @@ describe('valideraInnehall', () => {
     ).toBe(true)
     const publishedPassage = validateContent(
       grund({
-        rum: [rum({ status: 'published', sources: medPassage })],
-        passager: [{ ...passagen, status: 'published' }],
+        rooms: [rum({ status: 'published', sources: medPassage })],
+        passages: [{ ...passagen, status: 'published' }],
       }),
     )
     expect(publishedPassage).toEqual([])
@@ -153,10 +153,10 @@ describe('valideraInnehall', () => {
 
   it('begränsar lästiden för publicerade rum till 1–10 minuter', () => {
     const fel = validateContent(
-      grund({ rum: [rum({ status: 'published', readingTimeMinutes: 12 })] }),
+      grund({ rooms: [rum({ status: 'published', readingTimeMinutes: 12 })] }),
     )
     expect(fel.some((f) => f.includes('lästid'))).toBe(true)
-    expect(validateContent(grund({ rum: [rum({ readingTimeMinutes: 12 })] }))).toEqual([])
+    expect(validateContent(grund({ rooms: [rum({ readingTimeMinutes: 12 })] }))).toEqual([])
   })
 
   it('kräver att temats standardrum finns och tillhör temat', () => {
@@ -178,21 +178,21 @@ describe('valideraInnehall', () => {
   it('fångar brutna relationer från frågor, vandringar och passager', () => {
     const fel = validateContent(
       grund({
-        frågor: [fråga({ themes: ['tema-x'], relatedQuestions: ['fraga-x'] })],
-        vandringar: [
+        questions: [fråga({ themes: ['tema-x'], relatedQuestions: ['fraga-x'] })],
+        paths: [
           {
             id: 'vandring-a',
             slug: 'vandring-a',
             title: 'Vandring A',
             introduction: 'Intro.',
             centralQuestion: 'fraga-x',
-            rum: ['rum-a', 'rum-x', 'rum-y'],
+            rooms: ['rum-a', 'rum-x', 'rum-y'],
             status: 'draft',
             created: '2026-07-09',
             updated: '2026-07-09',
           },
         ],
-        passager: [
+        passages: [
           { id: 'passage-a', source: 'kalla-x', reference: 'avsnitt 1', status: 'draft' },
         ],
       }),
@@ -207,7 +207,7 @@ describe('valideraInnehall', () => {
     // Frågan är publicerad men temat den pekar på (tema-a) är utkast.
     const unpublishedTheme = validateContent(
       grund({
-        rum: [rum({ themes: ['tema-b'] })],
+        rooms: [rum({ themes: ['tema-b'] })],
         themes: [tema({ status: 'draft' }), tema({ id: 'tema-b', slug: 'tema-b' })],
       }),
     )
@@ -216,7 +216,7 @@ describe('valideraInnehall', () => {
     ).toBe(true)
     const unpublishedRelaterad = validateContent(
       grund({
-        frågor: [
+        questions: [
           fråga({ relatedQuestions: ['fraga-b'] }),
           fråga({ id: 'fraga-b', slug: 'fraga-b', status: 'draft' }),
         ],
@@ -230,9 +230,9 @@ describe('valideraInnehall', () => {
     // Utkastfrågor är fria att peka på opublicerat.
     const draftQuestion = validateContent(
       grund({
-        rum: [rum({ themes: ['tema-a'], primaryQuestion: 'fraga-a' })],
+        rooms: [rum({ themes: ['tema-a'], primaryQuestion: 'fraga-a' })],
         themes: [tema(), tema({ id: 'tema-b', slug: 'tema-b', status: 'draft' })],
-        frågor: [fråga({ status: 'draft', themes: ['tema-b'] })],
+        questions: [fråga({ status: 'draft', themes: ['tema-b'] })],
       }),
     )
     expect(draftQuestion).toEqual([])
@@ -263,7 +263,7 @@ describe('valideraInnehall', () => {
     // Utkastkällor är fria — grinden gäller bara publicerat.
     const draftSource = validateContent(
       grund({
-        rum: [rum({ sources: [{ source: 'kalla-b', use: 'adaptation', primary: true }] })],
+        rooms: [rum({ sources: [{ source: 'kalla-b', use: 'adaptation', primary: true }] })],
         sources: [
           source({ id: 'kalla-b', slug: 'kalla-b' }),
           source({ status: 'draft', traditions: ['tradition-a'] }),
@@ -277,15 +277,15 @@ describe('valideraInnehall', () => {
   it('hindrar publicerade vandringar från att innehålla opublicerade rum', () => {
     const fel = validateContent(
       grund({
-        rum: [rum(), rum({ id: 'rum-b', slug: 'rum-b' }), rum({ id: 'rum-c', slug: 'rum-c' })],
-        vandringar: [
+        rooms: [rum(), rum({ id: 'rum-b', slug: 'rum-b' }), rum({ id: 'rum-c', slug: 'rum-c' })],
+        paths: [
           {
             id: 'vandring-a',
             slug: 'vandring-a',
             title: 'Vandring A',
             introduction: 'Intro.',
             centralQuestion: 'fraga-a',
-            rum: ['rum-a', 'rum-b', 'rum-c'],
+            rooms: ['rum-a', 'rum-b', 'rum-c'],
             status: 'published',
             created: '2026-07-09',
             updated: '2026-07-09',
@@ -299,9 +299,9 @@ describe('valideraInnehall', () => {
   it('kräver källpassage med utgåva för citat och översättning i publicerade rum', () => {
     const withoutPassage = [{ source: 'kalla-a', use: 'quote' as const, primary: true }]
     // Utkast får sakna passage — grinden gäller bara publicerat.
-    expect(validateContent(grund({ rum: [rum({ sources: withoutPassage })] }))).toEqual([])
+    expect(validateContent(grund({ rooms: [rum({ sources: withoutPassage })] }))).toEqual([])
     const publishedWithout = validateContent(
-      grund({ rum: [rum({ status: 'published', sources: withoutPassage })] }),
+      grund({ rooms: [rum({ status: 'published', sources: withoutPassage })] }),
     )
     expect(publishedWithout.some((f) => f.includes('quote') && f.includes('källpassage'))).toBe(true)
     // Passage utan edition räcker inte.
@@ -310,16 +310,16 @@ describe('valideraInnehall', () => {
     ]
     const withoutUtgava = validateContent(
       grund({
-        rum: [rum({ status: 'published', sources: medPassage })],
-        passager: [passage()],
+        rooms: [rum({ status: 'published', sources: medPassage })],
+        passages: [passage()],
       }),
     )
     expect(withoutUtgava.some((f) => f.includes('quote') && f.includes('edition'))).toBe(true)
     // Med reference + edition passerar citatet.
     const komplett = validateContent(
       grund({
-        rum: [rum({ status: 'published', sources: medPassage })],
-        passager: [passage({ edition: 'George Long, 1877' })],
+        rooms: [rum({ status: 'published', sources: medPassage })],
+        passages: [passage({ edition: 'George Long, 1877' })],
       }),
     )
     expect(komplett).toEqual([])
@@ -331,8 +331,8 @@ describe('valideraInnehall', () => {
     ]
     const withoutTranslator = validateContent(
       grund({
-        rum: [rum({ status: 'published', sources: relation })],
-        passager: [passage({ edition: 'Grekiska (public domain)' })],
+        rooms: [rum({ status: 'published', sources: relation })],
+        passages: [passage({ edition: 'Grekiska (public domain)' })],
       }),
     )
     expect(
@@ -340,8 +340,8 @@ describe('valideraInnehall', () => {
     ).toBe(true)
     const withTranslator = validateContent(
       grund({
-        rum: [rum({ status: 'published', sources: relation })],
-        passager: [passage({ edition: 'Grekiska (public domain)', translator: 'Redaktionen' })],
+        rooms: [rum({ status: 'published', sources: relation })],
+        passages: [passage({ edition: 'Grekiska (public domain)', translator: 'Redaktionen' })],
       }),
     )
     expect(withTranslator).toEqual([])
@@ -356,7 +356,7 @@ describe('valideraInnehall', () => {
     // Utkastkällor slipper grinden.
     const draft = validateContent(
       grund({
-        rum: [rum({ sources: [{ source: 'kalla-b', use: 'adaptation', primary: true }] })],
+        rooms: [rum({ sources: [{ source: 'kalla-b', use: 'adaptation', primary: true }] })],
         sources: [
           source({ id: 'kalla-b', slug: 'kalla-b' }),
           source({ status: 'draft', attribution: undefined, dating: undefined }),
@@ -371,20 +371,20 @@ describe('valideraInnehall', () => {
       grund({
         // fraga-b är utkast och central; rummen är publicerade så bara den
         // centrala frågan bryter grinden.
-        frågor: [fråga(), fråga({ id: 'fraga-b', slug: 'fraga-b', status: 'draft' })],
-        rum: [
+        questions: [fråga(), fråga({ id: 'fraga-b', slug: 'fraga-b', status: 'draft' })],
+        rooms: [
           rum({ status: 'published' }),
           rum({ id: 'rum-b', slug: 'rum-b', status: 'published' }),
           rum({ id: 'rum-c', slug: 'rum-c', status: 'published' }),
         ],
-        vandringar: [
+        paths: [
           {
             id: 'vandring-a',
             slug: 'vandring-a',
             title: 'Vandring A',
             introduction: 'Intro.',
             centralQuestion: 'fraga-b',
-            rum: ['rum-a', 'rum-b', 'rum-c'],
+            rooms: ['rum-a', 'rum-b', 'rum-c'],
             status: 'published',
             created: '2026-07-09',
             updated: '2026-07-09',

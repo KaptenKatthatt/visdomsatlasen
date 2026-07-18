@@ -6,7 +6,7 @@
 import {
   questionSchema,
   sourceSchema,
-  kallpassageSchema,
+  sourcePassageSchema,
   personSchema,
   traditionSchema,
   pathSchema,
@@ -53,7 +53,7 @@ export const allPaths: Path[] = collect(
  * relationens `passage`, så källans ord hålls åtskilda från redaktionell prosa. */
 export const allPassages: SourcePassage[] = collect(
   toFiles(import.meta.glob<string>('../content/passages/*.md', { query: '?raw', import: 'default', eager: true })),
-  (fil) => parsePostFile(kallpassageSchema, fil),
+  (fil) => parsePostFile(sourcePassageSchema, fil),
 )
 
 export const allTraditions: Tradition[] = collect(

@@ -8,7 +8,7 @@ import { parsePostFile, parseRoomFile, type ContentFile, type Parsed } from '../
 import {
   questionSchema,
   sourceSchema,
-  kallpassageSchema,
+  sourcePassageSchema,
   personSchema,
   themeSchema,
   traditionSchema,
@@ -26,8 +26,8 @@ const readMarkdownFiles = (katalog: string): ContentFile[] => {
     .filter((name) => name.endsWith('.md'))
     .sort()
     .map((name) => ({
-      sökväg: `src/content/${katalog}/${name}`,
-      råtext: readFileSync(path.join(dir, name), 'utf-8'),
+      filePath: `src/content/${katalog}/${name}`,
+      rawText: readFileSync(path.join(dir, name), 'utf-8'),
     }))
 }
 
@@ -36,22 +36,22 @@ const allErrors: string[] = []
 const collect = <T>(filer: ContentFile[], tolka: (fil: ContentFile) => Parsed<T>): T[] =>
   filer.flatMap((fil) => {
     const tolkning = tolka(fil)
-    allErrors.push(...tolkning.fel)
-    return tolkning.värde ? [tolkning.värde] : []
+    allErrors.push(...tolkning.errors)
+    return tolkning.value ? [tolkning.value] : []
   })
 
 const poster = <T>(katalog: string, schema: z.ZodType<T>): T[] =>
   collect(readMarkdownFiles(katalog), (fil) => parsePostFile(schema, fil))
 
 const mängd: ContentSet = {
-  rum: collect(readMarkdownFiles('rooms'), parseRoomFile),
+  rooms: collect(readMarkdownFiles('rooms'), parseRoomFile),
   themes: poster('themes', themeSchema),
-  frågor: poster('questions', questionSchema),
-  vandringar: poster('paths', pathSchema),
+  questions: poster('questions', questionSchema),
+  paths: poster('paths', pathSchema),
   sources: poster('sources', sourceSchema),
-  passager: poster('passages', kallpassageSchema),
+  passages: poster('passages', sourcePassageSchema),
   traditions: poster('traditions', traditionSchema),
-  personer: poster('people', personSchema),
+  people: poster('people', personSchema),
 }
 
 allErrors.push(...validateContent(mängd))

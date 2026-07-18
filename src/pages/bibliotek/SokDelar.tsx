@@ -24,17 +24,17 @@ const VisaFler = ({ dolda, onClick }: { dolda: number; onClick: () => void }) =>
   )
 
 const HitRow = ({ traff }: { traff: SearchResult }) => {
-  const { title, underrad, meta, mal } = traff.dokument
+  const { title, subtitle, meta, target } = traff.document
   const innehåll = (
     <span>
       <span className={styles.radTitel}>{title}</span>
-      {underrad !== undefined && <span className={styles.radSub}>{underrad}</span>}
+      {subtitle !== undefined && <span className={styles.radSub}>{subtitle}</span>}
       {meta !== undefined && <span className={styles.radMeta}>{meta}</span>}
     </span>
   )
-  if (mal === undefined) return <div className={styles.stillaRad}>{innehåll}</div>
+  if (target === undefined) return <div className={styles.stillaRad}>{innehåll}</div>
   return (
-    <ToLink to={mal} className={styles.rad}>
+    <ToLink to={target} className={styles.rad}>
       {innehåll}
       <span className={styles.chev}>›</span>
     </ToLink>
@@ -49,11 +49,11 @@ const SearchGroupSection = ({
   onVisaFler: () => void
 }) => (
   <section className={styles.grupp}>
-    <h2 className="kicker sectionKicker">{synlig.grupp.rubrik}</h2>
-    {synlig.synliga.map((traff) => (
-      <HitRow key={traff.dokument.id} traff={traff} />
+    <h2 className="kicker sectionKicker">{synlig.group.heading}</h2>
+    {synlig.visible.map((traff) => (
+      <HitRow key={traff.document.id} traff={traff} />
     ))}
-    <VisaFler dolda={synlig.dolda} onClick={onVisaFler} />
+    <VisaFler dolda={synlig.hidden} onClick={onVisaFler} />
   </section>
 )
 
@@ -254,11 +254,11 @@ export const Resultatvy = ({
         {hitCount(antal)}
       </p>
       {synliga.map((synlig) =>
-        synlig.synliga.length > 0 || synlig.dolda > 0 ? (
+        synlig.visible.length > 0 || synlig.hidden > 0 ? (
           <SearchGroupSection
-            key={synlig.grupp.type}
+            key={synlig.group.type}
             synlig={synlig}
-            onVisaFler={() => onVisaFler(synlig.grupp.type)}
+            onVisaFler={() => onVisaFler(synlig.group.type)}
           />
         ) : null,
       )}

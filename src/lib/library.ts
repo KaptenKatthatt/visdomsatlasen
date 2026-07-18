@@ -107,7 +107,7 @@ export const libraryPaths = (vandringar: Path[]): Path[] =>
  * publicerade rum, och utkastvandringen är redaktionens granskningsvy där hela
  * följden ska gå att läsa. Saknade id (redaktionellt fel) hoppas tyst över. */
 export const roomsForPath = (vandring: Path, rum: Room[]): Room[] =>
-  vandring.rum.flatMap((id) => {
+  vandring.rooms.flatMap((id) => {
     const hit = rum.find((ettRum) => ettRum.id === id)
     return hit ? [hit] : []
   })
