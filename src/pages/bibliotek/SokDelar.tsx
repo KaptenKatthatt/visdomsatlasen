@@ -171,7 +171,7 @@ export const Sokfalt = ({
   onSubmit,
 }: {
   query: string
-  onChange: (värde: string) => void
+  onChange: (value: string) => void
   onSubmit: () => void
 }) => (
   <form

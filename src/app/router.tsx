@@ -275,8 +275,8 @@ const librarySearchRoute = createRoute({
 // Bibliotekssöket (fas 10, search.md): frågan och det valfria typfiltret bärs i
 // URL:en (?q=…&type=…), så sökstate överlever navigation, refresh och delning.
 // Privata anteckningsträffar hamnar aldrig i URL:en.
-const isSearchType = (värde: unknown): värde is SearchType =>
-  typeof värde === 'string' && (SEARCH_TYPES as readonly string[]).includes(värde)
+const isSearchType = (value: unknown): value is SearchType =>
+  typeof value === 'string' && (SEARCH_TYPES as readonly string[]).includes(value)
 
 const searchLibraryRoute = createRoute({
   getParentRoute: () => rootRoute,

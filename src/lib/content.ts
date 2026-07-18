@@ -69,22 +69,22 @@ export const allPeople: Person[] = collect(
 )
 
 export const findRoom = (slug: string): Room | undefined =>
-  allRooms.find((rum) => rum.slug === slug)
+  allRooms.find((room) => room.slug === slug)
 
 export const findRoomById = (id: string): Room | undefined =>
-  allRooms.find((rum) => rum.id === id)
+  allRooms.find((room) => room.id === id)
 
 export const findTheme = (id: string): Theme | undefined =>
-  allThemes.find((tema) => tema.id === id)
+  allThemes.find((theme) => theme.id === id)
 
 export const findThemeBySlug = (slug: string): Theme | undefined =>
-  allThemes.find((tema) => tema.slug === slug)
+  allThemes.find((theme) => theme.slug === slug)
 
 export const findQuestion = (id: string): Question | undefined =>
-  allQuestions.find((fråga) => fråga.id === id)
+  allQuestions.find((question) => question.id === id)
 
 export const findQuestionBySlug = (slug: string): Question | undefined =>
-  allQuestions.find((fråga) => fråga.slug === slug)
+  allQuestions.find((question) => question.slug === slug)
 
 export const findSource = (id: string): Source | undefined =>
   allSources.find((source) => source.id === id)
@@ -99,10 +99,10 @@ export const findPersonBySlug = (slug: string): Person | undefined =>
   allPeople.find((person) => person.slug === slug)
 
 export const findPathBySlug = (slug: string): Path | undefined =>
-  allPaths.find((vandring) => vandring.slug === slug)
+  allPaths.find((path) => path.slug === slug)
 
 export const findPathById = (id: string): Path | undefined =>
-  allPaths.find((vandring) => vandring.id === id)
+  allPaths.find((path) => path.id === id)
 
 export const findPassage = (id: string): SourcePassage | undefined =>
   allPassages.find((passage) => passage.id === id)
@@ -111,8 +111,8 @@ export const findPassage = (id: string): SourcePassage | undefined =>
 export const paragraphs = (text: string): string[] =>
   text
     .split(/\n\s*\n/)
-    .map((stycke) => stycke.replace(/\s*\n\s*/g, ' ').trim())
-    .filter((stycke) => stycke.length > 0)
+    .map((paragraph) => paragraph.replace(/\s*\n\s*/g, ' ').trim())
+    .filter((paragraph) => paragraph.length > 0)
 
 /** Namnet i kolofonen: den tillskrivna rösten före nedtecknaren före verket. */
 export const sourceName = (source: Source): string =>

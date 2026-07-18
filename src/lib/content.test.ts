@@ -15,17 +15,17 @@ import {
 describe('innehållsladdaren', () => {
   it('laddar exempelrummet från markdown', () => {
     expect(allRooms.length).toBeGreaterThan(0)
-    const rum = findRoom('det-du-inte-kan-styra')
-    expect(rum?.title).toBe('Det du inte kan styra')
-    expect(rum?.opening.length).toBeGreaterThan(0)
-    expect(rum?.core.length).toBeGreaterThan(0)
+    const room = findRoom('det-du-inte-kan-styra')
+    expect(room?.title).toBe('Det du inte kan styra')
+    expect(room?.opening.length).toBeGreaterThan(0)
+    expect(room?.core.length).toBeGreaterThan(0)
   })
 
   it('hittar rummets tema och källa via relationerna', () => {
-    const rum = findRoom('det-du-inte-kan-styra')
-    const tema = rum ? findTheme(rum.themes[0] ?? '') : undefined
-    expect(tema?.label).toBe('Lugn')
-    const source = rum ? findSource(rum.sources[0]?.source ?? '') : undefined
+    const room = findRoom('det-du-inte-kan-styra')
+    const theme = room ? findTheme(room.themes[0] ?? '') : undefined
+    expect(theme?.label).toBe('Lugn')
+    const source = room ? findSource(room.sources[0]?.source ?? '') : undefined
     expect(source && sourceName(source)).toBe('Epiktetos')
   })
 
@@ -39,7 +39,7 @@ describe('innehållsladdaren', () => {
 
 describe('tröskeln', () => {
   it('ordnar temana redaktionellt och visar bara publicerade', () => {
-    expect(thresholdThemes.map((tema) => tema.label)).toEqual([
+    expect(thresholdThemes.map((theme) => theme.label)).toEqual([
       'Lugn',
       'Mening',
       'Mod',
@@ -48,7 +48,7 @@ describe('tröskeln', () => {
       'Människan',
       'Jesus',
     ])
-    expect(thresholdThemes.every((tema) => tema.status === 'published')).toBe(true)
+    expect(thresholdThemes.every((theme) => theme.status === 'published')).toBe(true)
   })
 })
 

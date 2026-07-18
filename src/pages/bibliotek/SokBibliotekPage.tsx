@@ -19,7 +19,7 @@ import { Filter, SourceTextGroup, Resultatvy, Sokfalt, type SourceTextResponse, 
 // Vilka grupper som expanderats, ihågkommet per normaliserad fråga över
 // navigation inom sessionen (search.md: sökstate får vara tillfälligt).
 const expansionsminne = new Map<string, Set<SearchType>>()
-const getExpansion = (nyckel: string): Set<SearchType> => new Set(expansionsminne.get(nyckel))
+const getExpansion = (key: string): Set<SearchType> => new Set(expansionsminne.get(key))
 
 // Den delbara sökparametern; tom fråga och intet filter utelämnas ur URL:en.
 const searchObject = (term: string, type: SearchType | undefined): SearchParams => ({
@@ -53,12 +53,12 @@ const deriveResult = (
   const synliga = visibleHits(filtrerade, expanderade)
   const notes = type ? [] : searchNotes(term, anteckningar)
   const redaktionellaOchNoter =
-    filtrerade.reduce((summa, grupp) => summa + grupp.hits.length, 0) + notes.length
+    filtrerade.reduce((sum, grupp) => sum + grupp.hits.length, 0) + notes.length
   return { synliga, notes, redaktionellaOchNoter, fel }
 }
 
-const computeMode = (nyckel: string, fel: boolean): SearchMode =>
-  nyckel.length < 2 ? 'tom' : fel ? 'fel' : 'klar'
+const computeMode = (key: string, fel: boolean): SearchMode =>
+  key.length < 2 ? 'tom' : fel ? 'fel' : 'klar'
 
 const TOMT_KALLTEXTSVAR: SourceTextResponse = { books: [], hits: [] }
 
@@ -72,12 +72,12 @@ const isCompletelyEmpty = (redaktionellaOchNoter: number, kalltextAntal: number,
 
 // Lägger till en expanderad grupp och sparar det i sessionsminnet.
 const nyExpansion = (
-  föregående: ReadonlySet<SearchType>,
-  nyckel: string,
-  grupptyp: SearchType,
+  previous: ReadonlySet<SearchType>,
+  key: string,
+  groupType: SearchType,
 ): Set<SearchType> => {
-  const next = new Set(föregående).add(grupptyp)
-  expansionsminne.set(nyckel, next)
+  const next = new Set(previous).add(groupType)
+  expansionsminne.set(key, next)
   return next
 }
 
@@ -93,8 +93,8 @@ const useSoktillstand = (
   const [direkt, setDirekt] = useState<string | null>(null)
   const debounced = useDebounced(query.trim(), 250)
   const term = direkt ?? debounced
-  const nyckel = normalisera(term)
-  const [expanderade, setExpanderade] = useState<Set<SearchType>>(() => getExpansion(nyckel))
+  const key = normalisera(term)
+  const [expanderade, setExpanderade] = useState<Set<SearchType>>(() => getExpansion(key))
 
   useEffect(() => {
     if (term !== q) onNavigera(searchObject(term, type))
@@ -107,11 +107,11 @@ const useSoktillstand = (
   return {
     query,
     term,
-    nyckel,
+    key,
     expanderade,
-    visaFler: (grupptyp: SearchType) => setExpanderade((prev) => nyExpansion(prev, nyckel, grupptyp)),
-    ändraFråga: (värde: string) => {
-      setQuery(värde)
+    visaFler: (groupType: SearchType) => setExpanderade((prev) => nyExpansion(prev, key, groupType)),
+    ändraFråga: (value: string) => {
+      setQuery(value)
       setDirekt(null)
     },
     sökDirekt: () => setDirekt(query.trim()),
@@ -126,7 +126,7 @@ type Props = {
 
 export const SokBibliotekPage = ({ q, type, onNavigera }: Props) => {
   useSidtitel('Sök i Biblioteket')
-  const { query, term, nyckel, expanderade, visaFler, ändraFråga, sökDirekt } = useSoktillstand(
+  const { query, term, key, expanderade, visaFler, ändraFråga, sökDirekt } = useSoktillstand(
     q,
     type,
     onNavigera,
@@ -135,7 +135,7 @@ export const SokBibliotekPage = ({ q, type, onNavigera }: Props) => {
 
   // Verssöket (verkläsarens FTS) körs bara utan typfilter och för fråga ≥ 2
   // tecken; annars ett tomt svar utan nätanrop. Egen väg, egen laddning.
-  const searchSourceText = nyckel.length >= 2 && type === undefined
+  const searchSourceText = key.length >= 2 && type === undefined
   const kalltext = useAsync<SourceTextResponse>(
     () => (searchSourceText ? searchLibrary(term) : Promise.resolve(TOMT_KALLTEXTSVAR)),
     [term, searchSourceText],
@@ -155,10 +155,10 @@ export const SokBibliotekPage = ({ q, type, onNavigera }: Props) => {
   // helt tom sökning (anonymiserat). Anteckningssöket rör detta aldrig, och
   // frågans text loggas aldrig — bara längd och ordantal.
   useEffect(() => {
-    if (nyckel.length < 2) return
+    if (key.length < 2) return
     if (fel) report({ type: 'sokfel', detalj: 'index' })
     else if (ingaTraffar) report({ type: 'sok-nolltraff', ...anonymizeQuestion(term) })
-  }, [nyckel, fel, ingaTraffar, term])
+  }, [key, fel, ingaTraffar, term])
 
   return (
     <div className="screenSub">
@@ -166,16 +166,16 @@ export const SokBibliotekPage = ({ q, type, onNavigera }: Props) => {
       <Sokfalt query={query} onChange={ändraFråga} onSubmit={sökDirekt} />
       <Filter aktiv={type} antal={antal} onVal={(nyTyp) => onNavigera(searchObject(term, nyTyp))} />
       <Resultatvy
-        läge={computeMode(nyckel, fel)}
+        läge={computeMode(key, fel)}
         ingaTraffar={ingaTraffar}
         synliga={synliga}
         kalltext={
           type === undefined ? (
-            <SourceTextGroup key={nyckel} svar={kalltext.data} fel={kalltext.error} />
+            <SourceTextGroup key={key} svar={kalltext.data} fel={kalltext.error} />
           ) : null
         }
         notes={notes}
-        nyckel={nyckel}
+        nyckel={key}
         antal={antal}
         onVisaFler={visaFler}
       />

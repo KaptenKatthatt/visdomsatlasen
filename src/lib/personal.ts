@@ -36,8 +36,8 @@ export type Note = {
   updated: string
 }
 
-const isRecord = (värde: unknown): värde is Record<string, unknown> =>
-  typeof värde === 'object' && värde !== null && !Array.isArray(värde)
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
 
 // Kanoniska ursprungsvärden plus de svenska värden en tidigare version lagrade,
 // normaliserade till de nya vid inläsning så en uppgradering aldrig tappar ursprung.
@@ -50,16 +50,16 @@ const ORIGIN_ALIAS: Record<string, Origin> = {
   amne: 'topic',
 }
 
-const toOrigin = (värde: unknown): Origin | undefined =>
-  typeof värde === 'string' ? ORIGIN_ALIAS[värde] : undefined
+const toOrigin = (value: unknown): Origin | undefined =>
+  typeof value === 'string' ? ORIGIN_ALIAS[value] : undefined
 
 // En sparad post ur okänd lagring: gammal `true` → migrerad utan datum, gammal
 // `false` släpps, redan migrerad `{ savedWhen }` passerar orörd (den svenska
 // nyckeln `sparadNar` läses som fallback). Allt annat släpps.
-const migrateSavedItem = (värde: unknown): SavedItem | null => {
-  if (värde === true) return { savedWhen: null }
-  if (isRecord(värde)) {
-    const savedWhen = 'savedWhen' in värde ? värde.savedWhen : värde.sparadNar
+const migrateSavedItem = (value: unknown): SavedItem | null => {
+  if (value === true) return { savedWhen: null }
+  if (isRecord(value)) {
+    const savedWhen = 'savedWhen' in value ? value.savedWhen : value.sparadNar
     if (savedWhen === null || typeof savedWhen === 'string') return { savedWhen }
   }
   return null
@@ -67,10 +67,10 @@ const migrateSavedItem = (värde: unknown): SavedItem | null => {
 
 /** Migrerar ett sparat-record (rum eller vandringar) tyst och förlustfritt.
  * Idempotent: redan migrerad form går igenom oförändrad. Kastar aldrig. */
-export const migrateSaved = (rått: unknown): Record<string, SavedItem> => {
+export const migrateSaved = (raw: unknown): Record<string, SavedItem> => {
   const ut: Record<string, SavedItem> = {}
-  if (!isRecord(rått)) return ut
-  for (const [id, värde] of Object.entries(rått)) {
+  if (!isRecord(raw)) return ut
+  for (const [id, värde] of Object.entries(raw)) {
     const post = migrateSavedItem(värde)
     if (post) ut[id] = post
   }
@@ -79,15 +79,15 @@ export const migrateSaved = (rått: unknown): Record<string, SavedItem> => {
 
 // En redan migrerad anteckning ur okänd lagring, defensivt narrowad. Fält som
 // saknas eller är korrupta får trygga fallbacks — texten bevaras alltid.
-const migrateNoteItem = (id: string, värde: unknown, nu: string): Note | null => {
-  if (!isRecord(värde)) return null
+const migrateNoteItem = (id: string, value: unknown, nu: string): Note | null => {
+  if (!isRecord(value)) return null
   // Äldre lagrade anteckningar bär de svenska tidsstämpelnycklarna `skapad`/
   // `uppdaterad`; läs dem som fallback så en uppgradering aldrig nollställer
   // kronologin (anteckningsvyn sorterar på `updated`, importkonflikter avgörs på det).
   // Nya nycklar först, de svenska (originType/originId hette ursprungTyp/ursprungId)
   // som fallback så en uppgradering aldrig tappar en anteckning.
   const { originType, originId, ursprungTyp, ursprungId, text, created, updated, skapad, uppdaterad } =
-    värde
+    value
   if (typeof text !== 'string' || text.trim().length === 0) return null
   const firstString = (a: unknown, b: unknown): string =>
     typeof a === 'string' ? a : typeof b === 'string' ? b : nu
@@ -104,14 +104,14 @@ const migrateNoteItem = (id: string, värde: unknown, nu: string): Note | null =
 // Gamla `notes` (id→text) → ursprungskopplade poster; tomma prunas.
 const itemsFromGamlaNotes = (
   gamlaNotes: unknown,
-  klassificera: (id: string) => Origin,
+  classify: (id: string) => Origin,
   nu: string,
 ): Record<string, Note> => {
   const ut: Record<string, Note> = {}
   if (!isRecord(gamlaNotes)) return ut
   for (const [id, värde] of Object.entries(gamlaNotes)) {
     if (typeof värde !== 'string' || värde.trim().length === 0) continue
-    ut[id] = { originType: klassificera(id), originId: id, text: värde, created: nu, updated: nu }
+    ut[id] = { originType: classify(id), originId: id, text: värde, created: nu, updated: nu }
   }
   return ut
 }
@@ -134,10 +134,10 @@ const itemsFromMigrerade = (nyaAnteckningar: unknown, nu: string): Record<string
 export const migrateNotes = (
   gamlaNotes: unknown,
   nyaAnteckningar: unknown,
-  klassificera: (id: string) => Origin,
+  classify: (id: string) => Origin,
   nu: string,
 ): Record<string, Note> => ({
-  ...itemsFromGamlaNotes(gamlaNotes, klassificera, nu),
+  ...itemsFromGamlaNotes(gamlaNotes, classify, nu),
   ...itemsFromMigrerade(nyaAnteckningar, nu),
 })
 
@@ -145,7 +145,7 @@ export const migrateNotes = (
  * den befintliga posten (autospar utan synlig versionshistorik), `updated`
  * flyttas fram. */
 export const updatedNote = (
-  befintlig: Note | undefined,
+  existing: Note | undefined,
   type: Origin,
   id: string,
   text: string,
@@ -154,15 +154,15 @@ export const updatedNote = (
   originType: type,
   originId: id,
   text,
-  created: befintlig?.created ?? nu,
+  created: existing?.created ?? nu,
   updated: nu,
 })
 
 /** Sparade poster i tidsordning: senast sparat först. Migrerade poster utan
  * datum (`sparadNar === null`) sorteras sist via tom nyckel. */
-export const savedIdsByTime = (poster: Record<string, SavedItem>): string[] => {
-  const nyckel = (id: string): string => poster[id]?.savedWhen ?? ''
-  return Object.keys(poster).sort((a, b) => nyckel(b).localeCompare(nyckel(a)))
+export const savedIdsByTime = (items: Record<string, SavedItem>): string[] => {
+  const key = (id: string): string => items[id]?.savedWhen ?? ''
+  return Object.keys(items).sort((a, b) => key(b).localeCompare(key(a)))
 }
 
 /** Anteckningsöversiktens order: senast ändrad först, tomma utelämnade
@@ -174,8 +174,8 @@ export const sortedNotes = (anteckningar: Record<string, Note>): Note[] =>
 
 /** Kort utdrag för preview-kort; klipper generöst och osynligt (spec Note Length). */
 export const utdrag = (text: string, max = 72): string => {
-  const rensad = text.trim()
-  return rensad.length > max ? `${rensad.slice(0, max)}…` : rensad
+  const cleaned = text.trim()
+  return cleaned.length > max ? `${cleaned.slice(0, max)}…` : cleaned
 }
 
 /** Stilla svenskt datum för »sparad«-raden, eller inget vid okänt/ogiltigt datum. */

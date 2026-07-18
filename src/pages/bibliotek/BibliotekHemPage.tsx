@@ -43,9 +43,9 @@ const Temasektion = () => {
       {themes.length === 0 ? (
         <p className={styles.tomt}>Inga teman ännu.</p>
       ) : (
-        themes.map((tema) => (
-          <ToLink key={tema.id} to={{ kind: 'tema', slug: tema.slug }} className={styles.rad}>
-            <Row title={tema.label} sub={roomCount(valbaraRoom(tema.id, allRooms).length)} />
+        themes.map((theme) => (
+          <ToLink key={theme.id} to={{ kind: 'tema', slug: theme.slug }} className={styles.rad}>
+            <Row title={theme.label} sub={roomCount(valbaraRoom(theme.id, allRooms).length)} />
           </ToLink>
         ))
       )}
@@ -58,20 +58,20 @@ const Temasektion = () => {
 // vandringar finns (samma disciplin som traditionerna). Utkast granskas via
 // direkt länk.
 const Vandringssektion = () => {
-  const vandringar = libraryPaths(allPaths)
-  if (vandringar.length === 0) return null
+  const paths = libraryPaths(allPaths)
+  if (paths.length === 0) return null
   return (
     <Section rubrik="Vandringar">
-      {vandringar.map((vandring) => {
-        const rummen = roomsForPath(vandring, allRooms)
-        const sub = `${roomCount(rummen.length)} · ca ${pathReadingTime(rummen)} min`
+      {paths.map((path) => {
+        const rooms = roomsForPath(path, allRooms)
+        const sub = `${roomCount(rooms.length)} · ca ${pathReadingTime(rooms)} min`
         return (
           <ToLink
-            key={vandring.id}
-            to={{ kind: 'vandring', slug: vandring.slug }}
+            key={path.id}
+            to={{ kind: 'vandring', slug: path.slug }}
             className={styles.rad}
           >
-            <Row title={vandring.title} sub={sub} />
+            <Row title={path.title} sub={sub} />
           </ToLink>
         )
       })}

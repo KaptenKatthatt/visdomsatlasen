@@ -7,8 +7,8 @@ import styles from './RumRad.module.css'
  * kort summary, tema och ungefärlig lästid. Inget mer — inga mått,
  * ingen brådska. Länken öppnar rummet i läsrumsläge. */
 export const RoomRow = ({ rum }: { rum: Room }) => {
-  const tema = findTheme(rum.themes[0] ?? '')
-  const meta = [tema?.label, `${rum.readingTimeMinutes} min`].filter(Boolean).join(' · ')
+  const theme = findTheme(rum.themes[0] ?? '')
+  const meta = [theme?.label, `${rum.readingTimeMinutes} min`].filter(Boolean).join(' · ')
   return (
     <ToLink to={{ kind: 'rum', slug: rum.slug }} className={styles.rad}>
       <span className={styles.title}>{rum.title}</span>

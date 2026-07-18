@@ -20,11 +20,11 @@ const matchar = (tokens: string[], text: string): boolean => {
 /** Söker användarens anteckningar, senast ändrad först. Tomma anteckningar och
  * frågor kortare än två meningsbärande tecken ger inget. */
 export const searchNotes = (
-  fraga: string,
+  question: string,
   anteckningar: Record<string, Note>,
 ): Note[] => {
-  if (ordlista(fraga).join(' ').length < 2) return []
-  const tokens = soktokens(fraga)
+  if (ordlista(question).join(' ').length < 2) return []
+  const tokens = soktokens(question)
   if (tokens.length === 0) return []
   return Object.values(anteckningar)
     .filter((anteckning) => anteckning.text.trim().length > 0)

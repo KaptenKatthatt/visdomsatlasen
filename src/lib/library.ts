@@ -14,8 +14,8 @@ import type {
   Path,
 } from '../content/editorial/schema'
 
-const onlyPublished = <T extends { status: Room['status'] }>(poster: T[]): T[] =>
-  poster.filter((post) => post.status === 'published')
+const onlyPublished = <T extends { status: Room['status'] }>(items: T[]): T[] =>
+  items.filter((post) => post.status === 'published')
 
 const svOrdning =
   <T,>(text: (post: T) => string) =>
@@ -41,8 +41,8 @@ export const libraryThemes = (themes: Theme[]): Theme[] =>
   )
 
 /** Den ändliga rumslistan: publicerade rum i svensk titelordning. */
-export const libraryRooms = (rum: Room[]): Room[] =>
-  onlyPublished(rum).sort(svOrdning((r) => r.title))
+export const libraryRooms = (rooms: Room[]): Room[] =>
+  onlyPublished(rooms).sort(svOrdning((r) => r.title))
 
 /** Bibliotekets källposter: publicerade, i svensk titelordning. */
 export const librarySources = (sources: Source[]): Source[] =>
@@ -59,38 +59,38 @@ export const libraryPeople = (people: Person[]): Person[] =>
   onlyPublished(people).sort(svOrdning((p) => p.name))
 
 /** Bibliotekets frågor: publicerade, i svensk textordning. */
-export const libraryQuestions = (frågor: Question[]): Question[] =>
-  onlyPublished(frågor).sort(svOrdning((f) => f.text))
+export const libraryQuestions = (questions: Question[]): Question[] =>
+  onlyPublished(questions).sort(svOrdning((f) => f.text))
 
 const compareTitleSv = svOrdning<Room>((r) => r.title)
 
 /** Frågesidans rum: rum som bär frågan som sitt eget anspråk (primaryQuestion)
  * står först; rum som bara pekar på den bland relatedQuestions breddar
  * efteråt. En ändlig lista — aldrig en sekvens. */
-export const roomsForQuestion = (fragaId: string, rum: Room[]): Room[] => {
-  const published = onlyPublished(rum)
-  const primary = published.filter((ettRum) => ettRum.primaryQuestion === fragaId).sort(compareTitleSv)
+export const roomsForQuestion = (questionId: string, rooms: Room[]): Room[] => {
+  const published = onlyPublished(rooms)
+  const primary = published.filter((room) => room.primaryQuestion === questionId).sort(compareTitleSv)
   const relaterade = published
     .filter(
-      (ettRum) =>
-        ettRum.primaryQuestion !== fragaId && (ettRum.relatedQuestions ?? []).includes(fragaId),
+      (room) =>
+        room.primaryQuestion !== questionId && (room.relatedQuestions ?? []).includes(questionId),
     )
     .sort(compareTitleSv)
   return [...primary, ...relaterade]
 }
 
 /** Temasidans frågor: publicerade frågor taggade med temat. */
-export const questionsForTheme = (temaId: string, frågor: Question[]): Question[] =>
-  onlyPublished(frågor)
-    .filter((fråga) => fråga.themes.includes(temaId))
+export const questionsForTheme = (themeId: string, questions: Question[]): Question[] =>
+  onlyPublished(questions)
+    .filter((question) => question.themes.includes(themeId))
     .sort(svOrdning((f) => f.text))
 
 /** Frågans källmaterial: källorna bakom frågans rum — frågeschemat har inga
  * egna källreferenser, så materialet härleds ur rummens relationer. */
-export const sourcesForQuestion = (fragaId: string, rum: Room[], sources: Source[]): Source[] => {
+export const sourcesForQuestion = (questionId: string, rooms: Room[], sources: Source[]): Source[] => {
   const ids = new Set(
-    roomsForQuestion(fragaId, rum).flatMap((ettRum) =>
-      ettRum.sources.map((relation) => relation.source),
+    roomsForQuestion(questionId, rooms).flatMap((room) =>
+      room.sources.map((relation) => relation.source),
     ),
   )
   return librarySources(sources.filter((source) => ids.has(source.id)))
@@ -98,23 +98,23 @@ export const sourcesForQuestion = (fragaId: string, rum: Room[], sources: Source
 
 /** Bibliotekets vandringar: publicerade, i svensk titelordning (paths.md,
  * Discoverability — en stilla sektion, aldrig framhävd). */
-export const libraryPaths = (vandringar: Path[]): Path[] =>
-  onlyPublished(vandringar).sort(svOrdning((v) => v.title))
+export const libraryPaths = (paths: Path[]): Path[] =>
+  onlyPublished(paths).sort(svOrdning((v) => v.title))
 
 /** Vandringens rum i redaktionell order — `rum`-listan ÄR sekvensen
  * (paths.md, Data Requirements), så inget sorteras om. Rummen behålls oavsett
  * status: valideringsgrinden ser till att en publicerad vandring bara rymmer
  * publicerade rum, och utkastvandringen är redaktionens granskningsvy där hela
  * följden ska gå att läsa. Saknade id (redaktionellt fel) hoppas tyst över. */
-export const roomsForPath = (vandring: Path, rum: Room[]): Room[] =>
-  vandring.rooms.flatMap((id) => {
-    const hit = rum.find((ettRum) => ettRum.id === id)
+export const roomsForPath = (path: Path, rooms: Room[]): Room[] =>
+  path.rooms.flatMap((id) => {
+    const hit = rooms.find((room) => room.id === id)
     return hit ? [hit] : []
   })
 
 /** Ungefärlig sammanlagd lästid för vandringens rum (paths.md, Path Overview). */
-export const pathReadingTime = (rum: Room[]): number =>
-  rum.reduce((summa, ettRum) => summa + ettRum.readingTimeMinutes, 0)
+export const pathReadingTime = (rooms: Room[]): number =>
+  rooms.reduce((sum, room) => sum + room.readingTimeMinutes, 0)
 
 /** Vandringens traditions, stilla härledda ur rummens sources (paths.md,
  * source traditions shown quietly): rum → source → traditions, bara
@@ -125,7 +125,7 @@ export const traditionsForPath = (
   traditions: Tradition[],
 ): Tradition[] => {
   const sourceIds = new Set(
-    vandringensRum.flatMap((ettRum) => ettRum.sources.map((relation) => relation.source)),
+    vandringensRum.flatMap((room) => room.sources.map((relation) => relation.source)),
   )
   const traditionIds = new Set(
     sources
@@ -138,16 +138,16 @@ export const traditionsForPath = (
 /** Källans publicerade passager, i naturlig referensordning (»avsnitt 5« före
  * »avsnitt 43«, inte tvärtom). Bara publicerade passager når biblioteket;
  * utkast är redaktionens granskningsvy. */
-export const passagesForSource = (kallaId: string, passager: SourcePassage[]): SourcePassage[] =>
+export const passagesForSource = (sourceId: string, passager: SourcePassage[]): SourcePassage[] =>
   onlyPublished(passager)
-    .filter((passage) => passage.source === kallaId)
+    .filter((passage) => passage.source === sourceId)
     .sort((a, b) => a.reference.localeCompare(b.reference, 'sv', { numeric: true }))
 
 /** Publicerade rum som använder källan — rum med primary relation först. */
-export const roomsForSource = (kallaId: string, rum: Room[]): Room[] => {
-  const primaryWeight = (ettRum: Room): number =>
-    ettRum.sources.some((relation) => relation.source === kallaId && relation.primary) ? 0 : 1
-  return onlyPublished(rum)
-    .filter((ettRum) => ettRum.sources.some((relation) => relation.source === kallaId))
+export const roomsForSource = (sourceId: string, rooms: Room[]): Room[] => {
+  const primaryWeight = (room: Room): number =>
+    room.sources.some((relation) => relation.source === sourceId && relation.primary) ? 0 : 1
+  return onlyPublished(rooms)
+    .filter((room) => room.sources.some((relation) => relation.source === sourceId))
     .sort((a, b) => primaryWeight(a) - primaryWeight(b) || compareTitleSv(a, b))
 }

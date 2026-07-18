@@ -27,8 +27,8 @@ export const report = (handelse: TechnicalEvent): void => {
 
 /** Anonymiserar en sökfråga till ofarliga mått (analytics.md, Sensitive Query
  * Data): bara längd och ordantal, aldrig själva texten. */
-export const anonymizeQuestion = (fraga: string): { langd: number; ord: number } => {
-  const trimmad = fraga.trim()
+export const anonymizeQuestion = (question: string): { langd: number; ord: number } => {
+  const trimmad = question.trim()
   return { langd: trimmad.length, ord: trimmad === '' ? 0 : trimmad.split(/\s+/).length }
 }
 
@@ -58,7 +58,7 @@ export const installeraGlobalaFelfangare = (): void => {
   })
   window.addEventListener('unhandledrejection', (event) => {
     // event.reason är `any` i DOM-typerna; smalna av till unknown innan use.
-    const orsak = (event as { reason?: unknown }).reason
-    report({ type: 'okaught-fel', meddelande: orsak instanceof Error ? orsak.message : String(orsak) })
+    const cause = (event as { reason?: unknown }).reason
+    report({ type: 'okaught-fel', meddelande: cause instanceof Error ? cause.message : String(cause) })
   })
 }

@@ -10,12 +10,12 @@ export const HISTORIKLANGD = 3
 
 /** Urvalsmängden: publicerade rum som bär temat. Att ett rum är publicerat
  * och taggat med temat är godkännandet — utkast kan aldrig väljas. */
-export const valbaraRoom = (temaId: string, rum: Room[]): Room[] =>
-  rum.filter((ettRum) => ettRum.status === 'published' && ettRum.themes.includes(temaId))
+export const valbaraRoom = (themeId: string, rooms: Room[]): Room[] =>
+  rooms.filter((room) => room.status === 'published' && room.themes.includes(themeId))
 
 // Lägre värde = mer nyligen läst; aldrig lästa rum hamnar längst bort.
-const avstand = (id: string, senastLasta: string[]): number => {
-  const index = senastLasta.indexOf(id)
+const avstand = (id: string, recentlyRead: string[]): number => {
+  const index = recentlyRead.indexOf(id)
   return index === -1 ? Number.MAX_SAFE_INTEGER : index
 }
 
@@ -23,19 +23,19 @@ const avstand = (id: string, senastLasta: string[]): number => {
  * lästs; annars det alternativ som lästs längst sedan (aldrig lästa vinner,
  * lika avgörs av innehållsordningen). Är allt nyligen läst tillåts
  * upprepning — den är aldrig ett misslyckande. Null = lugnt tomläge. */
-export const selectRoom = (tema: Theme, rum: Room[], senastLasta: string[]): Room | null => {
-  const mangd = valbaraRoom(tema.id, rum)
-  if (mangd.length === 0) return null
+export const selectRoom = (theme: Theme, rooms: Room[], recentlyRead: string[]): Room | null => {
+  const set = valbaraRoom(theme.id, rooms)
+  if (set.length === 0) return null
   // Ett enda fönster styr både "nyligen läst" och längst-sedan-ordningen,
   // så poster utanför fönstret aldrig påverkar valet. Urvalsregeln äger
   // fönstret; storens cap är bara lagringsstädning.
-  const historik = senastLasta.slice(0, HISTORIKLANGD)
+  const historik = recentlyRead.slice(0, HISTORIKLANGD)
   const nyligen = new Set(historik)
-  const standard = mangd.find((ettRum) => ettRum.id === tema.defaultRoom)
+  const standard = set.find((room) => room.id === theme.defaultRoom)
   if (standard && !nyligen.has(standard.id)) return standard
-  const kandidater = mangd.filter((ettRum) => !nyligen.has(ettRum.id))
-  const selection = kandidater.length > 0 ? kandidater : mangd
-  return selection.reduce((basta, ettRum) =>
-    avstand(ettRum.id, historik) > avstand(basta.id, historik) ? ettRum : basta,
+  const kandidater = set.filter((room) => !nyligen.has(room.id))
+  const selection = kandidater.length > 0 ? kandidater : set
+  return selection.reduce((basta, room) =>
+    avstand(room.id, historik) > avstand(basta.id, historik) ? room : basta,
   )
 }

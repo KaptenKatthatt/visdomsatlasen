@@ -25,8 +25,8 @@ const sistaStycket = (opening: string): string => {
   const paragraphs = opening
     .trim()
     .split(/\n\s*\n/)
-    .map((stycke) => stycke.trim())
-    .filter((stycke) => stycke.length > 0)
+    .map((paragraph) => paragraph.trim())
+    .filter((paragraph) => paragraph.length > 0)
   return paragraphs[paragraphs.length - 1] ?? ''
 }
 

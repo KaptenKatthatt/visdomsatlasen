@@ -89,15 +89,15 @@ const Passageblock = ({ passage }: { passage: SourcePassage }) => {
       <p className={styles.passagref}>{passage.reference}</p>
       {passage.originalText && (
         <blockquote className={styles.passagetext}>
-          {paragraphs(passage.originalText).map((stycke, i) => (
-            <p key={i}>{stycke}</p>
+          {paragraphs(passage.originalText).map((paragraph, i) => (
+            <p key={i}>{paragraph}</p>
           ))}
         </blockquote>
       )}
       {passage.translation && (
         <blockquote className={styles.passagetext}>
-          {paragraphs(passage.translation).map((stycke, i) => (
-            <p key={i}>{stycke}</p>
+          {paragraphs(passage.translation).map((paragraph, i) => (
+            <p key={i}>{paragraph}</p>
           ))}
         </blockquote>
       )}

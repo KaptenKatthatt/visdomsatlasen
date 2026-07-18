@@ -16,14 +16,14 @@ type Lookup = {
   traditionStatus: Map<string, string>
 }
 
-const perId = <T extends { id: string }>(poster: T[]): Map<string, T> =>
-  new Map(poster.map((post) => [post.id, post]))
+const perId = <T extends { id: string }>(items: T[]): Map<string, T> =>
+  new Map(items.map((post) => [post.id, post]))
 
-const duplicateError = (type: string, poster: { id: string; slug?: string }[]): string[] => {
+const duplicateError = (type: string, items: { id: string; slug?: string }[]): string[] => {
   const fel: string[] = []
   const seddaId = new Set<string>()
   const seddaSluggar = new Set<string>()
-  for (const post of poster) {
+  for (const post of items) {
     if (seddaId.has(post.id)) fel.push(`${type} ${post.id}: dubblett av id "${post.id}"`)
     seddaId.add(post.id)
     if (post.slug !== undefined) {
@@ -39,43 +39,43 @@ const publicerad = (status: string | undefined): boolean => status === 'publishe
 // En refererad post: finns den, och (för publicerade rum) är den publicerad?
 type Reference = { type: string; id: string; finns: boolean; publicerad: boolean }
 
-const roomReferences = (rum: Room, uppslag: Lookup): Reference[] => {
-  const fråga = (type: string, id: string): Reference => ({
+const roomReferences = (room: Room, lookup: Lookup): Reference[] => {
+  const question = (type: string, id: string): Reference => ({
     type,
     id,
-    finns: uppslag.questions.has(id),
-    publicerad: publicerad(uppslag.questions.get(id)?.status),
+    finns: lookup.questions.has(id),
+    publicerad: publicerad(lookup.questions.get(id)?.status),
   })
   return [
-    fråga('primär fråga', rum.primaryQuestion),
-    ...(rum.relatedQuestions ?? []).map((id) => fråga('relaterad fråga', id)),
-    ...rum.themes.map((id): Reference => ({
+    question('primär fråga', room.primaryQuestion),
+    ...(room.relatedQuestions ?? []).map((id) => question('relaterad fråga', id)),
+    ...room.themes.map((id): Reference => ({
       type: 'tema',
       id,
-      finns: uppslag.themes.has(id),
-      publicerad: publicerad(uppslag.themes.get(id)?.status),
+      finns: lookup.themes.has(id),
+      publicerad: publicerad(lookup.themes.get(id)?.status),
     })),
-    ...rum.sources.map((relation): Reference => ({
+    ...room.sources.map((relation): Reference => ({
       type: 'source',
       id: relation.source,
-      finns: uppslag.sourceStatus.has(relation.source),
-      publicerad: publicerad(uppslag.sourceStatus.get(relation.source)),
+      finns: lookup.sourceStatus.has(relation.source),
+      publicerad: publicerad(lookup.sourceStatus.get(relation.source)),
     })),
-    ...rum.sources
+    ...room.sources
       .filter((relation) => relation.passage !== undefined)
       .map((relation): Reference => ({
         type: 'källpassage',
         id: relation.passage ?? '',
-        finns: uppslag.passages.has(relation.passage ?? ''),
-        publicerad: publicerad(uppslag.passages.get(relation.passage ?? '')?.status),
+        finns: lookup.passages.has(relation.passage ?? ''),
+        publicerad: publicerad(lookup.passages.get(relation.passage ?? '')?.status),
       })),
   ]
 }
 
-const relationError = (rum: Room, uppslag: Lookup): string[] =>
-  roomReferences(rum, uppslag)
+const relationError = (room: Room, lookup: Lookup): string[] =>
+  roomReferences(room, lookup)
     .filter((reference) => !reference.finns)
-    .map((reference) => `rum ${rum.id}: ${reference.type} "${reference.id}" finns inte`)
+    .map((reference) => `rum ${room.id}: ${reference.type} "${reference.id}" finns inte`)
 
 // Citat och egen translation kräver en källpassage med exakt reference och
 // edition (source-and-context.md, Types of Source Use): så hålls källans ord
@@ -83,12 +83,12 @@ const relationError = (rum: Room, uppslag: Lookup): string[] =>
 // får nöja sig med fritextreferens och passerar orörda.
 const REQUIRES_PASSAGE: ReadonlySet<SourceRelation['use']> = new Set(['quote', 'translation'])
 
-const sourceUseError = (rum: Room, relation: SourceRelation, uppslag: Lookup): string[] => {
+const sourceUseError = (room: Room, relation: SourceRelation, lookup: Lookup): string[] => {
   if (!REQUIRES_PASSAGE.has(relation.use)) return []
-  const mark = `rum ${rum.id}: ${relation.use}`
+  const mark = `rum ${room.id}: ${relation.use}`
   if (relation.passage === undefined)
     return [`${mark} kräver en källpassage med exakt reference och edition`]
-  const passage = uppslag.passages.get(relation.passage)
+  const passage = lookup.passages.get(relation.passage)
   if (!passage) return [] // saknad passage rapporteras redan som bruten relation
   return [
     ...(passage.edition ? [] : [`${mark} kräver edition (edition) på passagen "${passage.id}"`]),
@@ -99,83 +99,83 @@ const sourceUseError = (rum: Room, relation: SourceRelation, uppslag: Lookup): s
 }
 
 // Publiceringskraven (source-and-context.md Publication Gate, room-schema.md).
-const publishError = (rum: Room, uppslag: Lookup): string[] => {
-  if (!publicerad(rum.status)) return []
+const publishError = (room: Room, lookup: Lookup): string[] => {
+  if (!publicerad(room.status)) return []
   const grindar = [
-    ...(rum.sources.some((relation) => relation.primary)
+    ...(room.sources.some((relation) => relation.primary)
       ? []
-      : [`rum ${rum.id}: publicerat rum saknar primary source`]),
-    ...(rum.readingTimeMinutes <= 10
+      : [`rum ${room.id}: publicerat rum saknar primary source`]),
+    ...(room.readingTimeMinutes <= 10
       ? []
-      : [`rum ${rum.id}: lästid ${rum.readingTimeMinutes} min utanför 1–10 för publicerat rum`]),
-    ...rum.sources.flatMap((relation) => sourceUseError(rum, relation, uppslag)),
+      : [`rum ${room.id}: lästid ${room.readingTimeMinutes} min utanför 1–10 för publicerat rum`]),
+    ...room.sources.flatMap((relation) => sourceUseError(room, relation, lookup)),
   ]
-  const opublicerade = roomReferences(rum, uppslag)
+  const opublicerade = roomReferences(room, lookup)
     .filter((reference) => reference.finns && !reference.publicerad)
-    .map((reference) => `rum ${rum.id}: länkar opublicerad(t) ${reference.type} "${reference.id}"`)
+    .map((reference) => `rum ${room.id}: länkar opublicerad(t) ${reference.type} "${reference.id}"`)
   return [...grindar, ...opublicerade]
 }
 
 // Språkgrind (review-language.md): öppningen ska landa i vardagen, inte teasa
 // eller introducera källan (det gör Kärnan). Gäller alla rum, även utkast, så en
 // teaser aldrig ens kan committas — inte bara stoppas vid publicering.
-const openingError = (rum: Room): string[] =>
-  isTeaserOpening(rum.opening)
+const openingError = (room: Room): string[] =>
+  isTeaserOpening(room.opening)
     ? [
-        `rum ${rum.id}: öppningens sista stycke teasar/introducerar källan — låt öppningen landa i det vardagliga (eller en öppen fråga) och Kärnan introducera källan (review-language.md)`,
+        `rum ${room.id}: öppningens sista stycke teasar/introducerar källan — låt öppningen landa i det vardagliga (eller en öppen fråga) och Kärnan introducera källan (review-language.md)`,
       ]
     : []
 
-const themeError = (tema: Theme, uppslag: Lookup): string[] => {
-  if (tema.defaultRoom === undefined) return []
-  const rum = uppslag.rooms.get(tema.defaultRoom)
-  if (!rum) return [`tema ${tema.id}: standardrum "${tema.defaultRoom}" finns inte`]
+const themeError = (theme: Theme, lookup: Lookup): string[] => {
+  if (theme.defaultRoom === undefined) return []
+  const room = lookup.rooms.get(theme.defaultRoom)
+  if (!room) return [`tema ${theme.id}: standardrum "${theme.defaultRoom}" finns inte`]
   const fel: string[] = []
-  if (!rum.themes.includes(tema.id))
-    fel.push(`tema ${tema.id}: standardrummet "${rum.id}" tillhör inte temat`)
-  if (publicerad(tema.status) && !publicerad(rum.status))
-    fel.push(`tema ${tema.id}: publicerat tema har opublicerat standardrum "${rum.id}"`)
+  if (!room.themes.includes(theme.id))
+    fel.push(`tema ${theme.id}: standardrummet "${room.id}" tillhör inte temat`)
+  if (publicerad(theme.status) && !publicerad(room.status))
+    fel.push(`tema ${theme.id}: publicerat tema har opublicerat standardrum "${room.id}"`)
   return fel
 }
 
 // Samma grindprincip som rummen: en publicerad fråga är en synlig ingång
 // i biblioteket och får inte leda till opublicerat innehåll.
 const questionReference = (
-  fråga: Question,
+  question: Question,
   type: string,
   id: string,
   post: { status: string } | undefined,
 ): string[] => {
-  if (!post) return [`fråga ${fråga.id}: ${type} "${id}" finns inte`]
-  if (publicerad(fråga.status) && !publicerad(post.status))
-    return [`fråga ${fråga.id}: publicerad fråga länkar opublicerad(t) ${type} "${id}"`]
+  if (!post) return [`fråga ${question.id}: ${type} "${id}" finns inte`]
+  if (publicerad(question.status) && !publicerad(post.status))
+    return [`fråga ${question.id}: publicerad fråga länkar opublicerad(t) ${type} "${id}"`]
   return []
 }
 
-const questionError = (fråga: Question, uppslag: Lookup): string[] => [
-  ...fråga.themes.flatMap((id) => questionReference(fråga, 'tema', id, uppslag.themes.get(id))),
-  ...(fråga.relatedQuestions ?? []).flatMap((id) =>
-    questionReference(fråga, 'relaterad fråga', id, uppslag.questions.get(id)),
+const questionError = (question: Question, lookup: Lookup): string[] => [
+  ...question.themes.flatMap((id) => questionReference(question, 'tema', id, lookup.themes.get(id))),
+  ...(question.relatedQuestions ?? []).flatMap((id) =>
+    questionReference(question, 'relaterad fråga', id, lookup.questions.get(id)),
   ),
 ]
 
-const pathError = (mängd: ContentSet, uppslag: Lookup): string[] =>
-  mängd.paths.flatMap((vandring) => {
+const pathError = (set: ContentSet, lookup: Lookup): string[] =>
+  set.paths.flatMap((path) => {
     const fel: string[] = []
     // Central fråga: samma grind som rummen — en publicerad vandring är en
     // synlig ingång och får inte länka en opublicerad fråga.
-    const central = uppslag.questions.get(vandring.centralQuestion)
+    const central = lookup.questions.get(path.centralQuestion)
     if (!central)
-      fel.push(`vandring ${vandring.id}: central fråga "${vandring.centralQuestion}" finns inte`)
-    else if (publicerad(vandring.status) && !publicerad(central.status))
+      fel.push(`vandring ${path.id}: central fråga "${path.centralQuestion}" finns inte`)
+    else if (publicerad(path.status) && !publicerad(central.status))
       fel.push(
-        `vandring ${vandring.id}: publicerad vandring länkar opublicerad central fråga "${vandring.centralQuestion}"`,
+        `vandring ${path.id}: publicerad vandring länkar opublicerad central fråga "${path.centralQuestion}"`,
       )
-    for (const rumId of vandring.rooms) {
-      const rum = uppslag.rooms.get(rumId)
-      if (!rum) fel.push(`vandring ${vandring.id}: rum "${rumId}" finns inte`)
-      else if (publicerad(vandring.status) && !publicerad(rum.status))
-        fel.push(`vandring ${vandring.id}: publicerad vandring innehåller opublicerat rum "${rumId}"`)
+    for (const roomId of path.rooms) {
+      const room = lookup.rooms.get(roomId)
+      if (!room) fel.push(`vandring ${path.id}: rum "${roomId}" finns inte`)
+      else if (publicerad(path.status) && !publicerad(room.status))
+        fel.push(`vandring ${path.id}: publicerad vandring innehåller opublicerat rum "${roomId}"`)
     }
     return fel
   })
@@ -195,57 +195,57 @@ const sourceUncertainty = (source: Source): string[] =>
       ]
     : []
 
-const sourceTraditionError = (source: Source, uppslag: Lookup): string[] =>
+const sourceTraditionError = (source: Source, lookup: Lookup): string[] =>
   (source.traditions ?? []).flatMap((traditionId) => {
-    if (!uppslag.traditionStatus.has(traditionId))
+    if (!lookup.traditionStatus.has(traditionId))
       return [`source ${source.id}: tradition "${traditionId}" finns inte`]
-    if (publicerad(source.status) && !publicerad(uppslag.traditionStatus.get(traditionId)))
+    if (publicerad(source.status) && !publicerad(lookup.traditionStatus.get(traditionId)))
       return [`source ${source.id}: publicerad source länkar opublicerad tradition "${traditionId}"`]
     return []
   })
 
-const sourceError = (mängd: ContentSet, uppslag: Lookup): string[] =>
-  mängd.sources.flatMap((source) => [
-    ...sourceTraditionError(source, uppslag),
+const sourceError = (set: ContentSet, lookup: Lookup): string[] =>
+  set.sources.flatMap((source) => [
+    ...sourceTraditionError(source, lookup),
     ...sourceUncertainty(source),
   ])
 
-const passageError = (mängd: ContentSet, uppslag: Lookup): string[] =>
-  mängd.passages.flatMap((passage) =>
-    uppslag.sourceStatus.has(passage.source)
+const passageError = (set: ContentSet, lookup: Lookup): string[] =>
+  set.passages.flatMap((passage) =>
+    lookup.sourceStatus.has(passage.source)
       ? []
       : [`passage ${passage.id}: source "${passage.source}" finns inte`],
   )
 
 /** Validerar relationer och publiceringskrav över hela innehållsmängden.
  * Tom lista = konsistent innehåll. */
-export const validateContent = (mängd: ContentSet): string[] => {
-  const uppslag: Lookup = {
-    rooms: perId(mängd.rooms),
-    themes: perId(mängd.themes),
-    questions: perId(mängd.questions),
-    sourceStatus: new Map(mängd.sources.map((source) => [source.id, source.status])),
-    passages: perId(mängd.passages),
+export const validateContent = (set: ContentSet): string[] => {
+  const lookup: Lookup = {
+    rooms: perId(set.rooms),
+    themes: perId(set.themes),
+    questions: perId(set.questions),
+    sourceStatus: new Map(set.sources.map((source) => [source.id, source.status])),
+    passages: perId(set.passages),
     traditionStatus: new Map(
-      mängd.traditions.map((tradition) => [tradition.id, tradition.status]),
+      set.traditions.map((tradition) => [tradition.id, tradition.status]),
     ),
   }
   return [
-    ...duplicateError('rum', mängd.rooms),
-    ...duplicateError('tema', mängd.themes),
-    ...duplicateError('fråga', mängd.questions),
-    ...duplicateError('vandring', mängd.paths),
-    ...duplicateError('source', mängd.sources),
-    ...duplicateError('passage', mängd.passages),
-    ...duplicateError('tradition', mängd.traditions),
-    ...duplicateError('person', mängd.people),
-    ...mängd.rooms.flatMap((rum) => relationError(rum, uppslag)),
-    ...mängd.rooms.flatMap((rum) => openingError(rum)),
-    ...mängd.rooms.flatMap((rum) => publishError(rum, uppslag)),
-    ...mängd.themes.flatMap((tema) => themeError(tema, uppslag)),
-    ...mängd.questions.flatMap((fråga) => questionError(fråga, uppslag)),
-    ...pathError(mängd, uppslag),
-    ...sourceError(mängd, uppslag),
-    ...passageError(mängd, uppslag),
+    ...duplicateError('rum', set.rooms),
+    ...duplicateError('tema', set.themes),
+    ...duplicateError('fråga', set.questions),
+    ...duplicateError('vandring', set.paths),
+    ...duplicateError('source', set.sources),
+    ...duplicateError('passage', set.passages),
+    ...duplicateError('tradition', set.traditions),
+    ...duplicateError('person', set.people),
+    ...set.rooms.flatMap((room) => relationError(room, lookup)),
+    ...set.rooms.flatMap((room) => openingError(room)),
+    ...set.rooms.flatMap((room) => publishError(room, lookup)),
+    ...set.themes.flatMap((theme) => themeError(theme, lookup)),
+    ...set.questions.flatMap((question) => questionError(question, lookup)),
+    ...pathError(set, lookup),
+    ...sourceError(set, lookup),
+    ...passageError(set, lookup),
   ]
 }

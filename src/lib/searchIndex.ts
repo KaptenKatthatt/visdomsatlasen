@@ -71,95 +71,95 @@ export type SearchDoc = {
   text: string[]
 }
 
-const mapById = <T extends { id: string }>(poster: T[]): Map<string, T> =>
-  new Map(poster.map((post) => [post.id, post]))
+const mapById = <T extends { id: string }>(items: T[]): Map<string, T> =>
+  new Map(items.map((post) => [post.id, post]))
 
-const docFromQuestion = (fraga: Question): SearchDoc => ({
+const docFromQuestion = (question: Question): SearchDoc => ({
   type: 'fraga',
-  id: fraga.id,
-  title: fraga.text,
-  subtitle: fraga.description ? utdrag(fraga.description, 110) : undefined,
-  target: { kind: 'fraga', slug: fraga.slug },
+  id: question.id,
+  title: question.text,
+  subtitle: question.description ? utdrag(question.description, 110) : undefined,
+  target: { kind: 'fraga', slug: question.slug },
   alias: [],
-  keywords: fraga.keywords ?? [],
-  text: fraga.description ? [fraga.description] : [],
+  keywords: question.keywords ?? [],
+  text: question.description ? [question.description] : [],
 })
 
-const docFromTheme = (tema: Theme): SearchDoc => ({
+const docFromTheme = (theme: Theme): SearchDoc => ({
   type: 'tema',
-  id: tema.id,
-  title: tema.label,
-  subtitle: tema.description,
-  target: { kind: 'tema', slug: tema.slug },
+  id: theme.id,
+  title: theme.label,
+  subtitle: theme.description,
+  target: { kind: 'tema', slug: theme.slug },
   alias: [],
-  keywords: tema.keywords ?? [],
-  text: tema.description ? [tema.description] : [],
+  keywords: theme.keywords ?? [],
+  text: theme.description ? [theme.description] : [],
 })
 
-const themeLabels = (rum: Room, themes: Map<string, Theme>): string[] =>
-  rum.themes.flatMap((id) => {
-    const tema = themes.get(id)
-    return tema ? [tema.label] : []
+const themeLabels = (room: Room, themes: Map<string, Theme>): string[] =>
+  room.themes.flatMap((id) => {
+    const theme = themes.get(id)
+    return theme ? [theme.label] : []
   })
 
-const sourceNameFor = (rum: Room, sources: Map<string, Source>): string[] =>
-  rum.sources.flatMap((relation) => {
+const sourceNameFor = (room: Room, sources: Map<string, Source>): string[] =>
+  room.sources.flatMap((relation) => {
     const source = sources.get(relation.source)
     return source ? [sourceName(source)] : []
   })
 
-const roomMeta = (rum: Room, fråga: Question | undefined): string => {
-  const readingTime = `ca ${rum.readingTimeMinutes} min`
-  return fråga ? `${fråga.text} · ${readingTime}` : readingTime
+const roomMeta = (room: Room, question: Question | undefined): string => {
+  const readingTime = `ca ${room.readingTimeMinutes} min`
+  return question ? `${question.text} · ${readingTime}` : readingTime
 }
 
 const docFromRoom = (
-  rum: Room,
-  frågor: Map<string, Question>,
+  room: Room,
+  questions: Map<string, Question>,
   themes: Map<string, Theme>,
   sources: Map<string, Source>,
 ): SearchDoc => {
-  const fråga = frågor.get(rum.primaryQuestion)
+  const question = questions.get(room.primaryQuestion)
   return {
     type: 'rum',
-    id: rum.id,
-    title: rum.title,
-    subtitle: rum.summary,
-    meta: roomMeta(rum, fråga),
-    target: { kind: 'rum', slug: rum.slug },
+    id: room.id,
+    title: room.title,
+    subtitle: room.summary,
+    meta: roomMeta(room, question),
+    target: { kind: 'rum', slug: room.slug },
     alias: [],
-    keywords: rum.tags ?? [],
+    keywords: room.tags ?? [],
     text: [
-      rum.thoughtToCarry,
-      ...rum.reflectionQuestions,
-      ...(fråga ? [fråga.text] : []),
-      ...themeLabels(rum, themes),
-      ...sourceNameFor(rum, sources),
+      room.thoughtToCarry,
+      ...room.reflectionQuestions,
+      ...(question ? [question.text] : []),
+      ...themeLabels(room, themes),
+      ...sourceNameFor(room, sources),
     ],
   }
 }
 
-const pathMeta = (rummen: Room[]): string => {
-  const antal = rummen.length === 1 ? 'Ett rum' : `${rummen.length} rum`
-  return `${antal} · ca ${pathReadingTime(rummen)} min`
+const pathMeta = (rooms: Room[]): string => {
+  const antal = rooms.length === 1 ? 'Ett rum' : `${rooms.length} rum`
+  return `${antal} · ca ${pathReadingTime(rooms)} min`
 }
 
 const docFromPath = (
-  vandring: Path,
-  frågor: Map<string, Question>,
-  rummen: Room[],
+  path: Path,
+  questions: Map<string, Question>,
+  rooms: Room[],
 ): SearchDoc => {
-  const central = frågor.get(vandring.centralQuestion)
+  const central = questions.get(path.centralQuestion)
   return {
     type: 'vandring',
-    id: vandring.id,
-    title: vandring.title,
-    subtitle: utdrag(vandring.introduction, 110),
-    meta: pathMeta(rummen),
-    target: { kind: 'vandring', slug: vandring.slug },
+    id: path.id,
+    title: path.title,
+    subtitle: utdrag(path.introduction, 110),
+    meta: pathMeta(rooms),
+    target: { kind: 'vandring', slug: path.slug },
     alias: [],
-    keywords: vandring.keywords ?? [],
-    text: [vandring.introduction, ...(central ? [central.text] : [])],
+    keywords: path.keywords ?? [],
+    text: [path.introduction, ...(central ? [central.text] : [])],
   }
 }
 
@@ -241,16 +241,16 @@ type IndexContent = Pick<
  * urvalen, så ingen utkasttext kan följa med in i ett sökbart fält ens via en
  * reference. */
 export const buildSearchIndex = (innehall: IndexContent): SearchDoc[] => {
-  const frågor = mapById(libraryQuestions(innehall.questions))
+  const questions = mapById(libraryQuestions(innehall.questions))
   const themes = mapById(libraryThemes(innehall.themes))
   const sources = mapById(librarySources(innehall.sources))
   const traditions = mapById(libraryTraditions(innehall.traditions))
   return [
     ...libraryQuestions(innehall.questions).map(docFromQuestion),
     ...libraryThemes(innehall.themes).map(docFromTheme),
-    ...libraryRooms(innehall.rooms).map((rum) => docFromRoom(rum, frågor, themes, sources)),
-    ...libraryPaths(innehall.paths).map((vandring) =>
-      docFromPath(vandring, frågor, roomsForPath(vandring, innehall.rooms)),
+    ...libraryRooms(innehall.rooms).map((room) => docFromRoom(room, questions, themes, sources)),
+    ...libraryPaths(innehall.paths).map((path) =>
+      docFromPath(path, questions, roomsForPath(path, innehall.rooms)),
     ),
     ...librarySources(innehall.sources).map((source) =>
       docFromSource(source, traditions, passagesForSource(source.id, innehall.passages)),

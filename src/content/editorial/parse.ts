@@ -29,8 +29,8 @@ const splitFrontmatter = (fil: ContentFile): Parsed<SplitFile> => {
   let data: unknown
   try {
     data = tolkaYaml(hit[1]) as unknown
-  } catch (orsak: unknown) {
-    const description = orsak instanceof Error ? orsak.message : String(orsak)
+  } catch (cause: unknown) {
+    const description = cause instanceof Error ? cause.message : String(cause)
     return { value: null, errors: [`${fil.filePath}: ogiltig yaml i frontmatter — ${description}`] }
   }
   if (typeof data !== 'object' || data === null || Array.isArray(data)) {
@@ -39,41 +39,41 @@ const splitFrontmatter = (fil: ContentFile): Parsed<SplitFile> => {
   return { value: { frontmatter: { ...data }, kropp: hit[2] }, errors: [] }
 }
 
-const formateraError = (sökväg: string, brister: readonly z.core.$ZodIssue[]): string[] =>
-  brister.map((brist) => {
-    const field = brist.path.length > 0 ? brist.path.map(String).join('.') : '(rot)'
-    return `${sökväg}: ${field} — ${brist.message}`
+const formateraError = (sökväg: string, issues: readonly z.core.$ZodIssue[]): string[] =>
+  issues.map((issue) => {
+    const field = issue.path.length > 0 ? issue.path.map(String).join('.') : '(rot)'
+    return `${sökväg}: ${field} — ${issue.message}`
   })
 
 /** Delar en markdown-kropp i sektioner per `## Rubrik`. Text före första
  * rubriken ignoreras (används inte i rumsformatet). */
-const splitSections = (kropp: string): Map<string, string> => {
-  const sektioner = new Map<string, string>()
-  let aktuell: string | null = null
+const splitSections = (body: string): Map<string, string> => {
+  const sections = new Map<string, string>()
+  let current: string | null = null
   let rows: string[] = []
   const save = () => {
-    if (aktuell !== null) sektioner.set(aktuell, rows.join('\n').trim())
+    if (current !== null) sections.set(current, rows.join('\n').trim())
   }
-  for (const rad of kropp.split(/\r?\n/)) {
+  for (const rad of body.split(/\r?\n/)) {
     const rubrik = /^##\s+(.+?)\s*$/.exec(rad)
     if (rubrik?.[1] !== undefined) {
       save()
-      aktuell = rubrik[1]
+      current = rubrik[1]
       rows = []
     } else {
       rows.push(rad)
     }
   }
   save()
-  return sektioner
+  return sections
 }
 
 type RoomFields = Partial<Record<'opening' | 'core' | 'historicalContext', string>>
 
-const roomSections = (sökväg: string, kropp: string): Parsed<RoomFields> => {
+const roomSections = (sökväg: string, body: string): Parsed<RoomFields> => {
   const fel: string[] = []
   const field: RoomFields = {}
-  for (const [rubrik, text] of splitSections(kropp)) {
+  for (const [rubrik, text] of splitSections(body)) {
     const name = SECTIONS[rubrik]
     if (!name) fel.push(`${sökväg}: okänd sektion "## ${rubrik}"`)
     else if (text.length > 0) field[name] = text
@@ -89,9 +89,9 @@ const roomSections = (sökväg: string, kropp: string): Parsed<RoomFields> => {
 export const parseRoomFile = (fil: ContentFile): Parsed<Room> => {
   const split = splitFrontmatter(fil)
   if (!split.value) return { value: null, errors: split.errors }
-  const sektioner = roomSections(fil.filePath, split.value.kropp)
-  if (!sektioner.value) return { value: null, errors: sektioner.errors }
-  const parsed = roomSchema.safeParse({ ...split.value.frontmatter, ...sektioner.value })
+  const sections = roomSections(fil.filePath, split.value.kropp)
+  if (!sections.value) return { value: null, errors: sections.errors }
+  const parsed = roomSchema.safeParse({ ...split.value.frontmatter, ...sections.value })
   if (!parsed.success) return { value: null, errors: formateraError(fil.filePath, parsed.error.issues) }
   return { value: parsed.data, errors: [] }
 }
@@ -101,9 +101,9 @@ export const parseRoomFile = (fil: ContentFile): Parsed<Room> => {
 export const parsePostFile = <T>(schema: z.ZodType<T>, fil: ContentFile): Parsed<T> => {
   const split = splitFrontmatter(fil)
   if (!split.value) return { value: null, errors: split.errors }
-  const kropp = split.value.kropp.trim()
+  const body = split.value.kropp.trim()
   const kandidat =
-    kropp.length > 0 ? { ...split.value.frontmatter, description: kropp } : split.value.frontmatter
+    body.length > 0 ? { ...split.value.frontmatter, description: body } : split.value.frontmatter
   const parsed = schema.safeParse(kandidat)
   if (!parsed.success) return { value: null, errors: formateraError(fil.filePath, parsed.error.issues) }
   return { value: parsed.data, errors: [] }

@@ -71,25 +71,25 @@ const SYNONYMS: Record<string, string[]> = {
   förlåtelse: ['förlåta', 'försoning'],
 }
 
-const link = (karta: Map<string, Set<string>>, a: string, b: string): void => {
-  const grannar = karta.get(a) ?? new Set<string>()
-  grannar.add(b)
-  karta.set(a, grannar)
+const link = (map: Map<string, Set<string>>, a: string, b: string): void => {
+  const neighbors = map.get(a) ?? new Set<string>()
+  neighbors.add(b)
+  map.set(a, neighbors)
 }
 
 // Bygger en normaliserad, dubbelriktad synonymkarta: `oro` hittar `ångest` och
 // `ångest` hittar `oro`. Nycklar och värden viks så matchningen är diakritokänslig.
-const buildSynonymMap = (rå: Record<string, string[]>): Map<string, Set<string>> => {
-  const karta = new Map<string, Set<string>>()
-  for (const [nyckel, värden] of Object.entries(rå)) {
+const buildSynonymMap = (raw: Record<string, string[]>): Map<string, Set<string>> => {
+  const map = new Map<string, Set<string>>()
+  for (const [nyckel, värden] of Object.entries(raw)) {
     const n = normalisera(nyckel)
-    for (const värde of värden) {
-      const v = normalisera(värde)
-      link(karta, n, v)
-      link(karta, v, n)
+    for (const value of värden) {
+      const v = normalisera(value)
+      link(map, n, v)
+      link(map, v, n)
     }
   }
-  return karta
+  return map
 }
 
 const SYNONYM_MAP = buildSynonymMap(SYNONYMS)
@@ -142,17 +142,17 @@ const documentBuckets = (dok: SearchDoc): Bucket[] => [
 ]
 
 // Ett tokens bästa poäng och nivå över dokumentets fält.
-const tokenBest = (token: string, buckets: Bucket[]): { poang: number; niva: HitLevel } => {
-  let poang = 0
-  let niva: HitLevel = 'text'
+const tokenBest = (token: string, buckets: Bucket[]): { score: number; level: HitLevel } => {
+  let score = 0
+  let level: HitLevel = 'text'
   for (const bucket of buckets) {
     const p = bucket.base * factorAgainstBucket(token, bucket.words)
-    if (p > poang) {
-      poang = p
-      niva = bucket.level
+    if (p > score) {
+      score = p
+      level = bucket.level
     }
   }
-  return { poang, niva }
+  return { score, level }
 }
 
 // Exakt helfrågsträff (interpunktion och diakriter bortnormaliserade).
@@ -174,10 +174,10 @@ const matchDocument = (
   if (tokens.length === 0) return undefined
   const buckets = documentBuckets(dok)
   const perToken = tokens.map((token) => tokenBest(token, buckets))
-  if (perToken.some((pt) => pt.poang <= 0)) return undefined
-  const medel = perToken.reduce((summa, pt) => summa + pt.poang, 0) / perToken.length
-  const best = perToken.reduce((b, pt) => (pt.poang > b.poang ? pt : b))
-  return { document: dok, score: medel + TYPE_BONUS[dok.type], matchedField: best.niva }
+  if (perToken.some((pt) => pt.score <= 0)) return undefined
+  const mean = perToken.reduce((sum, pt) => sum + pt.score, 0) / perToken.length
+  const best = perToken.reduce((b, pt) => (pt.score > b.score ? pt : b))
+  return { document: dok, score: mean + TYPE_BONUS[dok.type], matchedField: best.level }
 }
 
 const svTitel = (a: SearchResult, b: SearchResult): number =>
@@ -187,14 +187,14 @@ const bestScore = (grupp: SearchGroup): number => grupp.hits[0]?.score ?? 0
 
 // Grupperar träffar per type; inom gruppen på poäng och sedan svensk titelordning;
 // grupperna efter bästa träff, så den mest relevanta gruppen står först.
-const groupHits = (träffar: SearchResult[]): SearchGroup[] => {
-  const karta = new Map<SearchType, SearchResult[]>()
-  for (const hit of träffar) {
-    const lista = karta.get(hit.document.type) ?? []
-    lista.push(hit)
-    karta.set(hit.document.type, lista)
+const groupHits = (hits: SearchResult[]): SearchGroup[] => {
+  const map = new Map<SearchType, SearchResult[]>()
+  for (const hit of hits) {
+    const list = map.get(hit.document.type) ?? []
+    list.push(hit)
+    map.set(hit.document.type, list)
   }
-  const grupper = [...karta.entries()].map(([type, lista]): SearchGroup => ({
+  const grupper = [...map.entries()].map(([type, lista]): SearchGroup => ({
     type,
     heading: HEADINGS[type],
     hits: lista.sort((a, b) => b.score - a.score || svTitel(a, b)).slice(0, MAX_PER_GROUP),
@@ -204,15 +204,15 @@ const groupHits = (träffar: SearchResult[]): SearchGroup[] => {
 
 /** Hela sökningen: en fråga kortare än två tecken ger inget. Grupperna kommer i
  * relevansordning; varje grupp är ändlig (aldrig oändlig scroll). */
-export const searchInLibrary = (fraga: string, index: SearchDoc[]): SearchGroup[] => {
-  const nyckelfrågan = ordlista(fraga).join(' ')
+export const searchInLibrary = (question: string, index: SearchDoc[]): SearchGroup[] => {
+  const nyckelfrågan = ordlista(question).join(' ')
   if (nyckelfrågan.length < 2) return []
-  const tokens = soktokens(fraga)
-  const träffar = index.flatMap((dok) => {
+  const tokens = soktokens(question)
+  const hits = index.flatMap((dok) => {
     const hit = matchDocument(nyckelfrågan, tokens, dok)
     return hit ? [hit] : []
   })
-  return groupHits(träffar)
+  return groupHits(hits)
 }
 
 /** Den ändliga initialvyn: som mest fem per grupp och tjugo totalt; en expanderad
@@ -221,12 +221,12 @@ export const visibleHits = (
   grupper: SearchGroup[],
   expanderade: ReadonlySet<SearchType>,
 ): VisibleGroup[] => {
-  let kvar = MAX_VISIBLE_TOTAL
+  let remaining = MAX_VISIBLE_TOTAL
   return grupper.map((grupp) => {
     const expanderad = expanderade.has(grupp.type)
-    const limit = expanderad ? MAX_PER_GROUP : Math.min(MAX_VISIBLE_PER_GROUP, Math.max(kvar, 0))
+    const limit = expanderad ? MAX_PER_GROUP : Math.min(MAX_VISIBLE_PER_GROUP, Math.max(remaining, 0))
     const synliga = grupp.hits.slice(0, limit)
-    if (!expanderad) kvar -= synliga.length
+    if (!expanderad) remaining -= synliga.length
     return { group: grupp, visible: synliga, hidden: grupp.hits.length - synliga.length }
   })
 }

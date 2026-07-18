@@ -73,7 +73,7 @@ const Fragedel = ({ vandring }: { vandring: Path }) => {
  * orientering, aldrig förlopp. */
 const Rumdel = ({ vandring, rummen }: { vandring: Path; rummen: Room[] }) => {
   const { pathPositions } = useAtlas()
-  const place = rummen.find((ettRum) => ettRum.id === pathPositions[vandring.id])
+  const place = rummen.find((room) => room.id === pathPositions[vandring.id])
   return (
     <Section rubrik="Rummen">
       {place && (
@@ -90,15 +90,15 @@ const Rumdel = ({ vandring, rummen }: { vandring: Path; rummen: Room[] }) => {
         <p className={styles.tomt}>Den här vandringen har inga rum ännu.</p>
       ) : (
         <ol className={styles.vandringslista}>
-          {rummen.map((ettRum) => (
-            <li key={ettRum.id}>
+          {rummen.map((room) => (
+            <li key={room.id}>
               <Link
                 to="/rum/$slug"
-                params={{ slug: ettRum.slug }}
+                params={{ slug: room.slug }}
                 search={{ vandring: vandring.slug }}
                 className={styles.rad}
               >
-                <Row title={ettRum.title} sub={`${ettRum.readingTimeMinutes} min`} />
+                <Row title={room.title} sub={`${room.readingTimeMinutes} min`} />
               </Link>
             </li>
           ))}
@@ -114,18 +114,18 @@ const Rumdel = ({ vandring, rummen }: { vandring: Path; rummen: Room[] }) => {
  * taget — här väljer man bara var man kliver in. TopBar utan onBack ⇒
  * historiksteg bakåt, så biblioteksplatsen bevaras. */
 export const VandringPage = ({ slug }: { slug: string }) => {
-  const vandring = findPathBySlug(slug)
-  if (!vandring) return <NotFoundNote subject="Vandringen" />
-  const rummen = roomsForPath(vandring, allRooms)
+  const path = findPathBySlug(slug)
+  if (!path) return <NotFoundNote subject="Vandringen" />
+  const rooms = roomsForPath(path, allRooms)
   return (
     <div className="screenSub">
       <TopBar />
-      <Sidhuvud kicker="Vandring" title={vandring.title} status={vandring.status} />
-      <Metarad rummen={rummen} />
-      <SavePath vandring={vandring} />
-      <Beskrivning text={vandring.introduction} />
-      <Fragedel vandring={vandring} />
-      <Rumdel vandring={vandring} rummen={rummen} />
+      <Sidhuvud kicker="Vandring" title={path.title} status={path.status} />
+      <Metarad rummen={rooms} />
+      <SavePath vandring={path} />
+      <Beskrivning text={path.introduction} />
+      <Fragedel vandring={path} />
+      <Rumdel vandring={path} rummen={rooms} />
     </div>
   )
 }

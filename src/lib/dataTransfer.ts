@@ -121,13 +121,13 @@ export type PersonalExport = z.infer<typeof exportSchema>
 type ExportSparad = z.infer<typeof savedSchema>
 
 const savedItems = (
-  poster: Record<string, SavedItem>,
+  items: Record<string, SavedItem>,
   titelFor: (id: string) => string | undefined,
 ): ExportSparad[] =>
-  savedIdsByTime(poster).map((id) => ({
+  savedIdsByTime(items).map((id) => ({
     id,
     title: titelFor(id),
-    savedWhen: poster[id]?.savedWhen ?? null,
+    savedWhen: items[id]?.savedWhen ?? null,
   }))
 
 /** Bygger en exportpost. `titelFor` slår upp läsbara titlar för anteckningarnas
@@ -161,13 +161,13 @@ export const readImport = (json: unknown): PersonalExport | null => {
 
 // Anteckningskonflikt: den nyast uppdaterade vinner (spec: konflikter löses säkert).
 const mergeNotes = (
-  nuvarande: Record<string, Note>,
+  current: Record<string, Note>,
   importerade: PersonalExport['notes'],
 ): Record<string, Note> => {
-  const ut = { ...nuvarande }
+  const ut = { ...current }
   for (const post of importerade) {
-    const befintlig = ut[post.originId]
-    if (befintlig !== undefined && befintlig.updated >= post.updated) continue
+    const existing = ut[post.originId]
+    if (existing !== undefined && existing.updated >= post.updated) continue
     ut[post.originId] = {
       originType: post.originType,
       originId: post.originId,
@@ -180,27 +180,27 @@ const mergeNotes = (
 }
 
 const mergeSaved = (
-  nuvarande: Record<string, SavedItem>,
+  current: Record<string, SavedItem>,
   importerade: ExportSparad[],
 ): Record<string, SavedItem> => {
-  const ut = { ...nuvarande }
+  const ut = { ...current }
   for (const post of importerade) {
     if (ut[post.id] === undefined) ut[post.id] = { savedWhen: post.savedWhen }
   }
   return ut
 }
 
-const mergaBookmarks = (nuvarande: Record<string, boolean>, amnen: string[]): Record<string, boolean> => {
-  const ut = { ...nuvarande }
+const mergaBookmarks = (current: Record<string, boolean>, amnen: string[]): Record<string, boolean> => {
+  const ut = { ...current }
   for (const id of amnen) ut[id] = true
   return ut
 }
 
 const mergeChapterBookmarks = (
-  nuvarande: Record<string, ChapterBookmark>,
+  current: Record<string, ChapterBookmark>,
   kapitel: ChapterBookmark[],
 ): Record<string, ChapterBookmark> => {
-  const ut = { ...nuvarande }
+  const ut = { ...current }
   for (const bookmark of kapitel) ut[chapterKey(bookmark.workId, bookmark.bookSlug, bookmark.chapter)] = bookmark
   return ut
 }
@@ -209,14 +209,14 @@ const mergeChapterBookmarks = (
  * konflikter löses säkert). Union av sparade poster och bokmärken; anteckningar
  * löses med nyast-vinner. Aldrig destruktivt mot befintlig data. */
 export const mergeImport = (
-  nuvarande: PersonalCollections,
+  current: PersonalCollections,
   importen: PersonalExport,
 ): PersonalCollections => ({
-  notes: mergeNotes(nuvarande.notes, importen.notes),
-  savedRooms: mergeSaved(nuvarande.savedRooms, importen.savedRooms),
-  savedPaths: mergeSaved(nuvarande.savedPaths, importen.savedPaths),
-  bookmarks: mergaBookmarks(nuvarande.bookmarks, importen.bookmarks.topics),
-  chapterBookmarks: mergeChapterBookmarks(nuvarande.chapterBookmarks, importen.bookmarks.chapters),
+  notes: mergeNotes(current.notes, importen.notes),
+  savedRooms: mergeSaved(current.savedRooms, importen.savedRooms),
+  savedPaths: mergeSaved(current.savedPaths, importen.savedPaths),
+  bookmarks: mergaBookmarks(current.bookmarks, importen.bookmarks.topics),
+  chapterBookmarks: mergeChapterBookmarks(current.chapterBookmarks, importen.bookmarks.chapters),
 })
 
 const noteToMarkdown = (post: PersonalExport['notes'][number]): string =>

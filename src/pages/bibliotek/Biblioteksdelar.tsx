@@ -44,9 +44,9 @@ export const Sidhuvud = ({
 export const Beskrivning = ({ text }: { text?: string }) => (
   <>
     {text !== undefined &&
-      paragraphs(text).map((stycke, i) => (
+      paragraphs(text).map((paragraph, i) => (
         <p key={i} className={styles.description}>
-          {stycke}
+          {paragraph}
         </p>
       ))}
   </>
@@ -57,7 +57,7 @@ export const Rumslista = ({ rum, tomtBesked }: { rum: Room[]; tomtBesked: string
     {rum.length === 0 ? (
       <p className={styles.tomt}>{tomtBesked}</p>
     ) : (
-      rum.map((ettRum) => <RoomRow key={ettRum.id} rum={ettRum} />)
+      rum.map((room) => <RoomRow key={room.id} rum={room} />)
     )}
   </>
 )

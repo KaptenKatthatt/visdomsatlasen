@@ -27,8 +27,8 @@ const STOPORD = new Set([
 ])
 
 /** Sökfrågans meningsbärande tokens: normaliserade ord minus stopord. */
-export const soktokens = (fraga: string): string[] =>
-  ordlista(fraga).filter((ord) => !STOPORD.has(ord))
+export const soktokens = (question: string): string[] =>
+  ordlista(question).filter((ord) => !STOPORD.has(ord))
 
 // Vanliga svenska böjningssuffix, längst först så -orna klipps före -or före -a.
 const SUFFIX = ['orna', 'arna', 'erna', 'or', 'ar', 'er', 'en', 'et', 'na', 'a', 's']

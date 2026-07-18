@@ -84,7 +84,7 @@ type AtlasActions = {
   toggleChapterBookmark: (bookmark: ChapterBookmark) => void
   recordRead: (id: string, mode: ReadMode) => void
   registerLastRoom: (id: string) => void
-  registerPathPosition: (vandringId: string, rumId: string) => void
+  registerPathPosition: (pathId: string, roomId: string) => void
   toggleSavedRoom: (id: string) => void
   toggleSavedPath: (id: string) => void
   setNote: (type: Origin, ursprungId: string, text: string) => void
@@ -263,10 +263,10 @@ const useCollectionActions = (setState: SetAtlasState): CollectionActions => {
   )
   const registerPathPosition = useCallback(
     // Sista rummet vinner — ren orientering, ingen historik och inget förlopp.
-    (vandringId: string, rumId: string) =>
+    (pathId: string, roomId: string) =>
       setState((s) => ({
         ...s,
-        pathPositions: { ...s.pathPositions, [vandringId]: rumId },
+        pathPositions: { ...s.pathPositions, [pathId]: roomId },
       })),
     [setState],
   )
@@ -281,10 +281,10 @@ const useCollectionActions = (setState: SetAtlasState): CollectionActions => {
 
 // Toggle mot ett sparat-record: sätter post med datum, eller tar bort nyckeln.
 const toggleSaved = (
-  poster: Record<string, SavedItem>,
+  items: Record<string, SavedItem>,
   id: string,
 ): Record<string, SavedItem> => {
-  const next = { ...poster }
+  const next = { ...items }
   if (next[id]) delete next[id]
   else next[id] = { savedWhen: nu() }
   return next

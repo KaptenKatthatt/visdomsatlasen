@@ -22,15 +22,15 @@ export const HemPage = () => {
   const { recentRooms } = useAtlas()
   const [tomtVal, setTomtVal] = useState(false)
   const [väljer, setVäljer] = useState(false)
-  const selectTheme = async (tema: Theme) => {
+  const selectTheme = async (theme: Theme) => {
     if (väljer) return
     setVäljer(true)
     setTomtVal(false)
     try {
       const { allRooms } = await import('../lib/content')
-      const rum = selectRoom(tema, allRooms, recentRooms)
-      if (rum) {
-        void navigate({ to: '/rum/$slug', params: { slug: rum.slug } })
+      const room = selectRoom(theme, allRooms, recentRooms)
+      if (room) {
+        void navigate({ to: '/rum/$slug', params: { slug: room.slug } })
         return
       }
       setTomtVal(true)
@@ -49,14 +49,14 @@ export const HemPage = () => {
         <p className={styles.stod}>Välj en tanke att stanna hos en stund.</p>
       </div>
       <div className={styles.themes}>
-        {thresholdThemes.map((tema) => (
+        {thresholdThemes.map((theme) => (
           <button
-            key={tema.id}
+            key={theme.id}
             type="button"
             className={styles.tema}
-            onClick={() => void selectTheme(tema)}
+            onClick={() => void selectTheme(theme)}
           >
-            {tema.label}
+            {theme.label}
           </button>
         ))}
       </div>

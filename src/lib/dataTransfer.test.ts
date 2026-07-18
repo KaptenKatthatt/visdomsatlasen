@@ -83,7 +83,7 @@ describe('lasImport', () => {
 
 describe('mergaImport', () => {
   it('unionar sparade poster och bokmärken utan att röra befintlig data', () => {
-    const nuvarande: PersonalCollections = {
+    const current: PersonalCollections = {
       notes: {},
       savedRooms: { 'rum-b': { savedWhen: '2026-07-09T00:00:00.000Z' } },
       savedPaths: {},
@@ -91,7 +91,7 @@ describe('mergaImport', () => {
       chapterBookmarks: {},
     }
     const importen = toExport(samlingar(), titelFor, '2026-07-14T10:00:00.000Z')
-    const ut = mergeImport(nuvarande, importen)
+    const ut = mergeImport(current, importen)
     expect(Object.keys(ut.savedRooms).sort()).toEqual(['rum-a', 'rum-b'])
     expect(ut.bookmarks).toMatchObject({ egen: true, 'topic-1': true })
     expect(Object.keys(ut.chapterBookmarks)).toEqual(['w/b:3'])

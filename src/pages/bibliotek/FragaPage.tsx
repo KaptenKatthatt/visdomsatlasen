@@ -19,9 +19,9 @@ const Temadel = ({ fråga }: { fråga: Question }) => {
   if (themes.length === 0) return null
   return (
     <Section rubrik="Teman">
-      {themes.map((tema) => (
-        <ToLink key={tema.id} to={{ kind: 'tema', slug: tema.slug }} className={styles.rad}>
-          <Row title={tema.label} />
+      {themes.map((theme) => (
+        <ToLink key={theme.id} to={{ kind: 'tema', slug: theme.slug }} className={styles.rad}>
+          <Row title={theme.label} />
         </ToLink>
       ))}
     </Section>
@@ -43,11 +43,11 @@ const Kalldel = ({ fråga }: { fråga: Question }) => {
 }
 
 const Narliggande = ({ fråga }: { fråga: Question }) => {
-  const frågor = publishedThrough(fråga.relatedQuestions ?? [], findQuestion)
-  if (frågor.length === 0) return null
+  const questions = publishedThrough(fråga.relatedQuestions ?? [], findQuestion)
+  if (questions.length === 0) return null
   return (
     <Section rubrik="Närliggande frågor">
-      {frågor.map((relaterad) => (
+      {questions.map((relaterad) => (
         <ToLink
           key={relaterad.id}
           to={{ kind: 'fraga', slug: relaterad.slug }}
@@ -64,22 +64,22 @@ const Narliggande = ({ fråga }: { fråga: Question }) => {
  * källmaterial. En place att välja från — aldrig en automatisk lässekvens.
  * TopBar utan onBack ⇒ historiksteg bakåt — biblioteksplatsen bevaras. */
 export const FragaPage = ({ slug }: { slug: string }) => {
-  const fråga = findQuestionBySlug(slug)
-  if (!fråga) return <NotFoundNote subject="Frågan" />
+  const question = findQuestionBySlug(slug)
+  if (!question) return <NotFoundNote subject="Frågan" />
   return (
     <div className="screenSub">
       <TopBar />
-      <Sidhuvud kicker="Fråga" title={fråga.text} status={fråga.status} />
-      <Beskrivning text={fråga.description} />
+      <Sidhuvud kicker="Fråga" title={question.text} status={question.status} />
+      <Beskrivning text={question.description} />
       <Section rubrik="Rum">
         <Rumslista
-          rum={roomsForQuestion(fråga.id, allRooms)}
+          rum={roomsForQuestion(question.id, allRooms)}
           tomtBesked="Det finns inga färdiga rum kring frågan ännu."
         />
       </Section>
-      <Temadel fråga={fråga} />
-      <Kalldel fråga={fråga} />
-      <Narliggande fråga={fråga} />
+      <Temadel fråga={question} />
+      <Kalldel fråga={question} />
+      <Narliggande fråga={question} />
     </div>
   )
 }

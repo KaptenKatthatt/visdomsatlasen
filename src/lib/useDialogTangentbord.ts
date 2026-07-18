@@ -23,11 +23,11 @@ const trapTab = (ark: HTMLElement, händelse: KeyboardEvent) => {
     ark.focus()
     return
   }
-  const aktivt = document.activeElement
-  if (händelse.shiftKey && (aktivt === first || aktivt === ark)) {
+  const active = document.activeElement
+  if (händelse.shiftKey && (active === first || active === ark)) {
     händelse.preventDefault()
     sista.focus()
-  } else if (!händelse.shiftKey && aktivt === sista) {
+  } else if (!händelse.shiftKey && active === sista) {
     händelse.preventDefault()
     first.focus()
   }
@@ -54,8 +54,8 @@ export const useDialogTangentbord = (
   useEffect(() => {
     const ark = arkRef.current
     if (!ark) return
-    const aktivt = document.activeElement
-    if (!ark.contains(aktivt)) tidigareRef.current = aktivt
+    const active = document.activeElement
+    if (!ark.contains(active)) tidigareRef.current = active
     ark.focus()
     const vidTangent = (händelse: KeyboardEvent) => {
       if (händelse.key === 'Escape') {
