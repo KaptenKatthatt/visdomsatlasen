@@ -11,7 +11,7 @@ import type {
   Tema,
   Tradition,
   Vandring,
-} from '../content/redaktion/schema'
+} from '../content/editorial/schema'
 
 const publicerade = <T extends { status: Rum['status'] }>(poster: T[]): T[] =>
   poster.filter((post) => post.status === 'publicerad')
@@ -33,41 +33,41 @@ export const publiceradeVia = <T extends { status: Rum['status'] }>(
     return post !== undefined && post.status === 'publicerad' ? [post] : []
   })
 
-/** Bibliotekets teman: publicerade, i samma redaktionella ordning som tröskeln. */
-export const bibliotekTeman = (teman: Tema[]): Tema[] =>
-  publicerade(teman).sort(
-    (a, b) => (a.ordning ?? SIST) - (b.ordning ?? SIST) || svOrdning<Tema>((t) => t.etikett)(a, b),
+/** Bibliotekets themes: publicerade, i samma redaktionella order som tröskeln. */
+export const bibliotekTeman = (themes: Tema[]): Tema[] =>
+  publicerade(themes).sort(
+    (a, b) => (a.order ?? SIST) - (b.order ?? SIST) || svOrdning<Tema>((t) => t.label)(a, b),
   )
 
 /** Den ändliga rumslistan: publicerade rum i svensk titelordning. */
 export const bibliotekRum = (rum: Rum[]): Rum[] =>
-  publicerade(rum).sort(svOrdning((r) => r.titel))
+  publicerade(rum).sort(svOrdning((r) => r.title))
 
 /** Bibliotekets källposter: publicerade, i svensk titelordning. */
-export const bibliotekKallor = (källor: Kalla[]): Kalla[] =>
-  publicerade(källor).sort(svOrdning((k) => k.titel))
+export const bibliotekKallor = (sources: Kalla[]): Kalla[] =>
+  publicerade(sources).sort(svOrdning((k) => k.title))
 
 /** Traditionerna: publicerade, i svensk namnordning. Sekundär ingång —
  * de hjälper till med sammanhang men äger inte frågorna (library.md). */
-export const bibliotekTraditioner = (traditioner: Tradition[]): Tradition[] =>
-  publicerade(traditioner).sort(svOrdning((t) => t.namn))
+export const bibliotekTraditioner = (traditions: Tradition[]): Tradition[] =>
+  publicerade(traditions).sort(svOrdning((t) => t.name))
 
 /** Bibliotekets frågor: publicerade, i svensk textordning. */
 export const bibliotekFragor = (frågor: Fraga[]): Fraga[] =>
   publicerade(frågor).sort(svOrdning((f) => f.text))
 
-const svTitel = svOrdning<Rum>((r) => r.titel)
+const svTitel = svOrdning<Rum>((r) => r.title)
 
-/** Frågesidans rum: rum som bär frågan som sitt eget anspråk (primärFråga)
- * står först; rum som bara pekar på den bland relateradeFrågor breddar
+/** Frågesidans rum: rum som bär frågan som sitt eget anspråk (primaryQuestion)
+ * står först; rum som bara pekar på den bland relatedQuestions breddar
  * efteråt. En ändlig lista — aldrig en sekvens. */
 export const rumForFraga = (fragaId: string, rum: Rum[]): Rum[] => {
   const publicerat = publicerade(rum)
-  const primära = publicerat.filter((ettRum) => ettRum.primärFråga === fragaId).sort(svTitel)
+  const primära = publicerat.filter((ettRum) => ettRum.primaryQuestion === fragaId).sort(svTitel)
   const relaterade = publicerat
     .filter(
       (ettRum) =>
-        ettRum.primärFråga !== fragaId && (ettRum.relateradeFrågor ?? []).includes(fragaId),
+        ettRum.primaryQuestion !== fragaId && (ettRum.relatedQuestions ?? []).includes(fragaId),
     )
     .sort(svTitel)
   return [...primära, ...relaterade]
@@ -76,26 +76,26 @@ export const rumForFraga = (fragaId: string, rum: Rum[]): Rum[] => {
 /** Temasidans frågor: publicerade frågor taggade med temat. */
 export const fragorForTema = (temaId: string, frågor: Fraga[]): Fraga[] =>
   publicerade(frågor)
-    .filter((fråga) => fråga.teman.includes(temaId))
+    .filter((fråga) => fråga.themes.includes(temaId))
     .sort(svOrdning((f) => f.text))
 
 /** Frågans källmaterial: källorna bakom frågans rum — frågeschemat har inga
  * egna källreferenser, så materialet härleds ur rummens relationer. */
-export const kallorForFraga = (fragaId: string, rum: Rum[], källor: Kalla[]): Kalla[] => {
+export const kallorForFraga = (fragaId: string, rum: Rum[], sources: Kalla[]): Kalla[] => {
   const ids = new Set(
     rumForFraga(fragaId, rum).flatMap((ettRum) =>
-      ettRum.källor.map((relation) => relation.källa),
+      ettRum.sources.map((relation) => relation.source),
     ),
   )
-  return bibliotekKallor(källor.filter((källa) => ids.has(källa.id)))
+  return bibliotekKallor(sources.filter((source) => ids.has(source.id)))
 }
 
 /** Bibliotekets vandringar: publicerade, i svensk titelordning (paths.md,
  * Discoverability — en stilla sektion, aldrig framhävd). */
 export const bibliotekVandringar = (vandringar: Vandring[]): Vandring[] =>
-  publicerade(vandringar).sort(svOrdning((v) => v.titel))
+  publicerade(vandringar).sort(svOrdning((v) => v.title))
 
-/** Vandringens rum i redaktionell ordning — `rum`-listan ÄR sekvensen
+/** Vandringens rum i redaktionell order — `rum`-listan ÄR sekvensen
  * (paths.md, Data Requirements), så inget sorteras om. Rummen behålls oavsett
  * status: valideringsgrinden ser till att en publicerad vandring bara rymmer
  * publicerade rum, och utkastvandringen är redaktionens granskningsvy där hela
@@ -108,25 +108,25 @@ export const rumForVandring = (vandring: Vandring, rum: Rum[]): Rum[] =>
 
 /** Ungefärlig sammanlagd lästid för vandringens rum (paths.md, Path Overview). */
 export const vandringLastid = (rum: Rum[]): number =>
-  rum.reduce((summa, ettRum) => summa + ettRum.lästidMinuter, 0)
+  rum.reduce((summa, ettRum) => summa + ettRum.readingTimeMinutes, 0)
 
-/** Vandringens traditioner, stilla härledda ur rummens källor (paths.md,
- * source traditions shown quietly): rum → källa → traditioner, bara
+/** Vandringens traditions, stilla härledda ur rummens sources (paths.md,
+ * source traditions shown quietly): rum → source → traditions, bara
  * publicerade, unika, i svensk namnordning. */
 export const traditionerForVandring = (
   vandringensRum: Rum[],
-  källor: Kalla[],
-  traditioner: Tradition[],
+  sources: Kalla[],
+  traditions: Tradition[],
 ): Tradition[] => {
   const källIds = new Set(
-    vandringensRum.flatMap((ettRum) => ettRum.källor.map((relation) => relation.källa)),
+    vandringensRum.flatMap((ettRum) => ettRum.sources.map((relation) => relation.source)),
   )
   const traditionIds = new Set(
-    källor
-      .filter((källa) => källIds.has(källa.id))
-      .flatMap((källa) => källa.traditioner ?? []),
+    sources
+      .filter((source) => källIds.has(source.id))
+      .flatMap((source) => source.traditions ?? []),
   )
-  return bibliotekTraditioner(traditioner.filter((tradition) => traditionIds.has(tradition.id)))
+  return bibliotekTraditioner(traditions.filter((tradition) => traditionIds.has(tradition.id)))
 }
 
 /** Källans publicerade passager, i naturlig referensordning (»avsnitt 5« före
@@ -134,14 +134,14 @@ export const traditionerForVandring = (
  * utkast är redaktionens granskningsvy. */
 export const passagerForKalla = (kallaId: string, passager: Kallpassage[]): Kallpassage[] =>
   publicerade(passager)
-    .filter((passage) => passage.källa === kallaId)
-    .sort((a, b) => a.referens.localeCompare(b.referens, 'sv', { numeric: true }))
+    .filter((passage) => passage.source === kallaId)
+    .sort((a, b) => a.reference.localeCompare(b.reference, 'sv', { numeric: true }))
 
-/** Publicerade rum som använder källan — rum med primär relation först. */
+/** Publicerade rum som använder källan — rum med primary relation först. */
 export const rumForKalla = (kallaId: string, rum: Rum[]): Rum[] => {
   const primärvikt = (ettRum: Rum): number =>
-    ettRum.källor.some((relation) => relation.källa === kallaId && relation.primär) ? 0 : 1
+    ettRum.sources.some((relation) => relation.source === kallaId && relation.primary) ? 0 : 1
   return publicerade(rum)
-    .filter((ettRum) => ettRum.källor.some((relation) => relation.källa === kallaId))
+    .filter((ettRum) => ettRum.sources.some((relation) => relation.source === kallaId))
     .sort((a, b) => primärvikt(a) - primärvikt(b) || svTitel(a, b))
 }

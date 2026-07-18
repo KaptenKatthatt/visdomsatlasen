@@ -29,7 +29,7 @@ const metaFor = (translated: boolean): WorkMeta => ({
   author: 'Platon',
   lang: 'Grekiska',
   translation: translated
-    ? 'Svensk översättning (Ollama) från Benjamin Jowetts engelska'
+    ? 'Svensk translation (Ollama) från Benjamin Jowetts engelska'
     : 'Engelska: Benjamin Jowett',
   license: 'Public Domain (Standard Ebooks)',
   sourceUrl: 'https://standardebooks.net/ebooks/plato/dialogues/benjamin-jowett',

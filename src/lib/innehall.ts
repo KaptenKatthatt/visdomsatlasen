@@ -16,9 +16,9 @@ import {
   type Tema,
   type Tradition,
   type Vandring,
-} from '../content/redaktion/schema'
-import { samla, tillFiler } from '../content/redaktion/samla'
-import { tolkaPostfil, tolkaRumsfil } from '../content/redaktion/tolka'
+} from '../content/editorial/schema'
+import { samla, tillFiler } from '../content/editorial/samla'
+import { tolkaPostfil, tolkaRumsfil } from '../content/editorial/tolka'
 // Temana (och tröskelns urval) bor i det lätta troskeldata.ts så hemskärmen kan
 // nå dem utan att dra in rummens brödtext; här återexporteras de så bibliotekets
 // uppslag (hittaTema m.fl.) och sökindexet fortsatt kan gå via innehall.
@@ -27,35 +27,35 @@ import { allaTeman, troskelTeman } from './troskeldata'
 export { allaTeman, troskelTeman }
 
 export const allaRum: Rum[] = samla(
-  tillFiler(import.meta.glob<string>('../content/rum/*.md', { query: '?raw', import: 'default', eager: true })),
+  tillFiler(import.meta.glob<string>('../content/rooms/*.md', { query: '?raw', import: 'default', eager: true })),
   tolkaRumsfil,
 )
 
 export const allaFragor: Fraga[] = samla(
-  tillFiler(import.meta.glob<string>('../content/fragor/*.md', { query: '?raw', import: 'default', eager: true })),
+  tillFiler(import.meta.glob<string>('../content/questions/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(fragaSchema, fil),
 )
 
 export const allaKallor: Kalla[] = samla(
-  tillFiler(import.meta.glob<string>('../content/kallor/*.md', { query: '?raw', import: 'default', eager: true })),
+  tillFiler(import.meta.glob<string>('../content/sources/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(kallaSchema, fil),
 )
 
 export const allaVandringar: Vandring[] = samla(
-  tillFiler(import.meta.glob<string>('../content/vandringar/*.md', { query: '?raw', import: 'default', eager: true })),
+  tillFiler(import.meta.glob<string>('../content/paths/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(vandringSchema, fil),
 )
 
-/** Källpassager — kanoniska textutdrag med referens, edition och översättning
+/** Källpassager — kanoniska textutdrag med reference, edition och translation
  * (source-and-context.md, Suggested Passage Model). Rum pekar hit via
  * relationens `passage`, så källans ord hålls åtskilda från redaktionell prosa. */
 export const allaPassager: Kallpassage[] = samla(
-  tillFiler(import.meta.glob<string>('../content/passager/*.md', { query: '?raw', import: 'default', eager: true })),
+  tillFiler(import.meta.glob<string>('../content/passages/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(kallpassageSchema, fil),
 )
 
 export const allaTraditioner: Tradition[] = samla(
-  tillFiler(import.meta.glob<string>('../content/traditioner/*.md', { query: '?raw', import: 'default', eager: true })),
+  tillFiler(import.meta.glob<string>('../content/traditions/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(traditionSchema, fil),
 )
 
@@ -78,10 +78,10 @@ export const hittaFragaViaSlug = (slug: string): Fraga | undefined =>
   allaFragor.find((fråga) => fråga.slug === slug)
 
 export const hittaKalla = (id: string): Kalla | undefined =>
-  allaKallor.find((källa) => källa.id === id)
+  allaKallor.find((source) => source.id === id)
 
 export const hittaKallaViaSlug = (slug: string): Kalla | undefined =>
-  allaKallor.find((källa) => källa.slug === slug)
+  allaKallor.find((source) => source.slug === slug)
 
 export const hittaTradition = (id: string): Tradition | undefined =>
   allaTraditioner.find((tradition) => tradition.id === id)
@@ -103,32 +103,32 @@ export const stycken = (text: string): string[] =>
     .filter((stycke) => stycke.length > 0)
 
 /** Namnet i kolofonen: den tillskrivna rösten före nedtecknaren före verket. */
-export const kallnamn = (källa: Kalla): string =>
-  källa.tillskrivenFörfattare ?? källa.författare ?? källa.titel
+export const kallnamn = (source: Kalla): string =>
+  source.attributedAuthor ?? source.author ?? source.title
 
 /** Ärliga osäkerhetsmeningar i klartext (source-and-context.md, Uncertainty):
  * dold osäkerhet försvagar tilliten, inte källan. Delas av läsrummet och
  * källsidan så samma formulering möter läsaren på båda ställena. */
-export const osakerheter = (källa: Kalla): string[] => {
-  const namn = källa.tillskrivenFörfattare ?? källa.författare ?? 'annan hand'
+export const osakerheter = (source: Kalla): string[] => {
+  const name = source.attributedAuthor ?? source.author ?? 'annan hand'
   const rader: string[] = []
-  if (källa.upphov === 'tillskrivet')
-    rader.push(`Verket tillskrivs traditionellt ${namn}; författarskapet är inte säkert belagt.`)
-  if (källa.upphov === 'omtvistat') rader.push('Författarskapet är omdiskuterat.')
-  if (källa.upphov === 'okänt') rader.push('Upphovspersonen är okänd.')
-  if (källa.datering === 'ungefärlig') rader.push('Textens exakta datering är osäker.')
-  if (källa.datering === 'omtvistad') rader.push('Textens datering är omtvistad.')
-  if (källa.datering === 'okänd') rader.push('När texten tillkom är okänt.')
+  if (source.attribution === 'tillskrivet')
+    rader.push(`Verket tillskrivs traditionellt ${name}; författarskapet är inte säkert belagt.`)
+  if (source.attribution === 'omtvistat') rader.push('Författarskapet är omdiskuterat.')
+  if (source.attribution === 'okänt') rader.push('Upphovspersonen är okänd.')
+  if (source.dating === 'ungefärlig') rader.push('Textens exakta dating är osäker.')
+  if (source.dating === 'omtvistad') rader.push('Textens dating är omtvistad.')
+  if (source.dating === 'okänd') rader.push('När texten tillkom är okänt.')
   return rader
 }
 
 /** Kort svensk deklaration av hur rummet använder källan (source-and-context.md). */
-export const brukEtikett: Record<Rum['källor'][number]['bruk'], string> = {
+export const brukEtikett: Record<Rum['sources'][number]['use'], string> = {
   'citat': 'Direkt citat.',
-  'översättning': 'Egen svensk översättning.',
+  'translation': 'Egen svensk translation.',
   'parafras': 'Parafraserad återgivning.',
   'bearbetning': 'Bearbetad för reflektion.',
   'inspiration': 'Redaktionell reflektion inspirerad av källan.',
-  'sammanställning': 'Redaktionell sammanställning av flera källor.',
+  'sammanställning': 'Redaktionell sammanställning av flera sources.',
   'historisk-kontext': 'Historisk bakgrundskälla.',
 }

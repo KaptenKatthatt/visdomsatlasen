@@ -19,7 +19,7 @@ export const predikaren: Topic = {
       ' övning i nuet än man kunde vänta av en biblisk text.',
     ],
     [
-      'Att en så skeptisk röst fick plats i kanon säger något om judendomens förhållande till tvivlet: frågan hör hemma i tron. ',
+      'Att en så skeptisk röst fick place i kanon säger något om judendomens förhållande till tvivlet: frågan hör hemma i tron. ',
       l('Jesus', 'person', 'jesus'),
       ', som växte upp med dessa texter, ärvde deras blick för det förgängliga — liljorna på marken, som är i dag och i morgon kastas i ugnen.',
     ],

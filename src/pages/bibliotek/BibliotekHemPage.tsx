@@ -29,21 +29,21 @@ import { frågeantal, Rad, rumsantal, Sektion } from './Biblioteksdelar'
 const Fragesektion = () => (
   <Sektion rubrik="Frågor">
     <Link to="/bibliotek/fragor" className={styles.rad}>
-      <Rad titel="Alla frågor" sub={frågeantal(bibliotekFragor(allaFragor).length)} />
+      <Rad title="Alla frågor" sub={frågeantal(bibliotekFragor(allaFragor).length)} />
     </Link>
   </Sektion>
 )
 
 const Temasektion = () => {
-  const teman = bibliotekTeman(allaTeman)
+  const themes = bibliotekTeman(allaTeman)
   return (
     <Sektion rubrik="Teman">
-      {teman.length === 0 ? (
-        <p className={styles.tomt}>Inga teman ännu.</p>
+      {themes.length === 0 ? (
+        <p className={styles.tomt}>Inga themes ännu.</p>
       ) : (
-        teman.map((tema) => (
+        themes.map((tema) => (
           <ToLink key={tema.id} to={{ kind: 'tema', slug: tema.slug }} className={styles.rad}>
-            <Rad titel={tema.etikett} sub={rumsantal(valbaraRum(tema.id, allaRum).length)} />
+            <Rad title={tema.label} sub={rumsantal(valbaraRum(tema.id, allaRum).length)} />
           </ToLink>
         ))
       )}
@@ -69,7 +69,7 @@ const Vandringssektion = () => {
             to={{ kind: 'vandring', slug: vandring.slug }}
             className={styles.rad}
           >
-            <Rad titel={vandring.titel} sub={sub} />
+            <Rad title={vandring.title} sub={sub} />
           </ToLink>
         )
       })}
@@ -80,36 +80,36 @@ const Vandringssektion = () => {
 const Rumsektion = () => (
   <Sektion rubrik="Rum">
     <Link to="/bibliotek/rum" className={styles.rad}>
-      <Rad titel="Alla rum" sub={rumsantal(bibliotekRum(allaRum).length)} />
+      <Rad title="Alla rum" sub={rumsantal(bibliotekRum(allaRum).length)} />
     </Link>
   </Sektion>
 )
 
 const Kallsektion = () => (
   <Sektion rubrik="Källor">
-    {bibliotekKallor(allaKallor).map((källa) => (
-      <ToLink key={källa.id} to={{ kind: 'kallpost', slug: källa.slug }} className={styles.rad}>
-        <Rad titel={källa.titel} sub={kallnamn(källa)} />
+    {bibliotekKallor(allaKallor).map((source) => (
+      <ToLink key={source.id} to={{ kind: 'kallpost', slug: source.slug }} className={styles.rad}>
+        <Rad title={source.title} sub={kallnamn(source)} />
       </ToLink>
     ))}
     <Link to="/bibliotek/verk" className={styles.rad}>
-      <Rad titel="Hela texter" sub="Källtexterna i sin helhet, att läsa och söka i" />
+      <Rad title="Hela texter" sub="Källtexterna i sin helhet, att läsa och söka i" />
     </Link>
   </Sektion>
 )
 
 // Traditioner är en sekundär ingång utan egna sidor än (roadmap fas 6:
-// stödposter). Sektionen visas först när publicerade traditioner finns.
+// stödposter). Sektionen visas först när publicerade traditions finns.
 const Traditionssektion = () => {
-  const traditioner = bibliotekTraditioner(allaTraditioner)
-  if (traditioner.length === 0) return null
+  const traditions = bibliotekTraditioner(allaTraditioner)
+  if (traditions.length === 0) return null
   return (
     <Sektion rubrik="Traditioner">
-      {traditioner.map((tradition) => (
+      {traditions.map((tradition) => (
         <div key={tradition.id} className={styles.stillaRad}>
-          <span className={styles.radTitel}>{tradition.namn}</span>
-          {tradition.beskrivning && (
-            <span className={styles.radSub}>{tradition.beskrivning}</span>
+          <span className={styles.radTitel}>{tradition.name}</span>
+          {tradition.description && (
+            <span className={styles.radSub}>{tradition.description}</span>
           )}
         </div>
       ))}
@@ -120,7 +120,7 @@ const Traditionssektion = () => {
 /**
  * Bibliotekets landningssida (library.md) — den medvetna ingången till
  * utforskning. Sekundär till läsrummet; lugn, ändlig, utan engagemangsmått.
- * Traditioner och källor står överst som bibliotekets lugna ram (redaktörens
+ * Traditioner och sources står överst som bibliotekets lugna ram (redaktörens
  * beslut 2026-07-18), frågorna samlade längst ner. Sparat nås via navfliken.
  */
 export const BibliotekHemPage = () => {
@@ -128,12 +128,12 @@ export const BibliotekHemPage = () => {
   return (
     <div className="screenTab">
       <div className="kicker">Visdomsatlasen</div>
-      <h1 className={styles.titel}>Biblioteket</h1>
+      <h1 className={styles.title}>Biblioteket</h1>
       <p className={styles.lede}>
-        För den som vill leta vidare på egen hand — bland traditioner, källor, teman och frågor.
+        För den som vill leta vidare på egen hand — bland traditions, sources, themes och frågor.
       </p>
       <Link to="/bibliotek/sok" className={styles.sokingang}>
-        Sök efter en fråga, tanke eller källa
+        Sök efter en fråga, tanke eller source
       </Link>
       <Traditionssektion />
       <Kallsektion />

@@ -19,7 +19,7 @@ export class Felgrans extends Component<Props, State> {
   }
 
   override componentDidCatch(error: Error): void {
-    rapportera({ typ: 'sidladdningsfel', resurs: 'sida', detalj: error.message })
+    rapportera({ type: 'sidladdningsfel', resurs: 'sida', detalj: error.message })
   }
 
   override render(): ReactNode {

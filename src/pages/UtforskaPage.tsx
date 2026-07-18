@@ -49,7 +49,7 @@ export const UtforskaPage = () => (
         />
         <RowLink
           to={{ kind: 'screen', id: 'personer' }}
-          title="Personer & traditioner"
+          title="Personer & traditions"
           sub="Rösterna bakom idéerna"
           subItalic
           chevron

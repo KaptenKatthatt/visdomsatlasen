@@ -5,7 +5,7 @@ export type NormalizedVerse = {
   chapter: number
   verse: number
   text: string
-  // Valfri originaltext (pali, grekiska …) bevarad vid sidan av översättningen.
+  // Valfri originalText (pali, grekiska …) bevarad vid sidan av översättningen.
   origText?: string
 }
 

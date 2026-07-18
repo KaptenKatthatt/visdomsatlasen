@@ -6,13 +6,13 @@
   text-decoration: none;
 }
 
-.titel {
+.title {
   display: block;
   font-size: 1.25rem;
   line-height: 1.25;
 }
 
-.sammanfattning {
+.summary {
   display: block;
   font-size: 0.96875rem;
   color: var(--soft-strong);

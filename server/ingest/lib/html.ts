@@ -26,7 +26,7 @@ const decodeEntities = (text: string): string =>
     .replace(/&([a-zA-Z]+);/g, (m, name: string) => NAMED[name] ?? m)
 
 /**
- * Ta bort taggar (radbrytningar → mellanslag), avkoda entiteter, normalisera.
+ * Ta bort tags (radbrytningar → mellanslag), avkoda entiteter, normalisera.
  * Notreferenser (`<a epub:type="noteref">37</a>`) tas bort *med* sin innertext,
  * så slutnots-siffror inte hamnar i verstexten.
  */

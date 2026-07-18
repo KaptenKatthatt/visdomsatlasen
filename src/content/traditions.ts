@@ -18,7 +18,7 @@ export const allTraditions: Tradition[] = [
   },
   {
     name: 'Judendom',
-    line: 'Förbundets folk — och tvivlets givna plats i tron.',
+    line: 'Förbundets folk — och tvivlets givna place i tron.',
     topics: ['predikaren'],
   },
   {

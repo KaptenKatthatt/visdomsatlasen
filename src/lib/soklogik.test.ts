@@ -10,11 +10,11 @@ import {
 } from './soklogik'
 
 const dok = (
-  typ: Soktyp,
+  type: Soktyp,
   id: string,
-  titel: string,
+  title: string,
   extra: Partial<Sokdokument> = {},
-): Sokdokument => ({ typ, id, titel, alias: [], nyckelord: [], text: [], ...extra })
+): Sokdokument => ({ type, id, title, alias: [], keywords: [], text: [], ...extra })
 
 // Ett litet blandat index som täcker rankningsscenarierna.
 const index: Sokdokument[] = [
@@ -49,30 +49,30 @@ describe('sokIBiblioteket — rankning', () => {
   it('sätter en exakt frågetitel överst med rätt nivå', () => {
     const grupper = sokIBiblioteket('vad kan du styra', index)
     expect(idOrdning(grupper)[0]).toBe('fq-styra')
-    expect(platt(grupper)[0]?.traffatFalt).toBe('titel-exakt')
+    expect(platt(grupper)[0]?.traffatFalt).toBe('title-exakt')
   })
 
-  it('låter exakt titel slå en partiell titelträff', () => {
+  it('låter exakt title slå en partiell titelträff', () => {
     const grupper = sokIBiblioteket('mod', index)
     const ids = idOrdning(grupper)
     expect(ids.indexOf('fq-mod')).toBeLessThan(ids.indexOf('fq-mod-vart'))
   })
 
-  it('hittar en känd författare via aliaset, inte via titeln', () => {
+  it('hittar en känd author via aliaset, inte via titeln', () => {
     const grupper = sokIBiblioteket('marcus aurelius', index)
     expect(idOrdning(grupper)[0]).toBe('k-marcus')
     expect(platt(grupper)[0]?.traffatFalt).toBe('alias-exakt')
   })
 
-  it('låter en relevant fråga stå före källor (frågan slår författaren)', () => {
+  it('låter en relevant fråga stå före sources (frågan slår författaren)', () => {
     const grupper = sokIBiblioteket('oro', index)
-    expect(grupper[0]?.typ).toBe('fraga')
+    expect(grupper[0]?.type).toBe('fraga')
     const ids = idOrdning(grupper)
     expect(ids.indexOf('fq-oro')).toBeLessThan(ids.indexOf('k-oro'))
   })
 })
 
-describe('sokIBiblioteket — språk och tolerans', () => {
+describe('sokIBiblioteket — language och tolerans', () => {
   it('viker svenska diakriter (forlatelse hittar förlåtelse)', () => {
     expect(finns(sokIBiblioteket('forlatelse', index), 'fq-forl')).toBe(true)
   })
@@ -105,13 +105,13 @@ describe('sokIBiblioteket — flera ord (AND)', () => {
 })
 
 describe('synligaTraffar — ändliga resultat', () => {
-  const grupp = (typ: Soktyp, antal: number): Sokgrupp => ({
-    typ,
-    rubrik: typ,
+  const grupp = (type: Soktyp, antal: number): Sokgrupp => ({
+    type,
+    rubrik: type,
     traffar: Array.from({ length: antal }, (_, i) => ({
-      dokument: dok(typ, `${typ}-${i}`, `${typ} ${i}`),
+      dokument: dok(type, `${type}-${i}`, `${type} ${i}`),
       poang: 100 - i,
-      traffatFalt: 'titel' as const,
+      traffatFalt: 'title' as const,
     })),
   })
 

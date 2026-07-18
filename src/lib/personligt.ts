@@ -27,13 +27,13 @@ export type SparadPost = { sparadNar: string | null }
 export type Ursprung = 'rum' | 'vandring' | 'amne'
 
 /** En anteckning kopplad till sitt ursprung. Nyckeln i store = ursprungId
- * (en anteckning per plats — dagens UX). ISO 8601-datum, läsbara i exporten. */
+ * (en anteckning per place — dagens UX). ISO 8601-datum, läsbara i exporten. */
 export type Anteckning = {
   ursprungTyp: Ursprung
   ursprungId: string
   text: string
-  skapad: string
-  uppdaterad: string
+  created: string
+  updated: string
 }
 
 const ärRecord = (värde: unknown): värde is Record<string, unknown> =>
@@ -69,14 +69,14 @@ export const migreraSparade = (rått: unknown): Record<string, SparadPost> => {
 // saknas eller är korrupta får trygga fallbacks — texten bevaras alltid.
 const migreraAnteckningPost = (id: string, värde: unknown, nu: string): Anteckning | null => {
   if (!ärRecord(värde)) return null
-  const { ursprungTyp, ursprungId, text, skapad, uppdaterad } = värde
+  const { ursprungTyp, ursprungId, text, created, updated } = värde
   if (typeof text !== 'string' || text.trim().length === 0) return null
   return {
     ursprungTyp: ärUrsprung(ursprungTyp) ? ursprungTyp : 'amne',
     ursprungId: typeof ursprungId === 'string' ? ursprungId : id,
     text,
-    skapad: typeof skapad === 'string' ? skapad : nu,
-    uppdaterad: typeof uppdaterad === 'string' ? uppdaterad : nu,
+    created: typeof created === 'string' ? created : nu,
+    updated: typeof updated === 'string' ? updated : nu,
   }
 }
 
@@ -90,7 +90,7 @@ const posterUrGamlaNotes = (
   if (!ärRecord(gamlaNotes)) return ut
   for (const [id, värde] of Object.entries(gamlaNotes)) {
     if (typeof värde !== 'string' || värde.trim().length === 0) continue
-    ut[id] = { ursprungTyp: klassificera(id), ursprungId: id, text: värde, skapad: nu, uppdaterad: nu }
+    ut[id] = { ursprungTyp: klassificera(id), ursprungId: id, text: värde, created: nu, updated: nu }
   }
   return ut
 }
@@ -120,21 +120,21 @@ export const migreraAnteckningar = (
   ...posterUrMigrerade(nyaAnteckningar, nu),
 })
 
-/** Bygger anteckningens nya tillstånd vid en skrivning: `skapad` bevaras från
- * den befintliga posten (autospar utan synlig versionshistorik), `uppdaterad`
+/** Bygger anteckningens nya tillstånd vid en skrivning: `created` bevaras från
+ * den befintliga posten (autospar utan synlig versionshistorik), `updated`
  * flyttas fram. */
 export const uppdateradAnteckning = (
   befintlig: Anteckning | undefined,
-  typ: Ursprung,
+  type: Ursprung,
   id: string,
   text: string,
   nu: string,
 ): Anteckning => ({
-  ursprungTyp: typ,
+  ursprungTyp: type,
   ursprungId: id,
   text,
-  skapad: befintlig?.skapad ?? nu,
-  uppdaterad: nu,
+  created: befintlig?.created ?? nu,
+  updated: nu,
 })
 
 /** Sparade poster i tidsordning: senast sparat först. Migrerade poster utan
@@ -144,12 +144,12 @@ export const sparadeIdITidsordning = (poster: Record<string, SparadPost>): strin
   return Object.keys(poster).sort((a, b) => nyckel(b).localeCompare(nyckel(a)))
 }
 
-/** Anteckningsöversiktens ordning: senast ändrad först, tomma utelämnade
+/** Anteckningsöversiktens order: senast ändrad först, tomma utelämnade
  * (spec Notes Overview: lugnt kronologisk). ISO 8601 jämförs lexikalt. */
 export const sorteradeAnteckningar = (anteckningar: Record<string, Anteckning>): Anteckning[] =>
   Object.values(anteckningar)
     .filter((anteckning) => anteckning.text.trim().length > 0)
-    .sort((a, b) => b.uppdaterad.localeCompare(a.uppdaterad))
+    .sort((a, b) => b.updated.localeCompare(a.updated))
 
 /** Kort utdrag för preview-kort; klipper generöst och osynligt (spec Note Length). */
 export const utdrag = (text: string, max = 72): string => {

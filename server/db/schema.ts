@@ -9,7 +9,7 @@ export const works = sqliteTable('works', {
   author: text('author').notNull(),
   // Källspråk att visa (t.ex. "Grekiska", "Pali").
   lang: text('lang').notNull(),
-  // Vilken översättning texten kommer från.
+  // Vilken translation texten kommer från.
   translation: text('translation').notNull(),
   license: text('license').notNull(),
   sourceUrl: text('source_url').notNull(),
@@ -34,7 +34,7 @@ export const books = sqliteTable(
 )
 
 // En enskild vers/rad. `text` är läsversionen (svensk); `origText` är valfri
-// originaltext (t.ex. pali/grekiska) för verk vi översatt.
+// originalText (t.ex. pali/grekiska) för verk vi översatt.
 export const verses = sqliteTable(
   'verses',
   {

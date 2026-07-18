@@ -66,7 +66,7 @@ const metaFor = (translated: boolean): WorkMeta => ({
   author: 'Okända skalder',
   lang: 'Fornisländska',
   translation: translated
-    ? 'Svensk översättning (Ollama) från Henry Adams Bellows engelska'
+    ? 'Svensk translation (Ollama) från Henry Adams Bellows engelska'
     : 'Engelska: Henry Adams Bellows',
   license: 'Public Domain (Project Gutenberg)',
   sourceUrl: 'https://www.gutenberg.org/ebooks/73533',

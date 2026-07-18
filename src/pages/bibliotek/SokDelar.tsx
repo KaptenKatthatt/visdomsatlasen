@@ -24,10 +24,10 @@ const VisaFler = ({ dolda, onClick }: { dolda: number; onClick: () => void }) =>
   )
 
 const TraffRad = ({ traff }: { traff: Soktraff }) => {
-  const { titel, underrad, meta, mal } = traff.dokument
+  const { title, underrad, meta, mal } = traff.dokument
   const innehåll = (
     <span>
-      <span className={styles.radTitel}>{titel}</span>
+      <span className={styles.radTitel}>{title}</span>
       {underrad !== undefined && <span className={styles.radSub}>{underrad}</span>}
       {meta !== undefined && <span className={styles.radMeta}>{meta}</span>}
     </span>
@@ -72,7 +72,7 @@ const AnteckningsGruppSok = ({ anteckningar }: { anteckningar: Anteckning[] }) =
         return (
           <div key={kort.key} className={styles.privatKort}>
             <span className={styles.privatMarkor}>Privat anteckning</span>
-            <AnteckningsKort titel={kort.titel} text={kort.text} datum={kort.datum} to={kort.to} />
+            <AnteckningsKort title={kort.title} text={kort.text} datum={kort.datum} to={kort.to} />
           </div>
         )
       })}
@@ -163,8 +163,8 @@ export const KalltextGrupp = ({
   )
 }
 
-/** Sökfältet: programmatiskt kopplad etikett, Enter söker direkt, Escape rensar
- * (type=search). Normal tab-ordning. */
+/** Sökfältet: programmatiskt kopplad label, Enter söker direkt, Escape rensar
+ * (type=search). Normal tab-order. */
 export const Sokfalt = ({
   query,
   onChange,
@@ -190,7 +190,7 @@ export const Sokfalt = ({
       className={styles.falt}
       value={query}
       onChange={(händelse) => onChange(händelse.target.value)}
-      placeholder="Sök efter en fråga, tanke eller källa"
+      placeholder="Sök efter en fråga, tanke eller source"
       // Hela skärmen är sök — fältet är sidans enda uppgift och nås avsiktligt.
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
@@ -199,14 +199,14 @@ export const Sokfalt = ({
 )
 
 const SokTomlage = () => (
-  <p className={styles.tomtext}>Sök bland frågor, rum, källor och traditioner.</p>
+  <p className={styles.tomtext}>Sök bland frågor, rum, sources och traditions.</p>
 )
 
 const IngaTraffar = () => (
   <div className={styles.tillstand} role="status">
     <p className={styles.tomtext}>Vi hittade inget som stämde med din sökning.</p>
     <p className={styles.tomhint}>
-      Prova ett bredare ord eller sök efter en fråga, ett tema eller en källa.
+      Prova ett bredare ord eller sök efter en fråga, ett tema eller en source.
     </p>
   </div>
 )
@@ -231,7 +231,7 @@ export const Resultatvy = ({
   ingaTraffar,
   synliga,
   kalltext,
-  noteringar,
+  notes,
   nyckel,
   antal,
   onVisaFler,
@@ -240,10 +240,10 @@ export const Resultatvy = ({
   ingaTraffar: boolean
   synliga: SynligGrupp[]
   kalltext: ReactNode
-  noteringar: Anteckning[]
+  notes: Anteckning[]
   nyckel: string
   antal: number
-  onVisaFler: (typ: Soktyp) => void
+  onVisaFler: (type: Soktyp) => void
 }) => {
   if (läge === 'tom') return <SokTomlage />
   if (läge === 'fel') return <Fellage />
@@ -256,23 +256,23 @@ export const Resultatvy = ({
       {synliga.map((synlig) =>
         synlig.synliga.length > 0 || synlig.dolda > 0 ? (
           <SokGruppSektion
-            key={synlig.grupp.typ}
+            key={synlig.grupp.type}
             synlig={synlig}
-            onVisaFler={() => onVisaFler(synlig.grupp.typ)}
+            onVisaFler={() => onVisaFler(synlig.grupp.type)}
           />
         ) : null,
       )}
       {kalltext}
-      <AnteckningsGruppSok key={nyckel} anteckningar={noteringar} />
+      <AnteckningsGruppSok key={nyckel} anteckningar={notes} />
     </>
   )
 }
 
 // Filtervalen härleds ur den delade söktyplistan och gruppetiketterna, så en ny
-// typ inte behöver läggas till på fler ställen än sokindex/soklogik.
-const TYPVAL: Array<{ värde: Soktyp | 'alla'; etikett: string }> = [
-  { värde: 'alla', etikett: 'Alla' },
-  ...SOKTYPER.map((typ) => ({ värde: typ, etikett: RUBRIK[typ] })),
+// type inte behöver läggas till på fler ställen än sokindex/soklogik.
+const TYPVAL: Array<{ värde: Soktyp | 'alla'; label: string }> = [
+  { värde: 'alla', label: 'Alla' },
+  ...SOKTYPER.map((type) => ({ värde: type, label: RUBRIK[type] })),
 ]
 
 /** Valfria, hopfällda typfilter (search.md, Filters): aldrig krav före sökning,
@@ -284,7 +284,7 @@ export const Filter = ({
 }: {
   aktiv: Soktyp | undefined
   antal: number
-  onVal: (typ: Soktyp | undefined) => void
+  onVal: (type: Soktyp | undefined) => void
 }) => {
   const [öppen, setÖppen] = useState(false)
   return (
@@ -309,7 +309,7 @@ export const Filter = ({
                 aria-pressed={vald}
                 onClick={() => onVal(val.värde === 'alla' ? undefined : val.värde)}
               >
-                {val.etikett}
+                {val.label}
               </button>
             )
           })}

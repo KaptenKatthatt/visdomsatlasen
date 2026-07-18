@@ -9,11 +9,11 @@ import {
 } from './dataflytt'
 import type { Ursprung } from './personligt'
 
-const titelFor = (typ: Ursprung, id: string): string | undefined => `${typ}:${id}`
+const titelFor = (type: Ursprung, id: string): string | undefined => `${type}:${id}`
 
 const samlingar = (): PersonligaSamlingar => ({
   anteckningar: {
-    'rum-a': { ursprungTyp: 'rum', ursprungId: 'rum-a', text: 'en tanke', skapad: '2026-07-01T00:00:00.000Z', uppdaterad: '2026-07-05T00:00:00.000Z' },
+    'rum-a': { ursprungTyp: 'rum', ursprungId: 'rum-a', text: 'en tanke', created: '2026-07-01T00:00:00.000Z', updated: '2026-07-05T00:00:00.000Z' },
   },
   sparadeRum: { 'rum-a': { sparadNar: '2026-07-02T00:00:00.000Z' } },
   sparadeVandringar: { 'vandring-x': { sparadNar: null } },
@@ -28,8 +28,8 @@ describe('tillExport', () => {
     const exporten = tillExport(samlingar(), titelFor, '2026-07-14T10:00:00.000Z')
     expect(exporten.format).toBe(EXPORT_FORMAT)
     expect(exporten.version).toBe(1)
-    expect(exporten.anteckningar[0]?.titel).toBe('rum:rum-a')
-    expect(exporten.sparadeRum[0]).toMatchObject({ id: 'rum-a', titel: 'rum:rum-a' })
+    expect(exporten.anteckningar[0]?.title).toBe('rum:rum-a')
+    expect(exporten.sparadeRum[0]).toMatchObject({ id: 'rum-a', title: 'rum:rum-a' })
     expect(exporten.sparadeVandringar[0]?.id).toBe('vandring-x')
     expect(exporten.bokmarken.amnen).toEqual(['topic-1'])
     expect(exporten.bokmarken.kapitel).toHaveLength(1)
@@ -73,7 +73,7 @@ describe('mergaImport', () => {
     const importen = tillExport(samlingar(), titelFor, '2026-07-14T10:00:00.000Z')
     const äldre: PersonligaSamlingar = {
       anteckningar: {
-        'rum-a': { ursprungTyp: 'rum', ursprungId: 'rum-a', text: 'äldre', skapad: '2026-07-01T00:00:00.000Z', uppdaterad: '2026-07-03T00:00:00.000Z' },
+        'rum-a': { ursprungTyp: 'rum', ursprungId: 'rum-a', text: 'äldre', created: '2026-07-01T00:00:00.000Z', updated: '2026-07-03T00:00:00.000Z' },
       },
       sparadeRum: {},
       sparadeVandringar: {},
@@ -86,7 +86,7 @@ describe('mergaImport', () => {
     const nyare: PersonligaSamlingar = {
       ...äldre,
       anteckningar: {
-        'rum-a': { ursprungTyp: 'rum', ursprungId: 'rum-a', text: 'nyare', skapad: '2026-07-01T00:00:00.000Z', uppdaterad: '2026-07-20T00:00:00.000Z' },
+        'rum-a': { ursprungTyp: 'rum', ursprungId: 'rum-a', text: 'nyare', created: '2026-07-01T00:00:00.000Z', updated: '2026-07-20T00:00:00.000Z' },
       },
     }
     expect(mergaImport(nyare, importen).anteckningar['rum-a']?.text).toBe('nyare')
@@ -99,7 +99,7 @@ describe('tillMarkdown', () => {
     expect(md).toContain('## rum:rum-a')
     expect(md).toContain('en tanke')
     expect(md).toContain('Skapad 2026-07-01T00:00:00.000Z')
-    expect(md).toContain('uppdaterad 2026-07-05T00:00:00.000Z')
+    expect(md).toContain('updated 2026-07-05T00:00:00.000Z')
     expect(md).toContain('# Sparat')
     expect(md).toContain('- rum:rum-a')
   })

@@ -18,5 +18,5 @@
     "noUncheckedIndexedAccess": true,
     "types": ["node"]
   },
-  "include": ["server", "scripts", "src/content/redaktion"]
+  "include": ["server", "scripts", "src/content/editorial"]
 }

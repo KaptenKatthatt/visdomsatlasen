@@ -34,7 +34,7 @@ const metaFor = (translated: boolean): WorkMeta => ({
   author: 'Epiktetos',
   lang: 'Grekiska',
   translation: translated
-    ? 'Svensk översättning (Ollama) från George Longs engelska'
+    ? 'Svensk translation (Ollama) från George Longs engelska'
     : 'Engelska: George Long',
   license: 'Public Domain (Standard Ebooks)',
   sourceUrl: 'https://standardebooks.net/ebooks/epictetus/discourses/george-long',

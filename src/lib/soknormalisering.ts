@@ -4,7 +4,7 @@
 
 /** Viker text för matchning: trim, gemener och diakritvikning (å/ä→a, ö→o, é→e).
  * Så hittar `forlatelse` innehåll om `förlåtelse` — en bekvämlighet, inte en
- * ersättning för korrekt språk. */
+ * ersättning för korrekt language. */
 export const normalisera = (text: string): string =>
   text
     .trim()

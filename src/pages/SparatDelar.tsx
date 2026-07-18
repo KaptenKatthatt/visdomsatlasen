@@ -3,7 +3,7 @@
 // popularitet eller besöksantal.
 import type { ReactNode } from 'react'
 import { ToLink } from '../components/ToLink'
-import type { Vandring } from '../content/redaktion/schema'
+import type { Vandring } from '../content/editorial/schema'
 import { findTopic } from '../content/topics'
 import { hittaRumViaId } from '../lib/innehall'
 import { datumEtikett, utdrag, type Anteckning } from '../lib/personligt'
@@ -16,10 +16,10 @@ export type NoteringsMal =
   | { kind: 'rum'; slug: string }
   | { kind: 'las'; id: string; mode: 'essa' }
 
-/** Ett anteckningskorts data: titel, text, datum och ett valfritt ursprungsmål. */
+/** Ett anteckningskorts data: title, text, datum och ett valfritt ursprungsmål. */
 export type Kort = {
   key: string
-  titel: string
+  title: string
   text: string
   datum: string | undefined
   to: NoteringsMal | undefined
@@ -29,16 +29,16 @@ export type Kort = {
 // till läsrummet, topic-anteckningar till essän. Hittas inte ursprunget renderas
 // texten ändå — utan länk, men aldrig gömd. Delas av Sparat och söket.
 export const anteckningTillKort = (anteckning: Anteckning): Kort => {
-  const datum = datumEtikett(anteckning.uppdaterad)
+  const datum = datumEtikett(anteckning.updated)
   const bas = { key: anteckning.ursprungId, text: anteckning.text, datum }
   if (anteckning.ursprungTyp === 'rum') {
     const rum = hittaRumViaId(anteckning.ursprungId)
     const to = rum ? ({ kind: 'rum', slug: rum.slug } as const) : undefined
-    return { ...bas, titel: rum?.titel ?? 'Sparad tanke', to }
+    return { ...bas, title: rum?.title ?? 'Sparad tanke', to }
   }
   const topic = findTopic(anteckning.ursprungId)
   const to = topic ? ({ kind: 'las', id: topic.id, mode: 'essa' } as const) : undefined
-  return { ...bas, titel: topic?.title ?? 'Sparad tanke', to }
+  return { ...bas, title: topic?.title ?? 'Sparad tanke', to }
 }
 
 /** En grupp visas bara när den har innehåll (spec Saved Section). */
@@ -49,7 +49,7 @@ export const Grupp = ({ rubrik, children }: { rubrik: string; children: ReactNod
   </section>
 )
 
-/** Vandringens preview-kort: titel, kort introduktion och — bara för
+/** Vandringens preview-kort: title, kort introduction och — bara för
  * orientering — senast öppnade rum. Aldrig antal rum, procent eller kvarvarande
  * (spec Saved Paths). */
 export const VandringKort = ({
@@ -60,29 +60,29 @@ export const VandringKort = ({
   senastRum: string | undefined
 }) => (
   <ToLink to={{ kind: 'vandring', slug: vandring.slug }} className={styles.kort}>
-    <span className={styles.kortTitel}>{vandring.titel}</span>
-    <span className={styles.kortText}>{utdrag(vandring.introduktion, 96)}</span>
+    <span className={styles.kortTitel}>{vandring.title}</span>
+    <span className={styles.kortText}>{utdrag(vandring.introduction, 96)}</span>
     {senastRum !== undefined && <span className={styles.kortMeta}>Senast: {senastRum}</span>}
   </ToLink>
 )
 
-/** Anteckningens preview-kort: utdrag, kopplad titel och datum. Länkar till
+/** Anteckningens preview-kort: utdrag, kopplad title och datum. Länkar till
  * ursprunget när det kan slås upp; annars renderas texten utan länk — en
  * anteckning göms aldrig bara för att dess ursprung inte hittas. */
 export const AnteckningsKort = ({
-  titel,
+  title,
   text,
   datum,
   to,
 }: {
-  titel: string
+  title: string
   text: string
   datum: string | undefined
   to: NoteringsMal | undefined
 }) => {
   const innehåll = (
     <>
-      <span className={styles.noteTitel}>{titel}</span>
+      <span className={styles.noteTitel}>{title}</span>
       <span className={styles.noteUtdrag}>»{utdrag(text)}«</span>
       {datum !== undefined && <span className={styles.noteMeta}>{datum}</span>}
     </>

@@ -3,7 +3,7 @@
 // varierar (statisk route eller ToLink).
 import type { ReactNode } from 'react'
 import { RumRad } from '../../components/RumRad'
-import type { Rum } from '../../content/redaktion/schema'
+import type { Rum } from '../../content/editorial/schema'
 import { stycken } from '../../lib/innehall'
 import { useSidtitel } from '../../lib/useSidtitel'
 import styles from './Bibliotek.module.css'
@@ -15,27 +15,27 @@ export const frågeantal = (antal: number): string =>
 
 /** Undersidornas huvud. Poster som inte är publicerade märks »Utkast« —
  * de nås bara via direkt länk och är redaktionens granskningsvy.
- * Sidhuvudets titel blir också dokumenttitel — sidhuvudet är per definition
+ * Sidhuvudets title blir också dokumenttitel — sidhuvudet är per definition
  * sidans huvudrubrik, så alla undersidor får rätt fliknamn på köpet. */
 export const Sidhuvud = ({
   kicker,
-  titel,
+  title,
   status,
   children,
 }: {
   kicker: string
-  titel: string
+  title: string
   status?: Rum['status']
   children?: ReactNode
 }) => {
-  useSidtitel(titel)
+  useSidtitel(title)
   return (
     <header className={styles.huvud}>
       <div className="kicker">
         {kicker}
         {status !== undefined && status !== 'publicerad' && ' · Utkast'}
       </div>
-      <h1 className={styles.huvudTitel}>{titel}</h1>
+      <h1 className={styles.huvudTitel}>{title}</h1>
       {children}
     </header>
   )
@@ -45,7 +45,7 @@ export const Beskrivning = ({ text }: { text?: string }) => (
   <>
     {text !== undefined &&
       stycken(text).map((stycke, i) => (
-        <p key={i} className={styles.beskrivning}>
+        <p key={i} className={styles.description}>
           {stycke}
         </p>
       ))}
@@ -62,10 +62,10 @@ export const Rumslista = ({ rum, tomtBesked }: { rum: Rum[]; tomtBesked: string 
   </>
 )
 
-export const Rad = ({ titel, sub }: { titel: string; sub?: string }) => (
+export const Rad = ({ title, sub }: { title: string; sub?: string }) => (
   <>
     <span>
-      <span className={styles.radTitel}>{titel}</span>
+      <span className={styles.radTitel}>{title}</span>
       {sub !== undefined && <span className={styles.radSub}>{sub}</span>}
     </span>
     <span className={styles.chev}>›</span>

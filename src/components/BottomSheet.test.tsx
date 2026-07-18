@@ -28,7 +28,7 @@ const Skal = ({ arkÖppet }: { arkÖppet: boolean }) => {
 }
 
 describe('BottomSheet', () => {
-  it('renderar en dialog med etikett, rubrik och innehåll', () => {
+  it('renderar en dialog med label, rubrik och innehåll', () => {
     render(
       <BottomSheet label="Anteckning" title="Om rummet" onClose={() => {}}>
         <p>Innehållet i arket</p>

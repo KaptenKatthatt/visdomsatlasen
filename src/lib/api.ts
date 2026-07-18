@@ -87,11 +87,11 @@ const getJson = async <T>(url: string): Promise<T> => {
   } catch {
     // fetch avvisar med TypeError vid nätverksfel (offline, avbruten uppkoppling).
     const offline = ärOffline()
-    rapportera({ typ: offline ? 'offline-laddningsfel' : 'sidladdningsfel', resurs })
+    rapportera({ type: offline ? 'offline-laddningsfel' : 'sidladdningsfel', resurs })
     throw new Error(offline ? OFFLINE_TEXT : NAT_TEXT)
   }
   if (!response.ok) {
-    rapportera({ typ: 'sidladdningsfel', resurs, detalj: `status ${response.status}` })
+    rapportera({ type: 'sidladdningsfel', resurs, detalj: `status ${response.status}` })
     throw new Error(SVAR_TEXT)
   }
   return (await response.json()) as T

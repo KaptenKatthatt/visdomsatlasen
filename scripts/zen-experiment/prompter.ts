@@ -4,7 +4,7 @@
 import type { Passage } from './typer'
 
 export const systemSv = [
-  'Du är en filologiskt noggrann översättare av klassiska zenbuddhistiska texter',
+  'Du är en filologiskt noggrann translator av klassiska zenbuddhistiska texter',
   '(klassisk kinesiska, kanbun och klassisk japanska) till svenska.',
   'Du hittar aldrig på innehåll. När originalet är tvetydigt redovisar du tvetydigheten',
   'i stället för att dölja den bakom flytande prosa. Du skiljer alltid mellan vad som',
@@ -85,7 +85,7 @@ export const promptB2 = (passage: Passage, engelsk: string): string =>
 
 export const promptC1 = (passage: Passage): string =>
   [
-    'Analysera följande text inför en översättning till svenska. Översätt inte ännu.',
+    'Analysera följande text inför en translation till svenska. Översätt inte ännu.',
     '',
     metadata(passage),
     '',
@@ -123,12 +123,12 @@ export const promptC2 = (passage: Passage, analys: string): string =>
     svenskaSektioner,
   ].join('\n')
 
-// Produktionsgranskning: samma protokoll som flöde D men för en enda översättning
+// Produktionsgranskning: samma protokoll som flöde D men för en enda translation
 // (det analytiska C-flödet). Används av produktionskörningen (scripts/zen-oversatt),
 // där bara C finns. Fynden är uppslag för mänsklig kontroll, aldrig facit.
 export const promptGranska = (passage: Passage, oversattning: string): string =>
   [
-    'Granska en svensk översättning av en klassisk zentext, gjord av en annan modell.',
+    'Granska en svensk translation av en klassisk zentext, gjord av en annan modell.',
     'Jämför varje sats mot originalet. Var strängt kritisk men konkret: peka på exakta',
     'ställen och citera originalets tecken när du påtalar fel. Om du inte hittar något',
     'fel under en rubrik, skriv "inget att anmärka" — hitta inte på fel.',
@@ -185,5 +185,5 @@ export const promptD = (passage: Passage, oversattningA: string, oversattningC: 
     '## DOLD TVETYDIGHET',
     '(tvetydigheter i originalet som översättningen osynliggör)',
     '## SAMLAD BEDÖMNING',
-    '(vilken översättning som är bäst som utgångspunkt och varför)',
+    '(vilken translation som är bäst som utgångspunkt och varför)',
   ].join('\n')

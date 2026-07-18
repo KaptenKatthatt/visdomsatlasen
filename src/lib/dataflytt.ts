@@ -28,14 +28,14 @@ const anteckningSchema = z.object({
   ursprungTyp: z.enum(['rum', 'vandring', 'amne']),
   ursprungId: z.string(),
   text: z.string(),
-  skapad: z.string(),
-  uppdaterad: z.string(),
-  titel: z.string().optional(),
+  created: z.string(),
+  updated: z.string(),
+  title: z.string().optional(),
 })
 
 const sparadSchema = z.object({
   id: z.string(),
-  titel: z.string().optional(),
+  title: z.string().optional(),
   sparadNar: z.string().nullable(),
 })
 
@@ -68,7 +68,7 @@ const sparadPoster = (
 ): ExportSparad[] =>
   sparadeIdITidsordning(poster).map((id) => ({
     id,
-    titel: titelFor(id),
+    title: titelFor(id),
     sparadNar: poster[id]?.sparadNar ?? null,
   }))
 
@@ -76,7 +76,7 @@ const sparadPoster = (
  * ursprung och de sparade posterna, så exporten går att läsa fristående. */
 export const tillExport = (
   samlingar: PersonligaSamlingar,
-  titelFor: (typ: Ursprung, id: string) => string | undefined,
+  titelFor: (type: Ursprung, id: string) => string | undefined,
   nu: string,
 ): PersonligExport => ({
   format: EXPORT_FORMAT,
@@ -84,7 +84,7 @@ export const tillExport = (
   exporterad: nu,
   anteckningar: sorteradeAnteckningar(samlingar.anteckningar).map((post) => ({
     ...post,
-    titel: titelFor(post.ursprungTyp, post.ursprungId),
+    title: titelFor(post.ursprungTyp, post.ursprungId),
   })),
   sparadeRum: sparadPoster(samlingar.sparadeRum, (id) => titelFor('rum', id)),
   sparadeVandringar: sparadPoster(samlingar.sparadeVandringar, (id) => titelFor('vandring', id)),
@@ -109,13 +109,13 @@ const mergaAnteckningar = (
   const ut = { ...nuvarande }
   for (const post of importerade) {
     const befintlig = ut[post.ursprungId]
-    if (befintlig !== undefined && befintlig.uppdaterad >= post.uppdaterad) continue
+    if (befintlig !== undefined && befintlig.updated >= post.updated) continue
     ut[post.ursprungId] = {
       ursprungTyp: post.ursprungTyp,
       ursprungId: post.ursprungId,
       text: post.text,
-      skapad: post.skapad,
-      uppdaterad: post.uppdaterad,
+      created: post.created,
+      updated: post.updated,
     }
   }
   return ut
@@ -163,11 +163,11 @@ export const mergaImport = (
 
 const anteckningTillMarkdown = (post: PersonligExport['anteckningar'][number]): string =>
   [
-    `## ${post.titel ?? 'Anteckning'}`,
+    `## ${post.title ?? 'Anteckning'}`,
     '',
     post.text,
     '',
-    `_Skapad ${post.skapad} · uppdaterad ${post.uppdaterad}_`,
+    `_Skapad ${post.created} · updated ${post.updated}_`,
   ].join('\n')
 
 /** Läsbar Markdown-spegel av exporten (spec föredrar öppna format). Inte
@@ -181,7 +181,7 @@ export const tillMarkdown = (exporten: PersonligExport): string => {
   const sparade = [...exporten.sparadeRum, ...exporten.sparadeVandringar]
   if (sparade.length > 0) {
     delar.push('# Sparat', '')
-    for (const post of sparade) delar.push(`- ${post.titel ?? post.id}`)
+    for (const post of sparade) delar.push(`- ${post.title ?? post.id}`)
     delar.push('')
   }
   return delar.join('\n')

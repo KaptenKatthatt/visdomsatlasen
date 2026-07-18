@@ -16,30 +16,30 @@ describe('innehållsladdaren', () => {
   it('laddar exempelrummet från markdown', () => {
     expect(allaRum.length).toBeGreaterThan(0)
     const rum = hittaRum('det-du-inte-kan-styra')
-    expect(rum?.titel).toBe('Det du inte kan styra')
-    expect(rum?.öppning.length).toBeGreaterThan(0)
-    expect(rum?.kärna.length).toBeGreaterThan(0)
+    expect(rum?.title).toBe('Det du inte kan styra')
+    expect(rum?.opening.length).toBeGreaterThan(0)
+    expect(rum?.core.length).toBeGreaterThan(0)
   })
 
-  it('hittar rummets tema och källa via relationerna', () => {
+  it('hittar rummets tema och source via relationerna', () => {
     const rum = hittaRum('det-du-inte-kan-styra')
-    const tema = rum ? hittaTema(rum.teman[0] ?? '') : undefined
-    expect(tema?.etikett).toBe('Lugn')
-    const källa = rum ? hittaKalla(rum.källor[0]?.källa ?? '') : undefined
-    expect(källa && kallnamn(källa)).toBe('Epiktetos')
+    const tema = rum ? hittaTema(rum.themes[0] ?? '') : undefined
+    expect(tema?.label).toBe('Lugn')
+    const source = rum ? hittaKalla(rum.sources[0]?.source ?? '') : undefined
+    expect(source && kallnamn(source)).toBe('Epiktetos')
   })
 
-  it('laddar frågor, källor och traditioner för biblioteket', () => {
+  it('laddar frågor, sources och traditions för biblioteket', () => {
     expect(hittaFragaViaSlug('vad-kan-du-styra')?.text).toBe('Vad kan du egentligen styra?')
-    expect(hittaKallaViaSlug('enchiridion')?.titel).toBe('Enchiridion (Handboken)')
-    const traditionId = hittaKallaViaSlug('enchiridion')?.traditioner?.[0] ?? ''
-    expect(hittaTradition(traditionId)?.namn).toBe('Stoicism')
+    expect(hittaKallaViaSlug('enchiridion')?.title).toBe('Enchiridion (Handboken)')
+    const traditionId = hittaKallaViaSlug('enchiridion')?.traditions?.[0] ?? ''
+    expect(hittaTradition(traditionId)?.name).toBe('Stoicism')
   })
 })
 
 describe('tröskeln', () => {
   it('ordnar temana redaktionellt och utan arkiverade', () => {
-    expect(troskelTeman.map((tema) => tema.etikett)).toEqual([
+    expect(troskelTeman.map((tema) => tema.label)).toEqual([
       'Lugn',
       'Mening',
       'Mod',

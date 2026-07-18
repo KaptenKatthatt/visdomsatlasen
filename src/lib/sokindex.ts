@@ -12,7 +12,7 @@ import type {
   Tema,
   Tradition,
   Vandring,
-} from '../content/redaktion/schema'
+} from '../content/editorial/schema'
 import {
   bibliotekFragor,
   bibliotekKallor,
@@ -52,18 +52,18 @@ export type Sokmal =
   | { kind: 'kallpost'; slug: string }
   | { kind: 'vandring'; slug: string }
 
-/** Ett sökdokument. `titel`/`underrad`/`meta` visas oviket (korrekt stavning);
- * `alias`/`nyckelord`/`text` är sökbara fält med fallande vikt. `poang` finns
+/** Ett sökdokument. `title`/`underrad`/`meta` visas oviket (korrekt stavning);
+ * `alias`/`keywords`/`text` är sökbara fält med fallande vikt. `poang` finns
  * aldrig här — rankningen lever i soklogik.ts. */
 export type Sokdokument = {
-  typ: Soktyp
+  type: Soktyp
   id: string
-  titel: string
+  title: string
   underrad?: string
   meta?: string
   mal?: Sokmal
   alias: string[]
-  nyckelord: string[]
+  keywords: string[]
   text: string[]
 }
 
@@ -71,66 +71,66 @@ const kartaViaId = <T extends { id: string }>(poster: T[]): Map<string, T> =>
   new Map(poster.map((post) => [post.id, post]))
 
 const dokumentUrFraga = (fraga: Fraga): Sokdokument => ({
-  typ: 'fraga',
+  type: 'fraga',
   id: fraga.id,
-  titel: fraga.text,
-  underrad: fraga.beskrivning ? utdrag(fraga.beskrivning, 110) : undefined,
+  title: fraga.text,
+  underrad: fraga.description ? utdrag(fraga.description, 110) : undefined,
   mal: { kind: 'fraga', slug: fraga.slug },
   alias: [],
-  nyckelord: fraga.nyckelord ?? [],
-  text: fraga.beskrivning ? [fraga.beskrivning] : [],
+  keywords: fraga.keywords ?? [],
+  text: fraga.description ? [fraga.description] : [],
 })
 
 const dokumentUrTema = (tema: Tema): Sokdokument => ({
-  typ: 'tema',
+  type: 'tema',
   id: tema.id,
-  titel: tema.etikett,
-  underrad: tema.beskrivning,
+  title: tema.label,
+  underrad: tema.description,
   mal: { kind: 'tema', slug: tema.slug },
   alias: [],
-  nyckelord: tema.nyckelord ?? [],
-  text: tema.beskrivning ? [tema.beskrivning] : [],
+  keywords: tema.keywords ?? [],
+  text: tema.description ? [tema.description] : [],
 })
 
-const temaEtiketter = (rum: Rum, teman: Map<string, Tema>): string[] =>
-  rum.teman.flatMap((id) => {
-    const tema = teman.get(id)
-    return tema ? [tema.etikett] : []
+const temaEtiketter = (rum: Rum, themes: Map<string, Tema>): string[] =>
+  rum.themes.flatMap((id) => {
+    const tema = themes.get(id)
+    return tema ? [tema.label] : []
   })
 
-const kallnamnFor = (rum: Rum, källor: Map<string, Kalla>): string[] =>
-  rum.källor.flatMap((relation) => {
-    const källa = källor.get(relation.källa)
-    return källa ? [kallnamn(källa)] : []
+const kallnamnFor = (rum: Rum, sources: Map<string, Kalla>): string[] =>
+  rum.sources.flatMap((relation) => {
+    const source = sources.get(relation.source)
+    return source ? [kallnamn(source)] : []
   })
 
 const rumMeta = (rum: Rum, fråga: Fraga | undefined): string => {
-  const lästid = `ca ${rum.lästidMinuter} min`
+  const lästid = `ca ${rum.readingTimeMinutes} min`
   return fråga ? `${fråga.text} · ${lästid}` : lästid
 }
 
 const dokumentUrRum = (
   rum: Rum,
   frågor: Map<string, Fraga>,
-  teman: Map<string, Tema>,
-  källor: Map<string, Kalla>,
+  themes: Map<string, Tema>,
+  sources: Map<string, Kalla>,
 ): Sokdokument => {
-  const fråga = frågor.get(rum.primärFråga)
+  const fråga = frågor.get(rum.primaryQuestion)
   return {
-    typ: 'rum',
+    type: 'rum',
     id: rum.id,
-    titel: rum.titel,
-    underrad: rum.sammanfattning,
+    title: rum.title,
+    underrad: rum.summary,
     meta: rumMeta(rum, fråga),
     mal: { kind: 'rum', slug: rum.slug },
     alias: [],
-    nyckelord: rum.taggar ?? [],
+    keywords: rum.tags ?? [],
     text: [
-      rum.tankeAttBära,
-      ...rum.reflektionsfrågor,
+      rum.thoughtToCarry,
+      ...rum.reflectionQuestions,
       ...(fråga ? [fråga.text] : []),
-      ...temaEtiketter(rum, teman),
-      ...kallnamnFor(rum, källor),
+      ...temaEtiketter(rum, themes),
+      ...kallnamnFor(rum, sources),
     ],
   }
 }
@@ -145,104 +145,104 @@ const dokumentUrVandring = (
   frågor: Map<string, Fraga>,
   rummen: Rum[],
 ): Sokdokument => {
-  const central = frågor.get(vandring.centralFråga)
+  const central = frågor.get(vandring.centralQuestion)
   return {
-    typ: 'vandring',
+    type: 'vandring',
     id: vandring.id,
-    titel: vandring.titel,
-    underrad: utdrag(vandring.introduktion, 110),
+    title: vandring.title,
+    underrad: utdrag(vandring.introduction, 110),
     meta: vandringMeta(rummen),
     mal: { kind: 'vandring', slug: vandring.slug },
     alias: [],
-    nyckelord: vandring.nyckelord ?? [],
-    text: [vandring.introduktion, ...(central ? [central.text] : [])],
+    keywords: vandring.keywords ?? [],
+    text: [vandring.introduction, ...(central ? [central.text] : [])],
   }
 }
 
-const kallaAlias = (källa: Kalla): string[] => [
-  ...(källa.originaltitel ? [källa.originaltitel] : []),
-  ...(källa.alias ?? []),
-  ...(källa.författare ? [källa.författare] : []),
-  ...(källa.tillskrivenFörfattare ? [källa.tillskrivenFörfattare] : []),
+const kallaAlias = (source: Kalla): string[] => [
+  ...(source.originalTitle ? [source.originalTitle] : []),
+  ...(source.alias ?? []),
+  ...(source.author ? [source.author] : []),
+  ...(source.attributedAuthor ? [source.attributedAuthor] : []),
 ]
 
-const traditionsnamn = (källa: Kalla, traditioner: Map<string, Tradition>): string[] =>
-  (källa.traditioner ?? []).flatMap((id) => {
-    const tradition = traditioner.get(id)
-    return tradition ? [tradition.namn] : []
+const traditionsnamn = (source: Kalla, traditions: Map<string, Tradition>): string[] =>
+  (source.traditions ?? []).flatMap((id) => {
+    const tradition = traditions.get(id)
+    return tradition ? [tradition.name] : []
   })
 
 const passagetext = (passager: Kallpassage[]): string[] =>
   passager.flatMap((passage) => [
-    passage.referens,
-    ...(passage.översättning ? [passage.översättning] : []),
+    passage.reference,
+    ...(passage.translation ? [passage.translation] : []),
   ])
 
 const dokumentUrKalla = (
-  källa: Kalla,
-  traditioner: Map<string, Tradition>,
+  source: Kalla,
+  traditions: Map<string, Tradition>,
   passager: Kallpassage[],
 ): Sokdokument => ({
-  typ: 'kalla',
-  id: källa.id,
-  titel: källa.titel,
-  underrad: kallnamn(källa),
-  meta: källa.ungefärligDatering,
-  mal: { kind: 'kallpost', slug: källa.slug },
-  alias: kallaAlias(källa),
-  nyckelord: källa.nyckelord ?? [],
+  type: 'kalla',
+  id: source.id,
+  title: source.title,
+  underrad: kallnamn(source),
+  meta: source.approximateDating,
+  mal: { kind: 'kallpost', slug: source.slug },
+  alias: kallaAlias(source),
+  keywords: source.keywords ?? [],
   text: [
-    ...(källa.beskrivning ? [källa.beskrivning] : []),
-    ...traditionsnamn(källa, traditioner),
+    ...(source.description ? [source.description] : []),
+    ...traditionsnamn(source, traditions),
     ...passagetext(passager),
   ],
 })
 
 const dokumentUrTradition = (tradition: Tradition): Sokdokument => ({
-  typ: 'tradition',
+  type: 'tradition',
   id: tradition.id,
-  titel: tradition.namn,
-  underrad: tradition.beskrivning,
+  title: tradition.name,
+  underrad: tradition.description,
   mal: undefined,
   alias: [],
-  nyckelord: tradition.nyckelord ?? [],
-  text: tradition.beskrivning ? [tradition.beskrivning] : [],
+  keywords: tradition.keywords ?? [],
+  text: tradition.description ? [tradition.description] : [],
 })
 
 type Innehall = Pick<
   Innehallsmangd,
-  'rum' | 'teman' | 'frågor' | 'vandringar' | 'källor' | 'passager' | 'traditioner'
+  'rum' | 'themes' | 'frågor' | 'vandringar' | 'sources' | 'passager' | 'traditions'
 >
 
 /** Bygger det publika indexet. Uppslagskartorna byggs ur de PUBLICERADE
  * urvalen, så ingen utkasttext kan följa med in i ett sökbart fält ens via en
- * referens. */
+ * reference. */
 export const byggSokindex = (innehall: Innehall): Sokdokument[] => {
   const frågor = kartaViaId(bibliotekFragor(innehall.frågor))
-  const teman = kartaViaId(bibliotekTeman(innehall.teman))
-  const källor = kartaViaId(bibliotekKallor(innehall.källor))
-  const traditioner = kartaViaId(bibliotekTraditioner(innehall.traditioner))
+  const themes = kartaViaId(bibliotekTeman(innehall.themes))
+  const sources = kartaViaId(bibliotekKallor(innehall.sources))
+  const traditions = kartaViaId(bibliotekTraditioner(innehall.traditions))
   return [
     ...bibliotekFragor(innehall.frågor).map(dokumentUrFraga),
-    ...bibliotekTeman(innehall.teman).map(dokumentUrTema),
-    ...bibliotekRum(innehall.rum).map((rum) => dokumentUrRum(rum, frågor, teman, källor)),
+    ...bibliotekTeman(innehall.themes).map(dokumentUrTema),
+    ...bibliotekRum(innehall.rum).map((rum) => dokumentUrRum(rum, frågor, themes, sources)),
     ...bibliotekVandringar(innehall.vandringar).map((vandring) =>
       dokumentUrVandring(vandring, frågor, rumForVandring(vandring, innehall.rum)),
     ),
-    ...bibliotekKallor(innehall.källor).map((källa) =>
-      dokumentUrKalla(källa, traditioner, passagerForKalla(källa.id, innehall.passager)),
+    ...bibliotekKallor(innehall.sources).map((source) =>
+      dokumentUrKalla(source, traditions, passagerForKalla(source.id, innehall.passager)),
     ),
-    ...bibliotekTraditioner(innehall.traditioner).map(dokumentUrTradition),
+    ...bibliotekTraditioner(innehall.traditions).map(dokumentUrTradition),
   ]
 }
 
 /** Appens index, byggt en gång vid moduladdning ur allt laddat innehåll. */
 export const sokindexet: Sokdokument[] = byggSokindex({
   rum: allaRum,
-  teman: allaTeman,
+  themes: allaTeman,
   frågor: allaFragor,
   vandringar: allaVandringar,
-  källor: allaKallor,
+  sources: allaKallor,
   passager: allaPassager,
-  traditioner: allaTraditioner,
+  traditions: allaTraditioner,
 })

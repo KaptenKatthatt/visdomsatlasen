@@ -3,7 +3,7 @@ import { runIngest, type IngestResult } from '../server/ingest/run'
 
 // En läsbar rad per verk: översättningstäckning för verifiering på VPS:en.
 const summarize = (r: IngestResult): string => {
-  if (r.translatedVerses === null) return `  ${r.id}: ${r.verses} verser (svensk källa)`
+  if (r.translatedVerses === null) return `  ${r.id}: ${r.verses} verser (svensk source)`
   const pct = r.verses > 0 ? Math.round((r.translatedVerses / r.verses) * 100) : 0
   const flag = r.translated ? '✓' : '⚠ under 50 %'
   return `  ${r.id}: ${r.translatedVerses}/${r.verses} verser översatta (${pct} %) ${flag}`

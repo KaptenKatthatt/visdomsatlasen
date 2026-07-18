@@ -4,7 +4,7 @@ export const allSources: Source[] = [
   {
     id: 'markus',
     title: 'Markusevangeliet 1:14–15',
-    author: 'Okänd författare',
+    author: 'Okänd author',
     origin: 'ca 70 e.Kr, troligen Rom',
     originShort: 'ca 70 e.Kr',
     lang: 'Grekiska (koine)',
@@ -22,7 +22,7 @@ export const allSources: Source[] = [
     origin: 'ca 170 e.Kr, fältläger vid Donau',
     originShort: 'ca 170 e.Kr',
     lang: 'Grekiska',
-    trans: 'Fri översättning',
+    trans: 'Fri translation',
     note: 'Marcus Aurelius förde sina anteckningar på grekiska under fälttågen mot markomannerna. Titeln Självbetraktelser är senare — själv kallade han dem »Till sig själv«.',
     text: [
       'När du vaknar om morgonen, säg till dig själv: i dag ska jag möta människor som är påträngande, otacksamma, övermodiga, svekfulla, avundsjuka och osällskapliga. Sådana är de eftersom de inte kan skilja gott från ont.',
@@ -37,7 +37,7 @@ export const allSources: Source[] = [
     origin: 'ca 1550 f.Kr, Egypten',
     originShort: 'ca 1550 f.Kr',
     lang: 'Fornegyptiska',
-    trans: 'Fri översättning',
+    trans: 'Fri translation',
     note: 'Den negativa bekännelsen uttalades inför dödsrikets fyrtiotvå domare. Att bedyra sin oskuld — inte bekänna sin synd — var vägen genom domen.',
     text: [
       'Jag har inte gjort människor orätt.',
@@ -55,7 +55,7 @@ export const allSources: Source[] = [
     origin: 'ca 380 f.Kr, Aten',
     originShort: 'ca 380 f.Kr',
     lang: 'Grekiska',
-    trans: 'Fri översättning',
+    trans: 'Fri translation',
     note: 'Dialogen utspelar sig i Sokrates fängelsecell under hans sista timmar, våren 399 f.Kr. Platon låter honom argumentera för själens odödlighet — och tömma giftbägaren utan fruktan.',
     text: [
       'De som ägnar sig åt filosofin på rätt sätt övar sig i ingenting annat än att dö och att vara döda.',
@@ -70,7 +70,7 @@ export const allSources: Source[] = [
     originShort: 'ca 250 f.Kr',
     lang: 'Hebreiska',
     trans: '1917 års kyrkobibel',
-    note: 'Öppningsorden i 1917 års översättning. Hebreiskans hevel — här »fåfänglighet« — betyder ordagrant dimma eller andedräkt.',
+    note: 'Öppningsorden i 1917 års translation. Hebreiskans hevel — här »fåfänglighet« — betyder ordagrant dimma eller andedräkt.',
     text: [
       'Fåfängligheters fåfänglighet! säger Predikaren. Fåfängligheters fåfänglighet! Allt är fåfänglighet!',
       'Vad förmån har människan av all möda som hon gör sig under solen?',
@@ -85,7 +85,7 @@ export const allSources: Source[] = [
     origin: 'ca 100 f.Kr, nedtecknad på Sri Lanka',
     originShort: 'ca 100 f.Kr',
     lang: 'Pali',
-    trans: 'Fri översättning',
+    trans: 'Fri translation',
     note: 'Dhammapada, »sanningens väg«, är en samling av 423 verser ur Buddhas undervisning, nedtecknad på pali omkring vår tideräknings början.',
     text: [
       'Allt vad vi är är följden av vad vi har tänkt: det vilar på våra tankar, det är gjort av våra tankar.',

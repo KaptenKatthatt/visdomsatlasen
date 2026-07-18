@@ -3,15 +3,15 @@ import { gutenbergBody } from '../lib/gutenberg'
 import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
-// Zhuangzi, Herbert A. Giles engelska översättning (public domain) via Project
-// Gutenberg. 33 kapitel, vart och ett med en titel + Giles "_Argument_"-
-// sammanfattning (bägge redaktionella, hoppas över) och brödtext i stycken.
+// Zhuangzi, Herbert A. Giles engelska translation (public domain) via Project
+// Gutenberg. 33 kapitel, vart och ett med en title + Giles "_Argument_"-
+// summary (bägge redaktionella, hoppas över) och brödtext i stycken.
 const URL =
   'https://raw.githubusercontent.com/GITenberg/Chuang-Tzu-Mystic-Moralist-and-Social-Reformer_59709/master/59709-0.txt'
 const HEADER = /^CHAPTER [IVXLCM]+\.\s*$/m
 
 // Rensa ett kapitel till brödtextstycken. Indragna block är Giles glosor/
-// fotnoter (inkl. "_Argument_") och hoppas över; hakparentes-redaktion likaså;
+// fotnoter (inkl. "_Argument_") och hoppas över; hakparentes-editorial likaså;
 // fotnotshänvisningar ([12]) tas bort; första stycket (titeln) slängs.
 const chapterVerses = (chunk: string): string[] => {
   const verses = chunk
@@ -50,7 +50,7 @@ const metaFor = (translated: boolean): WorkMeta => ({
   author: 'Zhuangzi',
   lang: 'Klassisk kinesiska',
   translation: translated
-    ? 'Svensk översättning (Ollama) från Herbert Giles engelska'
+    ? 'Svensk translation (Ollama) från Herbert Giles engelska'
     : 'Engelska: Herbert Giles',
   license: 'Public Domain (Project Gutenberg)',
   sourceUrl: 'https://www.gutenberg.org/ebooks/59709',

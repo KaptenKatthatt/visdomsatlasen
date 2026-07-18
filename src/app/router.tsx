@@ -147,7 +147,7 @@ const sokRoute = createRoute({
   component: SokPage,
 })
 
-// Bibliotekets landning (omgörningen, fas 6): frågor, teman, rum, källor.
+// Bibliotekets landning (omgörningen, fas 6): frågor, themes, rum, sources.
 const bibliotekRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek',
@@ -261,7 +261,7 @@ const bibliotekSokRoute = createRoute({
 })
 
 // Bibliotekssöket (fas 10, search.md): frågan och det valfria typfiltret bärs i
-// URL:en (?q=…&typ=…), så sökstate överlever navigation, refresh och delning.
+// URL:en (?q=…&type=…), så sökstate överlever navigation, refresh och delning.
 // Privata anteckningsträffar hamnar aldrig i URL:en.
 const ärSoktyp = (värde: unknown): värde is Soktyp =>
   typeof värde === 'string' && (SOKTYPER as readonly string[]).includes(värde)
@@ -271,7 +271,7 @@ const sokBibliotekRoute = createRoute({
   path: '/bibliotek/sok',
   validateSearch: (search: Record<string, unknown>): SökParametrar => ({
     ...(typeof search['q'] === 'string' && search['q'] !== '' ? { q: search['q'] } : {}),
-    ...(ärSoktyp(search['typ']) ? { typ: search['typ'] } : {}),
+    ...(ärSoktyp(search['type']) ? { type: search['type'] } : {}),
   }),
   component: function SokBibliotekRoute() {
     const search = sokBibliotekRoute.useSearch()
@@ -279,7 +279,7 @@ const sokBibliotekRoute = createRoute({
     return (
       <SokBibliotekPage
         q={search.q ?? ''}
-        typ={search.typ}
+        type={search.type}
         onNavigera={(sök) => navigate({ search: sök, replace: true })}
       />
     )

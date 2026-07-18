@@ -62,7 +62,7 @@ export const listaModeller = async (): Promise<string[]> => {
   const respons = await fetch(`${bas()}/api/tags`, { signal: AbortSignal.timeout(30000) })
   if (!respons.ok) throw new Error(`Ollama /api/tags ${respons.status}`)
   const data = (await respons.json()) as TagsRespons
-  return (data.models ?? []).map((modell) => modell.name ?? '').filter((namn) => namn.length > 0)
+  return (data.models ?? []).map((modell) => modell.name ?? '').filter((name) => name.length > 0)
 }
 
 // Cloud-modeller måste pullas (registreras hos daemonen) innan API-anrop fungerar —

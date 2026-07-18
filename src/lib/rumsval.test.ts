@@ -1,32 +1,32 @@
 import { describe, expect, it } from 'vitest'
-import type { Rum, Tema } from '../content/redaktion/schema'
+import type { Rum, Tema } from '../content/editorial/schema'
 import { valbaraRum, valjRum } from './rumsval'
 
 // Fabricerade poster: bara fälten urvalet läser behöver vara meningsfulla.
-const rum = (id: string, teman: string[], status: Rum['status'] = 'publicerad'): Rum => ({
+const rum = (id: string, themes: string[], status: Rum['status'] = 'publicerad'): Rum => ({
   id,
   slug: id,
-  titel: id,
-  sammanfattning: 'x',
-  primärFråga: 'fraga-x',
-  teman,
-  tankeAttBära: 'x',
-  reflektionsfrågor: ['x?'],
-  källor: [{ källa: 'kalla-x', bruk: 'bearbetning', primär: true }],
-  lästidMinuter: 4,
-  språk: 'sv',
+  title: id,
+  summary: 'x',
+  primaryQuestion: 'fraga-x',
+  themes,
+  thoughtToCarry: 'x',
+  reflectionQuestions: ['x?'],
+  sources: [{ source: 'kalla-x', use: 'bearbetning', primary: true }],
+  readingTimeMinutes: 4,
+  language: 'sv',
   status,
-  skapad: '2026-07-09',
-  uppdaterad: '2026-07-09',
-  öppning: 'x',
-  kärna: 'x',
+  created: '2026-07-09',
+  updated: '2026-07-09',
+  opening: 'x',
+  core: 'x',
 })
 
-const tema = (id: string, standardRum?: string): Tema => ({
+const tema = (id: string, defaultRoom?: string): Tema => ({
   id,
   slug: id,
-  etikett: id,
-  standardRum,
+  label: id,
+  defaultRoom,
   status: 'publicerad',
 })
 

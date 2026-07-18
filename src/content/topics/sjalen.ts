@@ -24,7 +24,7 @@ export const sjalen: Topic = {
       l('Egyptierna', 'topic', 'egypten'),
       ' räknade själens delar, de kristna gav den evigt värde, ',
       l('stoikerna', 'topic', 'stoicism'),
-      ' såg den som ett fragment av världsförnuftet. Frågan är inte avgjord — den har bara bytt språk, från religionens till psykologins och hjärnforskningens.',
+      ' såg den som ett fragment av världsförnuftet. Frågan är inte avgjord — den har bara bytt language, från religionens till psykologins och hjärnforskningens.',
     ],
   ],
   context: [

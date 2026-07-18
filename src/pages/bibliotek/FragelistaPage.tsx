@@ -12,7 +12,7 @@ export const FragelistaPage = () => {
   return (
     <div className="screenSub">
       <TopBar />
-      <Sidhuvud kicker="Frågor" titel="Alla frågor">
+      <Sidhuvud kicker="Frågor" title="Alla frågor">
         <p className={styles.antal}>{frågeantal(frågor.length)}</p>
       </Sidhuvud>
       <div className={styles.sektion}>
@@ -21,7 +21,7 @@ export const FragelistaPage = () => {
         ) : (
           frågor.map((fråga) => (
             <ToLink key={fråga.id} to={{ kind: 'fraga', slug: fråga.slug }} className={styles.rad}>
-              <Rad titel={fråga.text} />
+              <Rad title={fråga.text} />
             </ToLink>
           ))
         )}

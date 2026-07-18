@@ -19,7 +19,7 @@ export const lidandet: Topic = {
     ],
     [
       l('Kristendomen', 'topic', 'historiska-jesus'),
-      ' valde en tredje väg: lidandet förnekas inte utan bärs, och får i korset en plats i själva gudsbilden. ',
+      ' valde en tredje väg: lidandet förnekas inte utan bärs, och får i korset en place i själva gudsbilden. ',
       l('Predikaren', 'topic', 'predikaren'),
       ', äldst av dem alla, nöjer sig med att konstatera att gråt och skratt har var sin tid. Ingen av traditionerna vänder bort blicken.',
     ],

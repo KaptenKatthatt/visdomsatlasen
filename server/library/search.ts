@@ -17,7 +17,7 @@ export type BookHit = {
   bookName: string
 }
 
-// Sök böcker på namn/förkortning (t.ex. "matteus" → Matteusevangeliet, "andra
+// Sök böcker på name/förkortning (t.ex. "matteus" → Matteusevangeliet, "andra
 // mos" → Andra Moseboken). Böckerna är få, så vi filtrerar i JS med korrekt
 // unicode-gemener; alla sökord måste finnas i namnet.
 export const searchBooks = (query: string, limit = 12): BookHit[] => {

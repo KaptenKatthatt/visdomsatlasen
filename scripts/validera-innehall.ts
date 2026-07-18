@@ -4,7 +4,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import type { z } from 'zod'
-import { tolkaPostfil, tolkaRumsfil, type Innehallsfil, type Tolkning } from '../src/content/redaktion/tolka'
+import { tolkaPostfil, tolkaRumsfil, type Innehallsfil, type Tolkning } from '../src/content/editorial/tolka'
 import {
   fragaSchema,
   kallaSchema,
@@ -14,8 +14,8 @@ import {
   traditionSchema,
   vandringSchema,
   type Innehallsmangd,
-} from '../src/content/redaktion/schema'
-import { valideraInnehall } from '../src/content/redaktion/validera'
+} from '../src/content/editorial/schema'
+import { valideraInnehall } from '../src/content/editorial/validera'
 
 const INNEHALLSROT = path.join(process.cwd(), 'src', 'content')
 
@@ -23,11 +23,11 @@ const läsMarkdownfiler = (katalog: string): Innehallsfil[] => {
   const dir = path.join(INNEHALLSROT, katalog)
   if (!existsSync(dir)) return []
   return readdirSync(dir)
-    .filter((namn) => namn.endsWith('.md'))
+    .filter((name) => name.endsWith('.md'))
     .sort()
-    .map((namn) => ({
-      sökväg: `src/content/${katalog}/${namn}`,
-      råtext: readFileSync(path.join(dir, namn), 'utf-8'),
+    .map((name) => ({
+      sökväg: `src/content/${katalog}/${name}`,
+      råtext: readFileSync(path.join(dir, name), 'utf-8'),
     }))
 }
 
@@ -44,13 +44,13 @@ const poster = <T>(katalog: string, schema: z.ZodType<T>): T[] =>
   samla(läsMarkdownfiler(katalog), (fil) => tolkaPostfil(schema, fil))
 
 const mängd: Innehallsmangd = {
-  rum: samla(läsMarkdownfiler('rum'), tolkaRumsfil),
-  teman: poster('teman', temaSchema),
-  frågor: poster('fragor', fragaSchema),
-  vandringar: poster('vandringar', vandringSchema),
-  källor: poster('kallor', kallaSchema),
-  passager: poster('passager', kallpassageSchema),
-  traditioner: poster('traditioner', traditionSchema),
+  rum: samla(läsMarkdownfiler('rooms'), tolkaRumsfil),
+  themes: poster('themes', temaSchema),
+  frågor: poster('questions', fragaSchema),
+  vandringar: poster('paths', vandringSchema),
+  sources: poster('sources', kallaSchema),
+  passager: poster('passages', kallpassageSchema),
+  traditions: poster('traditions', traditionSchema),
   personer: poster('personer', personSchema),
 }
 
@@ -64,6 +64,6 @@ if (allaFel.length > 0) {
 
 const antal = Object.entries(mängd)
   .filter(([, poster]) => poster.length > 0)
-  .map(([namn, poster]) => `${namn} ${poster.length}`)
+  .map(([name, poster]) => `${name} ${poster.length}`)
   .join(', ')
 console.log(`Innehållsvalidering OK (${antal || 'inget innehåll ännu'})`)

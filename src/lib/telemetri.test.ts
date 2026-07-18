@@ -18,10 +18,10 @@ describe('telemetri', () => {
 
   it('rapporterar bara händelsens egna, minimerade fält', () => {
     const spy = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
-    const händelse: TekniskHandelse = { typ: 'sok-nolltraff', langd: 4, ord: 1 }
+    const händelse: TekniskHandelse = { type: 'sok-nolltraff', langd: 4, ord: 1 }
     rapportera(händelse)
     expect(spy).toHaveBeenCalledWith('[telemetri]', 'sok-nolltraff', händelse)
     // Ingenting utöver de deklarerade fälten följer med.
-    expect(Object.keys(händelse).sort()).toEqual(['langd', 'ord', 'typ'])
+    expect(Object.keys(händelse).sort()).toEqual(['langd', 'ord', 'type'])
   })
 })

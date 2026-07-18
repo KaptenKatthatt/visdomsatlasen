@@ -1,6 +1,6 @@
 // Bibliotekssökets sida (search.md): ett debouncat fält, URL-buret sökstate,
 // grupperade ändliga resultat och en separat privat anteckningsgrupp. Söket bor
-// i Biblioteket och tar aldrig plats i läsrummet. Ingen popularitetssignal.
+// i Biblioteket och tar aldrig place i läsrummet. Ingen popularitetssignal.
 import { useEffect, useState } from 'react'
 import { TopBar } from '../../components/TopBar'
 import { searchLibrary } from '../../lib/api'
@@ -22,14 +22,14 @@ const expansionsminne = new Map<string, Set<Soktyp>>()
 const hämtaExpansion = (nyckel: string): Set<Soktyp> => new Set(expansionsminne.get(nyckel))
 
 // Den delbara sökparametern; tom fråga och intet filter utelämnas ur URL:en.
-const sökObjekt = (term: string, typ: Soktyp | undefined): SökParametrar => ({
+const sökObjekt = (term: string, type: Soktyp | undefined): SökParametrar => ({
   ...(term ? { q: term } : {}),
-  ...(typ ? { typ } : {}),
+  ...(type ? { type } : {}),
 })
 
 type Härlett = {
   synliga: SynligGrupp[]
-  noteringar: Anteckning[]
+  notes: Anteckning[]
   redaktionellaOchNoter: number
   fel: boolean
 }
@@ -38,7 +38,7 @@ type Härlett = {
 // termen. Ren funktion (utanför komponenten) så sidan hålls liten och läsbar.
 const härledResultat = (
   term: string,
-  typ: Soktyp | undefined,
+  type: Soktyp | undefined,
   expanderade: ReadonlySet<Soktyp>,
   anteckningar: Record<string, Anteckning>,
 ): Härlett => {
@@ -49,12 +49,12 @@ const härledResultat = (
   } catch {
     fel = true
   }
-  const filtrerade = typ ? grupper.filter((grupp) => grupp.typ === typ) : grupper
+  const filtrerade = type ? grupper.filter((grupp) => grupp.type === type) : grupper
   const synliga = synligaTraffar(filtrerade, expanderade)
-  const noteringar = typ ? [] : sokAnteckningar(term, anteckningar)
+  const notes = type ? [] : sokAnteckningar(term, anteckningar)
   const redaktionellaOchNoter =
-    filtrerade.reduce((summa, grupp) => summa + grupp.traffar.length, 0) + noteringar.length
-  return { synliga, noteringar, redaktionellaOchNoter, fel }
+    filtrerade.reduce((summa, grupp) => summa + grupp.traffar.length, 0) + notes.length
+  return { synliga, notes, redaktionellaOchNoter, fel }
 }
 
 const beräknaLäge = (nyckel: string, fel: boolean): Sokläge =>
@@ -86,7 +86,7 @@ const nyExpansion = (
 // sidan blir liten och läsbar.
 const useSoktillstand = (
   q: string,
-  typ: Soktyp | undefined,
+  type: Soktyp | undefined,
   onNavigera: (sök: SökParametrar) => void,
 ) => {
   const [query, setQuery] = useState(q)
@@ -97,8 +97,8 @@ const useSoktillstand = (
   const [expanderade, setExpanderade] = useState<Set<Soktyp>>(() => hämtaExpansion(nyckel))
 
   useEffect(() => {
-    if (term !== q) onNavigera(sökObjekt(term, typ))
-  }, [term, q, typ, onNavigera])
+    if (term !== q) onNavigera(sökObjekt(term, type))
+  }, [term, q, type, onNavigera])
 
   useEffect(() => {
     setExpanderade(hämtaExpansion(normalisera(term)))
@@ -120,30 +120,30 @@ const useSoktillstand = (
 
 type Props = {
   q: string
-  typ: Soktyp | undefined
+  type: Soktyp | undefined
   onNavigera: (sök: SökParametrar) => void
 }
 
-export const SokBibliotekPage = ({ q, typ, onNavigera }: Props) => {
+export const SokBibliotekPage = ({ q, type, onNavigera }: Props) => {
   useSidtitel('Sök i Biblioteket')
   const { query, term, nyckel, expanderade, visaFler, ändraFråga, sökDirekt } = useSoktillstand(
     q,
-    typ,
+    type,
     onNavigera,
   )
   const anteckningar = useAtlas().anteckningar
 
   // Verssöket (verkläsarens FTS) körs bara utan typfilter och för fråga ≥ 2
   // tecken; annars ett tomt svar utan nätanrop. Egen väg, egen laddning.
-  const sökKalltext = nyckel.length >= 2 && typ === undefined
+  const sökKalltext = nyckel.length >= 2 && type === undefined
   const kalltext = useAsync<Kalltextsvar>(
     () => (sökKalltext ? searchLibrary(term) : Promise.resolve(TOMT_KALLTEXTSVAR)),
     [term, sökKalltext],
   )
 
-  const { synliga, noteringar, redaktionellaOchNoter, fel } = härledResultat(
+  const { synliga, notes, redaktionellaOchNoter, fel } = härledResultat(
     term,
-    typ,
+    type,
     expanderade,
     anteckningar,
   )
@@ -156,25 +156,25 @@ export const SokBibliotekPage = ({ q, typ, onNavigera }: Props) => {
   // frågans text loggas aldrig — bara längd och ordantal.
   useEffect(() => {
     if (nyckel.length < 2) return
-    if (fel) rapportera({ typ: 'sokfel', detalj: 'index' })
-    else if (ingaTraffar) rapportera({ typ: 'sok-nolltraff', ...anonymiseraFraga(term) })
+    if (fel) rapportera({ type: 'sokfel', detalj: 'index' })
+    else if (ingaTraffar) rapportera({ type: 'sok-nolltraff', ...anonymiseraFraga(term) })
   }, [nyckel, fel, ingaTraffar, term])
 
   return (
     <div className="screenSub">
       <TopBar />
       <Sokfalt query={query} onChange={ändraFråga} onSubmit={sökDirekt} />
-      <Filter aktiv={typ} antal={antal} onVal={(nyTyp) => onNavigera(sökObjekt(term, nyTyp))} />
+      <Filter aktiv={type} antal={antal} onVal={(nyTyp) => onNavigera(sökObjekt(term, nyTyp))} />
       <Resultatvy
         läge={beräknaLäge(nyckel, fel)}
         ingaTraffar={ingaTraffar}
         synliga={synliga}
         kalltext={
-          typ === undefined ? (
+          type === undefined ? (
             <KalltextGrupp key={nyckel} svar={kalltext.data} fel={kalltext.error} />
           ) : null
         }
-        noteringar={noteringar}
+        notes={notes}
         nyckel={nyckel}
         antal={antal}
         onVisaFler={visaFler}

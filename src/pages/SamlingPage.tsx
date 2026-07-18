@@ -1,6 +1,6 @@
 import { RowLink } from '../components/RowLink'
 import { RumRad } from '../components/RumRad'
-import type { Rum, Vandring } from '../content/redaktion/schema'
+import type { Rum, Vandring } from '../content/editorial/schema'
 import { findTopic } from '../content/topics'
 import { hittaRumViaId, hittaVandringViaId } from '../lib/innehall'
 import {
@@ -78,7 +78,7 @@ const AnteckningsGrupp = ({ kort }: { kort: Kort[] }) =>
   kort.length === 0 ? null : (
     <Grupp rubrik="Anteckningar">
       {kort.map((k) => (
-        <AnteckningsKort key={k.key} titel={k.titel} text={k.text} datum={k.datum} to={k.to} />
+        <AnteckningsKort key={k.key} title={k.title} text={k.text} datum={k.datum} to={k.to} />
       ))}
     </Grupp>
   )
@@ -99,8 +99,8 @@ const SenastBesoktGrupp = ({ rum, onRensa }: { rum: Rum[]; onRensa: () => void }
         <RowLink
           key={ettRum.id}
           to={{ kind: 'rum', slug: ettRum.slug }}
-          title={ettRum.titel}
-          sub={ettRum.sammanfattning}
+          title={ettRum.title}
+          sub={ettRum.summary}
           size="md"
         />
       ))}
@@ -116,10 +116,10 @@ const sparadeVandringarna = (
     .filter((vandring): vandring is Vandring => vandring !== undefined)
     .map((vandring) => ({
       vandring,
-      senastRum: hittaRumViaId(vandringsplatser[vandring.id] ?? '')?.titel,
+      senastRum: hittaRumViaId(vandringsplatser[vandring.id] ?? '')?.title,
     }))
 
-/** Sparat (notes-and-saved.md): en stilla plats för det läsaren valt att bevara,
+/** Sparat (notes-and-saved.md): en stilla place för det läsaren valt att bevara,
  * grupperat och lätt att överblicka — aldrig ett innehållsflöde, aldrig ett mått
  * på framsteg. Bara grupper med innehåll visas; är inget sparat möter ett lugnt
  * tomläge. Senast besökt ligger separat sist, för orientering. */

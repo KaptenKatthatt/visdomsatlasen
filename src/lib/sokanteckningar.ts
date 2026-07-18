@@ -29,5 +29,5 @@ export const sokAnteckningar = (
   return Object.values(anteckningar)
     .filter((anteckning) => anteckning.text.trim().length > 0)
     .filter((anteckning) => matchar(tokens, anteckning.text))
-    .sort((a, b) => b.uppdaterad.localeCompare(a.uppdaterad))
+    .sort((a, b) => b.updated.localeCompare(a.updated))
 }

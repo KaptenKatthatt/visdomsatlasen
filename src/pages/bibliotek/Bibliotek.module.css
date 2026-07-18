@@ -1,6 +1,6 @@
 /* Bibliotekets redaktionella sidor: landning, frågor, teman, rum, källposter. */
 
-.titel {
+.title {
   font-size: 2.0625rem;
   font-weight: 500;
   line-height: 1.16;
@@ -50,7 +50,7 @@
   margin: 6px 0 0;
 }
 
-.beskrivning {
+.description {
   font-size: 1.0625rem;
   line-height: 1.6;
   margin: 14px 0 0;
@@ -92,7 +92,7 @@
   margin: 6px 0 0;
 }
 
-.originaltitel {
+.originalTitle {
   font-size: 0.875rem;
   color: var(--soft-strong);
   font-style: italic;

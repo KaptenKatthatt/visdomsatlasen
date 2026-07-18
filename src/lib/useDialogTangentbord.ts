@@ -35,7 +35,7 @@ const fångaTab = (ark: HTMLElement, händelse: KeyboardEvent) => {
 
 /**
  * Modal tangentbordshantering för ett ark/dialog: flyttar fokus in i arket
- * vid öppning, stänger på Escape, håller Tab-fokus fångat inom arket och
+ * vid opening, stänger på Escape, håller Tab-fokus fångat inom arket och
  * återlämnar fokus till det tidigare fokuserade elementet vid stängning.
  * Arket behöver tabIndex={-1} för att kunna ta emot initialfokus.
  */

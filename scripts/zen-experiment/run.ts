@@ -40,9 +40,9 @@ const sparaResultat = (resultat: Resultat): void => {
   console.log(`  klar: ${fil} (${resultat.steg.reduce((sum, steg) => sum + steg.ms, 0)} ms)`)
 }
 
-const steg = async (namn: string, modell: string, system: string, prompt: string, maxTokens = 4096): Promise<Steg> => {
+const steg = async (name: string, modell: string, system: string, prompt: string, maxTokens = 4096): Promise<Steg> => {
   const svar = await chat(modell, system, prompt, maxTokens)
-  return { namn, system, prompt, svar: svar.text, ms: svar.ms }
+  return { name, system, prompt, svar: svar.text, ms: svar.ms }
 }
 
 const flodeA = async (passage: Passage, modell: string): Promise<Steg[]> => [
@@ -69,11 +69,11 @@ const lasSvar = (passage: Passage, modell: string, flode: Resultat['flode']): st
 }
 
 // Flöde D: granskaren (en annan modell) jämför den granskade modellens A- och C-utdata.
-const flodeD = async (passage: Passage, granskare: string, granskad: string): Promise<Steg[] | null> => {
-  const svarA = lasSvar(passage, granskad, 'A')
-  const svarC = lasSvar(passage, granskad, 'C')
+const flodeD = async (passage: Passage, granskare: string, reviewed: string): Promise<Steg[] | null> => {
+  const svarA = lasSvar(passage, reviewed, 'A')
+  const svarC = lasSvar(passage, reviewed, 'C')
   if (svarA === null || svarC === null) return null
-  return [await steg(`granskar-${granskad}`, granskare, systemSv, promptD(passage, svarA, svarC))]
+  return [await steg(`granskar-${reviewed}`, granskare, systemSv, promptD(passage, svarA, svarC))]
 }
 
 const korFlode = async (
@@ -92,7 +92,7 @@ const korFlode = async (
       console.log(`  hoppar över (saknar underlag): ${passage.id} ${modell} ${flode}`)
       return
     }
-    sparaResultat({ passageId: passage.id, modell, flode, steg: stegLista, skapad: new Date().toISOString() })
+    sparaResultat({ passageId: passage.id, modell, flode, steg: stegLista, created: new Date().toISOString() })
   } catch (fel) {
     console.error(`  FEL: ${passage.id} ${modell} ${flode}: ${fel instanceof Error ? fel.message : String(fel)}`)
   }
@@ -149,10 +149,10 @@ const main = async (): Promise<void> => {
     }
     // Korsgranskning i ring: modell i granskas av modell i+1.
     for (let i = 0; i < modeller.length; i++) {
-      const granskad = modeller[i]
+      const reviewed = modeller[i]
       const granskare = modeller[(i + 1) % modeller.length]
-      if (granskad === undefined || granskare === undefined || granskare === granskad) continue
-      await korFlode(passage, granskad, 'D', () => flodeD(passage, granskare, granskad))
+      if (reviewed === undefined || granskare === undefined || granskare === reviewed) continue
+      await korFlode(passage, reviewed, 'D', () => flodeD(passage, granskare, reviewed))
     }
   }
   console.log('Experimentet klart.')

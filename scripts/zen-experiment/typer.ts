@@ -5,7 +5,7 @@ import { z } from 'zod'
 
 const passageSchema = z.object({
   id: z.string(),
-  titel: z.string(),
+  title: z.string(),
   forfattare: z.string(),
   verk: z.string(),
   datum: z.string(),
@@ -24,14 +24,14 @@ const passageSchema = z.object({
 
 export type Passage = z.infer<typeof passageSchema>
 
-export type Steg = { namn: string; system: string; prompt: string; svar: string; ms: number }
+export type Steg = { name: string; system: string; prompt: string; svar: string; ms: number }
 
 export type Resultat = {
   passageId: string
   modell: string
   flode: 'A' | 'B' | 'C' | 'D'
   steg: Steg[]
-  skapad: string
+  created: string
 }
 
 export const lasPassager = (katalog: string): Passage[] =>

@@ -3,7 +3,7 @@ import { parseStandardEbook } from '../lib/standardebooks'
 import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
-// Tao Te Ching, James Legges översättning (public domain) via Standard Ebooks.
+// Tao Te Ching, James Legges translation (public domain) via Standard Ebooks.
 // 81 kapitel; varje kapitel blir ett kapitel, varje stycke en vers.
 const URL =
   'https://raw.githubusercontent.com/standardebooks/laozi_tao-te-ching_james-legge/master/src/epub/text/tao-te-ching.xhtml'
@@ -24,7 +24,7 @@ const metaFor = (translated: boolean): WorkMeta => ({
   author: 'Laozi',
   lang: 'Klassisk kinesiska',
   translation: translated
-    ? 'Svensk översättning (Ollama) från James Legges engelska'
+    ? 'Svensk translation (Ollama) från James Legges engelska'
     : 'Engelska: James Legge',
   license: 'Public Domain (Standard Ebooks)',
   sourceUrl: 'https://standardebooks.net/ebooks/laozi/tao-te-ching/james-legge',

@@ -31,7 +31,7 @@ const metaFor = (translated: boolean): WorkMeta => ({
   author: 'Konfucius',
   lang: 'Klassisk kinesiska',
   translation: translated
-    ? 'Svensk översättning (Ollama) från James Legges engelska'
+    ? 'Svensk translation (Ollama) från James Legges engelska'
     : 'Engelska: James Legge',
   license: 'Public Domain (Standard Ebooks)',
   sourceUrl: 'https://standardebooks.net/ebooks/confucius/analects/james-legge',

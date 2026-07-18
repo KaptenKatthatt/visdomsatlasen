@@ -28,10 +28,10 @@ export const egypten: Topic = {
   ],
   context: [
     [
-      'Livet i Egypten följde Nilens rytm: översvämning, sådd, skörd. Ur denna återkommande ordning växte begreppet maat — den kosmiska balans som farao, prästerna och varje enskild människa hade att upprätthålla mot kaos.',
+      'Livet i Egypten följde Nilens rytm: översvämning, sådd, skörd. Ur denna återkommande order växte begreppet maat — den kosmiska balans som farao, prästerna och varje enskild människa hade att upprätthålla mot kaos.',
     ],
     [
-      'Föreställningarna om dödsriket demokratiserades med tiden. Det som i pyramidtexterna var faraos privilegium blev via kisttexterna till slut var människas möjlighet: Dödsbokens rullar kunde köpas färdigskrivna, med tom plats för den dödas namn.',
+      'Föreställningarna om dödsriket demokratiserades med tiden. Det som i pyramidtexterna var faraos privilegium blev via kisttexterna till slut var människas möjlighet: Dödsbokens rullar kunde köpas färdigskrivna, med tom place för den dödas name.',
     ],
   ],
   sources: ['dodsboken'],

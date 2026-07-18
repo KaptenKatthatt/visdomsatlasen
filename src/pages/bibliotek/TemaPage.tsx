@@ -14,14 +14,14 @@ const Fragedel = ({ temaId }: { temaId: string }) => {
     <Sektion rubrik="Frågor">
       {frågor.map((fråga) => (
         <ToLink key={fråga.id} to={{ kind: 'fraga', slug: fråga.slug }} className={styles.rad}>
-          <Rad titel={fråga.text} />
+          <Rad title={fråga.text} />
         </ToLink>
       ))}
     </Sektion>
   )
 }
 
-/** Temasida (library.md, Themes): beskrivning, temats frågor och publicerade
+/** Temasida (library.md, Themes): description, temats frågor och publicerade
  * rum. TopBar utan onBack ⇒ historiksteg bakåt — biblioteksplatsen bevaras. */
 export const TemaPage = ({ slug }: { slug: string }) => {
   const tema = hittaTemaViaSlug(slug)
@@ -29,8 +29,8 @@ export const TemaPage = ({ slug }: { slug: string }) => {
   return (
     <div className="screenSub">
       <TopBar />
-      <Sidhuvud kicker="Tema" titel={tema.etikett} status={tema.status} />
-      <Beskrivning text={tema.beskrivning} />
+      <Sidhuvud kicker="Tema" title={tema.label} status={tema.status} />
+      <Beskrivning text={tema.description} />
       <Fragedel temaId={tema.id} />
       <Sektion rubrik="Rum">
         <Rumslista

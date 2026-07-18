@@ -56,7 +56,7 @@ type AtlasState = {
   bookmarks: Record<string, boolean>
   chapterBookmarks: Record<string, ChapterBookmark>
   // Anteckningar (notes-and-saved.md): privata reflektioner kopplade till sitt
-  // ursprung (rum/topic). Nyckel = ursprungId — en anteckning per plats. Privat:
+  // ursprung (rum/topic). Nyckel = ursprungId — en anteckning per place. Privat:
   // rör aldrig rumsvalet, publik sök, AI eller analytics.
   anteckningar: Record<string, Anteckning>
   lastRead: LastRead | null
@@ -87,7 +87,7 @@ type AtlasActions = {
   registreraVandringsplats: (vandringId: string, rumId: string) => void
   vaxlaSparatRum: (id: string) => void
   vaxlaSparadVandring: (id: string) => void
-  sattAnteckning: (typ: Ursprung, ursprungId: string, text: string) => void
+  sattAnteckning: (type: Ursprung, ursprungId: string, text: string) => void
   taBortAnteckning: (ursprungId: string) => void
   rensaSenastBesokt: () => void
   importeraPersonligt: (importen: PersonligExport) => void
@@ -284,12 +284,12 @@ const usePersonligtActions = (setState: SetAtlasState): PersonligtActions => {
     [setState],
   )
   const sattAnteckning = useCallback(
-    (typ: Ursprung, ursprungId: string, text: string) =>
+    (type: Ursprung, ursprungId: string, text: string) =>
       setState((s) => ({
         ...s,
         anteckningar: {
           ...s.anteckningar,
-          [ursprungId]: uppdateradAnteckning(s.anteckningar[ursprungId], typ, ursprungId, text, nu()),
+          [ursprungId]: uppdateradAnteckning(s.anteckningar[ursprungId], type, ursprungId, text, nu()),
         },
       })),
     [setState],

@@ -2,8 +2,8 @@ import { mapPool } from '../../lib/concurrency'
 import { translateMany } from '../translate'
 import type { NormalizedVerse, NormalizedWork, WorkMeta } from '../model'
 
-// En rå vers innan översättning: dess nummer, källtext (engelska/pali …) och
-// valfri originaltext att bevara vid sidan av den svenska översättningen.
+// En rå vers innan translation: dess nummer, källtext (engelska/pali …) och
+// valfri originalText att bevara vid sidan av den svenska översättningen.
 type RawVerse = { verse: number; source: string; orig?: string }
 export type RawChapter = { chapter: number; verses: RawVerse[] }
 

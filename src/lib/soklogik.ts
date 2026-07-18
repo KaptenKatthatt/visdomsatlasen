@@ -1,18 +1,18 @@
 // Sökalgoritmen (search.md, Result Ranking): exakt/partiell matchning, svensk
 // normalisering, kontrollerade synonymer och konservativ stavfelstolerans, vägt
-// så att frågor och teman rankas rätt och en berömd författare aldrig slår en
+// så att frågor och themes rankas rätt och en berömd author aldrig slår en
 // mer relevant fråga. Ingen popularitets- eller beteendesignal existerar här.
 import type { Sokdokument, Soktyp } from './sokindex'
 import { inomEttSkrivfel, normalisera, ordlista, soktokens, stam } from './soknormalisering'
 
 /** Vilket fält en träff kom ur — internt, visas aldrig för användaren. */
-export type Traffniva = 'titel-exakt' | 'alias-exakt' | 'titel' | 'nyckelord' | 'underrad' | 'text'
+export type Traffniva = 'title-exakt' | 'alias-exakt' | 'title' | 'keywords' | 'underrad' | 'text'
 
 /** En träff. `poang`/`traffatFalt` är interna rankningsdetaljer. */
 export type Soktraff = { dokument: Sokdokument; poang: number; traffatFalt: Traffniva }
 
-/** Träffar av samma typ, i relevansordning. */
-export type Sokgrupp = { typ: Soktyp; rubrik: string; traffar: Soktraff[] }
+/** Träffar av samma type, i relevansordning. */
+export type Sokgrupp = { type: Soktyp; rubrik: string; traffar: Soktraff[] }
 
 /** En grupp med det ändliga urval som visas + hur många som döljs bakom »Visa fler«. */
 export type SynligGrupp = { grupp: Sokgrupp; synliga: Soktraff[]; dolda: number }
@@ -23,17 +23,17 @@ export const MAX_SYNLIGA_TOTALT = 20
 const MAX_PER_GRUPP = 20
 
 // Nivåpoäng med gap större än största typbonus (12), så typordningen bara
-// avgör inom samma nivå — exakt titel slår alltid en partiell aliasträff.
+// avgör inom samma nivå — exakt title slår alltid en partiell aliasträff.
 const NIVAPOANG: Record<Traffniva, number> = {
-  'titel-exakt': 100,
+  'title-exakt': 100,
   'alias-exakt': 85,
-  'titel': 60,
-  'nyckelord': 44,
+  'title': 60,
+  'keywords': 44,
   'underrad': 28,
   'text': 12,
 }
 
-// Frågor och teman rankas före rum, vandringar, källor och traditioner
+// Frågor och themes rankas före rum, vandringar, sources och traditions
 // (search.md, Result Priority — den mänskliga frågan står först).
 const TYPBONUS: Record<Soktyp, number> = {
   fraga: 12,
@@ -129,11 +129,11 @@ type Bucket = { niva: Traffniva; bas: number; ord: string[] }
 // starkaste nivån — bägge är identifierande.
 const dokumentBuckets = (dok: Sokdokument): Bucket[] => [
   {
-    niva: 'titel',
-    bas: NIVAPOANG.titel,
-    ord: [...ordlista(dok.titel), ...dok.alias.flatMap(ordlista)],
+    niva: 'title',
+    bas: NIVAPOANG.title,
+    ord: [...ordlista(dok.title), ...dok.alias.flatMap(ordlista)],
   },
-  { niva: 'nyckelord', bas: NIVAPOANG.nyckelord, ord: dok.nyckelord.flatMap(ordlista) },
+  { niva: 'keywords', bas: NIVAPOANG.keywords, ord: dok.keywords.flatMap(ordlista) },
   { niva: 'underrad', bas: NIVAPOANG.underrad, ord: dok.underrad ? ordlista(dok.underrad) : [] },
   { niva: 'text', bas: NIVAPOANG.text, ord: dok.text.flatMap(ordlista) },
 ]
@@ -154,7 +154,7 @@ const tokenBästa = (token: string, buckets: Bucket[]): { poang: number; niva: T
 
 // Exakt helfrågsträff (interpunktion och diakriter bortnormaliserade).
 const exaktNiva = (nyckelfrågan: string, dok: Sokdokument): Traffniva | undefined => {
-  if (ordlista(dok.titel).join(' ') === nyckelfrågan) return 'titel-exakt'
+  if (ordlista(dok.title).join(' ') === nyckelfrågan) return 'title-exakt'
   if (dok.alias.some((alias) => ordlista(alias).join(' ') === nyckelfrågan)) return 'alias-exakt'
   return undefined
 }
@@ -167,33 +167,33 @@ const matchaDokument = (
   dok: Sokdokument,
 ): Soktraff | undefined => {
   const exakt = exaktNiva(nyckelfrågan, dok)
-  if (exakt) return { dokument: dok, poang: NIVAPOANG[exakt] + TYPBONUS[dok.typ], traffatFalt: exakt }
+  if (exakt) return { dokument: dok, poang: NIVAPOANG[exakt] + TYPBONUS[dok.type], traffatFalt: exakt }
   if (tokens.length === 0) return undefined
   const buckets = dokumentBuckets(dok)
   const perToken = tokens.map((token) => tokenBästa(token, buckets))
   if (perToken.some((pt) => pt.poang <= 0)) return undefined
   const medel = perToken.reduce((summa, pt) => summa + pt.poang, 0) / perToken.length
   const bäst = perToken.reduce((b, pt) => (pt.poang > b.poang ? pt : b))
-  return { dokument: dok, poang: medel + TYPBONUS[dok.typ], traffatFalt: bäst.niva }
+  return { dokument: dok, poang: medel + TYPBONUS[dok.type], traffatFalt: bäst.niva }
 }
 
 const svTitel = (a: Soktraff, b: Soktraff): number =>
-  a.dokument.titel.localeCompare(b.dokument.titel, 'sv')
+  a.dokument.title.localeCompare(b.dokument.title, 'sv')
 
 const bästaPoang = (grupp: Sokgrupp): number => grupp.traffar[0]?.poang ?? 0
 
-// Grupperar träffar per typ; inom gruppen på poäng och sedan svensk titelordning;
+// Grupperar träffar per type; inom gruppen på poäng och sedan svensk titelordning;
 // grupperna efter bästa träff, så den mest relevanta gruppen står först.
 const grupperaTraffar = (träffar: Soktraff[]): Sokgrupp[] => {
   const karta = new Map<Soktyp, Soktraff[]>()
   for (const träff of träffar) {
-    const lista = karta.get(träff.dokument.typ) ?? []
+    const lista = karta.get(träff.dokument.type) ?? []
     lista.push(träff)
-    karta.set(träff.dokument.typ, lista)
+    karta.set(träff.dokument.type, lista)
   }
-  const grupper = [...karta.entries()].map(([typ, lista]): Sokgrupp => ({
-    typ,
-    rubrik: RUBRIK[typ],
+  const grupper = [...karta.entries()].map(([type, lista]): Sokgrupp => ({
+    type,
+    rubrik: RUBRIK[type],
     traffar: lista.sort((a, b) => b.poang - a.poang || svTitel(a, b)).slice(0, MAX_PER_GRUPP),
   }))
   return grupper.sort((a, b) => bästaPoang(b) - bästaPoang(a))
@@ -220,7 +220,7 @@ export const synligaTraffar = (
 ): SynligGrupp[] => {
   let kvar = MAX_SYNLIGA_TOTALT
   return grupper.map((grupp) => {
-    const expanderad = expanderade.has(grupp.typ)
+    const expanderad = expanderade.has(grupp.type)
     const gräns = expanderad ? MAX_PER_GRUPP : Math.min(MAX_SYNLIGA_PER_GRUPP, Math.max(kvar, 0))
     const synliga = grupp.traffar.slice(0, gräns)
     if (!expanderad) kvar -= synliga.length

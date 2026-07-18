@@ -12,7 +12,7 @@ type Props = {
 }
 
 /** Sheetens fot: stilla autospar-status till vänster, radering till höger.
- * Raderingen kräver en enkel bekräftelse på plats — innehållet är personligt
+ * Raderingen kräver en enkel bekräftelse på place — innehållet är personligt
  * och kanske inte återställbart (spec Deleting Notes). Ingen window.confirm. */
 const Fot = ({
   sparadVisas,

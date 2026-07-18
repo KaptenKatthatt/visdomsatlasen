@@ -1,5 +1,5 @@
-// De 66 böckerna i 1917 års bibel, i kanonisk ordning. `nr` matchar getbibles
-// boknummer; `slug` blir bok-id i vår databas; namn/förkortning är svenska så
+// De 66 böckerna i 1917 års bibel, i kanonisk order. `nr` matchar getbibles
+// boknummer; `slug` blir bok-id i vår databas; name/förkortning är svenska så
 // visningen är konsekvent oavsett vad källan råkar kalla böckerna.
 export type BibleBook = { nr: number; slug: string; name: string; abbrev: string }
 

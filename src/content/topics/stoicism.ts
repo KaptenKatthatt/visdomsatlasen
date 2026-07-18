@@ -9,7 +9,7 @@ export const stoicism: Topic = {
     'En slav, en statsman och en kejsare kom fram till samma sak: det enda du verkligen äger är ditt eget omdöme.',
   essay: [
     [
-      'Stoicismen föddes i Aten omkring 300 f.Kr men blev en livshållning för hela romarriket. Dess kärna är enkel att formulera och svår att leva: skilj mellan det som beror på dig och det som inte gör det. Dina omdömen, avsikter och handlingar är dina. Ditt rykte, din hälsa, andras beteende — det är det inte. ',
+      'Stoicismen föddes i Aten omkring 300 f.Kr men blev en livshållning för hela romarriket. Dess core är enkel att formulera och svår att leva: skilj mellan det som beror på dig och det som inte gör det. Dina omdömen, avsikter och handlingar är dina. Ditt rykte, din hälsa, andras beteende — det är det inte. ',
       l('Epiktetos', 'person', 'epiktetos'),
       ', som föddes som slav, byggde hela sin undervisning på denna enda distinktion.',
     ],
@@ -29,7 +29,7 @@ export const stoicism: Topic = {
   ],
   context: [
     [
-      'Stoan fick sitt namn efter Stoa poikile, den målade pelarhallen i Aten där Zenon från Kition började undervisa omkring 300 f.Kr. Skolan delade filosofin i tre delar — logik, fysik, etik — men det var etiken som gjorde den till romarrikets praktiska livsfilosofi.',
+      'Stoan fick sitt name efter Stoa poikile, den målade pelarhallen i Aten där Zenon från Kition började undervisa omkring 300 f.Kr. Skolan delade filosofin i tre delar — logik, fysik, etik — men det var etiken som gjorde den till romarrikets praktiska livsfilosofi.',
     ],
     [
       'Att traditionens tre stora romerska röster var en slav, en rådgivare och en kejsare — Epiktetos, Seneca och Marcus Aurelius — säger något om dess anspråk: omständigheterna avgör inte om ett liv kan levas väl.',

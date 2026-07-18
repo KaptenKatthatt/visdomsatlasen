@@ -7,9 +7,9 @@ import { personligaSamlingar, useAtlas } from '../lib/store'
 import styles from './DinaData.module.css'
 
 // Läsbara titlar för exportens anteckningar och sparade poster, per ursprung.
-const titelFor = (typ: Ursprung, id: string): string | undefined => {
-  if (typ === 'rum') return hittaRumViaId(id)?.titel
-  if (typ === 'vandring') return hittaVandringViaId(id)?.titel
+const titelFor = (type: Ursprung, id: string): string | undefined => {
+  if (type === 'rum') return hittaRumViaId(id)?.title
+  if (type === 'vandring') return hittaVandringViaId(id)?.title
   return findTopic(id)?.title
 }
 

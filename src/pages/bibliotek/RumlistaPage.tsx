@@ -11,7 +11,7 @@ export const RumlistaPage = () => {
   return (
     <div className="screenSub">
       <TopBar />
-      <Sidhuvud kicker="Rum" titel="Alla rum">
+      <Sidhuvud kicker="Rum" title="Alla rum">
         <p className={styles.antal}>{rumsantal(rum.length)}</p>
       </Sidhuvud>
       <div className={styles.sektion}>

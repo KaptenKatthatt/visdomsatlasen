@@ -1,6 +1,6 @@
 import { ToLink } from '../../components/ToLink'
 import { TopBar } from '../../components/TopBar'
-import type { Fraga } from '../../content/redaktion/schema'
+import type { Fraga } from '../../content/editorial/schema'
 import { kallorForFraga, publiceradeVia, rumForFraga } from '../../lib/bibliotek'
 import {
   allaKallor,
@@ -15,13 +15,13 @@ import styles from './Bibliotek.module.css'
 import { Beskrivning, Rad, Rumslista, Sektion, Sidhuvud } from './Biblioteksdelar'
 
 const Temadel = ({ fråga }: { fråga: Fraga }) => {
-  const teman = publiceradeVia(fråga.teman, hittaTema)
-  if (teman.length === 0) return null
+  const themes = publiceradeVia(fråga.themes, hittaTema)
+  if (themes.length === 0) return null
   return (
     <Sektion rubrik="Teman">
-      {teman.map((tema) => (
+      {themes.map((tema) => (
         <ToLink key={tema.id} to={{ kind: 'tema', slug: tema.slug }} className={styles.rad}>
-          <Rad titel={tema.etikett} />
+          <Rad title={tema.label} />
         </ToLink>
       ))}
     </Sektion>
@@ -29,13 +29,13 @@ const Temadel = ({ fråga }: { fråga: Fraga }) => {
 }
 
 const Kalldel = ({ fråga }: { fråga: Fraga }) => {
-  const källor = kallorForFraga(fråga.id, allaRum, allaKallor)
-  if (källor.length === 0) return null
+  const sources = kallorForFraga(fråga.id, allaRum, allaKallor)
+  if (sources.length === 0) return null
   return (
     <Sektion rubrik="Källor">
-      {källor.map((källa) => (
-        <ToLink key={källa.id} to={{ kind: 'kallpost', slug: källa.slug }} className={styles.rad}>
-          <Rad titel={källa.titel} sub={kallnamn(källa)} />
+      {sources.map((source) => (
+        <ToLink key={source.id} to={{ kind: 'kallpost', slug: source.slug }} className={styles.rad}>
+          <Rad title={source.title} sub={kallnamn(source)} />
         </ToLink>
       ))}
     </Sektion>
@@ -43,7 +43,7 @@ const Kalldel = ({ fråga }: { fråga: Fraga }) => {
 }
 
 const Narliggande = ({ fråga }: { fråga: Fraga }) => {
-  const frågor = publiceradeVia(fråga.relateradeFrågor ?? [], hittaFraga)
+  const frågor = publiceradeVia(fråga.relatedQuestions ?? [], hittaFraga)
   if (frågor.length === 0) return null
   return (
     <Sektion rubrik="Närliggande frågor">
@@ -53,15 +53,15 @@ const Narliggande = ({ fråga }: { fråga: Fraga }) => {
           to={{ kind: 'fraga', slug: relaterad.slug }}
           className={styles.rad}
         >
-          <Rad titel={relaterad.text} />
+          <Rad title={relaterad.text} />
         </ToLink>
       ))}
     </Sektion>
   )
 }
 
-/** Frågesida (library.md, Questions): beskrivning, rum, teman och
- * källmaterial. En plats att välja från — aldrig en automatisk lässekvens.
+/** Frågesida (library.md, Questions): description, rum, themes och
+ * källmaterial. En place att välja från — aldrig en automatisk lässekvens.
  * TopBar utan onBack ⇒ historiksteg bakåt — biblioteksplatsen bevaras. */
 export const FragaPage = ({ slug }: { slug: string }) => {
   const fråga = hittaFragaViaSlug(slug)
@@ -69,8 +69,8 @@ export const FragaPage = ({ slug }: { slug: string }) => {
   return (
     <div className="screenSub">
       <TopBar />
-      <Sidhuvud kicker="Fråga" titel={fråga.text} status={fråga.status} />
-      <Beskrivning text={fråga.beskrivning} />
+      <Sidhuvud kicker="Fråga" title={fråga.text} status={fråga.status} />
+      <Beskrivning text={fråga.description} />
       <Sektion rubrik="Rum">
         <Rumslista
           rum={rumForFraga(fråga.id, allaRum)}

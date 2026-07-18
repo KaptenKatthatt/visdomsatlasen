@@ -3,7 +3,7 @@
 // beteende, ingen personalisering; bara redaktionellt standardrum, en
 // godkänd mängd (publicerad + taggad med temat) och lokal historik som
 // undviker omedelbar upprepning utan att förbjuda återläsning.
-import type { Rum, Tema } from '../content/redaktion/schema'
+import type { Rum, Tema } from '../content/editorial/schema'
 
 /** Hur många nyligen lästa rum som undviks; historiken är ingen aktivitetslogg. */
 export const HISTORIKLANGD = 3
@@ -11,7 +11,7 @@ export const HISTORIKLANGD = 3
 /** Urvalsmängden: publicerade rum som bär temat. Att ett rum är publicerat
  * och taggat med temat är godkännandet — utkast kan aldrig väljas. */
 export const valbaraRum = (temaId: string, rum: Rum[]): Rum[] =>
-  rum.filter((ettRum) => ettRum.status === 'publicerad' && ettRum.teman.includes(temaId))
+  rum.filter((ettRum) => ettRum.status === 'publicerad' && ettRum.themes.includes(temaId))
 
 // Lägre värde = mer nyligen läst; aldrig lästa rum hamnar längst bort.
 const avstand = (id: string, senastLasta: string[]): number => {
@@ -31,7 +31,7 @@ export const valjRum = (tema: Tema, rum: Rum[], senastLasta: string[]): Rum | nu
   // fönstret; storens cap är bara lagringsstädning.
   const historik = senastLasta.slice(0, HISTORIKLANGD)
   const nyligen = new Set(historik)
-  const standard = mangd.find((ettRum) => ettRum.id === tema.standardRum)
+  const standard = mangd.find((ettRum) => ettRum.id === tema.defaultRoom)
   if (standard && !nyligen.has(standard.id)) return standard
   const kandidater = mangd.filter((ettRum) => !nyligen.has(ettRum.id))
   const urval = kandidater.length > 0 ? kandidater : mangd

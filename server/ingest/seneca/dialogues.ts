@@ -32,7 +32,7 @@ const metaFor = (translated: boolean): WorkMeta => ({
   author: 'Seneca',
   lang: 'Latin',
   translation: translated
-    ? 'Svensk översättning (Ollama) från Aubrey Stewarts engelska'
+    ? 'Svensk translation (Ollama) från Aubrey Stewarts engelska'
     : 'Engelska: Aubrey Stewart',
   license: 'Public Domain (Standard Ebooks)',
   sourceUrl: 'https://standardebooks.net/ebooks/seneca/dialogues/aubrey-stewart',

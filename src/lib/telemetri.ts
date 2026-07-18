@@ -9,20 +9,20 @@
  * Inget här mäter session, återkomst, sparande, anteckningar eller vandringsavslut
  * — och inget matar tillbaka in i rumsvalet. */
 export type TekniskHandelse =
-  | { typ: 'sidladdningsfel'; resurs: string; detalj?: string }
-  | { typ: 'offline-laddningsfel'; resurs: string }
-  | { typ: 'ogiltig-innehallsrelation'; slag: string; från: string; referens: string }
-  | { typ: 'bruten-kallalank'; från: string; till: string }
-  | { typ: 'sokfel'; detalj: string }
-  | { typ: 'sok-nolltraff'; langd: number; ord: number }
-  | { typ: 'okaught-fel'; meddelande: string; källa?: string }
+  | { type: 'sidladdningsfel'; resurs: string; detalj?: string }
+  | { type: 'offline-laddningsfel'; resurs: string }
+  | { type: 'ogiltig-innehallsrelation'; slag: string; från: string; reference: string }
+  | { type: 'bruten-kallalank'; från: string; till: string }
+  | { type: 'sokfel'; detalj: string }
+  | { type: 'sok-nolltraff'; langd: number; ord: number }
+  | { type: 'okaught-fel'; meddelande: string; source?: string }
 
 /** Rapporterar en teknisk händelse. Sänkan är konsolen — ett enkelt, granskbart
  * spår utan tredjepart. `console.warn` så det syns i loggen men aldrig fäller
  * appen. Bara händelsens egna, redan minimerade fält loggas: ingen personlig
  * text, ingen rå sökfråga, aldrig anteckningsinnehåll. */
 export const rapportera = (handelse: TekniskHandelse): void => {
-  console.warn('[telemetri]', handelse.typ, handelse)
+  console.warn('[telemetri]', handelse.type, handelse)
 }
 
 /** Anonymiserar en sökfråga till ofarliga mått (analytics.md, Sensitive Query
@@ -40,25 +40,25 @@ let installerad = false
 
 /** Fångar globala, annars osynliga fel (analytics.md): okaught-fel och avvisade
  * promises. Registreras en gång vid appstart. Loggar bara felets meddelande och
- * plats — aldrig sidans innehåll eller användarens text. */
+ * place — aldrig sidans innehåll eller användarens text. */
 export const installeraGlobalaFelfangare = (): void => {
   if (installerad || typeof window === 'undefined') return
   installerad = true
   window.addEventListener('error', (event) => {
     // Bara riktiga skriptfel: hoppa över tomma/resurshändelser utan meddelande,
     // så loggen bär meningsfulla poster i stället för brus. event.error är `any`
-    // i DOM-typerna; smalna av till unknown innan bruk.
+    // i DOM-typerna; smalna av till unknown innan use.
     const fel = (event as { error?: unknown }).error
     if (!event.message && !fel) return
     rapportera({
-      typ: 'okaught-fel',
+      type: 'okaught-fel',
       meddelande: event.message || 'Okänt fel',
-      ...(event.filename ? { källa: `${event.filename}:${event.lineno}` } : {}),
+      ...(event.filename ? { source: `${event.filename}:${event.lineno}` } : {}),
     })
   })
   window.addEventListener('unhandledrejection', (event) => {
-    // event.reason är `any` i DOM-typerna; smalna av till unknown innan bruk.
+    // event.reason är `any` i DOM-typerna; smalna av till unknown innan use.
     const orsak = (event as { reason?: unknown }).reason
-    rapportera({ typ: 'okaught-fel', meddelande: orsak instanceof Error ? orsak.message : String(orsak) })
+    rapportera({ type: 'okaught-fel', meddelande: orsak instanceof Error ? orsak.message : String(orsak) })
   })
 }

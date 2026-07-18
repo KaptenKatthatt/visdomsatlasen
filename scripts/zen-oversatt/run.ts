@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Produktionskörning av den rekommenderade översättningspipelinen
 // (docs/research/zen-oversattningsflode.md §6) för de fyra utvalda zenpassagerna.
-// Per passage: flöde C (analys -> svensk översättning ur analysen) med
+// Per passage: flöde C (analys -> svensk translation ur analysen) med
 // primärmodellen, sedan korsmodellsgranskning av C-översättningen. Leveranskontroll
 // per steg: om det svenska steget trunkerar (saknar rubriker) görs omförsök och,
 // i sista hand, ett direkt A-flöde som reserv (rapportens rekommendation).
@@ -16,7 +16,7 @@ const PASSAGER = 'docs/research/zen-experiment/passages'
 const RADATA = 'docs/oversattningar/radata'
 const MAL = ['p1-hakuin-zazen-wasan', 'p2-mumonkan-fall7', 'p3-dogen-genjokoan', 'p5-dogen-uji']
 
-// Primärmodell (översättare) och granskare enligt rapportens §1: glm-5.2 översätter,
+// Primärmodell (translator) och granskare enligt rapportens §1: glm-5.2 översätter,
 // deepseek-v4-pro granskar (gemma4 som leveranssäker reserv). Första körbara väljs.
 const OVERSATTARE = ['glm-5.2:cloud', 'glm-5.1:cloud', 'deepseek-v4-pro:cloud']
 const GRANSKARE = ['deepseek-v4-pro:cloud', 'gemma4:31b-cloud', 'glm-5.2:cloud']
@@ -38,15 +38,15 @@ type Oversattning = {
   steg: Steg[]
   granskare: string
   granskning: Steg | null
-  skapad: string
+  created: string
 }
 
 const harAllaRubriker = (text: string, rubriker: string[]): boolean =>
   rubriker.every((rubrik) => text.includes(rubrik))
 
-const chatSteg = async (namn: string, modell: string, prompt: string): Promise<Steg> => {
+const chatSteg = async (name: string, modell: string, prompt: string): Promise<Steg> => {
   const svar = await chat(modell, systemSv, prompt)
-  return { namn, system: systemSv, prompt, svar: svar.text, ms: svar.ms }
+  return { name, system: systemSv, prompt, svar: svar.text, ms: svar.ms }
 }
 
 // Flöde C med leveranskontroll: analysera, översätt, och om den svenska texten saknar
@@ -80,7 +80,7 @@ const korPassage = async (passage: Passage, oversattare: string, granskare: stri
     steg,
     granskare,
     granskning,
-    skapad: new Date().toISOString(),
+    created: new Date().toISOString(),
   }
   writeFileSync(fil, `${JSON.stringify(resultat, null, 2)}\n`)
   console.log(`  klar: ${fil} (flöde ${flode})`)

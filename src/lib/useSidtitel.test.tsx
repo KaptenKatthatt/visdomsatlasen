@@ -5,25 +5,25 @@ import { useSidtitel } from './useSidtitel'
 
 afterEach(cleanup)
 
-const Sida = ({ titel }: { titel: string }) => {
-  useSidtitel(titel)
+const Sida = ({ title }: { title: string }) => {
+  useSidtitel(title)
   return <p>Sidan</p>
 }
 
 describe('useSidtitel', () => {
   it('sätter dokumenttiteln med grundtiteln som svans', () => {
-    render(<Sida titel="Biblioteket" />)
+    render(<Sida title="Biblioteket" />)
     expect(document.title).toBe('Biblioteket · Visdomsatlasen')
   })
 
-  it('faller tillbaka till grundtiteln vid tom titel', () => {
-    render(<Sida titel="" />)
+  it('faller tillbaka till grundtiteln vid tom title', () => {
+    render(<Sida title="" />)
     expect(document.title).toBe('Visdomsatlasen')
   })
 
   it('följer med när titeln ändras och återställs vid unmount', () => {
-    const { rerender, unmount } = render(<Sida titel="Sparat" />)
-    rerender(<Sida titel="Inställningar" />)
+    const { rerender, unmount } = render(<Sida title="Sparat" />)
+    rerender(<Sida title="Inställningar" />)
     expect(document.title).toBe('Inställningar · Visdomsatlasen')
     unmount()
     expect(document.title).toBe('Visdomsatlasen')
