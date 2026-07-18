@@ -4,32 +4,32 @@
 import { useEffect, useState } from 'react'
 import { TopBar } from '../../components/TopBar'
 import { searchLibrary } from '../../lib/api'
-import type { Anteckning } from '../../lib/personligt'
+import type { Note } from '../../lib/personligt'
 import { sokAnteckningar } from '../../lib/sokanteckningar'
-import { sokindexet, type Soktyp, type SökParametrar } from '../../lib/sokindex'
-import { sokIBiblioteket, synligaTraffar, type Sokgrupp, type SynligGrupp } from '../../lib/soklogik'
+import { sokindexet, type SearchType, type SearchParams } from '../../lib/sokindex'
+import { sokIBiblioteket, synligaTraffar, type SearchGroup, type VisibleGroup } from '../../lib/soklogik'
 import { normalisera } from '../../lib/soknormalisering'
 import { anonymiseraFraga, rapportera } from '../../lib/telemetri'
 import { useAsync } from '../../lib/useAsync'
 import { useAtlas } from '../../lib/store'
 import { useDebounced } from '../../lib/useDebounced'
 import { useSidtitel } from '../../lib/useSidtitel'
-import { Filter, KalltextGrupp, Resultatvy, Sokfalt, type Kalltextsvar, type Sokläge } from './SokDelar'
+import { Filter, KalltextGrupp, Resultatvy, Sokfalt, type SourceTextResponse, type SearchMode } from './SokDelar'
 
 // Vilka grupper som expanderats, ihågkommet per normaliserad fråga över
 // navigation inom sessionen (search.md: sökstate får vara tillfälligt).
-const expansionsminne = new Map<string, Set<Soktyp>>()
-const hämtaExpansion = (nyckel: string): Set<Soktyp> => new Set(expansionsminne.get(nyckel))
+const expansionsminne = new Map<string, Set<SearchType>>()
+const hämtaExpansion = (nyckel: string): Set<SearchType> => new Set(expansionsminne.get(nyckel))
 
 // Den delbara sökparametern; tom fråga och intet filter utelämnas ur URL:en.
-const sökObjekt = (term: string, type: Soktyp | undefined): SökParametrar => ({
+const sökObjekt = (term: string, type: SearchType | undefined): SearchParams => ({
   ...(term ? { q: term } : {}),
   ...(type ? { type } : {}),
 })
 
 type Härlett = {
-  synliga: SynligGrupp[]
-  notes: Anteckning[]
+  synliga: VisibleGroup[]
+  notes: Note[]
   redaktionellaOchNoter: number
   fel: boolean
 }
@@ -38,11 +38,11 @@ type Härlett = {
 // termen. Ren funktion (utanför komponenten) så sidan hålls liten och läsbar.
 const härledResultat = (
   term: string,
-  type: Soktyp | undefined,
-  expanderade: ReadonlySet<Soktyp>,
-  anteckningar: Record<string, Anteckning>,
+  type: SearchType | undefined,
+  expanderade: ReadonlySet<SearchType>,
+  anteckningar: Record<string, Note>,
 ): Härlett => {
-  let grupper: Sokgrupp[] = []
+  let grupper: SearchGroup[] = []
   let fel = false
   try {
     grupper = sokIBiblioteket(term, sokindexet)
@@ -57,12 +57,12 @@ const härledResultat = (
   return { synliga, notes, redaktionellaOchNoter, fel }
 }
 
-const beräknaLäge = (nyckel: string, fel: boolean): Sokläge =>
+const beräknaLäge = (nyckel: string, fel: boolean): SearchMode =>
   nyckel.length < 2 ? 'tom' : fel ? 'fel' : 'klar'
 
-const TOMT_KALLTEXTSVAR: Kalltextsvar = { books: [], hits: [] }
+const TOMT_KALLTEXTSVAR: SourceTextResponse = { books: [], hits: [] }
 
-const kalltextAntalAv = (svar: Kalltextsvar | null): number =>
+const kalltextAntalAv = (svar: SourceTextResponse | null): number =>
   (svar?.books.length ?? 0) + (svar?.hits.length ?? 0)
 
 // Inga träffar alls (och verssöket är inte längre på väg): först då visas
@@ -72,10 +72,10 @@ const ärHeltTomt = (redaktionellaOchNoter: number, kalltextAntal: number, ladda
 
 // Lägger till en expanderad grupp och sparar det i sessionsminnet.
 const nyExpansion = (
-  föregående: ReadonlySet<Soktyp>,
+  föregående: ReadonlySet<SearchType>,
   nyckel: string,
-  grupptyp: Soktyp,
-): Set<Soktyp> => {
+  grupptyp: SearchType,
+): Set<SearchType> => {
   const nästa = new Set(föregående).add(grupptyp)
   expansionsminne.set(nyckel, nästa)
   return nästa
@@ -86,15 +86,15 @@ const nyExpansion = (
 // sidan blir liten och läsbar.
 const useSoktillstand = (
   q: string,
-  type: Soktyp | undefined,
-  onNavigera: (sök: SökParametrar) => void,
+  type: SearchType | undefined,
+  onNavigera: (sök: SearchParams) => void,
 ) => {
   const [query, setQuery] = useState(q)
   const [direkt, setDirekt] = useState<string | null>(null)
   const debounced = useDebounced(query.trim(), 250)
   const term = direkt ?? debounced
   const nyckel = normalisera(term)
-  const [expanderade, setExpanderade] = useState<Set<Soktyp>>(() => hämtaExpansion(nyckel))
+  const [expanderade, setExpanderade] = useState<Set<SearchType>>(() => hämtaExpansion(nyckel))
 
   useEffect(() => {
     if (term !== q) onNavigera(sökObjekt(term, type))
@@ -109,7 +109,7 @@ const useSoktillstand = (
     term,
     nyckel,
     expanderade,
-    visaFler: (grupptyp: Soktyp) => setExpanderade((prev) => nyExpansion(prev, nyckel, grupptyp)),
+    visaFler: (grupptyp: SearchType) => setExpanderade((prev) => nyExpansion(prev, nyckel, grupptyp)),
     ändraFråga: (värde: string) => {
       setQuery(värde)
       setDirekt(null)
@@ -120,8 +120,8 @@ const useSoktillstand = (
 
 type Props = {
   q: string
-  type: Soktyp | undefined
-  onNavigera: (sök: SökParametrar) => void
+  type: SearchType | undefined
+  onNavigera: (sök: SearchParams) => void
 }
 
 export const SokBibliotekPage = ({ q, type, onNavigera }: Props) => {
@@ -136,7 +136,7 @@ export const SokBibliotekPage = ({ q, type, onNavigera }: Props) => {
   // Verssöket (verkläsarens FTS) körs bara utan typfilter och för fråga ≥ 2
   // tecken; annars ett tomt svar utan nätanrop. Egen väg, egen laddning.
   const sökKalltext = nyckel.length >= 2 && type === undefined
-  const kalltext = useAsync<Kalltextsvar>(
+  const kalltext = useAsync<SourceTextResponse>(
     () => (sökKalltext ? searchLibrary(term) : Promise.resolve(TOMT_KALLTEXTSVAR)),
     [term, sökKalltext],
   )

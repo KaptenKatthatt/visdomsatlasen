@@ -2,7 +2,7 @@
 // den aktuella användarens anteckningar och delar ingenting med det publika
 // indexet — den importerar aldrig sokindex/soklogik, så ingen anteckningstext
 // kan påverka eller läcka in i publika resultat (Fas 9 Privacy/AI Access).
-import type { Anteckning } from './personligt'
+import type { Note } from './personligt'
 import { ordlista, soktokens } from './soknormalisering'
 
 // Alla meningsbärande ord måste förekomma i anteckningen (AND), som exakt ord,
@@ -21,8 +21,8 @@ const matchar = (tokens: string[], text: string): boolean => {
  * frågor kortare än två meningsbärande tecken ger inget. */
 export const sokAnteckningar = (
   fraga: string,
-  anteckningar: Record<string, Anteckning>,
-): Anteckning[] => {
+  anteckningar: Record<string, Note>,
+): Note[] => {
   if (ordlista(fraga).join(' ').length < 2) return []
   const tokens = soktokens(fraga)
   if (tokens.length === 0) return []

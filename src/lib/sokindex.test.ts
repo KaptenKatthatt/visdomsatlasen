@@ -1,18 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import type {
-  Fraga,
-  Kalla,
-  Kallpassage,
-  Rum,
-  Tema,
+  Question,
+  Source,
+  SourcePassage,
+  Room,
+  Theme,
   Tradition,
-  Vandring,
+  Path,
 } from '../content/editorial/schema'
-import { byggSokindex, sokindexet, type Sokdokument } from './sokindex'
+import { byggSokindex, sokindexet, type SearchDoc } from './sokindex'
 
-type Status = Rum['status']
+type Status = Room['status']
 
-const fraga = (id: string, status: Status = 'publicerad', över: Partial<Fraga> = {}): Fraga => ({
+const fraga = (id: string, status: Status = 'publicerad', över: Partial<Question> = {}): Question => ({
   id,
   slug: id,
   text: `Fråga ${id}`,
@@ -21,7 +21,7 @@ const fraga = (id: string, status: Status = 'publicerad', över: Partial<Fraga> 
   ...över,
 })
 
-const tema = (id: string, status: Status = 'publicerad', över: Partial<Tema> = {}): Tema => ({
+const tema = (id: string, status: Status = 'publicerad', över: Partial<Theme> = {}): Theme => ({
   id,
   slug: id,
   label: `Tema ${id}`,
@@ -29,7 +29,7 @@ const tema = (id: string, status: Status = 'publicerad', över: Partial<Tema> = 
   ...över,
 })
 
-const rum = (id: string, status: Status = 'publicerad', över: Partial<Rum> = {}): Rum => ({
+const rum = (id: string, status: Status = 'publicerad', över: Partial<Room> = {}): Room => ({
   id,
   slug: id,
   title: `Rum ${id}`,
@@ -49,7 +49,7 @@ const rum = (id: string, status: Status = 'publicerad', över: Partial<Rum> = {}
   ...över,
 })
 
-const kalla = (id: string, status: Status = 'publicerad', över: Partial<Kalla> = {}): Kalla => ({
+const kalla = (id: string, status: Status = 'publicerad', över: Partial<Source> = {}): Source => ({
   id,
   slug: id,
   title: `Källa ${id}`,
@@ -63,8 +63,8 @@ const passage = (
   id: string,
   source: string,
   status: Status = 'publicerad',
-  över: Partial<Kallpassage> = {},
-): Kallpassage => ({
+  över: Partial<SourcePassage> = {},
+): SourcePassage => ({
   id,
   source,
   reference: 'avsnitt 1',
@@ -87,8 +87,8 @@ const tradition = (
 const vandring = (
   id: string,
   status: Status = 'publicerad',
-  över: Partial<Vandring> = {},
-): Vandring => ({
+  över: Partial<Path> = {},
+): Path => ({
   id,
   slug: id,
   title: `Vandring ${id}`,
@@ -111,7 +111,7 @@ const tomtIndex = {
   traditions: [],
 }
 
-const hitta = (index: Sokdokument[], id: string): Sokdokument | undefined =>
+const hitta = (index: SearchDoc[], id: string): SearchDoc | undefined =>
   index.find((dok) => dok.id === id)
 
 describe('byggSokindex — publiceringsgrind', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Fraga, Kalla, Kallpassage, Rum, Tema, Tradition, Vandring } from '../content/editorial/schema'
+import type { Question, Source, SourcePassage, Room, Theme, Tradition, Path } from '../content/editorial/schema'
 import {
   bibliotekRum,
   bibliotekTeman,
@@ -17,7 +17,7 @@ import {
 } from './bibliotek'
 
 // Fabricerade poster: bara fälten biblioteket läser behöver vara meningsfulla.
-const rum = (title: string, status: Rum['status'] = 'publicerad', över: Partial<Rum> = {}): Rum => ({
+const rum = (title: string, status: Room['status'] = 'publicerad', över: Partial<Room> = {}): Room => ({
   id: `rum-${title}`,
   slug: title,
   title,
@@ -39,8 +39,8 @@ const rum = (title: string, status: Rum['status'] = 'publicerad', över: Partial
 
 const tema = (
   label: string,
-  extra: Partial<Pick<Tema, 'status' | 'order'>> = {},
-): Tema => ({
+  extra: Partial<Pick<Theme, 'status' | 'order'>> = {},
+): Theme => ({
   id: `tema-${label}`,
   slug: label,
   label,
@@ -89,7 +89,7 @@ describe('bibliotekRum', () => {
   })
 })
 
-const fråga = (text: string, över: Partial<Fraga> = {}): Fraga => ({
+const fråga = (text: string, över: Partial<Question> = {}): Question => ({
   id: `fraga-${text}`,
   slug: text,
   text,
@@ -139,7 +139,7 @@ describe('fragorForTema', () => {
 })
 
 describe('kallorForFraga', () => {
-  const source = (id: string, status: Kalla['status'] = 'publicerad'): Kalla => ({
+  const source = (id: string, status: Source['status'] = 'publicerad'): Source => ({
     id,
     slug: id,
     title: id,
@@ -222,7 +222,7 @@ describe('bibliotekTraditioner', () => {
   })
 })
 
-const vandring = (title: string, över: Partial<Vandring> = {}): Vandring => ({
+const vandring = (title: string, över: Partial<Path> = {}): Path => ({
   id: `vandring-${title}`,
   slug: title,
   title,
@@ -286,7 +286,7 @@ describe('vandringLastid', () => {
 })
 
 describe('traditionerForVandring', () => {
-  const source = (id: string, traditions: string[]): Kalla => ({
+  const source = (id: string, traditions: string[]): Source => ({
     id,
     slug: id,
     title: id,
@@ -325,7 +325,7 @@ describe('traditionerForVandring', () => {
 })
 
 describe('passagerForKalla', () => {
-  const passage = (reference: string, över: Partial<Kallpassage> = {}): Kallpassage => ({
+  const passage = (reference: string, över: Partial<SourcePassage> = {}): SourcePassage => ({
     id: `passage-${reference}`,
     source: 'kalla-a',
     reference,

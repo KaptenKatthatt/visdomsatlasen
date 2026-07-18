@@ -8,7 +8,7 @@
 /** De enda händelser appen får rapportera (analytics.md, Allowed Measurements).
  * Inget här mäter session, återkomst, sparande, anteckningar eller vandringsavslut
  * — och inget matar tillbaka in i rumsvalet. */
-export type TekniskHandelse =
+export type TechnicalEvent =
   | { type: 'sidladdningsfel'; resurs: string; detalj?: string }
   | { type: 'offline-laddningsfel'; resurs: string }
   | { type: 'ogiltig-innehallsrelation'; slag: string; från: string; reference: string }
@@ -21,7 +21,7 @@ export type TekniskHandelse =
  * spår utan tredjepart. `console.warn` så det syns i loggen men aldrig fäller
  * appen. Bara händelsens egna, redan minimerade fält loggas: ingen personlig
  * text, ingen rå sökfråga, aldrig anteckningsinnehåll. */
-export const rapportera = (handelse: TekniskHandelse): void => {
+export const rapportera = (handelse: TechnicalEvent): void => {
   console.warn('[telemetri]', handelse.type, handelse)
 }
 

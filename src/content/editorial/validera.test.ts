@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import type { Fraga, Innehallsmangd, Kalla, Kallpassage, Rum, Tema } from './schema'
+import type { Question, ContentSet, Source, SourcePassage, Room, Theme } from './schema'
 import { valideraInnehall } from './validera'
 
-const rum = (över: Partial<Rum> = {}): Rum => ({
+const rum = (över: Partial<Room> = {}): Room => ({
   id: 'rum-a',
   slug: 'rum-a',
   title: 'Rum A',
@@ -22,7 +22,7 @@ const rum = (över: Partial<Rum> = {}): Rum => ({
   ...över,
 })
 
-const tema = (över: Partial<Tema> = {}): Tema => ({
+const tema = (över: Partial<Theme> = {}): Theme => ({
   id: 'tema-a',
   slug: 'tema-a',
   label: 'Tema A',
@@ -30,7 +30,7 @@ const tema = (över: Partial<Tema> = {}): Tema => ({
   ...över,
 })
 
-const fråga = (över: Partial<Fraga> = {}): Fraga => ({
+const fråga = (över: Partial<Question> = {}): Question => ({
   id: 'fraga-a',
   slug: 'fraga-a',
   text: 'Vad är A?',
@@ -39,7 +39,7 @@ const fråga = (över: Partial<Fraga> = {}): Fraga => ({
   ...över,
 })
 
-const source = (över: Partial<Kalla> = {}): Kalla => ({
+const source = (över: Partial<Source> = {}): Source => ({
   id: 'kalla-a',
   slug: 'kalla-a',
   title: 'Källa A',
@@ -51,7 +51,7 @@ const source = (över: Partial<Kalla> = {}): Kalla => ({
   ...över,
 })
 
-const passage = (över: Partial<Kallpassage> = {}): Kallpassage => ({
+const passage = (över: Partial<SourcePassage> = {}): SourcePassage => ({
   id: 'passage-a',
   source: 'kalla-a',
   reference: 'avsnitt 1',
@@ -59,7 +59,7 @@ const passage = (över: Partial<Kallpassage> = {}): Kallpassage => ({
   ...över,
 })
 
-const grund = (över: Partial<Innehallsmangd> = {}): Innehallsmangd => ({
+const grund = (över: Partial<ContentSet> = {}): ContentSet => ({
   rum: [rum()],
   themes: [tema()],
   frågor: [fråga()],

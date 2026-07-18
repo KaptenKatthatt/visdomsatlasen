@@ -7,7 +7,7 @@ import {
   sparadeIdITidsordning,
   uppdateradAnteckning,
   utdrag,
-  type Anteckning,
+  type Note,
 } from './personligt'
 
 const NU = '2026-07-14T10:00:00.000Z'
@@ -50,7 +50,7 @@ describe('migreraAnteckningar', () => {
   })
 
   it('låter redan migrerad post vinna över gammal string med samma id', () => {
-    const ny: Anteckning = {
+    const ny: Note = {
       ursprungTyp: 'rum',
       ursprungId: 'rum-a',
       text: 'nyare',
@@ -76,7 +76,7 @@ describe('migreraAnteckningar', () => {
 
 describe('uppdateradAnteckning', () => {
   it('bevarar created från befintlig post och flyttar fram updated', () => {
-    const befintlig: Anteckning = {
+    const befintlig: Note = {
       ursprungTyp: 'rum',
       ursprungId: 'r',
       text: 'gammal',
@@ -96,7 +96,7 @@ describe('uppdateradAnteckning', () => {
 
 describe('sorteradeAnteckningar', () => {
   it('sorterar senast ändrad först och utelämnar tomma', () => {
-    const anteckning = (id: string, updated: string, text = 'x'): Anteckning => ({
+    const anteckning = (id: string, updated: string, text = 'x'): Note => ({
       ursprungTyp: 'rum',
       ursprungId: id,
       text,

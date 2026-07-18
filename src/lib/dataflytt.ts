@@ -7,19 +7,19 @@ import {
   chapterKey,
   sorteradeAnteckningar,
   sparadeIdITidsordning,
-  type Anteckning,
+  type Note,
   type ChapterBookmark,
-  type SparadPost,
-  type Ursprung,
+  type SavedItem,
+  type Origin,
 } from './personligt'
 
 export const EXPORT_FORMAT = 'visdomsatlasen-personligt'
 
 /** Den personliga delen av storen — det som exporteras, importeras och rensas. */
-export type PersonligaSamlingar = {
-  anteckningar: Record<string, Anteckning>
-  sparadeRum: Record<string, SparadPost>
-  sparadeVandringar: Record<string, SparadPost>
+export type PersonalCollections = {
+  anteckningar: Record<string, Note>
+  sparadeRum: Record<string, SavedItem>
+  sparadeVandringar: Record<string, SavedItem>
   bookmarks: Record<string, boolean>
   chapterBookmarks: Record<string, ChapterBookmark>
 }
@@ -59,11 +59,11 @@ const exportSchema = z.object({
   bokmarken: z.object({ kapitel: z.array(kapitelSchema), amnen: z.array(z.string()) }),
 })
 
-export type PersonligExport = z.infer<typeof exportSchema>
+export type PersonalExport = z.infer<typeof exportSchema>
 type ExportSparad = z.infer<typeof sparadSchema>
 
 const sparadPoster = (
-  poster: Record<string, SparadPost>,
+  poster: Record<string, SavedItem>,
   titelFor: (id: string) => string | undefined,
 ): ExportSparad[] =>
   sparadeIdITidsordning(poster).map((id) => ({
@@ -75,10 +75,10 @@ const sparadPoster = (
 /** Bygger en exportpost. `titelFor` slår upp läsbara titlar för anteckningarnas
  * ursprung och de sparade posterna, så exporten går att läsa fristående. */
 export const tillExport = (
-  samlingar: PersonligaSamlingar,
-  titelFor: (type: Ursprung, id: string) => string | undefined,
+  samlingar: PersonalCollections,
+  titelFor: (type: Origin, id: string) => string | undefined,
   nu: string,
-): PersonligExport => ({
+): PersonalExport => ({
   format: EXPORT_FORMAT,
   version: 1,
   exporterad: nu,
@@ -96,16 +96,16 @@ export const tillExport = (
 
 /** Tolkar en importfil. Fel format, fel version eller korrupt JSON → null, så
  * anroparen kan visa ett stilla felbesked utan att något går sönder. */
-export const lasImport = (json: unknown): PersonligExport | null => {
+export const lasImport = (json: unknown): PersonalExport | null => {
   const resultat = exportSchema.safeParse(json)
   return resultat.success ? resultat.data : null
 }
 
 // Anteckningskonflikt: den nyast uppdaterade vinner (spec: konflikter löses säkert).
 const mergaAnteckningar = (
-  nuvarande: Record<string, Anteckning>,
-  importerade: PersonligExport['anteckningar'],
-): Record<string, Anteckning> => {
+  nuvarande: Record<string, Note>,
+  importerade: PersonalExport['anteckningar'],
+): Record<string, Note> => {
   const ut = { ...nuvarande }
   for (const post of importerade) {
     const befintlig = ut[post.ursprungId]
@@ -122,9 +122,9 @@ const mergaAnteckningar = (
 }
 
 const mergaSparade = (
-  nuvarande: Record<string, SparadPost>,
+  nuvarande: Record<string, SavedItem>,
   importerade: ExportSparad[],
-): Record<string, SparadPost> => {
+): Record<string, SavedItem> => {
   const ut = { ...nuvarande }
   for (const post of importerade) {
     if (ut[post.id] === undefined) ut[post.id] = { sparadNar: post.sparadNar }
@@ -151,9 +151,9 @@ const mergaKapitel = (
  * konflikter löses säkert). Union av sparade poster och bokmärken; anteckningar
  * löses med nyast-vinner. Aldrig destruktivt mot befintlig data. */
 export const mergaImport = (
-  nuvarande: PersonligaSamlingar,
-  importen: PersonligExport,
-): PersonligaSamlingar => ({
+  nuvarande: PersonalCollections,
+  importen: PersonalExport,
+): PersonalCollections => ({
   anteckningar: mergaAnteckningar(nuvarande.anteckningar, importen.anteckningar),
   sparadeRum: mergaSparade(nuvarande.sparadeRum, importen.sparadeRum),
   sparadeVandringar: mergaSparade(nuvarande.sparadeVandringar, importen.sparadeVandringar),
@@ -161,7 +161,7 @@ export const mergaImport = (
   chapterBookmarks: mergaKapitel(nuvarande.chapterBookmarks, importen.bokmarken.kapitel),
 })
 
-const anteckningTillMarkdown = (post: PersonligExport['anteckningar'][number]): string =>
+const anteckningTillMarkdown = (post: PersonalExport['anteckningar'][number]): string =>
   [
     `## ${post.title ?? 'Anteckning'}`,
     '',
@@ -172,7 +172,7 @@ const anteckningTillMarkdown = (post: PersonligExport['anteckningar'][number]): 
 
 /** Läsbar Markdown-spegel av exporten (spec föredrar öppna format). Inte
  * återimporterbar — JSON är round-trip-formatet. */
-export const tillMarkdown = (exporten: PersonligExport): string => {
+export const tillMarkdown = (exporten: PersonalExport): string => {
   const delar: string[] = ['# Visdomsatlasen — mina anteckningar och sparat', '']
   if (exporten.anteckningar.length > 0) {
     delar.push('# Anteckningar', '')

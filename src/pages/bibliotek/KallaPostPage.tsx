@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { TopBar } from '../../components/TopBar'
-import type { Kalla, Kallpassage } from '../../content/editorial/schema'
+import type { Source, SourcePassage } from '../../content/editorial/schema'
 import { passagerForKalla, publiceradeVia, rumForKalla } from '../../lib/bibliotek'
 import {
   allaPassager,
@@ -14,7 +14,7 @@ import { NotFoundNote } from '../NotFoundNote'
 import styles from './Bibliotek.module.css'
 import { Beskrivning, Rumslista, Sektion, Sidhuvud } from './Biblioteksdelar'
 
-const TYPETIKETT: Record<Kalla['type'], string> = {
+const TYPETIKETT: Record<Source['type'], string> = {
   'bok': 'Bok',
   'skrift': 'Skrift',
   'brev': 'Brev',
@@ -27,7 +27,7 @@ const TYPETIKETT: Record<Kalla['type'], string> = {
   'annat': 'Källa',
 }
 
-const RATTIGHETSETIKETT: Record<Kalla['rights'], string> = {
+const RATTIGHETSETIKETT: Record<Source['rights'], string> = {
   'public-domain': 'Fri att återge (public domain)',
   'licensierad': 'Licensierad',
   'skyddad': 'Upphovsrättsskyddad',
@@ -36,7 +36,7 @@ const RATTIGHETSETIKETT: Record<Kalla['rights'], string> = {
 
 // Ärlig osäkerhet i klartext (source-and-context.md, Uncertainty): en
 // tillskriven röst presenteras som tillskriven, aldrig som säkert attribution.
-const upphovsrad = (source: Kalla): string | undefined => {
+const upphovsrad = (source: Source): string | undefined => {
   if (source.attributedAuthor === undefined) return source.author
   const nedtecknare = source.author ? `, nedtecknad av ${source.author}` : ''
   const name = `${source.attributedAuthor}${nedtecknare}`
@@ -51,7 +51,7 @@ const Metarad = ({ label, värde }: { label: string; värde?: string }) =>
     </p>
   )
 
-const Kallmeta = ({ source }: { source: Kalla }) => {
+const Kallmeta = ({ source }: { source: Source }) => {
   const traditionsnamn = publiceradeVia(source.traditions ?? [], hittaTradition).map(
     (tradition) => tradition.name,
   )
@@ -70,7 +70,7 @@ const Kallmeta = ({ source }: { source: Kalla }) => {
 }
 
 // Passagens metarad: translation, edition och år, stilla sammanfogade.
-const passagemeta = (passage: Kallpassage): string =>
+const passagemeta = (passage: SourcePassage): string =>
   [
     passage.translator && `Översättning: ${passage.translator}`,
     passage.edition,
@@ -82,7 +82,7 @@ const passagemeta = (passage: Kallpassage): string =>
 /** En källpassage: exakt reference, källans ord som semantiskt blockcitat
  * (originalText och/eller translation) och bibliografisk härkomst. Källans
  * ord hålls tydligt åtskilda från redaktionell prosa (source-and-context.md). */
-const Passageblock = ({ passage }: { passage: Kallpassage }) => {
+const Passageblock = ({ passage }: { passage: SourcePassage }) => {
   const meta = passagemeta(passage)
   return (
     <div className={styles.passage}>

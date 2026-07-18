@@ -3,12 +3,12 @@
 // grinden har redan stoppat ogiltigt innehåll). Bor här, beroendefritt bortom
 // tolka-typerna, så både innehall.ts och det lätta troskeldata.ts (fas 13) kan
 // dela den utan att koppla ihop tröskeln med rummens datalager.
-import type { Innehallsfil, Tolkning } from './tolka'
+import type { ContentFile, Parsed } from './tolka'
 
-export const tillFiler = (moduler: Record<string, string>): Innehallsfil[] =>
+export const tillFiler = (moduler: Record<string, string>): ContentFile[] =>
   Object.entries(moduler).map(([sökväg, råtext]) => ({ sökväg, råtext }))
 
-export const samla = <T>(filer: Innehallsfil[], tolka: (fil: Innehallsfil) => Tolkning<T>): T[] =>
+export const samla = <T>(filer: ContentFile[], tolka: (fil: ContentFile) => Parsed<T>): T[] =>
   filer.flatMap((fil) => {
     const tolkning = tolka(fil)
     for (const fel of tolkning.fel) console.error('[innehåll]', fel)

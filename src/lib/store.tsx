@@ -9,17 +9,17 @@ import {
   type SetStateAction,
 } from 'react'
 import type { ReadMode } from '../content/model'
-import { mergaImport, type PersonligaSamlingar, type PersonligExport } from './dataflytt'
+import { mergaImport, type PersonalCollections, type PersonalExport } from './dataflytt'
 import { laddaFont } from './fonter'
 import {
   chapterKey,
   migreraAnteckningar,
   migreraSparade,
   uppdateradAnteckning,
-  type Anteckning,
+  type Note,
   type ChapterBookmark,
-  type SparadPost,
-  type Ursprung,
+  type SavedItem,
+  type Origin,
 } from './personligt'
 import { HISTORIKLANGD } from './rumsval'
 import { readJson, writeJson } from './storage'
@@ -44,7 +44,7 @@ const nu = (): string => new Date().toISOString()
 // alla rum bär) blir `rum`, allt annat (topic-id ur gamla appen, oidentifierbart)
 // hamnar i `amne` — texten bevaras alltid, oavsett ursprung. Prefixkollen håller
 // storen fri från innehållssamlingen så startbunten slipper hela biblioteket (fas 13).
-const klassificeraUrsprung = (id: string): Ursprung => (id.startsWith('rum-') ? 'rum' : 'amne')
+const klassificeraUrsprung = (id: string): Origin => (id.startsWith('rum-') ? 'rum' : 'amne')
 
 type AtlasState = {
   // null = inget manuellt val: temat följer systemets färgschema, även när
@@ -58,14 +58,14 @@ type AtlasState = {
   // Anteckningar (notes-and-saved.md): privata reflektioner kopplade till sitt
   // ursprung (rum/topic). Nyckel = ursprungId — en anteckning per place. Privat:
   // rör aldrig rumsvalet, publik sök, AI eller analytics.
-  anteckningar: Record<string, Anteckning>
+  anteckningar: Record<string, Note>
   lastRead: LastRead | null
   // Sparade reflektionsrum (rum-id → post med sparat-datum). Skilt från
   // bookmarks: rum sparas hela, bokmärken märker kapitelpositioner i biblioteket.
-  sparadeRum: Record<string, SparadPost>
+  sparadeRum: Record<string, SavedItem>
   // Sparade vandringar (vandring-id → post). Aldrig förlopp eller completion —
   // bara att läsaren vill kunna återvända (notes-and-saved.md, Saved Paths).
-  sparadeVandringar: Record<string, SparadPost>
+  sparadeVandringar: Record<string, SavedItem>
   // De senast öppnade rummen (nyast först, max HISTORIKLANGD). Finns bara
   // för att rumsvalet ska undvika omedelbar upprepning — ingen aktivitetslogg.
   senastLastaRum: string[]
@@ -87,10 +87,10 @@ type AtlasActions = {
   registreraVandringsplats: (vandringId: string, rumId: string) => void
   vaxlaSparatRum: (id: string) => void
   vaxlaSparadVandring: (id: string) => void
-  sattAnteckning: (type: Ursprung, ursprungId: string, text: string) => void
+  sattAnteckning: (type: Origin, ursprungId: string, text: string) => void
   taBortAnteckning: (ursprungId: string) => void
   rensaSenastBesokt: () => void
-  importeraPersonligt: (importen: PersonligExport) => void
+  importeraPersonligt: (importen: PersonalExport) => void
   rensaPersonligt: () => void
 }
 
@@ -262,9 +262,9 @@ const useCollectionActions = (setState: SetAtlasState): CollectionActions => {
 
 // Toggle mot ett sparat-record: sätter post med datum, eller tar bort nyckeln.
 const vaxlaSparad = (
-  poster: Record<string, SparadPost>,
+  poster: Record<string, SavedItem>,
   id: string,
-): Record<string, SparadPost> => {
+): Record<string, SavedItem> => {
   const nästa = { ...poster }
   if (nästa[id]) delete nästa[id]
   else nästa[id] = { sparadNar: nu() }
@@ -284,7 +284,7 @@ const usePersonligtActions = (setState: SetAtlasState): PersonligtActions => {
     [setState],
   )
   const sattAnteckning = useCallback(
-    (type: Ursprung, ursprungId: string, text: string) =>
+    (type: Origin, ursprungId: string, text: string) =>
       setState((s) => ({
         ...s,
         anteckningar: {
@@ -314,7 +314,7 @@ const usePersonligtActions = (setState: SetAtlasState): PersonligtActions => {
 
 /** Plockar ut den personliga delen av storen — delas av importmerge och av
  * exporten i Inställningar (Dina data), så samma femfältiga form byggs på ett ställe. */
-export const personligaSamlingar = (s: PersonligaSamlingar): PersonligaSamlingar => ({
+export const personligaSamlingar = (s: PersonalCollections): PersonalCollections => ({
   anteckningar: s.anteckningar,
   sparadeRum: s.sparadeRum,
   sparadeVandringar: s.sparadeVandringar,
@@ -337,7 +337,7 @@ const tomtPersonligt = {
 
 const useDataActions = (setState: SetAtlasState): DataActions => {
   const importeraPersonligt = useCallback(
-    (importen: PersonligExport) =>
+    (importen: PersonalExport) =>
       setState((s) => ({ ...s, ...mergaImport(personligaSamlingar(s), importen) })),
     [setState],
   )

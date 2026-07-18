@@ -5,13 +5,13 @@ import {
   mergaImport,
   tillExport,
   tillMarkdown,
-  type PersonligaSamlingar,
+  type PersonalCollections,
 } from './dataflytt'
-import type { Ursprung } from './personligt'
+import type { Origin } from './personligt'
 
-const titelFor = (type: Ursprung, id: string): string | undefined => `${type}:${id}`
+const titelFor = (type: Origin, id: string): string | undefined => `${type}:${id}`
 
-const samlingar = (): PersonligaSamlingar => ({
+const samlingar = (): PersonalCollections => ({
   anteckningar: {
     'rum-a': { ursprungTyp: 'rum', ursprungId: 'rum-a', text: 'en tanke', created: '2026-07-01T00:00:00.000Z', updated: '2026-07-05T00:00:00.000Z' },
   },
@@ -55,7 +55,7 @@ describe('lasImport', () => {
 
 describe('mergaImport', () => {
   it('unionar sparade poster och bokmärken utan att röra befintlig data', () => {
-    const nuvarande: PersonligaSamlingar = {
+    const nuvarande: PersonalCollections = {
       anteckningar: {},
       sparadeRum: { 'rum-b': { sparadNar: '2026-07-09T00:00:00.000Z' } },
       sparadeVandringar: {},
@@ -71,7 +71,7 @@ describe('mergaImport', () => {
 
   it('låter den nyast uppdaterade anteckningen vinna vid konflikt', () => {
     const importen = tillExport(samlingar(), titelFor, '2026-07-14T10:00:00.000Z')
-    const äldre: PersonligaSamlingar = {
+    const äldre: PersonalCollections = {
       anteckningar: {
         'rum-a': { ursprungTyp: 'rum', ursprungId: 'rum-a', text: 'äldre', created: '2026-07-01T00:00:00.000Z', updated: '2026-07-03T00:00:00.000Z' },
       },
@@ -83,7 +83,7 @@ describe('mergaImport', () => {
     const ut = mergaImport(äldre, importen)
     expect(ut.anteckningar['rum-a']?.text).toBe('en tanke')
 
-    const nyare: PersonligaSamlingar = {
+    const nyare: PersonalCollections = {
       ...äldre,
       anteckningar: {
         'rum-a': { ursprungTyp: 'rum', ursprungId: 'rum-a', text: 'nyare', created: '2026-07-01T00:00:00.000Z', updated: '2026-07-20T00:00:00.000Z' },

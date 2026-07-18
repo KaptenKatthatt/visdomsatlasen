@@ -5,14 +5,14 @@ import { Link } from '@tanstack/react-router'
 import { useState, type ReactNode } from 'react'
 import { ToLink } from '../../components/ToLink'
 import { slugOfBook, type BookHit, type SearchHit } from '../../lib/api'
-import type { Anteckning } from '../../lib/personligt'
-import { SOKTYPER, type Soktyp } from '../../lib/sokindex'
-import { MAX_SYNLIGA_PER_GRUPP, RUBRIK, type Soktraff, type SynligGrupp } from '../../lib/soklogik'
+import type { Note } from '../../lib/personligt'
+import { SOKTYPER, type SearchType } from '../../lib/sokindex'
+import { MAX_SYNLIGA_PER_GRUPP, RUBRIK, type SearchResult, type VisibleGroup } from '../../lib/soklogik'
 import { AnteckningsKort, anteckningTillKort } from '../SparatDelar'
 import styles from './Sok.module.css'
 
 /** Verssökets svar från servern (verkläsarens FTS över källtexterna). */
-export type Kalltextsvar = { books: BookHit[]; hits: SearchHit[] }
+export type SourceTextResponse = { books: BookHit[]; hits: SearchHit[] }
 
 /** »Visa fler«-kontrollen: röjer de dolda träffarna i en grupp. Renderar inget
  * när inget är dolt — resultatet är alltid ändligt (search.md, Number of Results). */
@@ -23,7 +23,7 @@ const VisaFler = ({ dolda, onClick }: { dolda: number; onClick: () => void }) =>
     </button>
   )
 
-const TraffRad = ({ traff }: { traff: Soktraff }) => {
+const TraffRad = ({ traff }: { traff: SearchResult }) => {
   const { title, underrad, meta, mal } = traff.dokument
   const innehåll = (
     <span>
@@ -45,7 +45,7 @@ const SokGruppSektion = ({
   synlig,
   onVisaFler,
 }: {
-  synlig: SynligGrupp
+  synlig: VisibleGroup
   onVisaFler: () => void
 }) => (
   <section className={styles.grupp}>
@@ -60,7 +60,7 @@ const SokGruppSektion = ({
 // Privata anteckningsträffar — egen grupp sist, varje kort tydligt märkt privat.
 // Ändlig som övriga grupper: som mest fem, resten bakom »Visa fler«. Nollställs
 // per fråga genom att sidan nyckar komponenten (key={nyckel}).
-const AnteckningsGruppSok = ({ anteckningar }: { anteckningar: Anteckning[] }) => {
+const AnteckningsGruppSok = ({ anteckningar }: { anteckningar: Note[] }) => {
   const [visaAlla, setVisaAlla] = useState(false)
   if (anteckningar.length === 0) return null
   const synliga = visaAlla ? anteckningar : anteckningar.slice(0, MAX_SYNLIGA_PER_GRUPP)
@@ -135,7 +135,7 @@ export const KalltextGrupp = ({
   svar,
   fel,
 }: {
-  svar: Kalltextsvar | null
+  svar: SourceTextResponse | null
   fel: string | null
 }) => {
   const [visaAlla, setVisaAlla] = useState(false)
@@ -218,7 +218,7 @@ const Fellage = () => (
   </div>
 )
 
-export type Sokläge = 'tom' | 'fel' | 'klar'
+export type SearchMode = 'tom' | 'fel' | 'klar'
 
 const traffAntal = (antal: number): string => (antal === 1 ? '1 träff' : `${antal} träffar`)
 
@@ -236,14 +236,14 @@ export const Resultatvy = ({
   antal,
   onVisaFler,
 }: {
-  läge: Sokläge
+  läge: SearchMode
   ingaTraffar: boolean
-  synliga: SynligGrupp[]
+  synliga: VisibleGroup[]
   kalltext: ReactNode
-  notes: Anteckning[]
+  notes: Note[]
   nyckel: string
   antal: number
-  onVisaFler: (type: Soktyp) => void
+  onVisaFler: (type: SearchType) => void
 }) => {
   if (läge === 'tom') return <SokTomlage />
   if (läge === 'fel') return <Fellage />
@@ -270,7 +270,7 @@ export const Resultatvy = ({
 
 // Filtervalen härleds ur den delade söktyplistan och gruppetiketterna, så en ny
 // type inte behöver läggas till på fler ställen än sokindex/soklogik.
-const TYPVAL: Array<{ värde: Soktyp | 'alla'; label: string }> = [
+const TYPVAL: Array<{ värde: SearchType | 'alla'; label: string }> = [
   { värde: 'alla', label: 'Alla' },
   ...SOKTYPER.map((type) => ({ värde: type, label: RUBRIK[type] })),
 ]
@@ -282,9 +282,9 @@ export const Filter = ({
   antal,
   onVal,
 }: {
-  aktiv: Soktyp | undefined
+  aktiv: SearchType | undefined
   antal: number
-  onVal: (type: Soktyp | undefined) => void
+  onVal: (type: SearchType | undefined) => void
 }) => {
   const [öppen, setÖppen] = useState(false)
   return (

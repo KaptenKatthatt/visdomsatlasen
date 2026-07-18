@@ -3,7 +3,7 @@
 // varierar (statisk route eller ToLink).
 import type { ReactNode } from 'react'
 import { RumRad } from '../../components/RumRad'
-import type { Rum } from '../../content/editorial/schema'
+import type { Room } from '../../content/editorial/schema'
 import { stycken } from '../../lib/innehall'
 import { useSidtitel } from '../../lib/useSidtitel'
 import styles from './Bibliotek.module.css'
@@ -25,7 +25,7 @@ export const Sidhuvud = ({
 }: {
   kicker: string
   title: string
-  status?: Rum['status']
+  status?: Room['status']
   children?: ReactNode
 }) => {
   useSidtitel(title)
@@ -52,7 +52,7 @@ export const Beskrivning = ({ text }: { text?: string }) => (
   </>
 )
 
-export const Rumslista = ({ rum, tomtBesked }: { rum: Rum[]; tomtBesked: string }) => (
+export const Rumslista = ({ rum, tomtBesked }: { rum: Room[]; tomtBesked: string }) => (
   <>
     {rum.length === 0 ? (
       <p className={styles.tomt}>{tomtBesked}</p>

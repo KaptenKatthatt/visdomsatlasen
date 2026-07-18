@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import type { Anteckning } from './personligt'
+import type { Note } from './personligt'
 import { sokAnteckningar } from './sokanteckningar'
 
-const anteckning = (id: string, text: string, updated: string): Anteckning => ({
+const anteckning = (id: string, text: string, updated: string): Note => ({
   ursprungTyp: 'rum',
   ursprungId: id,
   text,
@@ -10,7 +10,7 @@ const anteckning = (id: string, text: string, updated: string): Anteckning => ({
   updated,
 })
 
-const anteckningar: Record<string, Anteckning> = {
+const anteckningar: Record<string, Note> = {
   a: anteckning('a', 'En tanke om förlåtelse och att släppa taget.', '2026-07-10'),
   b: anteckning('b', 'Om oron inför morgondagen.', '2026-07-12'),
   c: anteckning('c', '   ', '2026-07-13'),

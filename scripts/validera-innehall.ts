@@ -4,7 +4,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import type { z } from 'zod'
-import { tolkaPostfil, tolkaRumsfil, type Innehallsfil, type Tolkning } from '../src/content/editorial/tolka'
+import { tolkaPostfil, tolkaRumsfil, type ContentFile, type Parsed } from '../src/content/editorial/tolka'
 import {
   fragaSchema,
   kallaSchema,
@@ -13,13 +13,13 @@ import {
   temaSchema,
   traditionSchema,
   vandringSchema,
-  type Innehallsmangd,
+  type ContentSet,
 } from '../src/content/editorial/schema'
 import { valideraInnehall } from '../src/content/editorial/validera'
 
 const INNEHALLSROT = path.join(process.cwd(), 'src', 'content')
 
-const läsMarkdownfiler = (katalog: string): Innehallsfil[] => {
+const läsMarkdownfiler = (katalog: string): ContentFile[] => {
   const dir = path.join(INNEHALLSROT, katalog)
   if (!existsSync(dir)) return []
   return readdirSync(dir)
@@ -33,7 +33,7 @@ const läsMarkdownfiler = (katalog: string): Innehallsfil[] => {
 
 const allaFel: string[] = []
 
-const samla = <T>(filer: Innehallsfil[], tolka: (fil: Innehallsfil) => Tolkning<T>): T[] =>
+const samla = <T>(filer: ContentFile[], tolka: (fil: ContentFile) => Parsed<T>): T[] =>
   filer.flatMap((fil) => {
     const tolkning = tolka(fil)
     allaFel.push(...tolkning.fel)
@@ -43,7 +43,7 @@ const samla = <T>(filer: Innehallsfil[], tolka: (fil: Innehallsfil) => Tolkning<
 const poster = <T>(katalog: string, schema: z.ZodType<T>): T[] =>
   samla(läsMarkdownfiler(katalog), (fil) => tolkaPostfil(schema, fil))
 
-const mängd: Innehallsmangd = {
+const mängd: ContentSet = {
   rum: samla(läsMarkdownfiler('rooms'), tolkaRumsfil),
   themes: poster('themes', temaSchema),
   frågor: poster('questions', fragaSchema),

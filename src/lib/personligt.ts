@@ -20,16 +20,16 @@ export const chapterKey = (workId: string, bookSlug: string, chapter: number): s
 
 /** En sparad post bär bara när den sparades. `null` = migrerad från gammal
  * boolean utan känt datum; datumet är valfritt i preview-kortet. */
-export type SparadPost = { sparadNar: string | null }
+export type SavedItem = { sparadNar: string | null }
 
 /** Var en anteckning hör hemma. `amne` = kvarvarande topic-poster ur gamla
  * appen; utökas senare med `fraga`/`kalla` när de blir sparbara. */
-export type Ursprung = 'rum' | 'vandring' | 'amne'
+export type Origin = 'rum' | 'vandring' | 'amne'
 
 /** En anteckning kopplad till sitt ursprung. Nyckeln i store = ursprungId
  * (en anteckning per place — dagens UX). ISO 8601-datum, läsbara i exporten. */
-export type Anteckning = {
-  ursprungTyp: Ursprung
+export type Note = {
+  ursprungTyp: Origin
   ursprungId: string
   text: string
   created: string
@@ -39,12 +39,12 @@ export type Anteckning = {
 const ärRecord = (värde: unknown): värde is Record<string, unknown> =>
   typeof värde === 'object' && värde !== null && !Array.isArray(värde)
 
-const ärUrsprung = (värde: unknown): värde is Ursprung =>
+const ärUrsprung = (värde: unknown): värde is Origin =>
   värde === 'rum' || värde === 'vandring' || värde === 'amne'
 
 // En sparad post ur okänd lagring: gammal `true` → migrerad utan datum, gammal
 // `false` släpps, redan migrerad `{ sparadNar }` passerar orörd. Allt annat släpps.
-const migreraSparadPost = (värde: unknown): SparadPost | null => {
+const migreraSparadPost = (värde: unknown): SavedItem | null => {
   if (värde === true) return { sparadNar: null }
   if (ärRecord(värde)) {
     const sparadNar = värde.sparadNar
@@ -55,8 +55,8 @@ const migreraSparadPost = (värde: unknown): SparadPost | null => {
 
 /** Migrerar ett sparat-record (rum eller vandringar) tyst och förlustfritt.
  * Idempotent: redan migrerad form går igenom oförändrad. Kastar aldrig. */
-export const migreraSparade = (rått: unknown): Record<string, SparadPost> => {
-  const ut: Record<string, SparadPost> = {}
+export const migreraSparade = (rått: unknown): Record<string, SavedItem> => {
+  const ut: Record<string, SavedItem> = {}
   if (!ärRecord(rått)) return ut
   for (const [id, värde] of Object.entries(rått)) {
     const post = migreraSparadPost(värde)
@@ -67,7 +67,7 @@ export const migreraSparade = (rått: unknown): Record<string, SparadPost> => {
 
 // En redan migrerad anteckning ur okänd lagring, defensivt narrowad. Fält som
 // saknas eller är korrupta får trygga fallbacks — texten bevaras alltid.
-const migreraAnteckningPost = (id: string, värde: unknown, nu: string): Anteckning | null => {
+const migreraAnteckningPost = (id: string, värde: unknown, nu: string): Note | null => {
   if (!ärRecord(värde)) return null
   const { ursprungTyp, ursprungId, text, created, updated } = värde
   if (typeof text !== 'string' || text.trim().length === 0) return null
@@ -83,10 +83,10 @@ const migreraAnteckningPost = (id: string, värde: unknown, nu: string): Anteckn
 // Gamla `notes` (id→text) → ursprungskopplade poster; tomma prunas.
 const posterUrGamlaNotes = (
   gamlaNotes: unknown,
-  klassificera: (id: string) => Ursprung,
+  klassificera: (id: string) => Origin,
   nu: string,
-): Record<string, Anteckning> => {
-  const ut: Record<string, Anteckning> = {}
+): Record<string, Note> => {
+  const ut: Record<string, Note> = {}
   if (!ärRecord(gamlaNotes)) return ut
   for (const [id, värde] of Object.entries(gamlaNotes)) {
     if (typeof värde !== 'string' || värde.trim().length === 0) continue
@@ -96,8 +96,8 @@ const posterUrGamlaNotes = (
 }
 
 // Redan migrerade poster ur okänd lagring, defensivt narrowade.
-const posterUrMigrerade = (nyaAnteckningar: unknown, nu: string): Record<string, Anteckning> => {
-  const ut: Record<string, Anteckning> = {}
+const posterUrMigrerade = (nyaAnteckningar: unknown, nu: string): Record<string, Note> => {
+  const ut: Record<string, Note> = {}
   if (!ärRecord(nyaAnteckningar)) return ut
   for (const [id, värde] of Object.entries(nyaAnteckningar)) {
     const post = migreraAnteckningPost(id, värde, nu)
@@ -113,9 +113,9 @@ const posterUrMigrerade = (nyaAnteckningar: unknown, nu: string): Record<string,
 export const migreraAnteckningar = (
   gamlaNotes: unknown,
   nyaAnteckningar: unknown,
-  klassificera: (id: string) => Ursprung,
+  klassificera: (id: string) => Origin,
   nu: string,
-): Record<string, Anteckning> => ({
+): Record<string, Note> => ({
   ...posterUrGamlaNotes(gamlaNotes, klassificera, nu),
   ...posterUrMigrerade(nyaAnteckningar, nu),
 })
@@ -124,12 +124,12 @@ export const migreraAnteckningar = (
  * den befintliga posten (autospar utan synlig versionshistorik), `updated`
  * flyttas fram. */
 export const uppdateradAnteckning = (
-  befintlig: Anteckning | undefined,
-  type: Ursprung,
+  befintlig: Note | undefined,
+  type: Origin,
   id: string,
   text: string,
   nu: string,
-): Anteckning => ({
+): Note => ({
   ursprungTyp: type,
   ursprungId: id,
   text,
@@ -139,14 +139,14 @@ export const uppdateradAnteckning = (
 
 /** Sparade poster i tidsordning: senast sparat först. Migrerade poster utan
  * datum (`sparadNar === null`) sorteras sist via tom nyckel. */
-export const sparadeIdITidsordning = (poster: Record<string, SparadPost>): string[] => {
+export const sparadeIdITidsordning = (poster: Record<string, SavedItem>): string[] => {
   const nyckel = (id: string): string => poster[id]?.sparadNar ?? ''
   return Object.keys(poster).sort((a, b) => nyckel(b).localeCompare(nyckel(a)))
 }
 
 /** Anteckningsöversiktens order: senast ändrad först, tomma utelämnade
  * (spec Notes Overview: lugnt kronologisk). ISO 8601 jämförs lexikalt. */
-export const sorteradeAnteckningar = (anteckningar: Record<string, Anteckning>): Anteckning[] =>
+export const sorteradeAnteckningar = (anteckningar: Record<string, Note>): Note[] =>
   Object.values(anteckningar)
     .filter((anteckning) => anteckning.text.trim().length > 0)
     .sort((a, b) => b.updated.localeCompare(a.updated))

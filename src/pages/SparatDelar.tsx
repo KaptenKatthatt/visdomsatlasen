@@ -3,10 +3,10 @@
 // popularitet eller besöksantal.
 import type { ReactNode } from 'react'
 import { ToLink } from '../components/ToLink'
-import type { Vandring } from '../content/editorial/schema'
+import type { Path } from '../content/editorial/schema'
 import { findTopic } from '../content/topics'
 import { hittaRumViaId } from '../lib/innehall'
-import { datumEtikett, utdrag, type Anteckning } from '../lib/personligt'
+import { datumEtikett, utdrag, type Note } from '../lib/personligt'
 import styles from './SparatDelar.module.css'
 
 /** Dit en anteckning länkar tillbaka: läsrummet (rum) eller topic-essän. En
@@ -28,7 +28,7 @@ export type Kort = {
 // Anteckningen kopplad till sitt ursprung (spec Notes and Sources): rum länkas
 // till läsrummet, topic-anteckningar till essän. Hittas inte ursprunget renderas
 // texten ändå — utan länk, men aldrig gömd. Delas av Sparat och söket.
-export const anteckningTillKort = (anteckning: Anteckning): Kort => {
+export const anteckningTillKort = (anteckning: Note): Kort => {
   const datum = datumEtikett(anteckning.updated)
   const bas = { key: anteckning.ursprungId, text: anteckning.text, datum }
   if (anteckning.ursprungTyp === 'rum') {
@@ -56,7 +56,7 @@ export const VandringKort = ({
   vandring,
   senastRum,
 }: {
-  vandring: Vandring
+  vandring: Path
   senastRum: string | undefined
 }) => (
   <ToLink to={{ kind: 'vandring', slug: vandring.slug }} className={styles.kort}>

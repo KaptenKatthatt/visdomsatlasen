@@ -2,20 +2,20 @@
 // normalisering, kontrollerade synonymer och konservativ stavfelstolerans, vägt
 // så att frågor och themes rankas rätt och en berömd author aldrig slår en
 // mer relevant fråga. Ingen popularitets- eller beteendesignal existerar här.
-import type { Sokdokument, Soktyp } from './sokindex'
+import type { SearchDoc, SearchType } from './sokindex'
 import { inomEttSkrivfel, normalisera, ordlista, soktokens, stam } from './soknormalisering'
 
 /** Vilket fält en träff kom ur — internt, visas aldrig för användaren. */
-export type Traffniva = 'title-exakt' | 'alias-exakt' | 'title' | 'keywords' | 'underrad' | 'text'
+export type HitLevel = 'title-exakt' | 'alias-exakt' | 'title' | 'keywords' | 'underrad' | 'text'
 
 /** En träff. `poang`/`traffatFalt` är interna rankningsdetaljer. */
-export type Soktraff = { dokument: Sokdokument; poang: number; traffatFalt: Traffniva }
+export type SearchResult = { dokument: SearchDoc; poang: number; traffatFalt: HitLevel }
 
 /** Träffar av samma type, i relevansordning. */
-export type Sokgrupp = { type: Soktyp; rubrik: string; traffar: Soktraff[] }
+export type SearchGroup = { type: SearchType; rubrik: string; traffar: SearchResult[] }
 
 /** En grupp med det ändliga urval som visas + hur många som döljs bakom »Visa fler«. */
-export type SynligGrupp = { grupp: Sokgrupp; synliga: Soktraff[]; dolda: number }
+export type VisibleGroup = { grupp: SearchGroup; synliga: SearchResult[]; dolda: number }
 
 export const MAX_SYNLIGA_PER_GRUPP = 5
 export const MAX_SYNLIGA_TOTALT = 20
@@ -24,7 +24,7 @@ const MAX_PER_GRUPP = 20
 
 // Nivåpoäng med gap större än största typbonus (12), så typordningen bara
 // avgör inom samma nivå — exakt title slår alltid en partiell aliasträff.
-const NIVAPOANG: Record<Traffniva, number> = {
+const NIVAPOANG: Record<HitLevel, number> = {
   'title-exakt': 100,
   'alias-exakt': 85,
   'title': 60,
@@ -35,7 +35,7 @@ const NIVAPOANG: Record<Traffniva, number> = {
 
 // Frågor och themes rankas före rum, vandringar, sources och traditions
 // (search.md, Result Priority — den mänskliga frågan står först).
-const TYPBONUS: Record<Soktyp, number> = {
+const TYPBONUS: Record<SearchType, number> = {
   fraga: 12,
   tema: 10,
   rum: 8,
@@ -45,7 +45,7 @@ const TYPBONUS: Record<Soktyp, number> = {
 }
 
 /** Svensk gruppetikett per söktyp — delas av resultatsektionerna och typfiltret. */
-export const RUBRIK: Record<Soktyp, string> = {
+export const RUBRIK: Record<SearchType, string> = {
   fraga: 'Frågor',
   tema: 'Teman',
   rum: 'Rum',
@@ -123,11 +123,11 @@ const faktorMotBucket = (token: string, ord: string[]): number => {
   return träff ? Math.max(bäst, SYNONYM_FAKTOR) : bäst
 }
 
-type Bucket = { niva: Traffniva; bas: number; ord: string[] }
+type Bucket = { niva: HitLevel; bas: number; ord: string[] }
 
 // De sökbara fälten som viktade ordsamlingar. Titel och alias delar den
 // starkaste nivån — bägge är identifierande.
-const dokumentBuckets = (dok: Sokdokument): Bucket[] => [
+const dokumentBuckets = (dok: SearchDoc): Bucket[] => [
   {
     niva: 'title',
     bas: NIVAPOANG.title,
@@ -139,9 +139,9 @@ const dokumentBuckets = (dok: Sokdokument): Bucket[] => [
 ]
 
 // Ett tokens bästa poäng och nivå över dokumentets fält.
-const tokenBästa = (token: string, buckets: Bucket[]): { poang: number; niva: Traffniva } => {
+const tokenBästa = (token: string, buckets: Bucket[]): { poang: number; niva: HitLevel } => {
   let poang = 0
-  let niva: Traffniva = 'text'
+  let niva: HitLevel = 'text'
   for (const bucket of buckets) {
     const p = bucket.bas * faktorMotBucket(token, bucket.ord)
     if (p > poang) {
@@ -153,7 +153,7 @@ const tokenBästa = (token: string, buckets: Bucket[]): { poang: number; niva: T
 }
 
 // Exakt helfrågsträff (interpunktion och diakriter bortnormaliserade).
-const exaktNiva = (nyckelfrågan: string, dok: Sokdokument): Traffniva | undefined => {
+const exaktNiva = (nyckelfrågan: string, dok: SearchDoc): HitLevel | undefined => {
   if (ordlista(dok.title).join(' ') === nyckelfrågan) return 'title-exakt'
   if (dok.alias.some((alias) => ordlista(alias).join(' ') === nyckelfrågan)) return 'alias-exakt'
   return undefined
@@ -164,8 +164,8 @@ const exaktNiva = (nyckelfrågan: string, dok: Sokdokument): Traffniva | undefin
 const matchaDokument = (
   nyckelfrågan: string,
   tokens: string[],
-  dok: Sokdokument,
-): Soktraff | undefined => {
+  dok: SearchDoc,
+): SearchResult | undefined => {
   const exakt = exaktNiva(nyckelfrågan, dok)
   if (exakt) return { dokument: dok, poang: NIVAPOANG[exakt] + TYPBONUS[dok.type], traffatFalt: exakt }
   if (tokens.length === 0) return undefined
@@ -177,21 +177,21 @@ const matchaDokument = (
   return { dokument: dok, poang: medel + TYPBONUS[dok.type], traffatFalt: bäst.niva }
 }
 
-const svTitel = (a: Soktraff, b: Soktraff): number =>
+const svTitel = (a: SearchResult, b: SearchResult): number =>
   a.dokument.title.localeCompare(b.dokument.title, 'sv')
 
-const bästaPoang = (grupp: Sokgrupp): number => grupp.traffar[0]?.poang ?? 0
+const bästaPoang = (grupp: SearchGroup): number => grupp.traffar[0]?.poang ?? 0
 
 // Grupperar träffar per type; inom gruppen på poäng och sedan svensk titelordning;
 // grupperna efter bästa träff, så den mest relevanta gruppen står först.
-const grupperaTraffar = (träffar: Soktraff[]): Sokgrupp[] => {
-  const karta = new Map<Soktyp, Soktraff[]>()
+const grupperaTraffar = (träffar: SearchResult[]): SearchGroup[] => {
+  const karta = new Map<SearchType, SearchResult[]>()
   for (const träff of träffar) {
     const lista = karta.get(träff.dokument.type) ?? []
     lista.push(träff)
     karta.set(träff.dokument.type, lista)
   }
-  const grupper = [...karta.entries()].map(([type, lista]): Sokgrupp => ({
+  const grupper = [...karta.entries()].map(([type, lista]): SearchGroup => ({
     type,
     rubrik: RUBRIK[type],
     traffar: lista.sort((a, b) => b.poang - a.poang || svTitel(a, b)).slice(0, MAX_PER_GRUPP),
@@ -201,7 +201,7 @@ const grupperaTraffar = (träffar: Soktraff[]): Sokgrupp[] => {
 
 /** Hela sökningen: en fråga kortare än två tecken ger inget. Grupperna kommer i
  * relevansordning; varje grupp är ändlig (aldrig oändlig scroll). */
-export const sokIBiblioteket = (fraga: string, index: Sokdokument[]): Sokgrupp[] => {
+export const sokIBiblioteket = (fraga: string, index: SearchDoc[]): SearchGroup[] => {
   const nyckelfrågan = ordlista(fraga).join(' ')
   if (nyckelfrågan.length < 2) return []
   const tokens = soktokens(fraga)
@@ -215,9 +215,9 @@ export const sokIBiblioteket = (fraga: string, index: Sokdokument[]): Sokgrupp[]
 /** Den ändliga initialvyn: som mest fem per grupp och tjugo totalt; en expanderad
  * grupp visar hela sin (hårt begränsade) lista. »Visa fler« röjer resten. */
 export const synligaTraffar = (
-  grupper: Sokgrupp[],
-  expanderade: ReadonlySet<Soktyp>,
-): SynligGrupp[] => {
+  grupper: SearchGroup[],
+  expanderade: ReadonlySet<SearchType>,
+): VisibleGroup[] => {
   let kvar = MAX_SYNLIGA_TOTALT
   return grupper.map((grupp) => {
     const expanderad = expanderade.has(grupp.type)

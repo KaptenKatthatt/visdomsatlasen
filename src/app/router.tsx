@@ -5,7 +5,7 @@ import {
 } from '@tanstack/react-router'
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 import type { ReadMode } from '../content/model'
-import { SOKTYPER, type Soktyp, type SökParametrar } from '../lib/soktyper'
+import { SOKTYPER, type SearchType, type SearchParams } from '../lib/soktyper'
 import { HemPage } from '../pages/HemPage'
 import { NotFoundNote } from '../pages/NotFoundNote'
 import { RootLayout } from './RootLayout'
@@ -263,13 +263,13 @@ const bibliotekSokRoute = createRoute({
 // Bibliotekssöket (fas 10, search.md): frågan och det valfria typfiltret bärs i
 // URL:en (?q=…&type=…), så sökstate överlever navigation, refresh och delning.
 // Privata anteckningsträffar hamnar aldrig i URL:en.
-const ärSoktyp = (värde: unknown): värde is Soktyp =>
+const ärSoktyp = (värde: unknown): värde is SearchType =>
   typeof värde === 'string' && (SOKTYPER as readonly string[]).includes(värde)
 
 const sokBibliotekRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/sok',
-  validateSearch: (search: Record<string, unknown>): SökParametrar => ({
+  validateSearch: (search: Record<string, unknown>): SearchParams => ({
     ...(typeof search['q'] === 'string' && search['q'] !== '' ? { q: search['q'] } : {}),
     ...(ärSoktyp(search['type']) ? { type: search['type'] } : {}),
   }),

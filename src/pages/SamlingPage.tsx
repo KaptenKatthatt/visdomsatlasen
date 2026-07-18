@@ -1,6 +1,6 @@
 import { RowLink } from '../components/RowLink'
 import { RumRad } from '../components/RumRad'
-import type { Rum, Vandring } from '../content/editorial/schema'
+import type { Room, Path } from '../content/editorial/schema'
 import { findTopic } from '../content/topics'
 import { hittaRumViaId, hittaVandringViaId } from '../lib/innehall'
 import {
@@ -8,7 +8,7 @@ import {
   sorteradeAnteckningar,
   sparadeIdITidsordning,
   type ChapterBookmark,
-  type SparadPost,
+  type SavedItem,
 } from '../lib/personligt'
 import { useAtlas } from '../lib/store'
 import { useSidtitel } from '../lib/useSidtitel'
@@ -22,9 +22,9 @@ import {
   type Kort,
 } from './SparatDelar'
 
-type SparadVandring = { vandring: Vandring; senastRum: string | undefined }
+type SparadVandring = { vandring: Path; senastRum: string | undefined }
 
-const RumGrupp = ({ rum }: { rum: Rum[] }) =>
+const RumGrupp = ({ rum }: { rum: Room[] }) =>
   rum.length === 0 ? null : (
     <Grupp rubrik="Rum">
       {rum.map((ettRum) => (
@@ -86,7 +86,7 @@ const AnteckningsGrupp = ({ kort }: { kort: Kort[] }) =>
 /** Senast besökt (spec Recently Opened Items): bara orientering, aldrig en
  * krävande kö. Skild från Sparat och rensbar av läsaren. Ingen »Fortsätt
  * läsa«-formulering. */
-const SenastBesoktGrupp = ({ rum, onRensa }: { rum: Rum[]; onRensa: () => void }) =>
+const SenastBesoktGrupp = ({ rum, onRensa }: { rum: Room[]; onRensa: () => void }) =>
   rum.length === 0 ? null : (
     <section className={styles.senast}>
       <div className={styles.senastHuvud}>
@@ -108,12 +108,12 @@ const SenastBesoktGrupp = ({ rum, onRensa }: { rum: Rum[]; onRensa: () => void }
   )
 
 const sparadeVandringarna = (
-  sparadeVandringar: Record<string, SparadPost>,
+  sparadeVandringar: Record<string, SavedItem>,
   vandringsplatser: Record<string, string>,
 ): SparadVandring[] =>
   sparadeIdITidsordning(sparadeVandringar)
     .map((id) => hittaVandringViaId(id))
-    .filter((vandring): vandring is Vandring => vandring !== undefined)
+    .filter((vandring): vandring is Path => vandring !== undefined)
     .map((vandring) => ({
       vandring,
       senastRum: hittaRumViaId(vandringsplatser[vandring.id] ?? '')?.title,
@@ -128,7 +128,7 @@ export const SamlingPage = () => {
   const store = useAtlas()
   const rum = sparadeIdITidsordning(store.sparadeRum)
     .map((id) => hittaRumViaId(id))
-    .filter((ettRum): ettRum is Rum => ettRum !== undefined)
+    .filter((ettRum): ettRum is Room => ettRum !== undefined)
   const vandringar = sparadeVandringarna(store.sparadeVandringar, store.vandringsplatser)
   const topics = Object.keys(store.bookmarks)
     .filter((id) => store.bookmarks[id])
@@ -138,7 +138,7 @@ export const SamlingPage = () => {
   const kort = sorteradeAnteckningar(store.anteckningar).map(anteckningTillKort)
   const senast = store.senastLastaRum
     .map((id) => hittaRumViaId(id))
-    .filter((ettRum): ettRum is Rum => ettRum !== undefined)
+    .filter((ettRum): ettRum is Room => ettRum !== undefined)
 
   const ingetSparat =
     rum.length === 0 &&

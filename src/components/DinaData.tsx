@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { findTopic } from '../content/topics'
-import { lasImport, tillExport, tillMarkdown, type PersonligExport } from '../lib/dataflytt'
+import { lasImport, tillExport, tillMarkdown, type PersonalExport } from '../lib/dataflytt'
 import { hittaRumViaId, hittaVandringViaId } from '../lib/innehall'
-import type { Ursprung } from '../lib/personligt'
+import type { Origin } from '../lib/personligt'
 import { personligaSamlingar, useAtlas } from '../lib/store'
 import styles from './DinaData.module.css'
 
 // Läsbara titlar för exportens anteckningar och sparade poster, per ursprung.
-const titelFor = (type: Ursprung, id: string): string | undefined => {
+const titelFor = (type: Origin, id: string): string | undefined => {
   if (type === 'rum') return hittaRumViaId(id)?.title
   if (type === 'vandring') return hittaVandringViaId(id)?.title
   return findTopic(id)?.title
@@ -26,7 +26,7 @@ const laddaNer = (innehåll: string, filnamn: string, mediatyp: string): void =>
   setTimeout(() => URL.revokeObjectURL(url), 0)
 }
 
-const lasImportSäkert = (text: string): PersonligExport | null => {
+const lasImportSäkert = (text: string): PersonalExport | null => {
   try {
     return lasImport(JSON.parse(text))
   } catch {
@@ -77,7 +77,7 @@ export const DinaData = () => {
   const store = useAtlas()
   const [fel, setFel] = useState<string | undefined>(undefined)
 
-  const bygg = (): PersonligExport =>
+  const bygg = (): PersonalExport =>
     tillExport(personligaSamlingar(store), titelFor, new Date().toISOString())
   const stämpel = new Date().toISOString().slice(0, 10)
 

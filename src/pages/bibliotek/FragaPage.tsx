@@ -1,6 +1,6 @@
 import { ToLink } from '../../components/ToLink'
 import { TopBar } from '../../components/TopBar'
-import type { Fraga } from '../../content/editorial/schema'
+import type { Question } from '../../content/editorial/schema'
 import { kallorForFraga, publiceradeVia, rumForFraga } from '../../lib/bibliotek'
 import {
   allaKallor,
@@ -14,7 +14,7 @@ import { NotFoundNote } from '../NotFoundNote'
 import styles from './Bibliotek.module.css'
 import { Beskrivning, Rad, Rumslista, Sektion, Sidhuvud } from './Biblioteksdelar'
 
-const Temadel = ({ fråga }: { fråga: Fraga }) => {
+const Temadel = ({ fråga }: { fråga: Question }) => {
   const themes = publiceradeVia(fråga.themes, hittaTema)
   if (themes.length === 0) return null
   return (
@@ -28,7 +28,7 @@ const Temadel = ({ fråga }: { fråga: Fraga }) => {
   )
 }
 
-const Kalldel = ({ fråga }: { fråga: Fraga }) => {
+const Kalldel = ({ fråga }: { fråga: Question }) => {
   const sources = kallorForFraga(fråga.id, allaRum, allaKallor)
   if (sources.length === 0) return null
   return (
@@ -42,7 +42,7 @@ const Kalldel = ({ fråga }: { fråga: Fraga }) => {
   )
 }
 
-const Narliggande = ({ fråga }: { fråga: Fraga }) => {
+const Narliggande = ({ fråga }: { fråga: Question }) => {
   const frågor = publiceradeVia(fråga.relatedQuestions ?? [], hittaFraga)
   if (frågor.length === 0) return null
   return (

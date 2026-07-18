@@ -1,23 +1,23 @@
 import { describe, expect, it } from 'vitest'
-import type { Sokdokument, Soktyp } from './sokindex'
+import type { SearchDoc, SearchType } from './sokindex'
 import {
   MAX_SYNLIGA_PER_GRUPP,
   MAX_SYNLIGA_TOTALT,
   sokIBiblioteket,
   synligaTraffar,
-  type Sokgrupp,
-  type Soktraff,
+  type SearchGroup,
+  type SearchResult,
 } from './soklogik'
 
 const dok = (
-  type: Soktyp,
+  type: SearchType,
   id: string,
   title: string,
-  extra: Partial<Sokdokument> = {},
-): Sokdokument => ({ type, id, title, alias: [], keywords: [], text: [], ...extra })
+  extra: Partial<SearchDoc> = {},
+): SearchDoc => ({ type, id, title, alias: [], keywords: [], text: [], ...extra })
 
 // Ett litet blandat index som täcker rankningsscenarierna.
-const index: Sokdokument[] = [
+const index: SearchDoc[] = [
   dok('fraga', 'fq-styra', 'Vad kan du styra?'),
   dok('fraga', 'fq-oro', 'Vad gör oron med dagen?', { text: ['oro inför framtiden'] }),
   dok('fraga', 'fq-forl', 'Om förlåtelse', { text: ['att förlåta och försonas'] }),
@@ -29,9 +29,9 @@ const index: Sokdokument[] = [
   dok('kalla', 'k-oro', 'En skrift om oro', { text: ['oro'] }),
 ]
 
-const platt = (grupper: Sokgrupp[]): Soktraff[] => grupper.flatMap((grupp) => grupp.traffar)
-const idOrdning = (grupper: Sokgrupp[]): string[] => platt(grupper).map((t) => t.dokument.id)
-const finns = (grupper: Sokgrupp[], id: string): boolean => idOrdning(grupper).includes(id)
+const platt = (grupper: SearchGroup[]): SearchResult[] => grupper.flatMap((grupp) => grupp.traffar)
+const idOrdning = (grupper: SearchGroup[]): string[] => platt(grupper).map((t) => t.dokument.id)
+const finns = (grupper: SearchGroup[], id: string): boolean => idOrdning(grupper).includes(id)
 
 describe('sokIBiblioteket — grundläggande', () => {
   it('ger inget för tom eller för kort fråga', () => {
@@ -105,7 +105,7 @@ describe('sokIBiblioteket — flera ord (AND)', () => {
 })
 
 describe('synligaTraffar — ändliga resultat', () => {
-  const grupp = (type: Soktyp, antal: number): Sokgrupp => ({
+  const grupp = (type: SearchType, antal: number): SearchGroup => ({
     type,
     rubrik: type,
     traffar: Array.from({ length: antal }, (_, i) => ({
@@ -122,7 +122,7 @@ describe('synligaTraffar — ändliga resultat', () => {
   })
 
   it('visar hela gruppen när den är expanderad', () => {
-    const [synlig] = synligaTraffar([grupp('rum', 7)], new Set<Soktyp>(['rum']))
+    const [synlig] = synligaTraffar([grupp('rum', 7)], new Set<SearchType>(['rum']))
     expect(synlig?.synliga.length).toBe(7)
     expect(synlig?.dolda).toBe(0)
   })

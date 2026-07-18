@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import type { Rum, Tema } from '../content/editorial/schema'
+import type { Room, Theme } from '../content/editorial/schema'
 import { valbaraRum, valjRum } from './rumsval'
 
 // Fabricerade poster: bara fälten urvalet läser behöver vara meningsfulla.
-const rum = (id: string, themes: string[], status: Rum['status'] = 'publicerad'): Rum => ({
+const rum = (id: string, themes: string[], status: Room['status'] = 'publicerad'): Room => ({
   id,
   slug: id,
   title: id,
@@ -22,7 +22,7 @@ const rum = (id: string, themes: string[], status: Rum['status'] = 'publicerad')
   core: 'x',
 })
 
-const tema = (id: string, defaultRoom?: string): Tema => ({
+const tema = (id: string, defaultRoom?: string): Theme => ({
   id,
   slug: id,
   label: id,

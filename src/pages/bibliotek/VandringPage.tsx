@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { ToLink } from '../../components/ToLink'
 import { TopBar } from '../../components/TopBar'
-import type { Rum, Vandring } from '../../content/editorial/schema'
+import type { Room, Path } from '../../content/editorial/schema'
 import {
   publiceradeVia,
   rumForVandring,
@@ -23,7 +23,7 @@ import { Beskrivning, Rad, Sektion, Sidhuvud } from './Biblioteksdelar'
 /** Stilla orienteringsrad: vandringens traditions följt av ungefärlig
  * sammanlagd lästid (paths.md, Path Overview — sources visas lågmält, tiden
  * är ungefärlig och aldrig ett mål). */
-const Metarad = ({ rummen }: { rummen: Rum[] }) => {
+const Metarad = ({ rummen }: { rummen: Room[] }) => {
   const traditions = traditionerForVandring(rummen, allaKallor, allaTraditioner)
   const delar = [
     ...traditions.map((tradition) => tradition.name),
@@ -35,7 +35,7 @@ const Metarad = ({ rummen }: { rummen: Rum[] }) => {
 /** En stilla spara-kontroll (notes-and-saved.md, Saving): »Spara«/»Sparad«,
  * ingen firande återkoppling, ingen räknare. En sparad vandring betyder bara
  * att läsaren vill kunna återvända — aldrig ett åtagande att slutföra. */
-const SparaVandring = ({ vandring }: { vandring: Vandring }) => {
+const SparaVandring = ({ vandring }: { vandring: Path }) => {
   const { sparadeVandringar, vaxlaSparadVandring } = useAtlas()
   const sparad = !!sparadeVandringar[vandring.id]
   return (
@@ -54,7 +54,7 @@ const SparaVandring = ({ vandring }: { vandring: Vandring }) => {
 
 /** Den centrala frågan — vandringens hjärta. Visas bara när den är publicerad;
  * annars nås utkastfrågan via biblioteket, inte härifrån. */
-const Fragedel = ({ vandring }: { vandring: Vandring }) => {
+const Fragedel = ({ vandring }: { vandring: Path }) => {
   const [fråga] = publiceradeVia([vandring.centralQuestion], hittaFraga)
   if (!fråga) return null
   return (
@@ -71,7 +71,7 @@ const Fragedel = ({ vandring }: { vandring: Vandring }) => {
  * (Accessibility). Varje rad öppnar rummet med vandringen som kontext. En
  * neutral »Fortsätt där du stannade« läggs överst om ett rum minns — bara
  * orientering, aldrig förlopp. */
-const Rumdel = ({ vandring, rummen }: { vandring: Vandring; rummen: Rum[] }) => {
+const Rumdel = ({ vandring, rummen }: { vandring: Path; rummen: Room[] }) => {
   const { vandringsplatser } = useAtlas()
   const place = rummen.find((ettRum) => ettRum.id === vandringsplatser[vandring.id])
   return (

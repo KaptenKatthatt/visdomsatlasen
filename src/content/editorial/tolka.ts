@@ -4,10 +4,10 @@
 // description. Fel rapporteras med filsökväg så de går att åtgärda direkt.
 import { parse as tolkaYaml } from 'yaml'
 import type { z } from 'zod'
-import { rumSchema, type Rum } from './schema'
+import { rumSchema, type Room } from './schema'
 
-export type Innehallsfil = { sökväg: string; råtext: string }
-export type Tolkning<T> = { värde: T | null; fel: string[] }
+export type ContentFile = { sökväg: string; råtext: string }
+export type Parsed<T> = { värde: T | null; fel: string[] }
 
 // Sektionsrubrik i markdown → fält på rummet. Okända rubriker är fel, så
 // stavfel inte tyst sväljer text.
@@ -19,9 +19,9 @@ const SEKTIONER: Record<string, 'opening' | 'core' | 'historicalContext'> = {
 
 const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/
 
-type DeladFil = { frontmatter: Record<string, unknown>; kropp: string }
+type SplitFile = { frontmatter: Record<string, unknown>; kropp: string }
 
-const delaFrontmatter = (fil: Innehallsfil): Tolkning<DeladFil> => {
+const delaFrontmatter = (fil: ContentFile): Parsed<SplitFile> => {
   const träff = FRONTMATTER.exec(fil.råtext)
   if (!träff || träff[1] === undefined || träff[2] === undefined) {
     return { värde: null, fel: [`${fil.sökväg}: saknar frontmatter (--- ... ---)`] }
@@ -68,11 +68,11 @@ const delaSektioner = (kropp: string): Map<string, string> => {
   return sektioner
 }
 
-type Rumsfält = Partial<Record<'opening' | 'core' | 'historicalContext', string>>
+type RoomFields = Partial<Record<'opening' | 'core' | 'historicalContext', string>>
 
-const rumssektioner = (sökväg: string, kropp: string): Tolkning<Rumsfält> => {
+const rumssektioner = (sökväg: string, kropp: string): Parsed<RoomFields> => {
   const fel: string[] = []
-  const fält: Rumsfält = {}
+  const fält: RoomFields = {}
   for (const [rubrik, text] of delaSektioner(kropp)) {
     const name = SEKTIONER[rubrik]
     if (!name) fel.push(`${sökväg}: okänd sektion "## ${rubrik}"`)
@@ -86,7 +86,7 @@ const rumssektioner = (sökväg: string, kropp: string): Tolkning<Rumsfält> => 
 }
 
 /** Tolkar och validerar ett rum (frontmatter + ##-sektioner). */
-export const tolkaRumsfil = (fil: Innehallsfil): Tolkning<Rum> => {
+export const tolkaRumsfil = (fil: ContentFile): Parsed<Room> => {
   const delad = delaFrontmatter(fil)
   if (!delad.värde) return { värde: null, fel: delad.fel }
   const sektioner = rumssektioner(fil.sökväg, delad.värde.kropp)
@@ -98,7 +98,7 @@ export const tolkaRumsfil = (fil: Innehallsfil): Tolkning<Rum> => {
 
 /** Tolkar och validerar en enkel post (tema, fråga, source, vandring …).
  * Brödtexten blir `description` när den inte är tom. */
-export const tolkaPostfil = <T>(schema: z.ZodType<T>, fil: Innehallsfil): Tolkning<T> => {
+export const tolkaPostfil = <T>(schema: z.ZodType<T>, fil: ContentFile): Parsed<T> => {
   const delad = delaFrontmatter(fil)
   if (!delad.värde) return { värde: null, fel: delad.fel }
   const kropp = delad.värde.kropp.trim()

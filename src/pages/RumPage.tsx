@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { NotesSheet } from '../components/NotesSheet'
 import { ReadingSettingsButton } from '../components/ReadingSettingsButton'
 import { TopBar } from '../components/TopBar'
-import type { Kalla, Kallpassage, Rum, Vandring } from '../content/editorial/schema'
+import type { Source, SourcePassage, Room, Path } from '../content/editorial/schema'
 import { rumForVandring } from '../lib/bibliotek'
 import {
   allaRum,
@@ -55,7 +55,7 @@ const Kolofonrad = ({
 )
 
 // Bibliografiraden: verk, reference och härkomst (language · dating) i en följd.
-const kallrad = (source: Kalla, reference: string | undefined): string => {
+const kallrad = (source: Source, reference: string | undefined): string => {
   const title = [source.title, reference].filter(Boolean).join(', ')
   const härkomst = [source.originalLanguage, source.approximateDating].filter(Boolean).join(' · ')
   return [title, härkomst].filter(Boolean).join(' · ')
@@ -63,19 +63,19 @@ const kallrad = (source: Kalla, reference: string | undefined): string => {
 
 // Editionsraden syns bara när en passage anger edition (source-and-context.md,
 // Translation Policy): edition och, för egen translation, ansvarig hand.
-const editionsrad = (passage: Kallpassage | undefined): string | undefined => {
+const editionsrad = (passage: SourcePassage | undefined): string | undefined => {
   if (!passage?.edition) return undefined
   const translation = passage.translator ? ` · translation ${passage.translator}` : ''
   return `Edition: ${passage.edition}${translation}`
 }
 
-type Kallrelation = Rum['sources'][number]
+type SourceRelation = Room['sources'][number]
 
 // Relationerna grupperade per källpost i frontmatterordning, så att ett rum
 // med flera nedslag i samma verk (t.ex. två bibelställen) får ett block med
 // en osäkerhetsdeklaration och en »Om texten«-länk — inte upprepade.
-const grupperaPerKalla = (relationer: Kallrelation[]): [Kalla, Kallrelation[]][] => {
-  const grupper: [Kalla, Kallrelation[]][] = []
+const grupperaPerKalla = (relationer: SourceRelation[]): [Source, SourceRelation[]][] => {
+  const grupper: [Source, SourceRelation[]][] = []
   for (const relation of relationer) {
     const befintlig = grupper.find(([source]) => source.id === relation.source)
     if (befintlig) {
@@ -90,7 +90,7 @@ const grupperaPerKalla = (relationer: Kallrelation[]): [Kalla, Kallrelation[]][]
 
 // En källas rader i detaljen: bibliografi + use + edition per relation,
 // därefter källans osäkerhet en gång och länken till källsidan.
-const Kallblock = ({ source, relationer }: { source: Kalla; relationer: Kallrelation[] }) => {
+const Kallblock = ({ source, relationer }: { source: Source; relationer: SourceRelation[] }) => {
   const rader = [
     ...relationer.flatMap((relation) => {
       const passage = relation.passage ? hittaPassage(relation.passage) : undefined
@@ -121,7 +121,7 @@ const Kallblock = ({ source, relationer }: { source: Kalla; relationer: Kallrela
  * Visibility). Håller sig bibliografisk; källans ord och full passagetext
  * bor på källsidan, dit »Om texten« leder efter ett medvetet val. Rum med
  * flera sources visar alla relationer, grupperade per källpost. */
-const Kalldetalj = ({ rum }: { rum: Rum }) => (
+const Kalldetalj = ({ rum }: { rum: Room }) => (
   <>
     {grupperaPerKalla(rum.sources).map(([source, relationer]) => (
       <Kallblock key={source.id} source={source} relationer={relationer} />
@@ -131,10 +131,10 @@ const Kalldetalj = ({ rum }: { rum: Rum }) => (
 
 // Kolofonens label: källans röst när rummet bygger på ett verk,
 // »Källor« när det bygger på flera (första flerkällsrummet: Fas 12).
-const kolofonetikett = (rum: Rum, source: Kalla): string =>
+const kolofonetikett = (rum: Room, source: Source): string =>
   new Set(rum.sources.map((relation) => relation.source)).size > 1 ? 'Källor' : kallnamn(source)
 
-const Rumsavslut = ({ rum }: { rum: Rum }) => {
+const Rumsavslut = ({ rum }: { rum: Room }) => {
   const { sparadeRum, vaxlaSparatRum, anteckningar, sattAnteckning, taBortAnteckning } = useAtlas()
   const [öppenRad, setÖppenRad] = useState<'source' | 'bakgrund' | null>(null)
   const [anteckningÖppen, setAnteckningÖppen] = useState(false)
@@ -206,7 +206,7 @@ const Rumsavslut = ({ rum }: { rum: Rum }) => {
  * `vandring`). Två likvärdiga, stilla val — aldrig autoplay, aldrig ett »rätt«
  * val (paths.md, Moving Between Stops). Sista rummet får den valfria avslutande
  * reflektionen i stället, utan gratulation eller förloppsmått. */
-const Vandringsfot = ({ vandring, rum }: { vandring: Vandring; rum: Rum }) => {
+const Vandringsfot = ({ vandring, rum }: { vandring: Path; rum: Room }) => {
   const navigate = useNavigate()
   const order = rumForVandring(vandring, allaRum)
   const index = order.findIndex((ettRum) => ettRum.id === rum.id)
@@ -250,7 +250,7 @@ const Vandringsfot = ({ vandring, rum }: { vandring: Vandring; rum: Rum }) => {
  * återvända). Bara publicerat registreras — utkast som förhandsgranskas via
  * direkt länk ska varken tränga ut publicerade rum ur det lilla fönstret eller
  * skriva vandringsminne (paths.md: minnet är orientering, aldrig förlopp). */
-const useRumsminne = (rum: Rum | undefined, vandring: Vandring | undefined): void => {
+const useRumsminne = (rum: Room | undefined, vandring: Path | undefined): void => {
   const { registreraLastRum, registreraVandringsplats } = useAtlas()
   const publiceratRumId = rum?.status === 'publicerad' ? rum.id : undefined
   const vandringsplatsId =
@@ -272,7 +272,7 @@ const useRumsminne = (rum: Rum | undefined, vandring: Vandring | undefined): voi
  * passage som inte kan slås upp. Build-grinden (check:content) ska hindra det
  * för publicerat innehåll, så detta är ett skyddsnät mot drift/regressions.
  * Loggar bara id:n, aldrig text. */
-const useRelationskontroll = (rum: Rum | undefined): void => {
+const useRelationskontroll = (rum: Room | undefined): void => {
   useEffect(() => {
     if (!rum) return
     for (const relation of rum.sources) {

@@ -9,13 +9,13 @@ import {
   kallpassageSchema,
   traditionSchema,
   vandringSchema,
-  type Fraga,
-  type Kalla,
-  type Kallpassage,
-  type Rum,
-  type Tema,
+  type Question,
+  type Source,
+  type SourcePassage,
+  type Room,
+  type Theme,
   type Tradition,
-  type Vandring,
+  type Path,
 } from '../content/editorial/schema'
 import { samla, tillFiler } from '../content/editorial/samla'
 import { tolkaPostfil, tolkaRumsfil } from '../content/editorial/tolka'
@@ -26,22 +26,22 @@ import { allaTeman, troskelTeman } from './troskeldata'
 
 export { allaTeman, troskelTeman }
 
-export const allaRum: Rum[] = samla(
+export const allaRum: Room[] = samla(
   tillFiler(import.meta.glob<string>('../content/rooms/*.md', { query: '?raw', import: 'default', eager: true })),
   tolkaRumsfil,
 )
 
-export const allaFragor: Fraga[] = samla(
+export const allaFragor: Question[] = samla(
   tillFiler(import.meta.glob<string>('../content/questions/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(fragaSchema, fil),
 )
 
-export const allaKallor: Kalla[] = samla(
+export const allaKallor: Source[] = samla(
   tillFiler(import.meta.glob<string>('../content/sources/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(kallaSchema, fil),
 )
 
-export const allaVandringar: Vandring[] = samla(
+export const allaVandringar: Path[] = samla(
   tillFiler(import.meta.glob<string>('../content/paths/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(vandringSchema, fil),
 )
@@ -49,7 +49,7 @@ export const allaVandringar: Vandring[] = samla(
 /** Källpassager — kanoniska textutdrag med reference, edition och translation
  * (source-and-context.md, Suggested Passage Model). Rum pekar hit via
  * relationens `passage`, så källans ord hålls åtskilda från redaktionell prosa. */
-export const allaPassager: Kallpassage[] = samla(
+export const allaPassager: SourcePassage[] = samla(
   tillFiler(import.meta.glob<string>('../content/passages/*.md', { query: '?raw', import: 'default', eager: true })),
   (fil) => tolkaPostfil(kallpassageSchema, fil),
 )
@@ -59,40 +59,40 @@ export const allaTraditioner: Tradition[] = samla(
   (fil) => tolkaPostfil(traditionSchema, fil),
 )
 
-export const hittaRum = (slug: string): Rum | undefined =>
+export const hittaRum = (slug: string): Room | undefined =>
   allaRum.find((rum) => rum.slug === slug)
 
-export const hittaRumViaId = (id: string): Rum | undefined =>
+export const hittaRumViaId = (id: string): Room | undefined =>
   allaRum.find((rum) => rum.id === id)
 
-export const hittaTema = (id: string): Tema | undefined =>
+export const hittaTema = (id: string): Theme | undefined =>
   allaTeman.find((tema) => tema.id === id)
 
-export const hittaTemaViaSlug = (slug: string): Tema | undefined =>
+export const hittaTemaViaSlug = (slug: string): Theme | undefined =>
   allaTeman.find((tema) => tema.slug === slug)
 
-export const hittaFraga = (id: string): Fraga | undefined =>
+export const hittaFraga = (id: string): Question | undefined =>
   allaFragor.find((fråga) => fråga.id === id)
 
-export const hittaFragaViaSlug = (slug: string): Fraga | undefined =>
+export const hittaFragaViaSlug = (slug: string): Question | undefined =>
   allaFragor.find((fråga) => fråga.slug === slug)
 
-export const hittaKalla = (id: string): Kalla | undefined =>
+export const hittaKalla = (id: string): Source | undefined =>
   allaKallor.find((source) => source.id === id)
 
-export const hittaKallaViaSlug = (slug: string): Kalla | undefined =>
+export const hittaKallaViaSlug = (slug: string): Source | undefined =>
   allaKallor.find((source) => source.slug === slug)
 
 export const hittaTradition = (id: string): Tradition | undefined =>
   allaTraditioner.find((tradition) => tradition.id === id)
 
-export const hittaVandringViaSlug = (slug: string): Vandring | undefined =>
+export const hittaVandringViaSlug = (slug: string): Path | undefined =>
   allaVandringar.find((vandring) => vandring.slug === slug)
 
-export const hittaVandringViaId = (id: string): Vandring | undefined =>
+export const hittaVandringViaId = (id: string): Path | undefined =>
   allaVandringar.find((vandring) => vandring.id === id)
 
-export const hittaPassage = (id: string): Kallpassage | undefined =>
+export const hittaPassage = (id: string): SourcePassage | undefined =>
   allaPassager.find((passage) => passage.id === id)
 
 /** Delar prosatext i stycken på tomrad — rummens sektioner är ren prosa. */
@@ -103,13 +103,13 @@ export const stycken = (text: string): string[] =>
     .filter((stycke) => stycke.length > 0)
 
 /** Namnet i kolofonen: den tillskrivna rösten före nedtecknaren före verket. */
-export const kallnamn = (source: Kalla): string =>
+export const kallnamn = (source: Source): string =>
   source.attributedAuthor ?? source.author ?? source.title
 
 /** Ärliga osäkerhetsmeningar i klartext (source-and-context.md, Uncertainty):
  * dold osäkerhet försvagar tilliten, inte källan. Delas av läsrummet och
  * källsidan så samma formulering möter läsaren på båda ställena. */
-export const osakerheter = (source: Kalla): string[] => {
+export const osakerheter = (source: Source): string[] => {
   const name = source.attributedAuthor ?? source.author ?? 'annan hand'
   const rader: string[] = []
   if (source.attribution === 'tillskrivet')
@@ -123,7 +123,7 @@ export const osakerheter = (source: Kalla): string[] => {
 }
 
 /** Kort svensk deklaration av hur rummet använder källan (source-and-context.md). */
-export const brukEtikett: Record<Rum['sources'][number]['use'], string> = {
+export const brukEtikett: Record<Room['sources'][number]['use'], string> = {
   'citat': 'Direkt citat.',
   'translation': 'Egen svensk translation.',
   'parafras': 'Parafraserad återgivning.',

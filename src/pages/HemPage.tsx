@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import type { Tema } from '../content/editorial/schema'
+import type { Theme } from '../content/editorial/schema'
 import { valjRum } from '../lib/rumsval'
 import { useAtlas } from '../lib/store'
 import { rapportera } from '../lib/telemetri'
@@ -22,7 +22,7 @@ export const HemPage = () => {
   const { senastLastaRum } = useAtlas()
   const [tomtVal, setTomtVal] = useState(false)
   const [väljer, setVäljer] = useState(false)
-  const valjTema = async (tema: Tema) => {
+  const valjTema = async (tema: Theme) => {
     if (väljer) return
     setVäljer(true)
     setTomtVal(false)

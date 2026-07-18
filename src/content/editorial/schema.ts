@@ -74,7 +74,7 @@ export const rumSchema = z.object({
   core: z.string().min(1),
   historicalContext: z.string().optional(),
 })
-export type Rum = z.infer<typeof rumSchema>
+export type Room = z.infer<typeof rumSchema>
 
 /** Tema — bred mänsklig ingång på tröskeln (home-and-entry.md). Rummen äger
  * relationen via `themes`; temat pekar bara ut sitt redaktionella standardrum. */
@@ -89,7 +89,7 @@ export const temaSchema = z.object({
   description: z.string().optional(),
   keywords: nyckelordSchema,
 })
-export type Tema = z.infer<typeof temaSchema>
+export type Theme = z.infer<typeof temaSchema>
 
 /** Mänsklig fråga — taxonomins hjärta (question-taxonomy.md). */
 export const fragaSchema = z.object({
@@ -102,7 +102,7 @@ export const fragaSchema = z.object({
   description: z.string().optional(),
   keywords: nyckelordSchema,
 })
-export type Fraga = z.infer<typeof fragaSchema>
+export type Question = z.infer<typeof fragaSchema>
 
 /** Vandring — kuraterad följd av rum (paths.md, Data Requirements). */
 export const vandringSchema = z.object({
@@ -119,7 +119,7 @@ export const vandringSchema = z.object({
   editorialNotes: z.string().optional(),
   keywords: nyckelordSchema,
 })
-export type Vandring = z.infer<typeof vandringSchema>
+export type Path = z.infer<typeof vandringSchema>
 
 /** Kanonisk källpost (source-and-context.md, Suggested Source Model). */
 export const kallaSchema = z.object({
@@ -157,7 +157,7 @@ export const kallaSchema = z.object({
   alias: z.array(z.string().min(1)).optional(),
   keywords: nyckelordSchema,
 })
-export type Kalla = z.infer<typeof kallaSchema>
+export type Source = z.infer<typeof kallaSchema>
 
 /** Källpassage (source-and-context.md, Suggested Passage Model). */
 export const kallpassageSchema = z.object({
@@ -173,7 +173,7 @@ export const kallpassageSchema = z.object({
   notes: z.string().optional(),
   status: statusSchema,
 })
-export type Kallpassage = z.infer<typeof kallpassageSchema>
+export type SourcePassage = z.infer<typeof kallpassageSchema>
 
 /** Tradition — stödpost, aldrig primary navigation (library.md). */
 export const traditionSchema = z.object({
@@ -199,13 +199,13 @@ export const personSchema = z.object({
 export type Person = z.infer<typeof personSchema>
 
 /** Hela den redaktionella innehållsmängden, som korsvalideringen arbetar på. */
-export type Innehallsmangd = {
-  rum: Rum[]
-  themes: Tema[]
-  frågor: Fraga[]
-  vandringar: Vandring[]
-  sources: Kalla[]
-  passager: Kallpassage[]
+export type ContentSet = {
+  rum: Room[]
+  themes: Theme[]
+  frågor: Question[]
+  vandringar: Path[]
+  sources: Source[]
+  passager: SourcePassage[]
   traditions: Tradition[]
   personer: Person[]
 }
