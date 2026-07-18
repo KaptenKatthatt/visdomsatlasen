@@ -5,9 +5,9 @@ titel: Molnet av icke-vetande
 sammanfattning: En medeltida tanke om att Gud inte kan tänkas — men älskas.
 primärFråga: fraga-kan-man-soka-gud-utan-att-forsta
 teman: [tema-jesus, tema-sanning]
-tankeAttBära: Det tanken inte når fram till kan kärleken ändå nå. Molnet skingras inte — det genomträngs.
+tankeAttBära: Det tanken inte når kan kärleken nå. Molnet skingras inte — det genomträngs.
 reflektionsfrågor:
-  - Vad i ditt liv väntar du med att närma dig tills du förstår det bättre?
+  - Vad väntar du med att närma dig tills du förstår det bättre?
   - Var har kärlek eller förtroende burit dig längre än förståelsen?
 källor:
   - källa: kalla-molnet-av-icke-vetande
@@ -47,53 +47,55 @@ redaktion:
     mystik är nya utkast som publiceras tillsammans med rummet om ägaren
     godkänner. Förgranskad mot alla fyra checklistorna; öppningen bygger egen
     båge och landar i slutkläm utan källa (§4b/§4c), Kärnan låter källan
-    bekräfta. AI avgör aldrig ensam vad som publiceras.
-  version: 1
+    bekräfta. Språkligt omarbetad 2026-07-18 på redaktörens begäran vid
+    chattgranskningen (naturligare ordföljd och ordval; bl.a. »förstått oss
+    till«, »färdigbegripet«, »Ty«, »hållas av« utmönstrade). AI avgör aldrig
+    ensam vad som publiceras.
+  version: 2
 ---
 
 ## Öppning
 
 Det finns saker vi skjuter upp tills vi förstår dem bättre. Samtalet vi inte
-tar förrän vi vet vad vi ska säga. Människan vi håller på avstånd tills vi
-blivit kloka på henne. Tron vi lägger åt sidan för att den inte går ihop.
-Förstå först, närma dig sedan — så känns den rätta ordningen.
+tar förrän vi vet vad vi ska säga. Människan vi håller på avstånd för att vi
+inte blir klok på henne. Tron vi lägger åt sidan för att den inte går ihop.
+Först förstå, sedan närma sig — det känns som den rätta ordningen.
 
-Men de människor vi står närmast har vi sällan förstått oss till. Ingen
-väntar med att älska sitt barn tills barnet är färdigbegripet. Vänskapen
-kom före förklaringen, och håller än, fast mycket i den andra fortfarande
-är gåta. Kanske är ordningen den omvända: det är inte förståelsen som bär
-närheten. Det är närheten som står ut med att inte förstå.
+Men våra närmaste relationer blev inte till på det sättet. Ingen väntar med
+att älska sitt barn tills barnet går att förstå. Vänskapen kom före
+förklaringen, och den håller än, trots att mycket hos den andra fortfarande
+är en gåta. Kanske är ordningen den omvända. Det är inte förståelsen som
+bär närheten — det är närheten som tål att vi inte förstår.
 
 ## Kärna
 
-En anonym engelsk skrift från 1300-talet säger just det — och vågar säga det
-om Gud själv. Alla skapade ting, menar författaren, kan tanken få grepp om.
-Men inte Gud. Den som söker honom med förståndet möter förr eller senare
-något som liknar ett moln: ett icke-vetandets moln som ingen ansträngning
-tänker sig igenom. Där slutar många söka, i tron att molnet betyder att
-vägen är stängd.
+En anonym engelsk skrift från 1300-talet säger just det, och vågar säga det
+om Gud själv. Allt skapat, menar författaren, kan tanken få grepp om. Men
+inte Gud. Den som söker honom med förståndet möter förr eller senare något
+som liknar ett moln: ett moln av icke-vetande, som ingen tankemöda tränger
+igenom. Många slutar söka där, i tron att molnet betyder att vägen är
+stängd.
 
-Skriften säger tvärtom: molnet är platsen där sökandet börjar på allvar. Ty
-Gud kan älskas, men inte tänkas — kärleken når dit tanken inte når. Så låt
-tankarna vara, även de fromma och kloka; lägg dem under ett glömskans moln,
-och rikta i stället en enda naken längtan mot mörkret ovanför. Som en pil,
-skriver författaren: kärlekens längtande pil, skjuten rakt in i molnet, om
-och om igen.
+Skriften säger tvärtom: vid molnet börjar sökandet på allvar. Gud kan
+älskas men inte tänkas, står det. Kärleken når dit tanken inte når. Låt
+därför tankarna vara, även de fromma och kloka — lägg dem under ett moln av
+glömska. Rikta i stället en enda naken längtan mot mörkret ovanför dig. Som
+en pil, skriver författaren: en skarp pil av längtande kärlek, skjuten rakt
+in i molnet, om och om igen.
 
-Det är en märklig tröst, också för den som inte delar skriftens tro. Den
-säger att oförståelsen inte behöver vara ett nederlag. Att det största vi
-möter — Gud, en annan människa, livet självt — inte är en gåta som ska
-lösas utan något som ska hållas av. Och att den som står i mörkret utan
-svar kanske inte alls har gått vilse, utan bara kommit närmare än orden
-räcker.
+Det är en märklig tröst, även för den som inte delar skriftens tro. Att
+inte förstå behöver inte vara ett nederlag. Det största vi möter — Gud, en
+annan människa, livet självt — är kanske ingen gåta som ska lösas, utan
+något som ska älskas. Och den som står i mörkret utan svar har kanske inte
+gått vilse. Kanske har hon bara kommit närmare än orden räcker.
 
 ## Historisk kontext
 
 Molnet av icke-vetande skrevs på engelska under 1300-talets senare del,
-troligen av en munk eller präst; namnet lät han aldrig nå eftervärlden.
-Skriften är ställd som ett brev till en ung människa som vill lära sig
-kontemplativ bön, och den hör till den apofatiska traditionen inom kristen
-mystik — den som hellre säger vad Gud inte är än vad han är, eftersom varje
-beskrivning stannar på vägen. Tanken i det här rummet står i kapitel 6, ett
-av de kortaste. Texten återges här efter Evelyn Underhills utgåva, först
-utgiven 1912.
+troligen av en munk eller präst. Vem han var vet ingen — han lät aldrig
+sitt namn nå eftervärlden. Skriften är ett brev till en ung människa som
+vill lära sig kontemplativ bön, och den hör till den apofatiska traditionen
+inom kristen mystik: den som hellre säger vad Gud inte är än vad han är,
+eftersom varje beskrivning stannar på vägen. Tanken i det här rummet står i
+kapitel 6, ett av de kortaste. Texten återges här efter Evelyn Underhills
+utgåva, först utgiven 1912.
