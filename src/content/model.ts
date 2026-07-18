@@ -13,6 +13,7 @@ export type To =
   | { kind: 'rum'; slug: string }
   | { kind: 'tema'; slug: string }
   | { kind: 'kallpost'; slug: string }
+  | { kind: 'personpost'; slug: string }
   | { kind: 'fraga'; slug: string }
   // Vandringar (fas 7).
   | { kind: 'vandring'; slug: string }

@@ -8,6 +8,7 @@ import type {
   Innehallsmangd,
   Kalla,
   Kallpassage,
+  Person,
   Rum,
   Tema,
   Tradition,
@@ -16,6 +17,7 @@ import type {
 import {
   bibliotekFragor,
   bibliotekKallor,
+  bibliotekPersoner,
   bibliotekRum,
   bibliotekTeman,
   bibliotekTraditioner,
@@ -28,6 +30,7 @@ import {
   allaFragor,
   allaKallor,
   allaPassager,
+  allaPersoner,
   allaRum,
   allaTeman,
   allaTraditioner,
@@ -50,6 +53,7 @@ export type Sokmal =
   | { kind: 'tema'; slug: string }
   | { kind: 'rum'; slug: string }
   | { kind: 'kallpost'; slug: string }
+  | { kind: 'personpost'; slug: string }
   | { kind: 'vandring'; slug: string }
 
 /** Ett sökdokument. `titel`/`underrad`/`meta` visas oviket (korrekt stavning);
@@ -209,9 +213,23 @@ const dokumentUrTradition = (tradition: Tradition): Sokdokument => ({
   text: tradition.beskrivning ? [tradition.beskrivning] : [],
 })
 
+// Personresultatet visar namn, period och kort igenkännande beskrivning
+// (search.md, Person Result); personer rankas alltid sist (Result Priority).
+const dokumentUrPerson = (person: Person): Sokdokument => ({
+  typ: 'person',
+  id: person.id,
+  titel: person.namn,
+  underrad: person.beskrivning ? utdrag(person.beskrivning, 110) : undefined,
+  meta: person.årtal,
+  mal: { kind: 'personpost', slug: person.slug },
+  alias: [],
+  nyckelord: [],
+  text: person.beskrivning ? [person.beskrivning] : [],
+})
+
 type Innehall = Pick<
   Innehallsmangd,
-  'rum' | 'teman' | 'frågor' | 'vandringar' | 'källor' | 'passager' | 'traditioner'
+  'rum' | 'teman' | 'frågor' | 'vandringar' | 'källor' | 'passager' | 'traditioner' | 'personer'
 >
 
 /** Bygger det publika indexet. Uppslagskartorna byggs ur de PUBLICERADE
@@ -233,6 +251,7 @@ export const byggSokindex = (innehall: Innehall): Sokdokument[] => {
       dokumentUrKalla(källa, traditioner, passagerForKalla(källa.id, innehall.passager)),
     ),
     ...bibliotekTraditioner(innehall.traditioner).map(dokumentUrTradition),
+    ...bibliotekPersoner(innehall.personer).map(dokumentUrPerson),
   ]
 }
 
@@ -245,4 +264,5 @@ export const sokindexet: Sokdokument[] = byggSokindex({
   källor: allaKallor,
   passager: allaPassager,
   traditioner: allaTraditioner,
+  personer: allaPersoner,
 })

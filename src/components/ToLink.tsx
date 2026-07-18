@@ -22,6 +22,7 @@ const BIBLIOTEKSPATH = {
   rum: '/rum/$slug',
   tema: '/bibliotek/tema/$slug',
   kallpost: '/bibliotek/kalla/$slug',
+  personpost: '/bibliotek/person/$slug',
   fraga: '/bibliotek/fraga/$slug',
   vandring: '/bibliotek/vandring/$slug',
 } as const

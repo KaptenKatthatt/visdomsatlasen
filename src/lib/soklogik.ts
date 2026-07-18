@@ -33,8 +33,9 @@ const NIVAPOANG: Record<Traffniva, number> = {
   'text': 12,
 }
 
-// Frågor och teman rankas före rum, vandringar, källor och traditioner
-// (search.md, Result Priority — den mänskliga frågan står först).
+// Frågor och teman rankas före rum, vandringar, källor, traditioner och
+// personer (search.md, Result Priority — den mänskliga frågan står först;
+// en berömd författare får aldrig automatiskt slå en direkt relevant fråga).
 const TYPBONUS: Record<Soktyp, number> = {
   fraga: 12,
   tema: 10,
@@ -42,6 +43,7 @@ const TYPBONUS: Record<Soktyp, number> = {
   vandring: 6,
   kalla: 4,
   tradition: 2,
+  person: 1,
 }
 
 /** Svensk gruppetikett per söktyp — delas av resultatsektionerna och typfiltret. */
@@ -52,6 +54,7 @@ export const RUBRIK: Record<Soktyp, string> = {
   vandring: 'Vandringar',
   kalla: 'Källor',
   tradition: 'Traditioner',
+  person: 'Personer',
 }
 
 const SYNONYM_FAKTOR = 0.7
