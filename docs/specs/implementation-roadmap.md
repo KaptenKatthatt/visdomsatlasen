@@ -886,11 +886,25 @@ Ensure the calm experience is not undermined by slow or unstable behaviour.
 
 The phase is complete when:
 
-- [ ] The home screen does not load the complete content collection.
-- [ ] Core room text is not blocked by non-essential features.
-- [ ] Offline behaviour is understandable.
-- [ ] Font loading does not cause severe reading disruption.
-- [ ] Search and navigation remain responsive on a mid-range mobile device.
+- [x] The home screen does not load the complete content collection.
+- [x] Core room text is not blocked by non-essential features.
+- [x] Offline behaviour is understandable.
+- [x] Font loading does not cause severe reading disruption.
+- [x] Search and navigation remain responsive on a mid-range mobile device.
+
+Uppfyllt 2026-07-18: appen kod-delas (React.lazy + Suspense) så bara tröskeln,
+skalet och NotFoundNote ligger i startbunten; startbunten sjönk från 242 kB
+gzip till 147 kB och start-CSS:en från 93 kB till 17 kB. Hemskärmen laddar bara
+temana (troskeldata.ts) — rummens brödtext, källor och sökindexet hämtas först
+vid navigation (verifierat: ingen innehålls- eller sökchunk på hemskärmen).
+Rumstexten ligger i bunten och blockeras inte av något nätberoende. Bara
+standardtypsnittet EB Garamond laddas i starten; de valbara typsnitten
+registreras först när de väljs (verifierat: Literata-woff2 hämtas vid val).
+Verkläsarens API-fel möts av lugna svenska meddelanden och skiljer offline från
+annat nätfel. PWA:n fick PNG/maskable-ikoner (192/512/maskable) och sidchunkarna
+precachas, så rum och sökindex finns offline. `defaultPreload: 'intent'`
+förladdar sidchunkar vid intention. localStorage-gränser (kvot, privat läge)
+täcks av test och sväljs lugnt. E2E-verifierat i 430×900 utan konsolfel.
 
 ---
 

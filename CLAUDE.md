@@ -159,8 +159,20 @@ landa i vardagen — även för utkast. Öppningsreglerna står i
 egen båge och landar i en slutkläm; Kärnan låter källan bekräfta i stället för att
 introducera).
 
+**Fas 13 — Prestanda och offline (`docs/specs/implementation-roadmap.md`, »Performance
+and Offline Behaviour«) klar.** Appen kod-delas (React.lazy + Suspense med stilla
+väntetillstånd, `Sidladdning`): bara tröskeln, skalet och NotFoundNote i startbunten,
+övriga sidor egna chunkar som precachas och förladdas vid intention (`defaultPreload:
+'intent'`). Hemskärmen laddar bara temana (`troskeldata.ts` — egen teman-glob, inga
+rumsberoenden); rummen hämtas via dynamisk import först vid temaval (delar chunk med
+läsrummet). Storen och routern tappade sina innehållsberoenden (notismigrering på
+id-prefixet `rum-`; söktyperna i `soktyper.ts` så routern slipper bygga sökindexet vid
+start). Bara EB Garamond i startbunten; valbara typsnitt registreras vid val (`fonter.ts`).
+Lugna svenska offline-fel i `api.ts` (verkläsarens texter; det bundlade innehållet berörs
+aldrig). PWA-ikoner (192/512/maskable ur `icon.svg`). localStorage-gränser täckta av
+`storage.test.ts`. Resultat: startbunt 147 kB gzip (från 242), start-CSS 17 kB (från 93).
+
 ## Kända skulder
 
-- PWA saknar PNG/maskable-ikoner (Fas 13).
 - Sandlådefällor: `getbible.net` ger 403 vid ingest (ofarligt, bara Bibeln);
   bakgrunds-Vite/API dör mellan skalkommandon — starta om vid ECONNREFUSED.
