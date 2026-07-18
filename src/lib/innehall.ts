@@ -7,7 +7,6 @@ import {
   fragaSchema,
   kallaSchema,
   kallpassageSchema,
-  temaSchema,
   traditionSchema,
   vandringSchema,
   type Fraga,
@@ -18,36 +17,19 @@ import {
   type Tradition,
   type Vandring,
 } from '../content/redaktion/schema'
-import { tolkaPostfil, tolkaRumsfil, type Innehallsfil, type Tolkning } from '../content/redaktion/tolka'
+import { samla, tillFiler } from '../content/redaktion/samla'
+import { tolkaPostfil, tolkaRumsfil } from '../content/redaktion/tolka'
+// Temana (och tröskelns urval) bor i det lätta troskeldata.ts så hemskärmen kan
+// nå dem utan att dra in rummens brödtext; här återexporteras de så bibliotekets
+// uppslag (hittaTema m.fl.) och sökindexet fortsatt kan gå via innehall.
+import { allaTeman, troskelTeman } from './troskeldata'
 
-const tillFiler = (moduler: Record<string, string>): Innehallsfil[] =>
-  Object.entries(moduler).map(([sökväg, råtext]) => ({ sökväg, råtext }))
-
-const samla = <T>(filer: Innehallsfil[], tolka: (fil: Innehallsfil) => Tolkning<T>): T[] =>
-  filer.flatMap((fil) => {
-    const tolkning = tolka(fil)
-    for (const fel of tolkning.fel) console.error('[innehåll]', fel)
-    return tolkning.värde ? [tolkning.värde] : []
-  })
+export { allaTeman, troskelTeman }
 
 export const allaRum: Rum[] = samla(
   tillFiler(import.meta.glob<string>('../content/rum/*.md', { query: '?raw', import: 'default', eager: true })),
   tolkaRumsfil,
 )
-
-export const allaTeman: Tema[] = samla(
-  tillFiler(import.meta.glob<string>('../content/teman/*.md', { query: '?raw', import: 'default', eager: true })),
-  (fil) => tolkaPostfil(temaSchema, fil),
-)
-
-/** Tröskelns teman (home-and-entry.md): redaktionell ordning, aldrig arkiverade. */
-export const troskelTeman: Tema[] = allaTeman
-  .filter((tema) => tema.status !== 'arkiverad')
-  .sort(
-    (a, b) =>
-      (a.ordning ?? Number.MAX_SAFE_INTEGER) - (b.ordning ?? Number.MAX_SAFE_INTEGER) ||
-      a.etikett.localeCompare(b.etikett, 'sv'),
-  )
 
 export const allaFragor: Fraga[] = samla(
   tillFiler(import.meta.glob<string>('../content/fragor/*.md', { query: '?raw', import: 'default', eager: true })),

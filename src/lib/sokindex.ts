@@ -35,15 +35,12 @@ import {
   kallnamn,
 } from './innehall'
 import { utdrag } from './personligt'
+import { SOKTYPER, type Soktyp, type SökParametrar } from './soktyper'
 
-export type Soktyp = 'fraga' | 'tema' | 'rum' | 'vandring' | 'kalla' | 'tradition'
-
-/** Söktyperna i redaktionell prioritetsordning — en enda källa som router,
- * rankning och filter delar (så en ny typ läggs till på ett ställe). */
-export const SOKTYPER: readonly Soktyp[] = ['fraga', 'tema', 'rum', 'vandring', 'kalla', 'tradition']
-
-/** Den delbara sökparametern: fråga och valfritt typfilter. Aldrig privata värden. */
-export type SökParametrar = { q?: string; typ?: Soktyp }
+// Söktyperna bor i soktyper.ts (utan innehållsberoenden) så routern kan
+// validera URL:en utan att dra in indexbygget; här återexporteras de så
+// befintliga importvägar (soklogik, sidor) fortsatt kan gå via sokindex.
+export { SOKTYPER, type Soktyp, type SökParametrar }
 
 /** Sökmål = de To-varianter söket kan öppna (redaktionella sidor). Egen union,
  * strukturellt kompatibel med To, så sökindexet inte kopplas till legacy-eran i

@@ -18,6 +18,7 @@ import {
   stycken,
 } from '../lib/innehall'
 import { useAtlas } from '../lib/store'
+import { rapportera } from '../lib/telemetri'
 import { useSidtitel } from '../lib/useSidtitel'
 import { NotFoundNote } from './NotFoundNote'
 import styles from './RumPage.module.css'
@@ -267,6 +268,27 @@ const useRumsminne = (rum: Rum | undefined, vandring: Vandring | undefined): voi
   }, [vandringsplatsId, publiceratRumId, registreraVandringsplats])
 }
 
+/** Fas 14: fångar brutna källrelationer — ett rum som pekar på en källa eller
+ * passage som inte kan slås upp. Build-grinden (check:content) ska hindra det
+ * för publicerat innehåll, så detta är ett skyddsnät mot drift/regressions.
+ * Loggar bara id:n, aldrig text. */
+const useRelationskontroll = (rum: Rum | undefined): void => {
+  useEffect(() => {
+    if (!rum) return
+    for (const relation of rum.källor) {
+      if (!hittaKalla(relation.källa))
+        rapportera({ typ: 'bruten-kallalank', från: rum.id, till: relation.källa })
+      else if (relation.passage !== undefined && !hittaPassage(relation.passage))
+        rapportera({
+          typ: 'ogiltig-innehallsrelation',
+          slag: 'passage',
+          från: rum.id,
+          referens: relation.passage,
+        })
+    }
+  }, [rum])
+}
+
 /** Läsrummet (reading-room.md): en text, en tanke, ett naturligt slut.
  * Inga rekommendationer, inget nästa rum. Tröskeln öppnar hit via rumsvalet,
  * som bara väljer publicerade rum; utkast nås märkta via direkt länk och
@@ -276,6 +298,7 @@ export const RumPage = ({ slug, vandringSlug }: { slug: string; vandringSlug?: s
   const rum = hittaRum(slug)
   const vandring = vandringSlug !== undefined ? hittaVandringViaSlug(vandringSlug) : undefined
   useRumsminne(rum, vandring)
+  useRelationskontroll(rum)
   useSidtitel(rum?.titel)
   if (!rum) return <NotFoundNote subject="Rummet" />
   const tema = hittaTema(rum.teman[0] ?? '')

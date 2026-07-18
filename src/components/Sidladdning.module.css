@@ -1,0 +1,8 @@
+/* Reserverar lite höjd så väntetillståndet inte får skalet att hoppa när sidan
+ * väl kommer (fas 13, avoid layout shifts). Centrerat och dämpat. */
+.laddning {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+}

@@ -11,6 +11,14 @@ import { runMissingIngest } from './ingest/run'
 
 const app = new Hono()
 
+// Fas 14 (analytics.md): serverns tekniska minimum. Oväntade fel loggas till
+// serverloggen (inget engagemang, ingen tredjepart, ingen personlig text — bara
+// felet och den träffade sökvägen) och läsaren får ett rent, lugnt svar.
+app.onError((err, c) => {
+  console.error('[server] fel:', c.req.method, new URL(c.req.url).pathname, '—', err.message)
+  return c.json({ error: 'Något gick fel på servern.' }, 500)
+})
+
 // Testarläget: är ACCESS_CODE satt gömmer en delad kod hela appen (SPA + /api)
 // bakom en kod-sida. Monteras först så den täcker både statiska filer och API.
 // Utan koden är spärren av — servern nås då bara via Tailscale (WireGuard) utan

@@ -1,6 +1,8 @@
 import { Outlet, useRouterState } from '@tanstack/react-router'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
+import { Felgrans } from '../components/Felgrans'
 import { NavTabs } from '../components/NavTabs'
+import { Sidladdning } from '../components/Sidladdning'
 import { ShellContext } from '../lib/shell'
 import { useAtlas } from '../lib/store'
 
@@ -25,7 +27,13 @@ export const RootLayout = () => {
             Hoppa till innehåll
           </a>
           <main id="innehall" tabIndex={-1}>
-            <Outlet />
+            {/* Nyckeln per route nollställer felgränsen vid navigation, så ett
+                enstaka chunk-fel inte fastnar när läsaren går vidare (fas 14). */}
+            <Felgrans key={pathname}>
+              <Suspense fallback={<Sidladdning />}>
+                <Outlet />
+              </Suspense>
+            </Felgrans>
           </main>
           {showNav && <NavTabs />}
         </ShellContext.Provider>

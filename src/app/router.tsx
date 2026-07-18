@@ -3,36 +3,62 @@ import {
   createRoute,
   createRouter,
 } from '@tanstack/react-router'
+import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 import type { ReadMode } from '../content/model'
-import { AmnePage } from '../pages/AmnePage'
-import { AtlasPage } from '../pages/AtlasPage'
-import { BibliotekHemPage } from '../pages/bibliotek/BibliotekHemPage'
-import { FragaPage } from '../pages/bibliotek/FragaPage'
-import { FragelistaPage } from '../pages/bibliotek/FragelistaPage'
-import { KallaPostPage } from '../pages/bibliotek/KallaPostPage'
-import { RumlistaPage } from '../pages/bibliotek/RumlistaPage'
-import { TemaPage } from '../pages/bibliotek/TemaPage'
-import { VandringPage } from '../pages/bibliotek/VandringPage'
-import { SokBibliotekPage } from '../pages/bibliotek/SokBibliotekPage'
-import { BibliotekSokPage } from '../pages/library/BibliotekSokPage'
-import { SOKTYPER, type Soktyp, type SökParametrar } from '../lib/sokindex'
-import { BokPage } from '../pages/library/BokPage'
-import { KapitelPage } from '../pages/library/KapitelPage'
-import { VerklistaPage } from '../pages/library/VerklistaPage'
-import { VerkPage } from '../pages/library/VerkPage'
+import { SOKTYPER, type Soktyp, type SökParametrar } from '../lib/soktyper'
 import { HemPage } from '../pages/HemPage'
-import { InstallningarPage } from '../pages/InstallningarPage'
-import { KallaPage } from '../pages/KallaPage'
-import { LasPage } from '../pages/LasPage'
 import { NotFoundNote } from '../pages/NotFoundNote'
-import { PersonPage } from '../pages/PersonPage'
-import { PersonerPage } from '../pages/PersonerPage'
-import { SamlingPage } from '../pages/SamlingPage'
-import { SokPage } from '../pages/SokPage'
-import { TidslinjePage } from '../pages/TidslinjePage'
-import { UtforskaPage } from '../pages/UtforskaPage'
-import { RumPage } from '../pages/RumPage'
 import { RootLayout } from './RootLayout'
+
+// Kod-delning (fas 13): bara tröskeln (HemPage), skalet (RootLayout) och den
+// lilla NotFoundNote laddas i startbunten. Övriga sidor — biblioteket, läsrummet,
+// verkläsaren, söket, de gamla sidorna — laddas som egna chunkar när routen
+// öppnas, så hemskärmen slipper hela appens JavaScript på en gång. Chunkarna
+// precachas av service-workern (workbox globPatterns), så de finns offline och
+// öppnas oftast direkt. `defaultPreload: 'intent'` förladdar dem vid hovring/touch.
+// Selektorn plockar den namngivna exporten med statisk åtkomst (m.X), så både
+// bundlaren och dead-code-analysen (fallow) ser vilken export som används.
+const lazyPage = <Props extends object>(
+  valj: () => Promise<ComponentType<Props>>,
+): LazyExoticComponent<ComponentType<Props>> => lazy(async () => ({ default: await valj() }))
+
+const AmnePage = lazyPage(() => import('../pages/AmnePage').then((m) => m.AmnePage))
+const AtlasPage = lazyPage(() => import('../pages/AtlasPage').then((m) => m.AtlasPage))
+const BibliotekHemPage = lazyPage(() =>
+  import('../pages/bibliotek/BibliotekHemPage').then((m) => m.BibliotekHemPage),
+)
+const FragaPage = lazyPage(() => import('../pages/bibliotek/FragaPage').then((m) => m.FragaPage))
+const FragelistaPage = lazyPage(() =>
+  import('../pages/bibliotek/FragelistaPage').then((m) => m.FragelistaPage),
+)
+const KallaPostPage = lazyPage(() =>
+  import('../pages/bibliotek/KallaPostPage').then((m) => m.KallaPostPage),
+)
+const RumlistaPage = lazyPage(() => import('../pages/bibliotek/RumlistaPage').then((m) => m.RumlistaPage))
+const TemaPage = lazyPage(() => import('../pages/bibliotek/TemaPage').then((m) => m.TemaPage))
+const VandringPage = lazyPage(() => import('../pages/bibliotek/VandringPage').then((m) => m.VandringPage))
+const SokBibliotekPage = lazyPage(() =>
+  import('../pages/bibliotek/SokBibliotekPage').then((m) => m.SokBibliotekPage),
+)
+const BibliotekSokPage = lazyPage(() =>
+  import('../pages/library/BibliotekSokPage').then((m) => m.BibliotekSokPage),
+)
+const BokPage = lazyPage(() => import('../pages/library/BokPage').then((m) => m.BokPage))
+const KapitelPage = lazyPage(() => import('../pages/library/KapitelPage').then((m) => m.KapitelPage))
+const VerklistaPage = lazyPage(() => import('../pages/library/VerklistaPage').then((m) => m.VerklistaPage))
+const VerkPage = lazyPage(() => import('../pages/library/VerkPage').then((m) => m.VerkPage))
+const InstallningarPage = lazyPage(() =>
+  import('../pages/InstallningarPage').then((m) => m.InstallningarPage),
+)
+const KallaPage = lazyPage(() => import('../pages/KallaPage').then((m) => m.KallaPage))
+const LasPage = lazyPage(() => import('../pages/LasPage').then((m) => m.LasPage))
+const PersonPage = lazyPage(() => import('../pages/PersonPage').then((m) => m.PersonPage))
+const PersonerPage = lazyPage(() => import('../pages/PersonerPage').then((m) => m.PersonerPage))
+const SamlingPage = lazyPage(() => import('../pages/SamlingPage').then((m) => m.SamlingPage))
+const SokPage = lazyPage(() => import('../pages/SokPage').then((m) => m.SokPage))
+const TidslinjePage = lazyPage(() => import('../pages/TidslinjePage').then((m) => m.TidslinjePage))
+const UtforskaPage = lazyPage(() => import('../pages/UtforskaPage').then((m) => m.UtforskaPage))
+const RumPage = lazyPage(() => import('../pages/RumPage').then((m) => m.RumPage))
 
 const rootRoute = createRootRoute({
   component: RootLayout,
@@ -292,6 +318,9 @@ const routeTree = rootRoute.addChildren([
 export const router = createRouter({
   routeTree,
   scrollRestoration: true,
+  // Förladda en routes chunk redan vid hovring/touch-intention, så navigeringen
+  // känns omedelbar trots kod-delningen (fas 13).
+  defaultPreload: 'intent',
 })
 
 declare module '@tanstack/react-router' {

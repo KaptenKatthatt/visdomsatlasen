@@ -9,6 +9,7 @@ import { sokAnteckningar } from '../../lib/sokanteckningar'
 import { sokindexet, type Soktyp, type SökParametrar } from '../../lib/sokindex'
 import { sokIBiblioteket, synligaTraffar, type Sokgrupp, type SynligGrupp } from '../../lib/soklogik'
 import { normalisera } from '../../lib/soknormalisering'
+import { anonymiseraFraga, rapportera } from '../../lib/telemetri'
 import { useAsync } from '../../lib/useAsync'
 import { useAtlas } from '../../lib/store'
 import { useDebounced } from '../../lib/useDebounced'
@@ -149,6 +150,15 @@ export const SokBibliotekPage = ({ q, typ, onNavigera }: Props) => {
   const kalltextAntal = kalltextAntalAv(kalltext.data)
   const antal = redaktionellaOchNoter + kalltextAntal
   const ingaTraffar = ärHeltTomt(redaktionellaOchNoter, kalltextAntal, kalltext.loading)
+
+  // Fas 14: rapportera bara tekniskt minimum ur söket — ett index-fel eller en
+  // helt tom sökning (anonymiserat). Anteckningssöket rör detta aldrig, och
+  // frågans text loggas aldrig — bara längd och ordantal.
+  useEffect(() => {
+    if (nyckel.length < 2) return
+    if (fel) rapportera({ typ: 'sokfel', detalj: 'index' })
+    else if (ingaTraffar) rapportera({ typ: 'sok-nolltraff', ...anonymiseraFraga(term) })
+  }, [nyckel, fel, ingaTraffar, term])
 
   return (
     <div className="screenSub">

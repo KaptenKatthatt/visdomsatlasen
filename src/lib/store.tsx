@@ -10,7 +10,7 @@ import {
 } from 'react'
 import type { ReadMode } from '../content/model'
 import { mergaImport, type PersonligaSamlingar, type PersonligExport } from './dataflytt'
-import { hittaRumViaId } from './innehall'
+import { laddaFont } from './fonter'
 import {
   chapterKey,
   migreraAnteckningar,
@@ -40,10 +40,11 @@ type LastRead = { id: string; mode: ReadMode }
 
 const nu = (): string => new Date().toISOString()
 
-// Klassar en anteckningsnyckel vid migrering: kända rum-id:n blir `rum`, allt
-// annat (topic-id ur gamla appen, oidentifierbart) hamnar i `amne` — texten
-// bevaras alltid, oavsett om ursprunget kan slås upp.
-const klassificeraUrsprung = (id: string): Ursprung => (hittaRumViaId(id) ? 'rum' : 'amne')
+// Klassar en anteckningsnyckel vid migrering: rum-id:n (prefixet `rum-`, som
+// alla rum bär) blir `rum`, allt annat (topic-id ur gamla appen, oidentifierbart)
+// hamnar i `amne` — texten bevaras alltid, oavsett ursprung. Prefixkollen håller
+// storen fri från innehållssamlingen så startbunten slipper hela biblioteket (fas 13).
+const klassificeraUrsprung = (id: string): Ursprung => (id.startsWith('rum-') ? 'rum' : 'amne')
 
 type AtlasState = {
   // null = inget manuellt val: temat följer systemets färgschema, även när
@@ -368,6 +369,13 @@ const useThemeMirror = (state: AtlasState, dark: boolean): void => {
       .querySelector('meta[name="theme-color"]')
       ?.setAttribute('content', dark ? DARK_PAPER : BG_PAPER[state.bg])
   }, [dark, state.bg])
+
+  // Registrerar ett valbart typsnitts @font-face när det väljs (och på montering
+  // om ett sparat val inte är standardtypsnittet). Garamond är no-op — redan i
+  // startbunten. Håller start-CSS:en liten utan att någon får fel font (fas 13).
+  useEffect(() => {
+    laddaFont(state.font)
+  }, [state.font])
 }
 
 const AtlasContext = createContext<AtlasStore | null>(null)

@@ -1,5 +1,6 @@
 // Typad klient mot bibliotekets API (server/api/library.ts). Samma origin;
 // läsning är öppen (servern körs Tailscale-only, se server/index.ts).
+import { rapportera, utanFraga } from './telemetri'
 
 export type Work = {
   id: string
@@ -65,9 +66,34 @@ export type BookHit = {
   bookName: string
 }
 
+/** Lugna, svenska felmeddelanden i stället för råa `TypeError: Failed to fetch`
+ * eller statuskoder. Källtexterna kommer från biblioteks-API:t (server/), så en
+ * bruten uppkoppling ska mötas begripligt (fas 13, provide calm offline errors) —
+ * inte som ett tekniskt haveri. Det redaktionella innehållet ligger i bunten och
+ * berörs aldrig av detta; bara verkläsarens texter hämtas över nätet. */
+const OFFLINE_TEXT = 'Du verkar vara offline. Texten går att läsa igen när du är ansluten.'
+const NAT_TEXT = 'Texten går inte att hämta just nu. Kontrollera din uppkoppling och försök igen.'
+const SVAR_TEXT = 'Kunde inte hämta texten just nu. Försök igen om en stund.'
+
+const ärOffline = (): boolean => typeof navigator !== 'undefined' && navigator.onLine === false
+
 const getJson = async <T>(url: string): Promise<T> => {
-  const response = await fetch(url, { headers: { Accept: 'application/json' } })
-  if (!response.ok) throw new Error(`Kunde inte hämta (${response.status})`)
+  // Resursen loggas utan frågesträng, så en sökfrågas text aldrig läcker in i
+  // telemetrin via /api/library/search?q=… (fas 14, sensitive query data).
+  const resurs = utanFraga(url)
+  let response: Response
+  try {
+    response = await fetch(url, { headers: { Accept: 'application/json' } })
+  } catch {
+    // fetch avvisar med TypeError vid nätverksfel (offline, avbruten uppkoppling).
+    const offline = ärOffline()
+    rapportera({ typ: offline ? 'offline-laddningsfel' : 'sidladdningsfel', resurs })
+    throw new Error(offline ? OFFLINE_TEXT : NAT_TEXT)
+  }
+  if (!response.ok) {
+    rapportera({ typ: 'sidladdningsfel', resurs, detalj: `status ${response.status}` })
+    throw new Error(SVAR_TEXT)
+  }
   return (await response.json()) as T
 }
 

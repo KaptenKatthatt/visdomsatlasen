@@ -886,11 +886,25 @@ Ensure the calm experience is not undermined by slow or unstable behaviour.
 
 The phase is complete when:
 
-- [ ] The home screen does not load the complete content collection.
-- [ ] Core room text is not blocked by non-essential features.
-- [ ] Offline behaviour is understandable.
-- [ ] Font loading does not cause severe reading disruption.
-- [ ] Search and navigation remain responsive on a mid-range mobile device.
+- [x] The home screen does not load the complete content collection.
+- [x] Core room text is not blocked by non-essential features.
+- [x] Offline behaviour is understandable.
+- [x] Font loading does not cause severe reading disruption.
+- [x] Search and navigation remain responsive on a mid-range mobile device.
+
+Uppfyllt 2026-07-18: appen kod-delas (React.lazy + Suspense) så bara tröskeln,
+skalet och NotFoundNote ligger i startbunten; startbunten sjönk från 242 kB
+gzip till 147 kB och start-CSS:en från 93 kB till 17 kB. Hemskärmen laddar bara
+temana (troskeldata.ts) — rummens brödtext, källor och sökindexet hämtas först
+vid navigation (verifierat: ingen innehålls- eller sökchunk på hemskärmen).
+Rumstexten ligger i bunten och blockeras inte av något nätberoende. Bara
+standardtypsnittet EB Garamond laddas i starten; de valbara typsnitten
+registreras först när de väljs (verifierat: Literata-woff2 hämtas vid val).
+Verkläsarens API-fel möts av lugna svenska meddelanden och skiljer offline från
+annat nätfel. PWA:n fick PNG/maskable-ikoner (192/512/maskable) och sidchunkarna
+precachas, så rum och sökindex finns offline. `defaultPreload: 'intent'`
+förladdar sidchunkar vid intention. localStorage-gränser (kvot, privat läge)
+täcks av test och sväljs lugnt. E2E-verifierat i 430×900 utan konsolfel.
 
 ---
 
@@ -930,11 +944,25 @@ Do not optimise for:
 
 The phase is complete when:
 
-- [ ] Analytics are documented.
-- [ ] Private notes are excluded.
-- [ ] Sensitive query data is minimised.
-- [ ] No engagement dashboard is used to shape room selection.
-- [ ] Error reporting does not collect unnecessary personal text.
+- [x] Analytics are documented.
+- [x] Private notes are excluded.
+- [x] Sensitive query data is minimised.
+- [x] No engagement dashboard is used to shape room selection.
+- [x] Error reporting does not collect unnecessary personal text.
+
+Uppfyllt 2026-07-18: felrapporteringen samlar bara tekniskt minimum och är
+dokumenterad i `docs/specs/analytics.md`. Sänkan är medvetet enkel (ägarens
+beslut): klientens tekniska fel loggas till webbläsarens konsol (`telemetri.ts`),
+serverns till serverloggen (Hono `onError`) — ingen tredjepart, ingen endpoint,
+ingen DSN. De enda händelserna är sidladdningsfel, offline-laddningsfel, brutna
+källänkar, ogiltiga innehållsrelationer, sökfel, anonymiserade nollträffar och
+okaught-fel; ingen instrumentering finns för session, återkomst, streaks,
+sparande, anteckningar, vandringsavslut eller engagemang. Privata anteckningar
+rörs aldrig; nollträffssökningar loggas bara som längd och ordantal (aldrig
+texten) och frågesträngen strippas ur alla resurs-URL:er; okaught-fel loggar bara
+meddelande och kodplats. Rumsvalet (`rumsval.ts`) förblir deterministiskt och
+läser aldrig någon telemetri. E2E-verifierat: nollträff loggas anonymiserat utan
+att läcka frågan, okaught-fel fångas, API-fel rapporteras utan `?q=`.
 
 ---
 

@@ -24,7 +24,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg'],
+      includeAssets: ['icon.svg', 'pwa-192.png', 'pwa-512.png', 'pwa-maskable-512.png'],
       workbox: {
         // Precacha bara standardfontens latinfiler; övriga subset och valbara
         // typsnitt hämtas vid behov och fastnar i runtime-cachen nedan.
@@ -65,13 +65,14 @@ export default defineConfig({
         display: 'standalone',
         background_color: '#ece4d2',
         theme_color: '#faf6ed',
+        // SVG:n skalar överallt; PNG:erna (192/512) fyller de installationsytor
+        // som kräver raster, och maskable-varianten har safe-zone-marginal så
+        // Androids adaptiva mask aldrig klipper kompassen (fas 13).
         icons: [
-          {
-            src: 'icon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
-            purpose: 'any',
-          },
+          { src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+          { src: 'pwa-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'pwa-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
     }),
