@@ -83,9 +83,9 @@ det vi ställer mellan oss och det som är.
 
 Och så tog han steget som fortfarande svindlar: också bilden av Gud hör till
 det som ska släppas. Den högsta försakelsen, heter det i predikningarna, är
-att för Guds skull ge upp Gud — att släppa taget om sin egen tanke om honom,
-sina förväntningar på tröst och svar, för att inte längre hålla i en bild
-när man kunde stå inför det bilden föreställer. Den som blir så tom, menade
+att för Guds skull ge upp Gud — att släppa sin egen tanke om honom, sina
+förväntningar på tröst och svar. Att sluta hålla i bilden, för att kunna
+stå inför det den föreställer. Den som blir så tom, menade
 Eckhart, blir inte lämnad tom: det hör till Guds väsen att fylla den plats
 som öppnas.
 
