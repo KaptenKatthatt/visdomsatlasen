@@ -1,9 +1,12 @@
 ---
+# Godkänd av redaktören Jonas Olson 2026-07-18 vid chattgranskning av PR #52
+# (personSchema saknar redaktionsfält — se roadmapens »Person Pages (to do)«).
+# AI avgör aldrig ensam vad som publiceras.
 id: person-alan-watts
 slug: alan-watts
 namn: Alan Watts
 årtal: 1915–1973
-status: utkast
+status: publicerad
 ---
 
 Alan Watts föddes 1915 i Chislehurst utanför London och dog i november 1973
