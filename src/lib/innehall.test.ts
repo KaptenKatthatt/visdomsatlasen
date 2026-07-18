@@ -46,6 +46,7 @@ describe('tröskeln', () => {
       'Sanning',
       'Lidande',
       'Människan',
+      'Jesus',
     ])
     expect(troskelTeman.every((tema) => tema.status === 'publicerad')).toBe(true)
   })

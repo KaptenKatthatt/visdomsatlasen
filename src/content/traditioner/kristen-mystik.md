@@ -2,7 +2,7 @@
 id: tradition-kristen-mystik
 slug: kristen-mystik
 namn: Kristen mystik
-status: utkast
+status: publicerad
 nyckelord: [mystik, kontemplation, apofatisk, eckhart, molnet]
 ---
 

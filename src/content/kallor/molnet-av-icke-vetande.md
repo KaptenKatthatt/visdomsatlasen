@@ -11,7 +11,7 @@ plats: England
 upphov: okänt
 datering: ungefärlig
 rättigheter: public-domain
-status: utkast
+status: publicerad
 alias: [The Cloud of Unknowing, Icke-vetandets moln]
 nyckelord: [mystik, kontemplation, bön, gud, ovisshet, moln]
 ---

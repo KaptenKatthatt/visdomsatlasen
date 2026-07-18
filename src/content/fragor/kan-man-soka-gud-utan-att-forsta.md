@@ -3,7 +3,7 @@ id: fraga-kan-man-soka-gud-utan-att-forsta
 slug: kan-man-soka-gud-utan-att-forsta
 text: Kan man söka Gud utan att förstå honom?
 teman: [tema-jesus]
-status: utkast
+status: publicerad
 nyckelord: [gud, tro, tvivel, bön, förstå, ovisshet]
 ---
 

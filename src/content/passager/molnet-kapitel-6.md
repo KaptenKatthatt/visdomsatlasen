@@ -32,8 +32,9 @@ noteringar: >-
   oberoende speglingar av dessa etexter, vilka stämmer överens ord för ord.
   Textkritisk not: etextens »stalwartly, but Mistily« är sannolikt en
   återgivning av utgåvans »listily« (ivrigt); översatt »beslutsamt och med
-  iver«. Slutkontroll mot utgåvan (t.ex. CCEL/arkivskanning) bör göras vid
-  ägarens granskning innan publicering. AI avgör aldrig ensam vad som
-  publiceras.
-status: utkast
+  iver«. Godkänd av redaktören Jonas Olson 2026-07-18 vid chattgranskning av
+  PR #52, på grundval av de två samstämmiga etexterna; kontroll mot en
+  arkivskanning av utgåvan kan göras i efterhand om Mistily/listily-frågan
+  ska avgöras. AI avgör aldrig ensam vad som publiceras.
+status: publicerad
 ---

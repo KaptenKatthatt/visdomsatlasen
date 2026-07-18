@@ -20,7 +20,7 @@ källor:
       det; det tänkta läggs under glömskans moln); molnbilden ur kapitel 3
       omnämns. Inga direkta citat i rummet; källans ord nås via passagen.
 lästidMinuter: 4
-status: utkast
+status: publicerad
 skapad: 2026-07-18
 uppdaterad: 2026-07-18
 redaktion:
@@ -44,13 +44,16 @@ redaktion:
     granskning — se passagens noteringar.
     Rummet självt innehåller inga citat och delar inga meningar med passagens
     översättning. Tema Jesus, frågan, källposten och traditionen kristen
-    mystik är nya utkast som publiceras tillsammans med rummet om ägaren
-    godkänner. Förgranskad mot alla fyra checklistorna; öppningen bygger egen
+    mystik publicerades tillsammans med rummet i samma flipp.
+    Förgranskad mot alla fyra checklistorna; öppningen bygger egen
     båge och landar i slutkläm utan källa (§4b/§4c), Kärnan låter källan
     bekräfta. Språkligt omarbetad 2026-07-18 på redaktörens begäran vid
     chattgranskningen (naturligare ordföljd och ordval; bl.a. »förstått oss
-    till«, »färdigbegripet«, »Ty«, »hållas av« utmönstrade). AI avgör aldrig
-    ensam vad som publiceras.
+    till«, »färdigbegripet«, »Ty«, »hållas av« utmönstrade). Godkänd av
+    redaktören Jonas Olson 2026-07-18 efter läsning av hela rumstexten vid
+    chattgranskning av PR #52; publiceringen är redaktörens beslut och
+    verkställs i PR:en som redaktören mergar. AI avgör aldrig ensam vad som
+    publiceras.
   version: 2
 ---
 

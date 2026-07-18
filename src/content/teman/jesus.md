@@ -2,8 +2,9 @@
 id: tema-jesus
 slug: jesus
 etikett: Jesus
+ordning: 7
 standardRum: rum-molnet-av-icke-vetande
-status: utkast
+status: publicerad
 nyckelord: [gud, kristendom, tro, bön, andlighet]
 ---
 
