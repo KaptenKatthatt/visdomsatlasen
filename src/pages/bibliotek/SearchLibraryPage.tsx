@@ -18,8 +18,8 @@ import { Filter, SourceTextGroup, ResultView, SearchField, type SourceTextRespon
 
 // Which groups are expanded, remembered per normalized query across
 // navigation within the session (search.md: search state may be temporary).
-const expansionsminne = new Map<string, Set<SearchType>>()
-const getExpansion = (key: string): Set<SearchType> => new Set(expansionsminne.get(key))
+const expansionMemory = new Map<string, Set<SearchType>>()
+const getExpansion = (key: string): Set<SearchType> => new Set(expansionMemory.get(key))
 
 // The shareable search parameter; an empty query and no filter are omitted from the URL.
 const searchObject = (term: string, type: SearchType | undefined): SearchParams => ({
@@ -77,7 +77,7 @@ const nyExpansion = (
   groupType: SearchType,
 ): Set<SearchType> => {
   const next = new Set(previous).add(groupType)
-  expansionsminne.set(key, next)
+  expansionMemory.set(key, next)
   return next
 }
 

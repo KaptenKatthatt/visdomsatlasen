@@ -28,14 +28,14 @@ import styles from './RoomPage.module.css'
 const ColophonRow = ({
   label,
   open,
-  onVaxla,
-  detaljId,
+  onToggle,
+  detailId,
   children,
 }: {
   label: string
   open: boolean
-  onVaxla: () => void
-  detaljId: string
+  onToggle: () => void
+  detailId: string
   children: React.ReactNode
 }) => (
   <div>
@@ -43,12 +43,12 @@ const ColophonRow = ({
       type="button"
       className={styles.colophonRow}
       aria-expanded={open}
-      aria-controls={detaljId}
-      onClick={onVaxla}
+      aria-controls={detailId}
+      onClick={onToggle}
     >
       {label} <span aria-hidden>{open ? '▴' : '▾'}</span>
     </button>
-    <div id={detaljId} hidden={!open} className={styles.detail}>
+    <div id={detailId} hidden={!open} className={styles.detail}>
       {children}
     </div>
   </div>
@@ -63,7 +63,7 @@ const sourceRow = (source: Source, reference: string | undefined): string => {
 
 // The edition row shows only when a passage specifies an edition (source-and-context.md,
 // Translation Policy): edition and, for an in-house translation, the responsible hand.
-const editionsrad = (passage: SourcePassage | undefined): string | undefined => {
+const editionRow = (passage: SourcePassage | undefined): string | undefined => {
   if (!passage?.edition) return undefined
   const translation = passage.translator ? ` · translation ${passage.translator}` : ''
   return `Edition: ${passage.edition}${translation}`
@@ -97,7 +97,7 @@ const SourceBlock = ({ source, relations }: { source: Source; relations: SourceR
       return [
         sourceRow(source, passage?.reference ?? relation.reference),
         useLabel[relation.use],
-        editionsrad(passage),
+        editionRow(passage),
       ]
     }),
     ...uncertainties(source),
@@ -131,17 +131,17 @@ const SourceDetail = ({ room }: { room: Room }) => (
 
 // The colophon's label: the source's voice when the room builds on one work,
 // »Källor« when it builds on several (the first multi-source room: phase 12).
-const kolofonetikett = (room: Room, source: Source): string =>
+const colophonLabel = (room: Room, source: Source): string =>
   new Set(room.sources.map((relation) => relation.source)).size > 1 ? 'Källor' : sourceName(source)
 
 const RoomEnding = ({ room }: { room: Room }) => {
   const { savedRooms, toggleSavedRoom, notes, setNote, removeNote } = useAtlas()
-  const [openRow, setOpenRow] = useState<'source' | 'bakgrund' | null>(null)
+  const [openRow, setOpenRow] = useState<'source' | 'background' | null>(null)
   const [noteOpen, setNoteOpen] = useState(false)
   const primarySource = room.sources.find((k) => k.primary) ?? room.sources[0]
   const source = primarySource ? findSource(primarySource.source) : undefined
   const saved = !!savedRooms[room.id]
-  const toggle = (row: 'source' | 'bakgrund') =>
+  const toggle = (row: 'source' | 'background') =>
     setOpenRow((current) => (current === row ? null : row))
   return (
     <>
@@ -149,10 +149,10 @@ const RoomEnding = ({ room }: { room: Room }) => {
       <div className={styles.colophon}>
         {source && (
           <ColophonRow
-            label={kolofonetikett(room, source)}
+            label={colophonLabel(room, source)}
             open={openRow === 'source'}
-            onVaxla={() => toggle('source')}
-            detaljId="kalldetalj"
+            onToggle={() => toggle('source')}
+            detailId="kalldetalj"
           >
             <SourceDetail room={room} />
           </ColophonRow>
@@ -160,9 +160,9 @@ const RoomEnding = ({ room }: { room: Room }) => {
         {room.historicalContext && (
           <ColophonRow
             label="Historisk bakgrund"
-            open={openRow === 'bakgrund'}
-            onVaxla={() => toggle('bakgrund')}
-            detaljId="bakgrundsdetalj"
+            open={openRow === 'background'}
+            onToggle={() => toggle('background')}
+            detailId="bakgrundsdetalj"
           >
             {paragraphs(room.historicalContext).map((paragraph, i) => (
               <p key={i} className={styles.detailRow}>
@@ -209,7 +209,7 @@ const RoomEnding = ({ room }: { room: Room }) => {
 const PathFooter = ({ path, room }: { path: Path; room: Room }) => {
   const navigate = useNavigate()
   const order = roomsForPath(path, allRooms)
-  const index = order.findIndex((room) => room.id === room.id)
+  const index = order.findIndex((candidate) => candidate.id === room.id)
   if (index === -1) return null
   const next = order[index + 1]
   if (!next) {
@@ -226,7 +226,7 @@ const PathFooter = ({ path, room }: { path: Path; room: Room }) => {
   }
   // »Stanna här« clears the path context: the footer disappears and the room becomes
   // standalone again. The reader stays put — nothing is navigated away.
-  const stanna = () =>
+  const stay = () =>
     navigate({ to: '/rum/$slug', params: { slug: room.slug }, search: {}, replace: true })
   return (
     <div className={styles.path}>
@@ -238,7 +238,7 @@ const PathFooter = ({ path, room }: { path: Path; room: Room }) => {
       >
         Fortsätt vandringen
       </Link>
-      <button type="button" className={styles.pathAction} onClick={stanna}>
+      <button type="button" className={styles.pathAction} onClick={stay}>
         Stanna här
       </button>
     </div>
@@ -250,7 +250,7 @@ const PathFooter = ({ path, room }: { path: Path; room: Room }) => {
  * return). Only published content is recorded — drafts previewed via a
  * direct link should neither push published rooms out of the small window nor
  * write path memory (paths.md: the memory is orientation, never progress). */
-const useRumsminne = (room: Room | undefined, path: Path | undefined): void => {
+const useRoomMemory = (room: Room | undefined, path: Path | undefined): void => {
   const { registerLastRoom, registerPathPosition } = useAtlas()
   const publishedRoomId = room?.status === 'published' ? room.id : undefined
   const pathPositionId =
@@ -272,7 +272,7 @@ const useRumsminne = (room: Room | undefined, path: Path | undefined): void => {
  * passage that cannot be resolved. The build gate (check:content) should prevent it
  * for published content, so this is a safety net against drift/regressions.
  * Logs only ids, never text. */
-const useRelationskontroll = (room: Room | undefined): void => {
+const useRelationCheck = (room: Room | undefined): void => {
   useEffect(() => {
     if (!room) return
     for (const relation of room.sources) {
@@ -297,8 +297,8 @@ const useRelationskontroll = (room: Room | undefined): void => {
 export const RoomPage = ({ slug, pathSlug }: { slug: string; pathSlug?: string }) => {
   const room = findRoom(slug)
   const path = pathSlug !== undefined ? findPathBySlug(pathSlug) : undefined
-  useRumsminne(room, path)
-  useRelationskontroll(room)
+  useRoomMemory(room, path)
+  useRelationCheck(room)
   useDocumentTitle(room?.title)
   if (!room) return <NotFoundNote subject="Rummet" />
   const theme = findTheme(room.themes[0] ?? '')
