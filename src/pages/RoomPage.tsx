@@ -233,7 +233,7 @@ const PathFooter = ({ path, room }: { path: Path; room: Room }) => {
       <Link
         to="/rum/$slug"
         params={{ slug: next.slug }}
-        search={{ path: path.slug }}
+        search={{ vandring: path.slug }}
         className={styles.pathAction}
       >
         Fortsätt vandringen

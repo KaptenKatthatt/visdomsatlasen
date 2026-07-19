@@ -260,10 +260,10 @@ const chapterRoute = createRoute({
 const roomRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/rum/$slug',
-  validateSearch: (search: Record<string, unknown>): { path?: string } =>
-    typeof search['vandring'] === 'string' ? { path: search['vandring'] } : {},
+  validateSearch: (search: Record<string, unknown>): { vandring?: string } =>
+    typeof search['vandring'] === 'string' ? { vandring: search['vandring'] } : {},
   component: function RumRoute() {
-    return <RoomPage slug={roomRoute.useParams().slug} pathSlug={roomRoute.useSearch().path} />
+    return <RoomPage slug={roomRoute.useParams().slug} pathSlug={roomRoute.useSearch().vandring} />
   },
 })
 

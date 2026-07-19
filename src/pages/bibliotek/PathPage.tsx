@@ -80,7 +80,7 @@ const RoomPart = ({ path, rooms }: { path: Path; rooms: Room[] }) => {
         <Link
           to="/rum/$slug"
           params={{ slug: place.slug }}
-          search={{ path: path.slug }}
+          search={{ vandring: path.slug }}
           className={styles.row}
         >
           <Row title="Fortsätt där du stannade" sub={place.title} />
@@ -95,7 +95,7 @@ const RoomPart = ({ path, rooms }: { path: Path; rooms: Room[] }) => {
               <Link
                 to="/rum/$slug"
                 params={{ slug: room.slug }}
-                search={{ path: path.slug }}
+                search={{ vandring: path.slug }}
                 className={styles.row}
               >
                 <Row title={room.title} sub={`${room.readingTimeMinutes} min`} />

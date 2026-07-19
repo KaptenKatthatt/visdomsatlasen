@@ -66,7 +66,7 @@ type AtlasState = {
   // Saved paths (path id → entry). Never progress or completion —
   // only that the reader wants to be able to return (notes-and-saved.md, Saved Paths).
   savedPaths: Record<string, SavedItem>
-  // The most recently opened rooms (newest first, max HISTORIKLANGD). Exists only
+  // The most recently opened rooms (newest first, max HISTORY_LENGTH). Exists only
   // so room selection avoids immediate repetition — not an activity log.
   recentRooms: string[]
   // The most recently opened room per path (path id → room id). Purely orientation
@@ -87,8 +87,8 @@ type AtlasActions = {
   registerPathPosition: (pathId: string, roomId: string) => void
   toggleSavedRoom: (id: string) => void
   toggleSavedPath: (id: string) => void
-  setNote: (type: Origin, ursprungId: string, text: string) => void
-  removeNote: (ursprungId: string) => void
+  setNote: (type: Origin, originId: string, text: string) => void
+  removeNote: (originId: string) => void
   clearRecentlyVisited: () => void
   importPersonal: (incoming: PersonalExport) => void
   clearPersonal: () => void
@@ -302,21 +302,21 @@ const usePersonligtActions = (setState: SetAtlasState): PersonligtActions => {
     [setState],
   )
   const setNote = useCallback(
-    (type: Origin, ursprungId: string, text: string) =>
+    (type: Origin, originId: string, text: string) =>
       setState((s) => ({
         ...s,
         notes: {
           ...s.notes,
-          [ursprungId]: updatedNote(s.notes[ursprungId], type, ursprungId, text, now()),
+          [originId]: updatedNote(s.notes[originId], type, originId, text, now()),
         },
       })),
     [setState],
   )
   const removeNote = useCallback(
-    (ursprungId: string) =>
+    (originId: string) =>
       setState((s) => {
         const next = { ...s.notes }
-        delete next[ursprungId]
+        delete next[originId]
         return { ...s, notes: next }
       }),
     [setState],
