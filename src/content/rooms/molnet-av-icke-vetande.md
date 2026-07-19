@@ -4,7 +4,7 @@ slug: molnet-av-icke-vetande
 title: Molnet av icke-vetande
 summary: En medeltida tanke om att Gud inte kan tänkas — men älskas.
 primaryQuestion: fraga-kan-man-soka-gud-utan-att-forsta
-themes: [tema-jesus, tema-sanning]
+themes: [tema-tro, tema-sanning]
 thoughtToCarry: Det tanken inte når kan kärleken nå. Molnet skingras inte — det genomträngs.
 reflectionQuestions:
   - Vad väntar du med att närma dig tills du förstår det bättre?
@@ -52,8 +52,11 @@ editorial:
     till«, »färdigbegripet«, »Ty«, »hållas av« utmönstrade). Godkänd av
     redaktören Jonas Olson 2026-07-18 efter läsning av hela rumstexten vid
     chattgranskning av PR #52; publiceringen är redaktörens beslut och
-    verkställs i PR:en som redaktören mergar. AI avgör aldrig ensam vad som
-    publiceras.
+    verkställs i PR:en som redaktören mergar. Temat döptes om från Jesus
+    till Tro 2026-07-19 på redaktörens beslut — tröskelns teman ska vara
+    allmänmänskliga och inte bundna till en särskild religion
+    (reading-room.md: specifika ingångar som Jesus hör hemma i Biblioteket).
+    AI avgör aldrig ensam vad som publiceras.
   version: 2
 ---
 

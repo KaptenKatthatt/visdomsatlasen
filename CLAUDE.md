@@ -190,7 +190,9 @@ de förbjudna storheterna (session, återkomst, streaks, sparande, notiser, vand
 
 **Watts-rummen (issue #44, PR #52):** Molnet av icke-vetande och Avskildheten
 publicerade (godkända av redaktören 2026-07-18); tema Jesus (tröskelordning 7)
-och traditionen kristen mystik nya. Tolken i väst blev **inte** ett rum
+och traditionen kristen mystik nya. Temat döptes 2026-07-19 om till **Tro**
+(`tema-tro`, slug `tro`) — tröskelns teman ska vara allmänmänskliga, inte
+bundna till en särskild religion; »jesus« ligger kvar som sök-nyckelord. Tolken i väst blev **inte** ett rum
 (redaktörens beslut) utan bibliotekets första **personsida**:
 `src/content/personer/`, route `/bibliotek/person/$slug`, sektionen Personer
 sist på landningen (dold tills publicerat). Personsidorna är ett provisorium —

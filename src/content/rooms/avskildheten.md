@@ -4,7 +4,7 @@ slug: avskildheten
 title: Avskildheten
 summary: Eckharts tanke att det sista vi behöver släppa är våra bilder — även bilden av Gud.
 primaryQuestion: fraga-kan-man-slappa-taget-om-gud
-themes: [tema-jesus]
+themes: [tema-tro]
 thoughtToCarry: Att släppa taget om bilden är inte att förlora det den föreställer. Det kan vara första gången man ser det.
 reflectionQuestions:
   - Vilken bild av någon — eller något — håller du så hårt att den skymmer sikten?
@@ -57,8 +57,11 @@ editorial:
     utan källa (§4b/§4c). Godkänd av redaktören Jonas Olson 2026-07-18 efter
     läsning av hela rumstexten vid chattgranskning av PR #52, med beslutet
     att publicera utan källpassage; publiceringen är redaktörens beslut och
-    verkställs i PR:en som redaktören mergar. AI avgör aldrig ensam vad som
-    publiceras.
+    verkställs i PR:en som redaktören mergar. Temat döptes om från Jesus
+    till Tro 2026-07-19 på redaktörens beslut — tröskelns teman ska vara
+    allmänmänskliga och inte bundna till en särskild religion
+    (reading-room.md: specifika ingångar som Jesus hör hemma i Biblioteket).
+    AI avgör aldrig ensam vad som publiceras.
   version: 1
 ---
 

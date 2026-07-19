@@ -2,7 +2,7 @@
 id: fraga-kan-man-slappa-taget-om-gud
 slug: kan-man-slappa-taget-om-gud
 text: Kan man släppa taget om Gud för Guds skull?
-themes: [tema-jesus]
+themes: [tema-tro]
 status: published
 keywords: [gud, avskildhet, släppa taget, överlåtelse, eckhart, mystik]
 ---

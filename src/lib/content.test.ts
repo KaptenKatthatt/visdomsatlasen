@@ -46,7 +46,7 @@ describe('tröskeln', () => {
       'Sanning',
       'Lidande',
       'Människan',
-      'Jesus',
+      'Tro',
     ])
     expect(thresholdThemes.every((theme) => theme.status === 'published')).toBe(true)
   })
