@@ -9,7 +9,20 @@ import { accessCookieValue, verifyAccessCode, verifyAccessCookie } from './auth'
 
 const COOKIE = 'va_access'
 const LOGIN_PATH = '/api/access'
+const INGEST_PATH = '/api/ingest'
 const EN_MANAD = 60 * 60 * 24 * 30
+
+/**
+ * Kom anropet in över HTTPS? Funnel/reverse-proxyn sätter X-Forwarded-Proto;
+ * direkt trafik avläses på URL:en. Styr cookiens Secure-flagga: över ren HTTP
+ * (direkt tailnet-IP) vägrar webbläsaren spara en Secure-cookie och
+ * inloggningen loopar — tailnet-trafiken är ändå WireGuard-krypterad.
+ */
+const overHttps = (c: Context): boolean => {
+  const proto = c.req.header('X-Forwarded-Proto')
+  if (proto !== undefined) return proto.split(',')[0]?.trim() === 'https'
+  return new URL(c.req.url).protocol === 'https:'
+}
 
 /** Läser den inskickade koden ur ett formulär eller en JSON-kropp. */
 const laesKod = async (c: Context): Promise<string> => {
@@ -66,6 +79,29 @@ const kodSida = (fel: boolean): string => `<!doctype html>
 </body>
 </html>`
 
+/** Login: verifiera koden, sätt cookie, tillbaka till appen. */
+const hanteraLogin = async (c: Context, accessCode: string, token: string): Promise<Response> => {
+  const submitted = await laesKod(c)
+  if (!verifyAccessCode(submitted, accessCode)) return c.html(kodSida(true), 401)
+  setCookie(c, COOKIE, token, {
+    httpOnly: true,
+    secure: overHttps(c),
+    sameSite: 'Lax',
+    path: '/',
+    maxAge: EN_MANAD,
+  })
+  return c.redirect('/', 303)
+}
+
+/**
+ * Vägar som går förbi cookien: robots.txt (säger ändå Disallow: /) och
+ * POST /api/ingest — ingest bär sitt eget skydd (INGEST_TOKEN i routern) och
+ * måste kunna anropas av cron/CI utan webbläsarcookie. Bara POST släpps
+ * förbi; GET faller annars vidare till SPA-fallbacken och skulle läcka skalet.
+ */
+const oppenVag = (c: Context): boolean =>
+  c.req.path === '/robots.txt' || (c.req.method === 'POST' && c.req.path === INGEST_PATH)
+
 /**
  * Bygger spärr-middleware för en given kod. Hanterar login-POST:en, kollar
  * cookien och serverar annars kod-sidan (för HTML-navigering) eller 401.
@@ -73,24 +109,11 @@ const kodSida = (fel: boolean): string => `<!doctype html>
 export const createAccessGate = (accessCode: string): MiddlewareHandler => {
   const token = accessCookieValue(accessCode)
   return async (c, next) => {
-    // Login: verifiera koden, sätt cookie, tillbaka till appen.
     if (c.req.method === 'POST' && c.req.path === LOGIN_PATH) {
-      const submitted = await laesKod(c)
-      if (verifyAccessCode(submitted, accessCode)) {
-        setCookie(c, COOKIE, token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'Lax',
-          path: '/',
-          maxAge: EN_MANAD,
-        })
-        return c.redirect('/', 303)
-      }
-      return c.html(kodSida(true), 401)
+      return hanteraLogin(c, accessCode, token)
     }
 
-    // robots.txt släpps alltid igenom (säger ändå Disallow: /).
-    if (c.req.path === '/robots.txt') return next()
+    if (oppenVag(c)) return next()
 
     // Redan inne?
     if (verifyAccessCookie(getCookie(c, COOKIE) ?? null, accessCode)) return next()

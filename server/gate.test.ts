@@ -58,6 +58,30 @@ describe('createAccessGate', () => {
     expect(await res.json()).toEqual({ works: [] })
   })
 
+  it('sätter Secure på cookien bara när anropet kom över HTTPS', async () => {
+    const inloggning = async (headers: Record<string, string>): Promise<Response> =>
+      byggApp().request('/api/access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', ...headers },
+        body: new URLSearchParams({ code: KOD }),
+      })
+    // Funnel/proxyn sätter X-Forwarded-Proto: https.
+    const viaHttps = await inloggning({ 'X-Forwarded-Proto': 'https' })
+    expect(viaHttps.headers.get('set-cookie') ?? '').toContain('Secure')
+    // Direkt tailnet-IP över ren HTTP: utan Secure, annars sparas cookien aldrig.
+    const viaHttp = await inloggning({})
+    expect(viaHttp.headers.get('set-cookie') ?? '').not.toContain('Secure')
+  })
+
+  it('släpper förbi POST /api/ingest (eget token-skydd) men inte GET', async () => {
+    const app = byggApp()
+    app.post('/api/ingest', (c) => c.json({ results: [] }))
+    const post = await app.request('/api/ingest', { method: 'POST' })
+    expect(post.status).toBe(200)
+    const get = await app.request('/api/ingest')
+    expect(get.status).toBe(401)
+  })
+
   it('släpper alltid igenom robots.txt', async () => {
     const app = byggApp()
     app.get('/robots.txt', (c) => c.text('User-agent: *\nDisallow: /'))
