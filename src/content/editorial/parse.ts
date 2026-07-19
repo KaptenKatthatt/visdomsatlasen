@@ -54,14 +54,14 @@ const splitSections = (body: string): Map<string, string> => {
   const save = () => {
     if (current !== null) sections.set(current, rows.join('\n').trim())
   }
-  for (const rad of body.split(/\r?\n/)) {
-    const rubrik = /^##\s+(.+?)\s*$/.exec(rad)
-    if (rubrik?.[1] !== undefined) {
+  for (const row of body.split(/\r?\n/)) {
+    const heading = /^##\s+(.+?)\s*$/.exec(row)
+    if (heading?.[1] !== undefined) {
       save()
-      current = rubrik[1]
+      current = heading[1]
       rows = []
     } else {
-      rows.push(rad)
+      rows.push(row)
     }
   }
   save()
@@ -71,18 +71,18 @@ const splitSections = (body: string): Map<string, string> => {
 type RoomFields = Partial<Record<'opening' | 'core' | 'historicalContext', string>>
 
 const roomSections = (filePath: string, body: string): Parsed<RoomFields> => {
-  const fel: string[] = []
+  const error: string[] = []
   const field: RoomFields = {}
-  for (const [rubrik, text] of splitSections(body)) {
-    const name = SECTIONS[rubrik]
-    if (!name) fel.push(`${filePath}: okänd sektion "## ${rubrik}"`)
+  for (const [heading, text] of splitSections(body)) {
+    const name = SECTIONS[heading]
+    if (!name) error.push(`${filePath}: okänd sektion "## ${heading}"`)
     else if (text.length > 0) field[name] = text
   }
   for (const required of ['Opening', 'Core'] as const) {
     const name = SECTIONS[required]
-    if (name && field[name] === undefined) fel.push(`${filePath}: saknar sektionen "## ${required}"`)
+    if (name && field[name] === undefined) error.push(`${filePath}: saknar sektionen "## ${required}"`)
   }
-  return fel.length > 0 ? { value: null, errors: fel } : { value: field, errors: [] }
+  return error.length > 0 ? { value: null, errors: error } : { value: field, errors: [] }
 }
 
 /** Parses and validates a room (frontmatter + ## sections). */

@@ -1,4 +1,4 @@
-import styles from './Bibliotek.module.css'
+import styles from './Library.module.css'
 
 /** Shared loading/error line for the library views. */
 export const StateNote = ({ loading, error }: { loading: boolean; error: string | null }) => {

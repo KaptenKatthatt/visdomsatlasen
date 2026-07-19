@@ -1,8 +1,8 @@
 import { Outlet, useRouterState } from '@tanstack/react-router'
 import { Suspense, useState } from 'react'
-import { ErrorBoundary } from '../components/Felgrans'
+import { ErrorBoundary } from '../components/ErrorBoundary'
 import { NavTabs } from '../components/NavTabs'
-import { Sidladdning } from '../components/Sidladdning'
+import { PageLoading } from '../components/PageLoading'
 import { ShellContext } from '../lib/shell'
 import { useAtlas } from '../lib/store'
 
@@ -30,7 +30,7 @@ export const RootLayout = () => {
             {/* The per-route key resets the error boundary on navigation, so a
                 single chunk error doesn't stick when the reader moves on (phase 14). */}
             <ErrorBoundary key={pathname}>
-              <Suspense fallback={<Sidladdning />}>
+              <Suspense fallback={<PageLoading />}>
                 <Outlet />
               </Suspense>
             </ErrorBoundary>

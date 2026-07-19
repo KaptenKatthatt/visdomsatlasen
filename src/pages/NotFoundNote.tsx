@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router'
-import { useSidtitel } from '../lib/useSidtitel'
+import { useDocumentTitle } from '../lib/useDocumentTitle'
 
 /** Calm 404 for missing topics, sources, people or routes. */
 export const NotFoundNote = ({ subject = 'Sidan' }: { subject?: string }) => {
-  useSidtitel(`${subject} kunde inte hittas`)
+  useDocumentTitle(`${subject} kunde inte hittas`)
   return (
     <div className="screenTab">
       <div className="kicker">Visdomsatlasen</div>

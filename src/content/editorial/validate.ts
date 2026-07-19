@@ -17,34 +17,34 @@ type Lookup = {
 }
 
 const perId = <T extends { id: string }>(items: T[]): Map<string, T> =>
-  new Map(items.map((post) => [post.id, post]))
+  new Map(items.map((item) => [item.id, item]))
 
 const duplicateError = (type: string, items: { id: string; slug?: string }[]): string[] => {
-  const fel: string[] = []
-  const seddaId = new Set<string>()
-  const seddaSluggar = new Set<string>()
-  for (const post of items) {
-    if (seddaId.has(post.id)) fel.push(`${type} ${post.id}: dubblett av id "${post.id}"`)
-    seddaId.add(post.id)
-    if (post.slug !== undefined) {
-      if (seddaSluggar.has(post.slug)) fel.push(`${type} ${post.id}: dubblett av slug "${post.slug}"`)
-      seddaSluggar.add(post.slug)
+  const error: string[] = []
+  const seenIds = new Set<string>()
+  const seenSlugs = new Set<string>()
+  for (const item of items) {
+    if (seenIds.has(item.id)) error.push(`${type} ${item.id}: dubblett av id "${item.id}"`)
+    seenIds.add(item.id)
+    if (item.slug !== undefined) {
+      if (seenSlugs.has(item.slug)) error.push(`${type} ${item.id}: dubblett av slug "${item.slug}"`)
+      seenSlugs.add(item.slug)
     }
   }
-  return fel
+  return error
 }
 
-const publicerad = (status: string | undefined): boolean => status === 'published'
+const isPublished = (status: string | undefined): boolean => status === 'published'
 
 // A referenced post: does it exist, and (for published rooms) is it published?
-type Reference = { type: string; id: string; finns: boolean; publicerad: boolean }
+type Reference = { type: string; id: string; exists: boolean; isPublished: boolean }
 
 const roomReferences = (room: Room, lookup: Lookup): Reference[] => {
   const question = (type: string, id: string): Reference => ({
     type,
     id,
-    finns: lookup.questions.has(id),
-    publicerad: publicerad(lookup.questions.get(id)?.status),
+    exists: lookup.questions.has(id),
+    isPublished: isPublished(lookup.questions.get(id)?.status),
   })
   return [
     question('primär fråga', room.primaryQuestion),
@@ -52,29 +52,29 @@ const roomReferences = (room: Room, lookup: Lookup): Reference[] => {
     ...room.themes.map((id): Reference => ({
       type: 'tema',
       id,
-      finns: lookup.themes.has(id),
-      publicerad: publicerad(lookup.themes.get(id)?.status),
+      exists: lookup.themes.has(id),
+      isPublished: isPublished(lookup.themes.get(id)?.status),
     })),
     ...room.sources.map((relation): Reference => ({
       type: 'source',
       id: relation.source,
-      finns: lookup.sourceStatus.has(relation.source),
-      publicerad: publicerad(lookup.sourceStatus.get(relation.source)),
+      exists: lookup.sourceStatus.has(relation.source),
+      isPublished: isPublished(lookup.sourceStatus.get(relation.source)),
     })),
     ...room.sources
       .filter((relation) => relation.passage !== undefined)
       .map((relation): Reference => ({
         type: 'källpassage',
         id: relation.passage ?? '',
-        finns: lookup.passages.has(relation.passage ?? ''),
-        publicerad: publicerad(lookup.passages.get(relation.passage ?? '')?.status),
+        exists: lookup.passages.has(relation.passage ?? ''),
+        isPublished: isPublished(lookup.passages.get(relation.passage ?? '')?.status),
       })),
   ]
 }
 
 const relationError = (room: Room, lookup: Lookup): string[] =>
   roomReferences(room, lookup)
-    .filter((reference) => !reference.finns)
+    .filter((reference) => !reference.exists)
     .map((reference) => `rum ${room.id}: ${reference.type} "${reference.id}" finns inte`)
 
 // Quotes and own translations require a source passage with an exact reference and
@@ -100,8 +100,8 @@ const sourceUseError = (room: Room, relation: SourceRelation, lookup: Lookup): s
 
 // The publication requirements (source-and-context.md Publication Gate, room-schema.md).
 const publishError = (room: Room, lookup: Lookup): string[] => {
-  if (!publicerad(room.status)) return []
-  const grindar = [
+  if (!isPublished(room.status)) return []
+  const gates = [
     ...(room.sources.some((relation) => relation.primary)
       ? []
       : [`rum ${room.id}: publicerat rum saknar primary source`]),
@@ -111,9 +111,9 @@ const publishError = (room: Room, lookup: Lookup): string[] => {
     ...room.sources.flatMap((relation) => sourceUseError(room, relation, lookup)),
   ]
   const unpublished = roomReferences(room, lookup)
-    .filter((reference) => reference.finns && !reference.publicerad)
+    .filter((reference) => reference.exists && !reference.isPublished)
     .map((reference) => `rum ${room.id}: länkar opublicerad(t) ${reference.type} "${reference.id}"`)
-  return [...grindar, ...unpublished]
+  return [...gates, ...unpublished]
 }
 
 // Language gate (review-language.md): the opening should land in the everyday, not
@@ -130,12 +130,12 @@ const themeError = (theme: Theme, lookup: Lookup): string[] => {
   if (theme.defaultRoom === undefined) return []
   const room = lookup.rooms.get(theme.defaultRoom)
   if (!room) return [`tema ${theme.id}: standardrum "${theme.defaultRoom}" finns inte`]
-  const fel: string[] = []
+  const error: string[] = []
   if (!room.themes.includes(theme.id))
-    fel.push(`tema ${theme.id}: standardrummet "${room.id}" tillhör inte temat`)
-  if (publicerad(theme.status) && !publicerad(room.status))
-    fel.push(`tema ${theme.id}: publicerat tema har opublicerat standardrum "${room.id}"`)
-  return fel
+    error.push(`tema ${theme.id}: standardrummet "${room.id}" tillhör inte temat`)
+  if (isPublished(theme.status) && !isPublished(room.status))
+    error.push(`tema ${theme.id}: publicerat tema har opublicerat standardrum "${room.id}"`)
+  return error
 }
 
 // Same gate principle as the rooms: a published question is a visible entry point
@@ -144,10 +144,10 @@ const questionReference = (
   question: Question,
   type: string,
   id: string,
-  post: { status: string } | undefined,
+  item: { status: string } | undefined,
 ): string[] => {
-  if (!post) return [`fråga ${question.id}: ${type} "${id}" finns inte`]
-  if (publicerad(question.status) && !publicerad(post.status))
+  if (!item) return [`fråga ${question.id}: ${type} "${id}" finns inte`]
+  if (isPublished(question.status) && !isPublished(item.status))
     return [`fråga ${question.id}: publicerad fråga länkar opublicerad(t) ${type} "${id}"`]
   return []
 }
@@ -161,30 +161,30 @@ const questionError = (question: Question, lookup: Lookup): string[] => [
 
 const pathError = (set: ContentSet, lookup: Lookup): string[] =>
   set.paths.flatMap((path) => {
-    const fel: string[] = []
+    const error: string[] = []
     // Central question: same gate as the rooms — a published path is a visible
     // entry point and must not link an unpublished question.
     const central = lookup.questions.get(path.centralQuestion)
     if (!central)
-      fel.push(`vandring ${path.id}: central fråga "${path.centralQuestion}" finns inte`)
-    else if (publicerad(path.status) && !publicerad(central.status))
-      fel.push(
+      error.push(`vandring ${path.id}: central fråga "${path.centralQuestion}" finns inte`)
+    else if (isPublished(path.status) && !isPublished(central.status))
+      error.push(
         `vandring ${path.id}: publicerad vandring länkar opublicerad central fråga "${path.centralQuestion}"`,
       )
     for (const roomId of path.rooms) {
       const room = lookup.rooms.get(roomId)
-      if (!room) fel.push(`vandring ${path.id}: rum "${roomId}" finns inte`)
-      else if (publicerad(path.status) && !publicerad(room.status))
-        fel.push(`vandring ${path.id}: publicerad vandring innehåller opublicerat rum "${roomId}"`)
+      if (!room) error.push(`vandring ${path.id}: rum "${roomId}" finns inte`)
+      else if (isPublished(path.status) && !isPublished(room.status))
+        error.push(`vandring ${path.id}: publicerad vandring innehåller opublicerat rum "${roomId}"`)
     }
-    return fel
+    return error
   })
 
 // A published source must take a stance on attribution and dating (even the answer
 // "unknown"/"disputed") so uncertainty is represented rather than hidden
 // (source-and-context.md, Uncertainty; Publication Gate).
 const sourceUncertainty = (source: Source): string[] =>
-  publicerad(source.status)
+  isPublished(source.status)
     ? [
         ...(source.attribution === undefined
           ? [`source ${source.id}: publicerad source saknar upphovsstatus (attribution)`]
@@ -199,7 +199,7 @@ const sourceTraditionError = (source: Source, lookup: Lookup): string[] =>
   (source.traditions ?? []).flatMap((traditionId) => {
     if (!lookup.traditionStatus.has(traditionId))
       return [`source ${source.id}: tradition "${traditionId}" finns inte`]
-    if (publicerad(source.status) && !publicerad(lookup.traditionStatus.get(traditionId)))
+    if (isPublished(source.status) && !isPublished(lookup.traditionStatus.get(traditionId)))
       return [`source ${source.id}: publicerad source länkar opublicerad tradition "${traditionId}"`]
     return []
   })

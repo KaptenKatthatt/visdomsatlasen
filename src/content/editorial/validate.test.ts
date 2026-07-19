@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Question, ContentSet, Source, SourcePassage, Room, Theme } from './schema'
 import { validateContent } from './validate'
 
-const room = (över: Partial<Room> = {}): Room => ({
+const room = (overrides: Partial<Room> = {}): Room => ({
   id: 'rum-a',
   slug: 'rum-a',
   title: 'Rum A',
@@ -19,27 +19,27 @@ const room = (över: Partial<Room> = {}): Room => ({
   updated: '2026-07-09',
   opening: 'Öppning.',
   core: 'Kärna.',
-  ...över,
+  ...overrides,
 })
 
-const theme = (över: Partial<Theme> = {}): Theme => ({
+const theme = (overrides: Partial<Theme> = {}): Theme => ({
   id: 'tema-a',
   slug: 'tema-a',
   label: 'Tema A',
   status: 'published',
-  ...över,
+  ...overrides,
 })
 
-const question = (över: Partial<Question> = {}): Question => ({
+const question = (overrides: Partial<Question> = {}): Question => ({
   id: 'fraga-a',
   slug: 'fraga-a',
   text: 'Vad är A?',
   themes: ['tema-a'],
   status: 'published',
-  ...över,
+  ...overrides,
 })
 
-const source = (över: Partial<Source> = {}): Source => ({
+const source = (overrides: Partial<Source> = {}): Source => ({
   id: 'kalla-a',
   slug: 'kalla-a',
   title: 'Källa A',
@@ -48,18 +48,18 @@ const source = (över: Partial<Source> = {}): Source => ({
   dating: 'known',
   rights: 'public-domain',
   status: 'published',
-  ...över,
+  ...overrides,
 })
 
-const passage = (över: Partial<SourcePassage> = {}): SourcePassage => ({
+const passage = (overrides: Partial<SourcePassage> = {}): SourcePassage => ({
   id: 'passage-a',
   source: 'kalla-a',
   reference: 'avsnitt 1',
   status: 'published',
-  ...över,
+  ...overrides,
 })
 
-const grund = (över: Partial<ContentSet> = {}): ContentSet => ({
+const grund = (overrides: Partial<ContentSet> = {}): ContentSet => ({
   rooms: [room()],
   themes: [theme()],
   questions: [question()],
@@ -68,7 +68,7 @@ const grund = (över: Partial<ContentSet> = {}): ContentSet => ({
   passages: [],
   traditions: [],
   people: [],
-  ...över,
+  ...overrides,
 })
 
 describe('valideraInnehall', () => {
@@ -77,17 +77,17 @@ describe('valideraInnehall', () => {
   })
 
   it('fångar dubblerade id och sluggar inom en samling', () => {
-    const fel = validateContent(grund({ themes: [theme(), theme({ label: 'Kopia' })] }))
-    expect(fel.some((f) => f.includes('tema-a') && f.includes('dubblett'))).toBe(true)
+    const error = validateContent(grund({ themes: [theme(), theme({ label: 'Kopia' })] }))
+    expect(error.some((f) => f.includes('tema-a') && f.includes('dubblett'))).toBe(true)
   })
 
   it('fångar rum vars primära fråga inte finns', () => {
-    const fel = validateContent(grund({ rooms: [room({ primaryQuestion: 'saknas' })] }))
-    expect(fel.some((f) => f.includes('rum-a') && f.includes('saknas'))).toBe(true)
+    const error = validateContent(grund({ rooms: [room({ primaryQuestion: 'saknas' })] }))
+    expect(error.some((f) => f.includes('rum-a') && f.includes('saknas'))).toBe(true)
   })
 
   it('fångar rum med okänt tema och okänd källa', () => {
-    const fel = validateContent(
+    const error = validateContent(
       grund({
         rooms: [
           room({
@@ -97,8 +97,8 @@ describe('valideraInnehall', () => {
         ],
       }),
     )
-    expect(fel.some((f) => f.includes('tema-x'))).toBe(true)
-    expect(fel.some((f) => f.includes('kalla-x'))).toBe(true)
+    expect(error.some((f) => f.includes('tema-x'))).toBe(true)
+    expect(error.some((f) => f.includes('kalla-x'))).toBe(true)
   })
 
   it('kräver primär källa för publicerade rum men inte för utkast', () => {
@@ -112,15 +112,15 @@ describe('valideraInnehall', () => {
   })
 
   it('hindrar publicerade rum från att länka opublicerat innehåll', () => {
-    const fel = validateContent(
+    const error = validateContent(
       grund({
         rooms: [room({ status: 'published' })],
         questions: [question({ status: 'draft' })],
         sources: [source({ status: 'review' })],
       }),
     )
-    expect(fel.some((f) => f.includes('fraga-a') && f.includes('opublicerad'))).toBe(true)
-    expect(fel.some((f) => f.includes('kalla-a') && f.includes('opublicerad'))).toBe(true)
+    expect(error.some((f) => f.includes('fraga-a') && f.includes('opublicerad'))).toBe(true)
+    expect(error.some((f) => f.includes('kalla-a') && f.includes('opublicerad'))).toBe(true)
   })
 
   it('hindrar publicerade rum från att länka opublicerade källpassager', () => {
@@ -152,10 +152,10 @@ describe('valideraInnehall', () => {
   })
 
   it('begränsar lästiden för publicerade rum till 1–10 minuter', () => {
-    const fel = validateContent(
+    const error = validateContent(
       grund({ rooms: [room({ status: 'published', readingTimeMinutes: 12 })] }),
     )
-    expect(fel.some((f) => f.includes('lästid'))).toBe(true)
+    expect(error.some((f) => f.includes('lästid'))).toBe(true)
     expect(validateContent(grund({ rooms: [room({ readingTimeMinutes: 12 })] }))).toEqual([])
   })
 
@@ -171,12 +171,12 @@ describe('valideraInnehall', () => {
   })
 
   it('kräver publicerat standardrum för publicerade teman', () => {
-    const fel = validateContent(grund({ themes: [theme({ defaultRoom: 'rum-a' })] }))
-    expect(fel.some((f) => f.includes('opublicer'))).toBe(true)
+    const error = validateContent(grund({ themes: [theme({ defaultRoom: 'rum-a' })] }))
+    expect(error.some((f) => f.includes('opublicer'))).toBe(true)
   })
 
   it('fångar brutna relationer från frågor, vandringar och passager', () => {
-    const fel = validateContent(
+    const error = validateContent(
       grund({
         questions: [question({ themes: ['tema-x'], relatedQuestions: ['fraga-x'] })],
         paths: [
@@ -197,10 +197,10 @@ describe('valideraInnehall', () => {
         ],
       }),
     )
-    expect(fel.some((f) => f.includes('fraga-a') && f.includes('tema-x'))).toBe(true)
-    expect(fel.some((f) => f.includes('fraga-a') && f.includes('fraga-x'))).toBe(true)
-    expect(fel.some((f) => f.includes('vandring-a') && f.includes('rum-x'))).toBe(true)
-    expect(fel.some((f) => f.includes('passage-a') && f.includes('kalla-x'))).toBe(true)
+    expect(error.some((f) => f.includes('fraga-a') && f.includes('tema-x'))).toBe(true)
+    expect(error.some((f) => f.includes('fraga-a') && f.includes('fraga-x'))).toBe(true)
+    expect(error.some((f) => f.includes('vandring-a') && f.includes('rum-x'))).toBe(true)
+    expect(error.some((f) => f.includes('passage-a') && f.includes('kalla-x'))).toBe(true)
   })
 
   it('hindrar publicerade frågor från att länka opublicerade teman och frågor', () => {
@@ -253,13 +253,13 @@ describe('valideraInnehall', () => {
     expect(
       unpublished.some((f) => f.includes('kalla-a') && f.includes('opublicerad tradition')),
     ).toBe(true)
-    const publicerad = validateContent(
+    const isPublished = validateContent(
       grund({
         sources: [source({ traditions: ['tradition-a'] })],
         traditions: [{ ...traditionen, status: 'published' }],
       }),
     )
-    expect(publicerad).toEqual([])
+    expect(isPublished).toEqual([])
     // Draft sources are free — the gate applies only to published content.
     const draftSource = validateContent(
       grund({
@@ -275,7 +275,7 @@ describe('valideraInnehall', () => {
   })
 
   it('hindrar publicerade vandringar från att innehålla opublicerade rum', () => {
-    const fel = validateContent(
+    const error = validateContent(
       grund({
         rooms: [room(), room({ id: 'rum-b', slug: 'rum-b' }), room({ id: 'rum-c', slug: 'rum-c' })],
         paths: [
@@ -293,7 +293,7 @@ describe('valideraInnehall', () => {
         ],
       }),
     )
-    expect(fel.some((f) => f.includes('vandring-a') && f.includes('opublicer'))).toBe(true)
+    expect(error.some((f) => f.includes('vandring-a') && f.includes('opublicer'))).toBe(true)
   })
 
   it('kräver källpassage med utgåva för citat och översättning i publicerade rum', () => {
@@ -367,7 +367,7 @@ describe('valideraInnehall', () => {
   })
 
   it('hindrar publicerade vandringar från att länka en opublicerad central fråga', () => {
-    const fel = validateContent(
+    const error = validateContent(
       grund({
         // fraga-b is a draft and central; the rooms are published, so only the
         // central question breaks the gate.
@@ -392,6 +392,6 @@ describe('valideraInnehall', () => {
         ],
       }),
     )
-    expect(fel.some((f) => f.includes('vandring-a') && f.includes('central fråga'))).toBe(true)
+    expect(error.some((f) => f.includes('vandring-a') && f.includes('central fråga'))).toBe(true)
   })
 })

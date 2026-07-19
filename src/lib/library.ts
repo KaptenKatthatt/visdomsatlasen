@@ -15,54 +15,54 @@ import type {
 } from '../content/editorial/schema'
 
 const onlyPublished = <T extends { status: Room['status'] }>(items: T[]): T[] =>
-  items.filter((post) => post.status === 'published')
+  items.filter((item) => item.status === 'published')
 
-const svOrdning =
-  <T,>(text: (post: T) => string) =>
+const bySwedishOrder =
+  <T,>(text: (item: T) => string) =>
   (a: T, b: T): number =>
     text(a).localeCompare(text(b), 'sv')
 
-const SIST = Number.MAX_SAFE_INTEGER
+const LAST = Number.MAX_SAFE_INTEGER
 
 /** Looks up id references and keeps the published records. */
 export const publishedThrough = <T extends { status: Room['status'] }>(
   ids: string[],
-  hitta: (id: string) => T | undefined,
+  find: (id: string) => T | undefined,
 ): T[] =>
   ids.flatMap((id) => {
-    const post = hitta(id)
-    return post !== undefined && post.status === 'published' ? [post] : []
+    const item = find(id)
+    return item !== undefined && item.status === 'published' ? [item] : []
   })
 
 /** The library's themes: published, in the same editorial order as the threshold. */
 export const libraryThemes = (themes: Theme[]): Theme[] =>
   onlyPublished(themes).sort(
-    (a, b) => (a.order ?? SIST) - (b.order ?? SIST) || svOrdning<Theme>((t) => t.label)(a, b),
+    (a, b) => (a.order ?? LAST) - (b.order ?? LAST) || bySwedishOrder<Theme>((t) => t.label)(a, b),
   )
 
 /** The finite room list: published rooms in Swedish title order. */
 export const libraryRooms = (rooms: Room[]): Room[] =>
-  onlyPublished(rooms).sort(svOrdning((r) => r.title))
+  onlyPublished(rooms).sort(bySwedishOrder((r) => r.title))
 
 /** The library's source records: published, in Swedish title order. */
 export const librarySources = (sources: Source[]): Source[] =>
-  onlyPublished(sources).sort(svOrdning((k) => k.title))
+  onlyPublished(sources).sort(bySwedishOrder((k) => k.title))
 
 /** The traditions: published, in Swedish name order. A secondary entry point —
  * they help with context but don't own the questions (library.md). */
 export const libraryTraditions = (traditions: Tradition[]): Tradition[] =>
-  onlyPublished(traditions).sort(svOrdning((t) => t.name))
+  onlyPublished(traditions).sort(bySwedishOrder((t) => t.name))
 
 /** The library's people: published, in Swedish name order. Reference points,
  * never primary navigation (library.md, People and Authors). */
 export const libraryPeople = (people: Person[]): Person[] =>
-  onlyPublished(people).sort(svOrdning((p) => p.name))
+  onlyPublished(people).sort(bySwedishOrder((p) => p.name))
 
 /** The library's questions: published, in Swedish text order. */
 export const libraryQuestions = (questions: Question[]): Question[] =>
-  onlyPublished(questions).sort(svOrdning((f) => f.text))
+  onlyPublished(questions).sort(bySwedishOrder((f) => f.text))
 
-const compareTitleSv = svOrdning<Room>((r) => r.title)
+const compareTitleSv = bySwedishOrder<Room>((r) => r.title)
 
 /** The question page's rooms: rooms that carry the question as their own claim
  * (primaryQuestion) come first; rooms that only point to it among relatedQuestions
@@ -70,20 +70,20 @@ const compareTitleSv = svOrdning<Room>((r) => r.title)
 export const roomsForQuestion = (questionId: string, rooms: Room[]): Room[] => {
   const published = onlyPublished(rooms)
   const primary = published.filter((room) => room.primaryQuestion === questionId).sort(compareTitleSv)
-  const relaterade = published
+  const related = published
     .filter(
       (room) =>
         room.primaryQuestion !== questionId && (room.relatedQuestions ?? []).includes(questionId),
     )
     .sort(compareTitleSv)
-  return [...primary, ...relaterade]
+  return [...primary, ...related]
 }
 
 /** The theme page's questions: published questions tagged with the theme. */
 export const questionsForTheme = (themeId: string, questions: Question[]): Question[] =>
   onlyPublished(questions)
     .filter((question) => question.themes.includes(themeId))
-    .sort(svOrdning((f) => f.text))
+    .sort(bySwedishOrder((f) => f.text))
 
 /** The question's source material: the sources behind the question's rooms — the
  * question schema has no source references of its own, so the material is derived
@@ -100,7 +100,7 @@ export const sourcesForQuestion = (questionId: string, rooms: Room[], sources: S
 /** The library's paths: published, in Swedish title order (paths.md,
  * Discoverability — a quiet section, never highlighted). */
 export const libraryPaths = (paths: Path[]): Path[] =>
-  onlyPublished(paths).sort(svOrdning((v) => v.title))
+  onlyPublished(paths).sort(bySwedishOrder((v) => v.title))
 
 /** The path's rooms in editorial order — the `rum` list IS the sequence
  * (paths.md, Data Requirements), so nothing is re-sorted. The rooms are kept
@@ -139,8 +139,8 @@ export const traditionsForPath = (
 /** The source's published passages, in natural reference order (»avsnitt 5« before
  * »avsnitt 43«, not the reverse). Only published passages reach the library;
  * drafts are the editorial team's review view. */
-export const passagesForSource = (sourceId: string, passager: SourcePassage[]): SourcePassage[] =>
-  onlyPublished(passager)
+export const passagesForSource = (sourceId: string, passages: SourcePassage[]): SourcePassage[] =>
+  onlyPublished(passages)
     .filter((passage) => passage.source === sourceId)
     .sort((a, b) => a.reference.localeCompare(b.reference, 'sv', { numeric: true }))
 

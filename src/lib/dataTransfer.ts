@@ -122,33 +122,33 @@ type ExportSparad = z.infer<typeof savedSchema>
 
 const savedItems = (
   items: Record<string, SavedItem>,
-  titelFor: (id: string) => string | undefined,
+  titleFor: (id: string) => string | undefined,
 ): ExportSparad[] =>
   savedIdsByTime(items).map((id) => ({
     id,
-    title: titelFor(id),
+    title: titleFor(id),
     savedWhen: items[id]?.savedWhen ?? null,
   }))
 
 /** Builds an export record. `titelFor` looks up readable titles for the notes'
  * origins and the saved items, so the export can be read standalone. */
 export const toExport = (
-  samlingar: PersonalCollections,
-  titelFor: (type: Origin, id: string) => string | undefined,
-  nu: string,
+  collections: PersonalCollections,
+  titleFor: (type: Origin, id: string) => string | undefined,
+  now: string,
 ): PersonalExport => ({
   format: EXPORT_FORMAT,
   version: 1,
-  exported: nu,
-  notes: sortedNotes(samlingar.notes).map((post) => ({
-    ...post,
-    title: titelFor(post.originType, post.originId),
+  exported: now,
+  notes: sortedNotes(collections.notes).map((item) => ({
+    ...item,
+    title: titleFor(item.originType, item.originId),
   })),
-  savedRooms: savedItems(samlingar.savedRooms, (id) => titelFor('room', id)),
-  savedPaths: savedItems(samlingar.savedPaths, (id) => titelFor('path', id)),
+  savedRooms: savedItems(collections.savedRooms, (id) => titleFor('room', id)),
+  savedPaths: savedItems(collections.savedPaths, (id) => titleFor('path', id)),
   bookmarks: {
-    chapters: Object.values(samlingar.chapterBookmarks),
-    topics: Object.keys(samlingar.bookmarks).filter((id) => samlingar.bookmarks[id]),
+    chapters: Object.values(collections.chapterBookmarks),
+    topics: Object.keys(collections.bookmarks).filter((id) => collections.bookmarks[id]),
   },
 })
 
@@ -162,47 +162,47 @@ export const readImport = (json: unknown): PersonalExport | null => {
 // Note conflict: the most recently updated wins (spec: conflicts are resolved safely).
 const mergeNotes = (
   current: Record<string, Note>,
-  importerade: PersonalExport['notes'],
+  imported: PersonalExport['notes'],
 ): Record<string, Note> => {
-  const ut = { ...current }
-  for (const post of importerade) {
-    const existing = ut[post.originId]
-    if (existing !== undefined && existing.updated >= post.updated) continue
-    ut[post.originId] = {
-      originType: post.originType,
-      originId: post.originId,
-      text: post.text,
-      created: post.created,
-      updated: post.updated,
+  const out = { ...current }
+  for (const item of imported) {
+    const existing = out[item.originId]
+    if (existing !== undefined && existing.updated >= item.updated) continue
+    out[item.originId] = {
+      originType: item.originType,
+      originId: item.originId,
+      text: item.text,
+      created: item.created,
+      updated: item.updated,
     }
   }
-  return ut
+  return out
 }
 
 const mergeSaved = (
   current: Record<string, SavedItem>,
-  importerade: ExportSparad[],
+  imported: ExportSparad[],
 ): Record<string, SavedItem> => {
-  const ut = { ...current }
-  for (const post of importerade) {
-    if (ut[post.id] === undefined) ut[post.id] = { savedWhen: post.savedWhen }
+  const out = { ...current }
+  for (const item of imported) {
+    if (out[item.id] === undefined) out[item.id] = { savedWhen: item.savedWhen }
   }
-  return ut
+  return out
 }
 
-const mergaBookmarks = (current: Record<string, boolean>, amnen: string[]): Record<string, boolean> => {
-  const ut = { ...current }
-  for (const id of amnen) ut[id] = true
-  return ut
+const mergaBookmarks = (current: Record<string, boolean>, topicIds: string[]): Record<string, boolean> => {
+  const out = { ...current }
+  for (const id of topicIds) out[id] = true
+  return out
 }
 
 const mergeChapterBookmarks = (
   current: Record<string, ChapterBookmark>,
-  kapitel: ChapterBookmark[],
+  chapters: ChapterBookmark[],
 ): Record<string, ChapterBookmark> => {
-  const ut = { ...current }
-  for (const bookmark of kapitel) ut[chapterKey(bookmark.workId, bookmark.bookSlug, bookmark.chapter)] = bookmark
-  return ut
+  const out = { ...current }
+  for (const bookmark of chapters) out[chapterKey(bookmark.workId, bookmark.bookSlug, bookmark.chapter)] = bookmark
+  return out
 }
 
 /** Merges an import with the current data (spec: the local copy stays usable,
@@ -210,22 +210,22 @@ const mergeChapterBookmarks = (
  * are resolved with newest-wins. Never destructive toward existing data. */
 export const mergeImport = (
   current: PersonalCollections,
-  importen: PersonalExport,
+  incoming: PersonalExport,
 ): PersonalCollections => ({
-  notes: mergeNotes(current.notes, importen.notes),
-  savedRooms: mergeSaved(current.savedRooms, importen.savedRooms),
-  savedPaths: mergeSaved(current.savedPaths, importen.savedPaths),
-  bookmarks: mergaBookmarks(current.bookmarks, importen.bookmarks.topics),
-  chapterBookmarks: mergeChapterBookmarks(current.chapterBookmarks, importen.bookmarks.chapters),
+  notes: mergeNotes(current.notes, incoming.notes),
+  savedRooms: mergeSaved(current.savedRooms, incoming.savedRooms),
+  savedPaths: mergeSaved(current.savedPaths, incoming.savedPaths),
+  bookmarks: mergaBookmarks(current.bookmarks, incoming.bookmarks.topics),
+  chapterBookmarks: mergeChapterBookmarks(current.chapterBookmarks, incoming.bookmarks.chapters),
 })
 
-const noteToMarkdown = (post: PersonalExport['notes'][number]): string =>
+const noteToMarkdown = (item: PersonalExport['notes'][number]): string =>
   [
-    `## ${post.title ?? 'Anteckning'}`,
+    `## ${item.title ?? 'Anteckning'}`,
     '',
-    post.text,
+    item.text,
     '',
-    `_Skapad ${post.created} · uppdaterad ${post.updated}_`,
+    `_Skapad ${item.created} · uppdaterad ${item.updated}_`,
   ].join('\n')
 
 /** Readable Markdown mirror of the export (spec prefers open formats). Not
@@ -234,12 +234,12 @@ export const toMarkdown = (exporten: PersonalExport): string => {
   const parts: string[] = ['# Visdomsatlasen — mina anteckningar och sparat', '']
   if (exporten.notes.length > 0) {
     parts.push('# Anteckningar', '')
-    for (const post of exporten.notes) parts.push(noteToMarkdown(post), '')
+    for (const item of exporten.notes) parts.push(noteToMarkdown(item), '')
   }
   const saved = [...exporten.savedRooms, ...exporten.savedPaths]
   if (saved.length > 0) {
     parts.push('# Sparat', '')
-    for (const post of saved) parts.push(`- ${post.title ?? post.id}`)
+    for (const item of saved) parts.push(`- ${item.title ?? item.id}`)
     parts.push('')
   }
   return parts.join('\n')

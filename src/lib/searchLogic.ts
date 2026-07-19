@@ -81,9 +81,9 @@ const link = (map: Map<string, Set<string>>, a: string, b: string): void => {
 // `ångest` finds `oro`. Keys and values are folded so matching is diacritic-insensitive.
 const buildSynonymMap = (raw: Record<string, string[]>): Map<string, Set<string>> => {
   const map = new Map<string, Set<string>>()
-  for (const [nyckel, värden] of Object.entries(raw)) {
-    const n = normalize(nyckel)
-    for (const value of värden) {
+  for (const [key, values] of Object.entries(raw)) {
+    const n = normalize(key)
+    for (const value of values) {
       const v = normalize(value)
       link(map, n, v)
       link(map, v, n)
@@ -130,15 +130,15 @@ type Bucket = { level: HitLevel; base: number; words: string[] }
 
 // The searchable fields as weighted word collections. Title and alias share the
 // strongest level — both are identifying.
-const documentBuckets = (dok: SearchDoc): Bucket[] => [
+const documentBuckets = (doc: SearchDoc): Bucket[] => [
   {
     level: 'title',
     base: LEVEL_SCORES.title,
-    words: [...wordList(dok.title), ...dok.alias.flatMap(wordList)],
+    words: [...wordList(doc.title), ...doc.alias.flatMap(wordList)],
   },
-  { level: 'keywords', base: LEVEL_SCORES.keywords, words: dok.keywords.flatMap(wordList) },
-  { level: 'subtitle', base: LEVEL_SCORES.subtitle, words: dok.subtitle ? wordList(dok.subtitle) : [] },
-  { level: 'text', base: LEVEL_SCORES.text, words: dok.text.flatMap(wordList) },
+  { level: 'keywords', base: LEVEL_SCORES.keywords, words: doc.keywords.flatMap(wordList) },
+  { level: 'subtitle', base: LEVEL_SCORES.subtitle, words: doc.subtitle ? wordList(doc.subtitle) : [] },
+  { level: 'text', base: LEVEL_SCORES.text, words: doc.text.flatMap(wordList) },
 ]
 
 // A token's best score and level across the document's fields.
@@ -156,9 +156,9 @@ const tokenBest = (token: string, buckets: Bucket[]): { score: number; level: Hi
 }
 
 // Exact whole-query hit (punctuation and diacritics normalised away).
-const exactLevel = (keyQuery: string, dok: SearchDoc): HitLevel | undefined => {
-  if (wordList(dok.title).join(' ') === keyQuery) return 'title-exact'
-  if (dok.alias.some((alias) => wordList(alias).join(' ') === keyQuery)) return 'alias-exact'
+const exactLevel = (keyQuery: string, doc: SearchDoc): HitLevel | undefined => {
+  if (wordList(doc.title).join(' ') === keyQuery) return 'title-exact'
+  if (doc.alias.some((alias) => wordList(alias).join(' ') === keyQuery)) return 'alias-exact'
   return undefined
 }
 
@@ -167,23 +167,23 @@ const exactLevel = (keyQuery: string, dok: SearchDoc): HitLevel | undefined => {
 const matchDocument = (
   keyQuery: string,
   tokens: string[],
-  dok: SearchDoc,
+  doc: SearchDoc,
 ): SearchResult | undefined => {
-  const exact = exactLevel(keyQuery, dok)
-  if (exact) return { document: dok, score: LEVEL_SCORES[exact] + TYPE_BONUS[dok.type], matchedField: exact }
+  const exact = exactLevel(keyQuery, doc)
+  if (exact) return { document: doc, score: LEVEL_SCORES[exact] + TYPE_BONUS[doc.type], matchedField: exact }
   if (tokens.length === 0) return undefined
-  const buckets = documentBuckets(dok)
+  const buckets = documentBuckets(doc)
   const perToken = tokens.map((token) => tokenBest(token, buckets))
   if (perToken.some((pt) => pt.score <= 0)) return undefined
   const mean = perToken.reduce((sum, pt) => sum + pt.score, 0) / perToken.length
   const best = perToken.reduce((b, pt) => (pt.score > b.score ? pt : b))
-  return { document: dok, score: mean + TYPE_BONUS[dok.type], matchedField: best.level }
+  return { document: doc, score: mean + TYPE_BONUS[doc.type], matchedField: best.level }
 }
 
 const compareTitleSv = (a: SearchResult, b: SearchResult): number =>
   a.document.title.localeCompare(b.document.title, 'sv')
 
-const bestScore = (grupp: SearchGroup): number => grupp.hits[0]?.score ?? 0
+const bestScore = (group: SearchGroup): number => group.hits[0]?.score ?? 0
 
 // Groups hits by type; within a group by score and then Swedish title order;
 // the groups by best hit, so the most relevant group comes first.
@@ -208,8 +208,8 @@ export const searchInLibrary = (question: string, index: SearchDoc[]): SearchGro
   const keyQuery = wordList(question).join(' ')
   if (keyQuery.length < 2) return []
   const tokens = searchTokens(question)
-  const hits = index.flatMap((dok) => {
-    const hit = matchDocument(keyQuery, tokens, dok)
+  const hits = index.flatMap((doc) => {
+    const hit = matchDocument(keyQuery, tokens, doc)
     return hit ? [hit] : []
   })
   return groupHits(hits)
@@ -219,14 +219,14 @@ export const searchInLibrary = (question: string, index: SearchDoc[]): SearchGro
  * group shows its whole (hard-capped) list. »Visa fler« reveals the rest. */
 export const visibleHits = (
   groups: SearchGroup[],
-  expanderade: ReadonlySet<SearchType>,
+  expanded: ReadonlySet<SearchType>,
 ): VisibleGroup[] => {
   let remaining = MAX_VISIBLE_TOTAL
-  return groups.map((grupp) => {
-    const expanderad = expanderade.has(grupp.type)
-    const limit = expanderad ? MAX_PER_GROUP : Math.min(MAX_VISIBLE_PER_GROUP, Math.max(remaining, 0))
-    const synliga = grupp.hits.slice(0, limit)
-    if (!expanderad) remaining -= synliga.length
-    return { group: grupp, visible: synliga, hidden: grupp.hits.length - synliga.length }
+  return groups.map((group) => {
+    const isExpanded = expanded.has(group.type)
+    const limit = isExpanded ? MAX_PER_GROUP : Math.min(MAX_VISIBLE_PER_GROUP, Math.max(remaining, 0))
+    const visible = group.hits.slice(0, limit)
+    if (!isExpanded) remaining -= visible.length
+    return { group: group, visible: visible, hidden: group.hits.length - visible.length }
   })
 }

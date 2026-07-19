@@ -6,7 +6,7 @@ import {
   writeOfflineDownload,
   type OfflineProgress,
 } from '../../lib/offline'
-import styles from './Bibliotek.module.css'
+import styles from './Library.module.css'
 
 const description = (hasDownload: boolean, downloaded: number | null): string =>
   hasDownload

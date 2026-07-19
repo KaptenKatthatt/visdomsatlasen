@@ -6,7 +6,7 @@
 import type { Room, Theme } from '../content/editorial/schema'
 
 /** How many recently read rooms are avoided; the history is not an activity log. */
-export const HISTORIKLANGD = 3
+export const HISTORY_LENGTH = 3
 
 /** The candidate set: published rooms carrying the theme. A room being published
  * and tagged with the theme is the approval — drafts can never be selected. */
@@ -29,7 +29,7 @@ export const selectRoom = (theme: Theme, rooms: Room[], recentlyRead: string[]):
   // A single window drives both "recently read" and the longest-ago ordering,
   // so entries outside the window never affect the selection. The selection rule
   // owns the window; the store's cap is only storage cleanup.
-  const historik = recentlyRead.slice(0, HISTORIKLANGD)
+  const historik = recentlyRead.slice(0, HISTORY_LENGTH)
   const nyligen = new Set(historik)
   const standard = set.find((room) => room.id === theme.defaultRoom)
   if (standard && !nyligen.has(standard.id)) return standard

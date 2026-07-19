@@ -73,26 +73,26 @@ export type BookHit = {
  * bundle and is never affected by this; only the reader's texts are fetched over the network. */
 const OFFLINE_TEXT = 'Du verkar vara offline. Texten går att läsa igen när du är ansluten.'
 const NAT_TEXT = 'Texten går inte att hämta just nu. Kontrollera din uppkoppling och försök igen.'
-const SVAR_TEXT = 'Kunde inte hämta texten just nu. Försök igen om en stund.'
+const RESPONSE_TEXT = 'Kunde inte hämta texten just nu. Försök igen om en stund.'
 
 const isOffline = (): boolean => typeof navigator !== 'undefined' && navigator.onLine === false
 
 const getJson = async <T>(url: string): Promise<T> => {
   // The resource is logged without its query string, so a search query's text
   // never leaks into telemetry via /api/library/search?q=… (phase 14, sensitive query data).
-  const resurs = withoutQuestion(url)
+  const resource = withoutQuestion(url)
   let response: Response
   try {
     response = await fetch(url, { headers: { Accept: 'application/json' } })
   } catch {
     // fetch rejects with TypeError on network errors (offline, dropped connection).
     const offline = isOffline()
-    report({ type: offline ? 'offline-laddningsfel' : 'sidladdningsfel', resurs })
+    report({ type: offline ? 'offline-load-error' : 'page-load-error', resource })
     throw new Error(offline ? OFFLINE_TEXT : NAT_TEXT)
   }
   if (!response.ok) {
-    report({ type: 'sidladdningsfel', resurs, detalj: `status ${response.status}` })
-    throw new Error(SVAR_TEXT)
+    report({ type: 'page-load-error', resource, detail: `status ${response.status}` })
+    throw new Error(RESPONSE_TEXT)
   }
   return (await response.json()) as T
 }

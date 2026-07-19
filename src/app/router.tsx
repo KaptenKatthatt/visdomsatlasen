@@ -6,11 +6,11 @@ import {
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 import type { ReadMode } from '../content/model'
 import { SEARCH_TYPES, type SearchType, type SearchParams } from '../lib/searchTypes'
-import { HemPage } from '../pages/HemPage'
+import { HomePage } from '../pages/HomePage'
 import { NotFoundNote } from '../pages/NotFoundNote'
 import { RootLayout } from './RootLayout'
 
-// Code splitting (phase 13): only the threshold (HemPage), the shell (RootLayout)
+// Code splitting (phase 13): only the threshold (HomePage), the shell (RootLayout)
 // and the small NotFoundNote are loaded in the startup bundle. The other pages —
 // the library, the reading room, the work reader, search, the old pages — load as
 // their own chunks when the route opens, so the home screen is spared the whole
@@ -23,46 +23,46 @@ const lazyPage = <Props extends object>(
   select: () => Promise<ComponentType<Props>>,
 ): LazyExoticComponent<ComponentType<Props>> => lazy(async () => ({ default: await select() }))
 
-const AmnePage = lazyPage(() => import('../pages/AmnePage').then((m) => m.AmnePage))
+const TopicPage = lazyPage(() => import('../pages/TopicPage').then((m) => m.TopicPage))
 const AtlasPage = lazyPage(() => import('../pages/AtlasPage').then((m) => m.AtlasPage))
-const BibliotekHemPage = lazyPage(() =>
-  import('../pages/bibliotek/BibliotekHemPage').then((m) => m.BibliotekHemPage),
+const LibraryHomePage = lazyPage(() =>
+  import('../pages/bibliotek/LibraryHomePage').then((m) => m.LibraryHomePage),
 )
-const FragaPage = lazyPage(() => import('../pages/bibliotek/FragaPage').then((m) => m.FragaPage))
-const FragelistaPage = lazyPage(() =>
-  import('../pages/bibliotek/FragelistaPage').then((m) => m.FragelistaPage),
+const QuestionPage = lazyPage(() => import('../pages/bibliotek/QuestionPage').then((m) => m.QuestionPage))
+const QuestionListPage = lazyPage(() =>
+  import('../pages/bibliotek/QuestionListPage').then((m) => m.QuestionListPage),
 )
-const KallaPostPage = lazyPage(() =>
-  import('../pages/bibliotek/KallaPostPage').then((m) => m.KallaPostPage),
+const SourcePostPage = lazyPage(() =>
+  import('../pages/bibliotek/SourcePostPage').then((m) => m.SourcePostPage),
 )
 const PersonPostPage = lazyPage(() =>
   import('../pages/bibliotek/PersonPostPage').then((m) => m.PersonPostPage),
 )
-const RumlistaPage = lazyPage(() => import('../pages/bibliotek/RumlistaPage').then((m) => m.RumlistaPage))
-const TemaPage = lazyPage(() => import('../pages/bibliotek/TemaPage').then((m) => m.TemaPage))
-const VandringPage = lazyPage(() => import('../pages/bibliotek/VandringPage').then((m) => m.VandringPage))
-const SokBibliotekPage = lazyPage(() =>
-  import('../pages/bibliotek/SokBibliotekPage').then((m) => m.SokBibliotekPage),
+const RoomListPage = lazyPage(() => import('../pages/bibliotek/RoomListPage').then((m) => m.RoomListPage))
+const ThemePage = lazyPage(() => import('../pages/bibliotek/ThemePage').then((m) => m.ThemePage))
+const PathPage = lazyPage(() => import('../pages/bibliotek/PathPage').then((m) => m.PathPage))
+const SearchLibraryPage = lazyPage(() =>
+  import('../pages/bibliotek/SearchLibraryPage').then((m) => m.SearchLibraryPage),
 )
-const BibliotekSokPage = lazyPage(() =>
-  import('../pages/library/BibliotekSokPage').then((m) => m.BibliotekSokPage),
+const LibrarySearchPage = lazyPage(() =>
+  import('../pages/library/LibrarySearchPage').then((m) => m.LibrarySearchPage),
 )
-const BokPage = lazyPage(() => import('../pages/library/BokPage').then((m) => m.BokPage))
-const KapitelPage = lazyPage(() => import('../pages/library/KapitelPage').then((m) => m.KapitelPage))
-const VerklistaPage = lazyPage(() => import('../pages/library/VerklistaPage').then((m) => m.VerklistaPage))
-const VerkPage = lazyPage(() => import('../pages/library/VerkPage').then((m) => m.VerkPage))
-const InstallningarPage = lazyPage(() =>
-  import('../pages/InstallningarPage').then((m) => m.InstallningarPage),
+const BookPage = lazyPage(() => import('../pages/library/BookPage').then((m) => m.BookPage))
+const ChapterPage = lazyPage(() => import('../pages/library/ChapterPage').then((m) => m.ChapterPage))
+const WorkListPage = lazyPage(() => import('../pages/library/WorkListPage').then((m) => m.WorkListPage))
+const WorkPage = lazyPage(() => import('../pages/library/WorkPage').then((m) => m.WorkPage))
+const SettingsPage = lazyPage(() =>
+  import('../pages/SettingsPage').then((m) => m.SettingsPage),
 )
-const KallaPage = lazyPage(() => import('../pages/KallaPage').then((m) => m.KallaPage))
-const LasPage = lazyPage(() => import('../pages/LasPage').then((m) => m.LasPage))
+const SourcePage = lazyPage(() => import('../pages/SourcePage').then((m) => m.SourcePage))
+const ReadPage = lazyPage(() => import('../pages/ReadPage').then((m) => m.ReadPage))
 const PersonPage = lazyPage(() => import('../pages/PersonPage').then((m) => m.PersonPage))
-const PersonerPage = lazyPage(() => import('../pages/PersonerPage').then((m) => m.PersonerPage))
-const SamlingPage = lazyPage(() => import('../pages/SamlingPage').then((m) => m.SamlingPage))
-const SokPage = lazyPage(() => import('../pages/SokPage').then((m) => m.SokPage))
-const TidslinjePage = lazyPage(() => import('../pages/TidslinjePage').then((m) => m.TidslinjePage))
-const UtforskaPage = lazyPage(() => import('../pages/UtforskaPage').then((m) => m.UtforskaPage))
-const RumPage = lazyPage(() => import('../pages/RumPage').then((m) => m.RumPage))
+const PeoplePage = lazyPage(() => import('../pages/PeoplePage').then((m) => m.PeoplePage))
+const CollectionPage = lazyPage(() => import('../pages/CollectionPage').then((m) => m.CollectionPage))
+const SearchPage = lazyPage(() => import('../pages/SearchPage').then((m) => m.SearchPage))
+const TimelinePage = lazyPage(() => import('../pages/TimelinePage').then((m) => m.TimelinePage))
+const ExplorePage = lazyPage(() => import('../pages/ExplorePage').then((m) => m.ExplorePage))
+const RoomPage = lazyPage(() => import('../pages/RoomPage').then((m) => m.RoomPage))
 
 const rootRoute = createRootRoute({
   component: RootLayout,
@@ -72,20 +72,20 @@ const rootRoute = createRootRoute({
 const hemRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: HemPage,
+  component: HomePage,
 })
 
 const utforskaRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/utforska',
-  component: UtforskaPage,
+  component: ExplorePage,
 })
 
 const amneRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/amne/$id',
   component: function AmneRoute() {
-    return <AmnePage id={amneRoute.useParams().id} />
+    return <TopicPage id={amneRoute.useParams().id} />
   },
 })
 
@@ -95,7 +95,7 @@ const readRoute = createRoute({
   component: function LasRoute() {
     const params = readRoute.useParams()
     const mode: ReadMode = params.mode === 'kontext' ? 'kontext' : 'essa'
-    return <LasPage id={params.id} mode={mode} />
+    return <ReadPage id={params.id} mode={mode} />
   },
 })
 
@@ -103,20 +103,20 @@ const sourceRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/kalla/$id',
   component: function KallaRoute() {
-    return <KallaPage id={sourceRoute.useParams().id} />
+    return <SourcePage id={sourceRoute.useParams().id} />
   },
 })
 
 const tidslinjeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/tidslinje',
-  component: TidslinjePage,
+  component: TimelinePage,
 })
 
 const peopleRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/personer',
-  component: PersonerPage,
+  component: PeoplePage,
 })
 
 const personRoute = createRoute({
@@ -136,33 +136,33 @@ const atlasRoute = createRoute({
 const samlingRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/samling',
-  component: SamlingPage,
+  component: CollectionPage,
 })
 
 const installningarRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/installningar',
-  component: InstallningarPage,
+  component: SettingsPage,
 })
 
 const searchRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/sok',
-  component: SokPage,
+  component: SearchPage,
 })
 
 // The library's landing (the remake, phase 6): questions, themes, rooms, sources.
 const libraryRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek',
-  component: BibliotekHemPage,
+  component: LibraryHomePage,
 })
 
 const questionRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/fraga/$slug',
   component: function FragaRoute() {
-    return <FragaPage slug={questionRoute.useParams().slug} />
+    return <QuestionPage slug={questionRoute.useParams().slug} />
   },
 })
 
@@ -170,27 +170,27 @@ const themeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/tema/$slug',
   component: function TemaRoute() {
-    return <TemaPage slug={themeRoute.useParams().slug} />
+    return <ThemePage slug={themeRoute.useParams().slug} />
   },
 })
 
 const roomListRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/rum',
-  component: RumlistaPage,
+  component: RoomListPage,
 })
 
 const fragelistaRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/fragor',
-  component: FragelistaPage,
+  component: QuestionListPage,
 })
 
 const sourceItemRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/kalla/$slug',
   component: function KallaPostRoute() {
-    return <KallaPostPage slug={sourceItemRoute.useParams().slug} />
+    return <SourcePostPage slug={sourceItemRoute.useParams().slug} />
   },
 })
 
@@ -207,7 +207,7 @@ const pathRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/vandring/$slug',
   component: function VandringRoute() {
-    return <VandringPage slug={pathRoute.useParams().slug} />
+    return <PathPage slug={pathRoute.useParams().slug} />
   },
 })
 
@@ -216,7 +216,7 @@ const pathRoute = createRoute({
 const verklistaRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek/verk',
-  component: VerklistaPage,
+  component: WorkListPage,
 })
 
 const workRoute = createRoute({
@@ -226,7 +226,7 @@ const workRoute = createRoute({
     // key ⇒ the component remounts per work, so the filter field doesn't linger
     // when switching to another work (TanStack would otherwise reuse the instance).
     const { workId } = workRoute.useParams()
-    return <VerkPage key={workId} workId={workId} />
+    return <WorkPage key={workId} workId={workId} />
   },
 })
 
@@ -235,7 +235,7 @@ const bookRoute = createRoute({
   path: '/bibliotek/verk/$workId/$bookSlug',
   component: function BokRoute() {
     const params = bookRoute.useParams()
-    return <BokPage workId={params.workId} bookSlug={params.bookSlug} />
+    return <BookPage workId={params.workId} bookSlug={params.bookSlug} />
   },
 })
 
@@ -245,7 +245,7 @@ const chapterRoute = createRoute({
   component: function KapitelRoute() {
     const params = chapterRoute.useParams()
     return (
-      <KapitelPage
+      <ChapterPage
         workId={params.workId}
         bookSlug={params.bookSlug}
         chapter={params.chapter}
@@ -263,14 +263,14 @@ const roomRoute = createRoute({
   validateSearch: (search: Record<string, unknown>): { vandring?: string } =>
     typeof search['vandring'] === 'string' ? { vandring: search['vandring'] } : {},
   component: function RumRoute() {
-    return <RumPage slug={roomRoute.useParams().slug} vandringSlug={roomRoute.useSearch().vandring} />
+    return <RoomPage slug={roomRoute.useParams().slug} pathSlug={roomRoute.useSearch().vandring} />
   },
 })
 
 const librarySearchRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/bibliotek-sok',
-  component: BibliotekSokPage,
+  component: LibrarySearchPage,
 })
 
 // The library search (phase 10, search.md): the query and the optional type filter
@@ -290,10 +290,10 @@ const searchLibraryRoute = createRoute({
     const search = searchLibraryRoute.useSearch()
     const navigate = searchLibraryRoute.useNavigate()
     return (
-      <SokBibliotekPage
+      <SearchLibraryPage
         q={search.q ?? ''}
         type={search.type}
-        onNavigera={(sök) => navigate({ search: sök, replace: true })}
+        onNavigera={(search) => navigate({ search: search, replace: true })}
       />
     )
   },

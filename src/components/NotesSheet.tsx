@@ -15,11 +15,11 @@ type Props = {
  * Deletion requires a simple in-place confirmation — the content is personal
  * and may not be recoverable (spec Deleting Notes). No window.confirm. */
 const Foot = ({
-  sparadVisas,
+  savedShown,
   kanTaBort,
   onBekraftaTaBort,
 }: {
-  sparadVisas: boolean
+  savedShown: boolean
   kanTaBort: boolean
   onBekraftaTaBort: () => void
 }) => {
@@ -27,7 +27,7 @@ const Foot = ({
   return (
     <div className={styles.fot}>
       <span className={styles.status} aria-live="polite">
-        {sparadVisas ? 'Sparat' : ''}
+        {savedShown ? 'Sparat' : ''}
       </span>
       {kanTaBort && !bekraftar && (
         <button type="button" className={styles.taBort} onClick={() => setBekraftar(true)}>
@@ -55,7 +55,7 @@ const Foot = ({
  * spinner). The field only opens on the user's request, never automatically. */
 export const NotesSheet = ({ title, value, onChange, onClose, onDelete }: Props) => {
   const stabilt = useDebounced(value, 800)
-  const sparadVisas = value.trim().length > 0 && stabilt === value
+  const savedShown = value.trim().length > 0 && stabilt === value
   const removeRemove = () => {
     onDelete?.()
     onClose()
@@ -74,7 +74,7 @@ export const NotesSheet = ({ title, value, onChange, onClose, onDelete }: Props)
         placeholder="Skriv det du vill bära med dig."
       />
       <Foot
-        sparadVisas={sparadVisas}
+        savedShown={savedShown}
         kanTaBort={onDelete !== undefined && value.trim().length > 0}
         onBekraftaTaBort={removeRemove}
       />

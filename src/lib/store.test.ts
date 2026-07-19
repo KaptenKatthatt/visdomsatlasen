@@ -9,8 +9,8 @@ import { restoredCollections, type SavedRaw } from './store'
 // lost on the upgrade.
 describe('restoredCollections (localStorage-migrering till engelska fält)', () => {
   it('läser äldre svenska fältnycklar in i de nya utan förlust', () => {
-    const gammal: SavedRaw = {
-      anteckningar: {
+    const old: SavedRaw = {
+      notes: {
         'rum-a': {
           ursprungTyp: 'rum',
           ursprungId: 'rum-a',
@@ -22,25 +22,25 @@ describe('restoredCollections (localStorage-migrering till engelska fält)', () 
       sparadeRum: { 'rum-a': { sparadNar: '2026-06-03T00:00:00.000Z' } },
       sparadeVandringar: { 'vandring-x': { sparadNar: null } },
       senastLastaRum: ['rum-a', 'rum-b'],
-      vandringsplatser: { 'vandring-x': 'rum-a' },
+      pathPositions: { 'vandring-x': 'rum-a' },
     } as SavedRaw
 
-    const ut = restoredCollections(gammal)
+    const out = restoredCollections(old)
 
-    expect(ut.notes['rum-a']).toMatchObject({
+    expect(out.notes['rum-a']).toMatchObject({
       originType: 'room',
       originId: 'rum-a',
       created: '2026-06-01T00:00:00.000Z',
       updated: '2026-06-02T00:00:00.000Z',
     })
-    expect(ut.savedRooms['rum-a']).toEqual({ savedWhen: '2026-06-03T00:00:00.000Z' })
-    expect(ut.savedPaths['vandring-x']).toEqual({ savedWhen: null })
-    expect(ut.recentRooms).toEqual(['rum-a', 'rum-b'])
-    expect(ut.pathPositions).toEqual({ 'vandring-x': 'rum-a' })
+    expect(out.savedRooms['rum-a']).toEqual({ savedWhen: '2026-06-03T00:00:00.000Z' })
+    expect(out.savedPaths['vandring-x']).toEqual({ savedWhen: null })
+    expect(out.recentRooms).toEqual(['rum-a', 'rum-b'])
+    expect(out.pathPositions).toEqual({ 'vandring-x': 'rum-a' })
   })
 
   it('läser nya engelska fältnycklar orörda', () => {
-    const ny: SavedRaw = {
+    const fresh: SavedRaw = {
       notes: {
         'rum-a': {
           originType: 'room',
@@ -56,20 +56,20 @@ describe('restoredCollections (localStorage-migrering till engelska fält)', () 
       pathPositions: { 'vandring-x': 'rum-b' },
     } as SavedRaw
 
-    const ut = restoredCollections(ny)
+    const out = restoredCollections(fresh)
 
-    expect(ut.notes['rum-a']?.originId).toBe('rum-a')
-    expect(ut.savedRooms['rum-a']).toEqual({ savedWhen: '2026-07-03T00:00:00.000Z' })
-    expect(ut.recentRooms).toEqual(['rum-a'])
-    expect(ut.pathPositions).toEqual({ 'vandring-x': 'rum-b' })
+    expect(out.notes['rum-a']?.originId).toBe('rum-a')
+    expect(out.savedRooms['rum-a']).toEqual({ savedWhen: '2026-07-03T00:00:00.000Z' })
+    expect(out.recentRooms).toEqual(['rum-a'])
+    expect(out.pathPositions).toEqual({ 'vandring-x': 'rum-b' })
   })
 
   it('faller tillbaka på tomma samlingar vid saknad data', () => {
-    const ut = restoredCollections({})
-    expect(ut.notes).toEqual({})
-    expect(ut.savedRooms).toEqual({})
-    expect(ut.savedPaths).toEqual({})
-    expect(ut.recentRooms).toEqual([])
-    expect(ut.pathPositions).toEqual({})
+    const out = restoredCollections({})
+    expect(out.notes).toEqual({})
+    expect(out.savedRooms).toEqual({})
+    expect(out.savedPaths).toEqual({})
+    expect(out.recentRooms).toEqual([])
+    expect(out.pathPositions).toEqual({})
   })
 })

@@ -9,7 +9,7 @@ import {
   type SearchResult,
 } from './searchLogic'
 
-const dok = (
+const doc = (
   type: SearchType,
   id: string,
   title: string,
@@ -18,20 +18,20 @@ const dok = (
 
 // A small mixed index covering the ranking scenarios.
 const index: SearchDoc[] = [
-  dok('fraga', 'fq-styra', 'Vad kan du styra?'),
-  dok('fraga', 'fq-oro', 'Vad gör oron med dagen?', { text: ['oro inför framtiden'] }),
-  dok('fraga', 'fq-forl', 'Om förlåtelse', { text: ['att förlåta och försonas'] }),
-  dok('fraga', 'fq-mod', 'Mod'),
-  dok('fraga', 'fq-mod-vart', 'Vad är mod värt?'),
-  dok('tema', 't-lugn', 'Lugn'),
-  dok('rum', 'r-angslan', 'Under natten', { text: ['ängslan om natten'] }),
-  dok('kalla', 'k-marcus', 'Självbetraktelser', { alias: ['Marcus Aurelius'] }),
-  dok('kalla', 'k-oro', 'En skrift om oro', { text: ['oro'] }),
+  doc('fraga', 'fq-styra', 'Vad kan du styra?'),
+  doc('fraga', 'fq-oro', 'Vad gör oron med dagen?', { text: ['oro inför framtiden'] }),
+  doc('fraga', 'fq-forl', 'Om förlåtelse', { text: ['att förlåta och försonas'] }),
+  doc('fraga', 'fq-mod', 'Mod'),
+  doc('fraga', 'fq-mod-vart', 'Vad är mod värt?'),
+  doc('tema', 't-lugn', 'Lugn'),
+  doc('rum', 'r-angslan', 'Under natten', { text: ['ängslan om natten'] }),
+  doc('kalla', 'k-marcus', 'Självbetraktelser', { alias: ['Marcus Aurelius'] }),
+  doc('kalla', 'k-oro', 'En skrift om oro', { text: ['oro'] }),
 ]
 
-const platt = (groups: SearchGroup[]): SearchResult[] => groups.flatMap((grupp) => grupp.hits)
+const platt = (groups: SearchGroup[]): SearchResult[] => groups.flatMap((group) => group.hits)
 const idOrdning = (groups: SearchGroup[]): string[] => platt(groups).map((t) => t.document.id)
-const finns = (groups: SearchGroup[], id: string): boolean => idOrdning(groups).includes(id)
+const exists = (groups: SearchGroup[], id: string): boolean => idOrdning(groups).includes(id)
 
 describe('sokIBiblioteket — grundläggande', () => {
   it('ger inget för tom eller för kort fråga', () => {
@@ -74,68 +74,68 @@ describe('sokIBiblioteket — rankning', () => {
 
 describe('sokIBiblioteket — språk och tolerans', () => {
   it('viker svenska diakriter (forlatelse hittar förlåtelse)', () => {
-    expect(finns(searchInLibrary('forlatelse', index), 'fq-forl')).toBe(true)
+    expect(exists(searchInLibrary('forlatelse', index), 'fq-forl')).toBe(true)
   })
 
   it('tolererar ett skrivfel konservativt', () => {
-    expect(finns(searchInLibrary('förlåtlse', index), 'fq-forl')).toBe(true)
+    expect(exists(searchInLibrary('förlåtlse', index), 'fq-forl')).toBe(true)
   })
 
   it('viker inte ihop korta ord med ett fel (lung hittar inte lugn)', () => {
-    expect(finns(searchInLibrary('lung', index), 't-lugn')).toBe(false)
+    expect(exists(searchInLibrary('lung', index), 't-lugn')).toBe(false)
   })
 
   it('expanderar synonymer i båda riktningar', () => {
-    expect(finns(searchInLibrary('ångest', index), 'fq-oro')).toBe(true)
-    expect(finns(searchInLibrary('oro', index), 'r-angslan')).toBe(true)
+    expect(exists(searchInLibrary('ångest', index), 'fq-oro')).toBe(true)
+    expect(exists(searchInLibrary('oro', index), 'r-angslan')).toBe(true)
   })
 
   it('låter inte en kort synonym prefix-matcha ett orelaterat ord', () => {
     // »lugn« has the synonym »ro« — it must not get stuck in »romersk«.
-    const medRomersk = [...index, dok('tradition', 't-rom', 'Antik tradition', { text: ['romersk tid'] })]
-    expect(finns(searchInLibrary('lugn', medRomersk), 't-rom')).toBe(false)
+    const withRoman = [...index, doc('tradition', 't-rom', 'Antik tradition', { text: ['romersk tid'] })]
+    expect(exists(searchInLibrary('lugn', withRoman), 't-rom')).toBe(false)
   })
 })
 
 describe('sokIBiblioteket — flera ord (AND)', () => {
   it('kräver att alla meningsbärande ord träffar samma dokument', () => {
-    expect(finns(searchInLibrary('oron dagen', index), 'fq-oro')).toBe(true)
+    expect(exists(searchInLibrary('oron dagen', index), 'fq-oro')).toBe(true)
     expect(searchInLibrary('oron kartan', index)).toEqual([])
   })
 })
 
 describe('synligaTraffar — ändliga resultat', () => {
-  const grupp = (type: SearchType, count: number): SearchGroup => ({
+  const group = (type: SearchType, count: number): SearchGroup => ({
     type,
     heading: type,
     hits: Array.from({ length: count }, (_, i) => ({
-      document: dok(type, `${type}-${i}`, `${type} ${i}`),
+      document: doc(type, `${type}-${i}`, `${type} ${i}`),
       score: 100 - i,
       matchedField: 'title' as const,
     })),
   })
 
   it('visar som mest fem per grupp och röjer resten bakom Visa fler', () => {
-    const [synlig] = visibleHits([grupp('rum', 7)], new Set())
-    expect(synlig?.visible.length).toBe(MAX_VISIBLE_PER_GROUP)
-    expect(synlig?.hidden).toBe(2)
+    const [visible] = visibleHits([group('rum', 7)], new Set())
+    expect(visible?.visible.length).toBe(MAX_VISIBLE_PER_GROUP)
+    expect(visible?.hidden).toBe(2)
   })
 
   it('visar hela gruppen när den är expanderad', () => {
-    const [synlig] = visibleHits([grupp('rum', 7)], new Set<SearchType>(['rum']))
-    expect(synlig?.visible.length).toBe(7)
-    expect(synlig?.hidden).toBe(0)
+    const [visible] = visibleHits([group('rum', 7)], new Set<SearchType>(['rum']))
+    expect(visible?.visible.length).toBe(7)
+    expect(visible?.hidden).toBe(0)
   })
 
   it('håller den samlade initialvyn inom tjugo träffar', () => {
     const groups = [
-      grupp('fraga', 5),
-      grupp('tema', 5),
-      grupp('rum', 5),
-      grupp('vandring', 5),
-      grupp('kalla', 5),
+      group('fraga', 5),
+      group('tema', 5),
+      group('rum', 5),
+      group('vandring', 5),
+      group('kalla', 5),
     ]
-    const totalt = visibleHits(groups, new Set()).reduce((s, g) => s + g.visible.length, 0)
-    expect(totalt).toBeLessThanOrEqual(MAX_VISIBLE_TOTAL)
+    const total = visibleHits(groups, new Set()).reduce((s, g) => s + g.visible.length, 0)
+    expect(total).toBeLessThanOrEqual(MAX_VISIBLE_TOTAL)
   })
 })

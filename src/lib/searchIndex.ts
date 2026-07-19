@@ -37,7 +37,7 @@ import {
   allPaths,
   sourceName,
 } from './content'
-import { utdrag } from './personal'
+import { excerpt } from './personal'
 import { SEARCH_TYPES, type SearchType, type SearchParams } from './searchTypes'
 
 // The search types live in soktyper.ts (without content dependencies) so the router can
@@ -72,13 +72,13 @@ export type SearchDoc = {
 }
 
 const mapById = <T extends { id: string }>(items: T[]): Map<string, T> =>
-  new Map(items.map((post) => [post.id, post]))
+  new Map(items.map((item) => [item.id, item]))
 
 const docFromQuestion = (question: Question): SearchDoc => ({
   type: 'fraga',
   id: question.id,
   title: question.text,
-  subtitle: question.description ? utdrag(question.description, 110) : undefined,
+  subtitle: question.description ? excerpt(question.description, 110) : undefined,
   target: { kind: 'fraga', slug: question.slug },
   alias: [],
   keywords: question.keywords ?? [],
@@ -154,7 +154,7 @@ const docFromPath = (
     type: 'vandring',
     id: path.id,
     title: path.title,
-    subtitle: utdrag(path.introduction, 110),
+    subtitle: excerpt(path.introduction, 110),
     meta: pathMeta(rooms),
     target: { kind: 'vandring', slug: path.slug },
     alias: [],
@@ -170,14 +170,14 @@ const sourceAlias = (source: Source): string[] => [
   ...(source.attributedAuthor ? [source.attributedAuthor] : []),
 ]
 
-const traditionsnamn = (source: Source, traditions: Map<string, Tradition>): string[] =>
+const traditionNames = (source: Source, traditions: Map<string, Tradition>): string[] =>
   (source.traditions ?? []).flatMap((id) => {
     const tradition = traditions.get(id)
     return tradition ? [tradition.name] : []
   })
 
-const passagetext = (passager: SourcePassage[]): string[] =>
-  passager.flatMap((passage) => [
+const passageText = (passages: SourcePassage[]): string[] =>
+  passages.flatMap((passage) => [
     passage.reference,
     ...(passage.translation ? [passage.translation] : []),
   ])
@@ -185,7 +185,7 @@ const passagetext = (passager: SourcePassage[]): string[] =>
 const docFromSource = (
   source: Source,
   traditions: Map<string, Tradition>,
-  passager: SourcePassage[],
+  passages: SourcePassage[],
 ): SearchDoc => ({
   type: 'kalla',
   id: source.id,
@@ -197,8 +197,8 @@ const docFromSource = (
   keywords: source.keywords ?? [],
   text: [
     ...(source.description ? [source.description] : []),
-    ...traditionsnamn(source, traditions),
-    ...passagetext(passager),
+    ...traditionNames(source, traditions),
+    ...passageText(passages),
   ],
 })
 
@@ -221,7 +221,7 @@ const docFromPerson = (person: Person): SearchDoc => ({
   type: 'person',
   id: person.id,
   title: person.name,
-  subtitle: person.shortDescription ?? (person.description ? utdrag(person.description, 110) : undefined),
+  subtitle: person.shortDescription ?? (person.description ? excerpt(person.description, 110) : undefined),
   meta: person.years,
   target: { kind: 'personpost', slug: person.slug },
   alias: [],

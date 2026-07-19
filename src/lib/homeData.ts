@@ -1,8 +1,8 @@
 // The threshold's lightweight data layer (phase 13, performance): the home screen
 // only needs the themes — not the rooms' body text, sources or the search index.
-// That glob lives here, entirely without room dependencies, so HemPage can import
+// That glob lives here, entirely without room dependencies, so HomePage can import
 // `troskelTeman` without pulling the whole content collection into the startup
-// bundle. The rooms load only when a theme is chosen (dynamic import in HemPage)
+// bundle. The rooms load only when a theme is chosen (dynamic import in HomePage)
 // or when the reading room/library is opened.
 import { themeSchema, type Theme } from '../content/editorial/schema'
 import { collect, toFiles } from '../content/editorial/collect'

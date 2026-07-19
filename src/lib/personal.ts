@@ -68,18 +68,18 @@ const migrateSavedItem = (value: unknown): SavedItem | null => {
 /** Migrates a saved record (rooms or paths) quietly and losslessly.
  * Idempotent: already-migrated form passes through unchanged. Never throws. */
 export const migrateSaved = (raw: unknown): Record<string, SavedItem> => {
-  const ut: Record<string, SavedItem> = {}
-  if (!isRecord(raw)) return ut
-  for (const [id, värde] of Object.entries(raw)) {
-    const post = migrateSavedItem(värde)
-    if (post) ut[id] = post
+  const out: Record<string, SavedItem> = {}
+  if (!isRecord(raw)) return out
+  for (const [id, value] of Object.entries(raw)) {
+    const item = migrateSavedItem(value)
+    if (item) out[id] = item
   }
-  return ut
+  return out
 }
 
 // An already-migrated note from unknown storage, defensively narrowed. Fields that
 // are missing or corrupt get safe fallbacks — the text is always preserved.
-const migrateNoteItem = (id: string, value: unknown, nu: string): Note | null => {
+const migrateNoteItem = (id: string, value: unknown, now: string): Note | null => {
   if (!isRecord(value)) return null
   // Older stored notes carry the Swedish timestamp keys `skapad`/
   // `uppdaterad`; read them as a fallback so an upgrade never resets the
@@ -90,7 +90,7 @@ const migrateNoteItem = (id: string, value: unknown, nu: string): Note | null =>
     value
   if (typeof text !== 'string' || text.trim().length === 0) return null
   const firstString = (a: unknown, b: unknown): string =>
-    typeof a === 'string' ? a : typeof b === 'string' ? b : nu
+    typeof a === 'string' ? a : typeof b === 'string' ? b : now
   return {
     originType: toOrigin(originType) ?? toOrigin(ursprungTyp) ?? 'topic',
     originId:
@@ -102,29 +102,29 @@ const migrateNoteItem = (id: string, value: unknown, nu: string): Note | null =>
 }
 
 // Old `notes` (id→text) → origin-linked records; empty ones are pruned.
-const itemsFromGamlaNotes = (
-  gamlaNotes: unknown,
+const itemsFromOldNotes = (
+  oldNotes: unknown,
   classify: (id: string) => Origin,
-  nu: string,
+  now: string,
 ): Record<string, Note> => {
-  const ut: Record<string, Note> = {}
-  if (!isRecord(gamlaNotes)) return ut
-  for (const [id, värde] of Object.entries(gamlaNotes)) {
-    if (typeof värde !== 'string' || värde.trim().length === 0) continue
-    ut[id] = { originType: classify(id), originId: id, text: värde, created: nu, updated: nu }
+  const out: Record<string, Note> = {}
+  if (!isRecord(oldNotes)) return out
+  for (const [id, value] of Object.entries(oldNotes)) {
+    if (typeof value !== 'string' || value.trim().length === 0) continue
+    out[id] = { originType: classify(id), originId: id, text: value, created: now, updated: now }
   }
-  return ut
+  return out
 }
 
 // Already-migrated records from unknown storage, defensively narrowed.
-const itemsFromMigrerade = (nyaAnteckningar: unknown, nu: string): Record<string, Note> => {
-  const ut: Record<string, Note> = {}
-  if (!isRecord(nyaAnteckningar)) return ut
-  for (const [id, värde] of Object.entries(nyaAnteckningar)) {
-    const post = migrateNoteItem(id, värde, nu)
-    if (post) ut[id] = post
+const itemsFromMigrated = (newNotes: unknown, now: string): Record<string, Note> => {
+  const out: Record<string, Note> = {}
+  if (!isRecord(newNotes)) return out
+  for (const [id, value] of Object.entries(newNotes)) {
+    const item = migrateNoteItem(id, value, now)
+    if (item) out[id] = item
   }
-  return ut
+  return out
 }
 
 /** Migrates notes quietly and losslessly: old `notes` (id→text) become
@@ -132,13 +132,13 @@ const itemsFromMigrerade = (nyaAnteckningar: unknown, nu: string): Record<string
  * (the spread order). Empty notes are pruned. Never throws — private data
  * must never be lost on an upgrade. */
 export const migrateNotes = (
-  gamlaNotes: unknown,
-  nyaAnteckningar: unknown,
+  oldNotes: unknown,
+  newNotes: unknown,
   classify: (id: string) => Origin,
-  nu: string,
+  now: string,
 ): Record<string, Note> => ({
-  ...itemsFromGamlaNotes(gamlaNotes, classify, nu),
-  ...itemsFromMigrerade(nyaAnteckningar, nu),
+  ...itemsFromOldNotes(oldNotes, classify, now),
+  ...itemsFromMigrated(newNotes, now),
 })
 
 /** Builds the note's new state on a write: `created` is preserved from
@@ -149,13 +149,13 @@ export const updatedNote = (
   type: Origin,
   id: string,
   text: string,
-  nu: string,
+  now: string,
 ): Note => ({
   originType: type,
   originId: id,
   text,
-  created: existing?.created ?? nu,
-  updated: nu,
+  created: existing?.created ?? now,
+  updated: now,
 })
 
 /** Saved items in chronological order: most recently saved first. Migrated items
@@ -173,7 +173,7 @@ export const sortedNotes = (notes: Record<string, Note>): Note[] =>
     .sort((a, b) => b.updated.localeCompare(a.updated))
 
 /** Short excerpt for preview cards; trims generously and invisibly (spec Note Length). */
-export const utdrag = (text: string, max = 72): string => {
+export const excerpt = (text: string, max = 72): string => {
   const cleaned = text.trim()
   return cleaned.length > max ? `${cleaned.slice(0, max)}…` : cleaned
 }
@@ -181,7 +181,7 @@ export const utdrag = (text: string, max = 72): string => {
 /** Quiet Swedish date for the »sparad« row, or nothing for an unknown/invalid date. */
 export const dateLabel = (iso: string | null): string | undefined => {
   if (!iso) return undefined
-  const tid = new Date(iso)
-  if (Number.isNaN(tid.getTime())) return undefined
-  return new Intl.DateTimeFormat('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' }).format(tid)
+  const time = new Date(iso)
+  if (Number.isNaN(time.getTime())) return undefined
+  return new Intl.DateTimeFormat('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' }).format(time)
 }

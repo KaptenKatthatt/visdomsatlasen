@@ -11,6 +11,6 @@ export const toFiles = (moduler: Record<string, string>): ContentFile[] =>
 export const collect = <T>(filer: ContentFile[], tolka: (fil: ContentFile) => Parsed<T>): T[] =>
   filer.flatMap((fil) => {
     const tolkning = tolka(fil)
-    for (const fel of tolkning.errors) console.error('[innehåll]', fel)
+    for (const error of tolkning.errors) console.error('[innehåll]', error)
     return tolkning.value ? [tolkning.value] : []
   })

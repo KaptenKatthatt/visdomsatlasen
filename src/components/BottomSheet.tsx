@@ -1,8 +1,8 @@
 import { useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { useShell } from '../lib/shell'
-import { useDialogTangentbord } from '../lib/useDialogTangentbord'
-import { useInertBakgrund } from '../lib/useInertBakgrund'
+import { useDialogKeyboard } from '../lib/useDialogKeyboard'
+import { useInertBackground } from '../lib/useInertBackground'
 import styles from './BottomSheet.module.css'
 
 type Props = {
@@ -19,8 +19,8 @@ type Props = {
 export const BottomSheet = ({ label, title, onClose, children }: Props) => {
   const arkRef = useRef<HTMLDivElement>(null)
   const shell = useShell()
-  useDialogTangentbord(arkRef, onClose)
-  useInertBakgrund(shell)
+  useDialogKeyboard(arkRef, onClose)
+  useInertBackground(shell)
   const ark = (
     <div className={styles.overlay} data-overlay="true">
       <button

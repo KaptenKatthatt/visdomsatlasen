@@ -10,14 +10,14 @@ import { BottomSheet } from './BottomSheet'
 afterEach(cleanup)
 
 /** Efterliknar RootLayouts skal: main + nav som syskon till portalade ark. */
-const Skal = ({ arkÖppet }: { arkÖppet: boolean }) => {
-  const [skal, sättSkal] = useState<HTMLElement | null>(null)
+const Skal = ({ sheetOpen }: { sheetOpen: boolean }) => {
+  const [skal, setShell] = useState<HTMLElement | null>(null)
   return (
-    <div ref={sättSkal} data-testid="skal">
+    <div ref={setShell} data-testid="skal">
       <ShellContext.Provider value={skal}>
         <main>Bakgrundsinnehåll</main>
         <nav aria-label="Navigering">Flikar</nav>
-        {arkÖppet && (
+        {sheetOpen && (
           <BottomSheet label="Anteckning" onClose={() => {}}>
             <p>Innehåll</p>
           </BottomSheet>
@@ -77,7 +77,7 @@ describe('BottomSheet', () => {
   })
 
   it('portalas till skalet och gör main och nav inerta medan det är öppet', () => {
-    const { rerender } = render(<Skal arkÖppet={true} />)
+    const { rerender } = render(<Skal sheetOpen={true} />)
     const skal = screen.getByTestId('skal')
     const main = screen.getByRole('main', { hidden: true })
     const nav = skal.querySelector('nav')
@@ -88,7 +88,7 @@ describe('BottomSheet', () => {
     expect(nav).toHaveAttribute('inert')
     expect(overlay).not.toHaveAttribute('inert')
 
-    rerender(<Skal arkÖppet={false} />)
+    rerender(<Skal sheetOpen={false} />)
     expect(main).not.toHaveAttribute('inert')
     expect(nav).not.toHaveAttribute('inert')
   })

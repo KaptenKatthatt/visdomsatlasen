@@ -1,0 +1,244 @@
+/* Bibliotekssöket (search.md): en lugn, ändlig upptäcktsyta — aldrig en
+   uppmärksamhetsmotor. Radstilen delas i känsla med resten av biblioteket. */
+
+.field {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--faint);
+  color: var(--ink);
+  font-size: 1.375rem;
+  font-family: inherit;
+  padding: 10px 0;
+  margin-top: 8px;
+  outline: none;
+}
+
+.field::placeholder {
+  color: var(--soft-strong);
+}
+
+/* Programmatiskt kopplad etikett, dold visuellt men läst av skärmläsare. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.status {
+  font-size: 0.84375rem;
+  color: var(--soft-strong);
+  margin: 22px 0 0;
+}
+
+.grupp {
+  margin-top: 30px;
+}
+
+.grupp h2 {
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--faint);
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Olänkad rad (traditioner har inga egna sidor). */
+.quietRow {
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--faint);
+}
+
+.rowTitle {
+  display: block;
+  font-size: 1.1875rem;
+  line-height: 1.25;
+}
+
+.rowSub {
+  display: block;
+  font-size: 0.9375rem;
+  color: var(--soft-strong);
+  margin-top: 3px;
+  text-wrap: pretty;
+}
+
+.rowMeta {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--soft-strong);
+  font-style: italic;
+  margin-top: 3px;
+}
+
+.chev {
+  color: var(--accsoft);
+  font-size: 1.375rem;
+  flex: none;
+}
+
+.showMore {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 0.90625rem;
+  padding: 12px 0 0;
+  cursor: pointer;
+  text-underline-offset: 3px;
+}
+
+.showMore:hover {
+  text-decoration: underline;
+}
+
+/* Sök-tillstånd: tomläge, inga träffar, fel — alltid lugna, aldrig fyllda med
+   orelaterade rekommendationer. */
+.state {
+  margin-top: 40px;
+}
+
+.emptyText {
+  font-size: 1.03125rem;
+  color: var(--soft-strong);
+  font-style: italic;
+  line-height: 1.55;
+  margin: 40px 0 0;
+}
+
+.emptyHint {
+  font-size: 0.9375rem;
+  color: var(--soft-strong);
+  line-height: 1.55;
+  margin: 10px 0 0;
+}
+
+/* Valfria, hopfällda filter (search.md, Filters). */
+.filter {
+  margin-top: 18px;
+}
+
+.filterButton {
+  composes: hitArea from global;
+  background: none;
+  border: 1px solid var(--faint);
+  border-radius: 999px;
+  padding: 6px 16px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--soft-strong);
+}
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chip {
+  composes: hitArea from global;
+}
+
+.chipVald {
+  composes: hitArea from global;
+}
+
+.chip,
+.chipVald {
+  background: none;
+  border: 1px solid var(--faint);
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.84375rem;
+  color: var(--soft-strong);
+}
+
+.chipVald {
+  color: var(--ink);
+  border-color: var(--soft);
+}
+
+.filterInfo {
+  font-size: 0.84375rem;
+  color: var(--soft-strong);
+  margin: 12px 0 0;
+}
+
+.clear {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 0.84375rem;
+  padding: 0;
+  cursor: pointer;
+  text-underline-offset: 3px;
+}
+
+.clear:hover {
+  text-decoration: underline;
+}
+
+/* Verssöksträff ur källtexterna (verkläsarens FTS blir en del av det samlade
+   söket). Referensrad + markerad snippet, samma känsla som verkläsarens sök. */
+.sourceTextHit {
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--faint);
+  color: inherit;
+  text-decoration: none;
+}
+
+.hitRef {
+  display: block;
+  font-size: 0.78125rem;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.snippet {
+  display: block;
+  font-size: 1rem;
+  line-height: 1.55;
+  margin-top: 4px;
+  text-wrap: pretty;
+}
+
+.mark {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+
+/* Privat anteckningsträff (search.md, Notes Search): tydligt märkt som privat. */
+.privateCard {
+  margin-top: 12px;
+}
+
+.privateMark {
+  display: block;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}

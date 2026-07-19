@@ -7,15 +7,15 @@ import { personalCollections, useAtlas } from '../lib/store'
 import styles from './DinaData.module.css'
 
 // Readable titles for the export's notes and saved entries, by origin.
-const titelFor = (type: Origin, id: string): string | undefined => {
+const titleFor = (type: Origin, id: string): string | undefined => {
   if (type === 'room') return findRoomById(id)?.title
   if (type === 'path') return findPathById(id)?.title
   return findTopic(id)?.title
 }
 
 // Downloads a text file via an object URL and an invisible anchor.
-const download = (innehåll: string, filnamn: string, mediatyp: string): void => {
-  const blob = new Blob([innehåll], { type: mediatyp })
+const download = (content: string, filnamn: string, mediatyp: string): void => {
+  const blob = new Blob([content], { type: mediatyp })
   const url = URL.createObjectURL(blob)
   const ankare = document.createElement('a')
   ankare.href = url
@@ -36,11 +36,11 @@ const readImportSafely = (text: string): PersonalExport | null => {
 
 /** Clear local data: a simple confirmation that lists exactly what will disappear
  * and points to export first, so clearing is never a surprise. */
-const Rensning = ({ onRensa }: { onRensa: () => void }) => {
-  const [bekräftar, setBekräftar] = useState(false)
-  if (!bekräftar)
+const Rensning = ({ onClear }: { onClear: () => void }) => {
+  const [confirming, setConfirming] = useState(false)
+  if (!confirming)
     return (
-      <button type="button" className={styles.button} onClick={() => setBekräftar(true)}>
+      <button type="button" className={styles.button} onClick={() => setConfirming(true)}>
         Rensa lokal data
       </button>
     )
@@ -55,13 +55,13 @@ const Rensning = ({ onRensa }: { onRensa: () => void }) => {
           type="button"
           className={styles.button}
           onClick={() => {
-            onRensa()
-            setBekräftar(false)
+            onClear()
+            setConfirming(false)
           }}
         >
           Ta bort allt
         </button>
-        <button type="button" className={styles.button} onClick={() => setBekräftar(false)}>
+        <button type="button" className={styles.button} onClick={() => setConfirming(false)}>
           Avbryt
         </button>
       </div>
@@ -75,10 +75,10 @@ const Rensning = ({ onRensa }: { onRensa: () => void }) => {
  * the device except when the reader exports it themselves. */
 export const DinaData = () => {
   const store = useAtlas()
-  const [fel, setFel] = useState<string | undefined>(undefined)
+  const [error, setFel] = useState<string | undefined>(undefined)
 
   const bygg = (): PersonalExport =>
-    toExport(personalCollections(store), titelFor, new Date().toISOString())
+    toExport(personalCollections(store), titleFor, new Date().toISOString())
   const stamp = new Date().toISOString().slice(0, 10)
 
   const importera = async (fil: File): Promise<void> => {
@@ -122,8 +122,8 @@ export const DinaData = () => {
           />
         </label>
       </div>
-      {fel !== undefined && <p className={styles.fel}>{fel}</p>}
-      <Rensning onRensa={store.clearPersonal} />
+      {error !== undefined && <p className={styles.error}>{error}</p>}
+      <Rensning onClear={store.clearPersonal} />
     </div>
   )
 }

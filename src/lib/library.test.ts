@@ -17,7 +17,7 @@ import {
 } from './library'
 
 // Fabricated records: only the fields the library reads need to be meaningful.
-const room = (title: string, status: Room['status'] = 'published', över: Partial<Room> = {}): Room => ({
+const room = (title: string, status: Room['status'] = 'published', overrides: Partial<Room> = {}): Room => ({
   id: `rum-${title}`,
   slug: title,
   title,
@@ -34,7 +34,7 @@ const room = (title: string, status: Room['status'] = 'published', över: Partia
   updated: '2026-07-12',
   opening: 'x',
   core: 'x',
-  ...över,
+  ...overrides,
 })
 
 const theme = (
@@ -89,13 +89,13 @@ describe('libraryRooms', () => {
   })
 })
 
-const question = (text: string, över: Partial<Question> = {}): Question => ({
+const question = (text: string, overrides: Partial<Question> = {}): Question => ({
   id: `fraga-${text}`,
   slug: text,
   text,
   themes: ['tema-x'],
   status: 'published',
-  ...över,
+  ...overrides,
 })
 
 describe('roomsForQuestion', () => {
@@ -222,7 +222,7 @@ describe('libraryTraditions', () => {
   })
 })
 
-const path = (title: string, över: Partial<Path> = {}): Path => ({
+const path = (title: string, overrides: Partial<Path> = {}): Path => ({
   id: `vandring-${title}`,
   slug: title,
   title,
@@ -232,7 +232,7 @@ const path = (title: string, över: Partial<Path> = {}): Path => ({
   status: 'published',
   created: '2026-07-12',
   updated: '2026-07-12',
-  ...över,
+  ...overrides,
 })
 
 describe('libraryPaths', () => {
@@ -325,22 +325,22 @@ describe('traditionsForPath', () => {
 })
 
 describe('passagesForSource', () => {
-  const passage = (reference: string, över: Partial<SourcePassage> = {}): SourcePassage => ({
+  const passage = (reference: string, overrides: Partial<SourcePassage> = {}): SourcePassage => ({
     id: `passage-${reference}`,
     source: 'kalla-a',
     reference,
     status: 'published',
-    ...över,
+    ...overrides,
   })
 
   it('ger källans publicerade passager i naturlig referensordning', () => {
-    const passager = [
+    const passages = [
       passage('avsnitt 43'),
       passage('avsnitt 5'),
       passage('avsnitt 1'),
       passage('avsnitt 8'),
     ]
-    expect(passagesForSource('kalla-a', passager).map((p) => p.reference)).toEqual([
+    expect(passagesForSource('kalla-a', passages).map((p) => p.reference)).toEqual([
       'avsnitt 1',
       'avsnitt 5',
       'avsnitt 8',
@@ -349,11 +349,11 @@ describe('passagesForSource', () => {
   })
 
   it('utesluter utkastpassager och andra källors passager', () => {
-    const passager = [
+    const passages = [
       passage('avsnitt 1'),
       passage('avsnitt 2', { status: 'review' }),
       passage('avsnitt 3', { source: 'kalla-b' }),
     ]
-    expect(passagesForSource('kalla-a', passager).map((p) => p.reference)).toEqual(['avsnitt 1'])
+    expect(passagesForSource('kalla-a', passages).map((p) => p.reference)).toEqual(['avsnitt 1'])
   })
 })
