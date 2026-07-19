@@ -62,8 +62,10 @@ För att släppa in inbjudna testare utan att öppna appen för alla exponeras s
 publikt via **Tailscale Funnel** och göms bakom en **delad kod**. Spärren bor i Hono
 (`server/gate.ts`, hjälpare i `server/auth.ts`) och aktiveras bara när `ACCESS_CODE`
 är satt — utan koden är appen öppen inom tailnet som förr (bakåtkompatibelt). Rätt kod
-sätter en HttpOnly-cookie (härledd token, aldrig plaintext); kod-sidan är emojifri och
-`noindex`. Manuellt engångssteg på VPS:en: lägg `ACCESS_CODE=<lång slumpad kod>` i
+sätter en HttpOnly-cookie (härledd token, aldrig plaintext); Secure-flaggan sätts bara
+när anropet kom över HTTPS (via `X-Forwarded-Proto` eller URL:en), så inloggning funkar
+även mot direkt tailnet-IP över http. `POST /api/ingest` går förbi spärren (bara POST —
+eget INGEST_TOKEN-skydd i routern). Kod-sidan är emojifri och `noindex`. Manuellt engångssteg på VPS:en: lägg `ACCESS_CODE=<lång slumpad kod>` i
 `/opt/visdomsatlasen/.env`, starta om containern, kör `tailscale funnel --bg 3001`,
 dela `*.ts.net`-URL:en + koden. "Stäng av alla" = byt koden och starta om (gamla
 cookies dör). **Väg till publikt** (byggs inte nu): ta bort `ACCESS_CODE` (noll kod)

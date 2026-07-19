@@ -9,7 +9,21 @@ import { accessCookieValue, verifyAccessCode, verifyAccessCookie } from './auth'
 
 const COOKIE = 'va_access'
 const LOGIN_PATH = '/api/access'
+const INGEST_PATH = '/api/ingest'
 const ONE_MONTH = 60 * 60 * 24 * 30
+
+/**
+ * Did the request arrive over HTTPS? Funnel/the reverse proxy sets
+ * X-Forwarded-Proto; direct traffic is read off the URL. Controls the cookie's
+ * Secure flag: over plain HTTP (direct tailnet IP) the browser refuses to store
+ * a Secure cookie and the login loops — tailnet traffic is WireGuard-encrypted
+ * anyway.
+ */
+const overHttps = (c: Context): boolean => {
+  const proto = c.req.header('X-Forwarded-Proto')
+  if (proto !== undefined) return proto.split(',')[0]?.trim() === 'https'
+  return new URL(c.req.url).protocol === 'https:'
+}
 
 /** Reads the submitted code from a form or a JSON body. */
 const readCode = async (c: Context): Promise<string> => {
@@ -66,6 +80,30 @@ const codePage = (hasError: boolean): string => `<!doctype html>
 </body>
 </html>`
 
+/** Login: verify the code, set the cookie, back to the app. */
+const handleLogin = async (c: Context, accessCode: string, token: string): Promise<Response> => {
+  const submitted = await readCode(c)
+  if (!verifyAccessCode(submitted, accessCode)) return c.html(codePage(true), 401)
+  setCookie(c, COOKIE, token, {
+    httpOnly: true,
+    secure: overHttps(c),
+    sameSite: 'Lax',
+    path: '/',
+    maxAge: ONE_MONTH,
+  })
+  return c.redirect('/', 303)
+}
+
+/**
+ * Paths that bypass the cookie: robots.txt (it says Disallow: / anyway) and
+ * POST /api/ingest — ingest carries its own protection (INGEST_TOKEN in the
+ * router) and must be callable by cron/CI without a browser cookie. Only POST
+ * passes; a GET would otherwise fall through to the SPA fallback and leak the
+ * shell.
+ */
+const openPath = (c: Context): boolean =>
+  c.req.path === '/robots.txt' || (c.req.method === 'POST' && c.req.path === INGEST_PATH)
+
 /**
  * Builds gate middleware for a given code. Handles the login POST, checks
  * the cookie, and otherwise serves the code page (for HTML navigation) or 401.
@@ -73,24 +111,11 @@ const codePage = (hasError: boolean): string => `<!doctype html>
 export const createAccessGate = (accessCode: string): MiddlewareHandler => {
   const token = accessCookieValue(accessCode)
   return async (c, next) => {
-    // Login: verify the code, set the cookie, back to the app.
     if (c.req.method === 'POST' && c.req.path === LOGIN_PATH) {
-      const submitted = await readCode(c)
-      if (verifyAccessCode(submitted, accessCode)) {
-        setCookie(c, COOKIE, token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'Lax',
-          path: '/',
-          maxAge: ONE_MONTH,
-        })
-        return c.redirect('/', 303)
-      }
-      return c.html(codePage(true), 401)
+      return handleLogin(c, accessCode, token)
     }
 
-    // robots.txt always passes through (it says Disallow: / anyway).
-    if (c.req.path === '/robots.txt') return next()
+    if (openPath(c)) return next()
 
     // Already inside?
     if (verifyAccessCookie(getCookie(c, COOKIE) ?? null, accessCode)) return next()
