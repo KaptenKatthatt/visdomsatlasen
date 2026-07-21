@@ -13,6 +13,9 @@ export const roomCount = (count: number): string => (count === 1 ? 'Ett rum' : `
 export const questionCount = (count: number): string =>
   count === 1 ? 'En fråga' : `${count} frågor`
 
+export const pathCount = (count: number): string =>
+  count === 1 ? 'En vandring' : `${count} vandringar`
+
 /** The subpages' header. Entries that aren't published are marked »Utkast« —
  * they're reached only via a direct link and are the editorial review view.
  * The header's title also becomes the document title — the header is by definition

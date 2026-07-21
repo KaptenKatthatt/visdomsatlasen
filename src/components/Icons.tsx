@@ -36,6 +36,15 @@ export const TypeIcon = ({ size = 18 }: IconProps) => (
   </svg>
 )
 
+/** Hamburger — the »Mer« menu (Sparat, Inställningar). */
+export const MenuIcon = ({ size = 20 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round">
+    <line x1="4" y1="7" x2="20" y2="7" />
+    <line x1="4" y1="12" x2="20" y2="12" />
+    <line x1="4" y1="17" x2="20" y2="17" />
+  </svg>
+)
+
 export const PencilIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
     <path d="M4.5 19.5l.9-3.6L16.6 4.7a1.7 1.7 0 0 1 2.4 2.4L7.8 18.3l-3.3 1.2z" />

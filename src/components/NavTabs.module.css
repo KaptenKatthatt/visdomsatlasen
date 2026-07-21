@@ -42,3 +42,30 @@
   color: var(--ink);
   font-weight: 600;
 }
+
+/* »Mer«-menyns rader i bottensheeten (Sparat, Inställningar). Hårfina rader i
+   samma lugna känsla som bibliotekets listrader, med 44px träffhöjd. */
+.menuList {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--faint);
+  font-size: 1.25rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.menuLink:last-child {
+  border-bottom: none;
+}
+
+.menuLink[aria-current='page'] {
+  font-weight: 600;
+}

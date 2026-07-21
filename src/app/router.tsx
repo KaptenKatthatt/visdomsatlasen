@@ -41,6 +41,9 @@ const PersonPostPage = lazyPage(() =>
 const RoomListPage = lazyPage(() => import('../pages/bibliotek/RoomListPage').then((m) => m.RoomListPage))
 const ThemePage = lazyPage(() => import('../pages/bibliotek/ThemePage').then((m) => m.ThemePage))
 const PathPage = lazyPage(() => import('../pages/bibliotek/PathPage').then((m) => m.PathPage))
+const PathListPage = lazyPage(() =>
+  import('../pages/bibliotek/PathListPage').then((m) => m.PathListPage),
+)
 const SearchLibraryPage = lazyPage(() =>
   import('../pages/bibliotek/SearchLibraryPage').then((m) => m.SearchLibraryPage),
 )
@@ -211,6 +214,14 @@ const pathRoute = createRoute({
   },
 })
 
+// All published paths — the reachable list behind the »Vandringar« nav tab.
+// A static segment (`vandringar`) that can't collide with `/bibliotek/vandring/$slug`.
+const vandringListRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/vandringar',
+  component: PathListPage,
+})
+
 // The work reader lives under the static segment `verk`, so the landing's
 // subpages can never be shadowed by a work's id.
 const verklistaRoute = createRoute({
@@ -320,6 +331,7 @@ const routeTree = rootRoute.addChildren([
   sourceItemRoute,
   personPostRoute,
   pathRoute,
+  vandringListRoute,
   verklistaRoute,
   workRoute,
   bookRoute,
