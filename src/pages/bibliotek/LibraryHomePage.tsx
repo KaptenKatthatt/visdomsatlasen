@@ -1,11 +1,8 @@
 import { Link } from '@tanstack/react-router'
 import { ToLink } from '../../components/ToLink'
 import {
-  libraryQuestions,
   libraryPeople,
   librarySources,
-  libraryRooms,
-  libraryThemes,
   libraryTraditions,
   libraryPaths,
   roomsForPath,
@@ -13,45 +10,15 @@ import {
 } from '../../lib/library'
 import { useDocumentTitle } from '../../lib/useDocumentTitle'
 import {
-  allQuestions,
   allSources,
   allPeople,
   allRooms,
-  allThemes,
   allTraditions,
   allPaths,
   sourceName,
 } from '../../lib/content'
-import { valbaraRoom } from '../../lib/roomSelection'
 import styles from './Library.module.css'
-import { questionCount, Row, roomCount, Section } from './LibraryParts'
-
-// The questions are gathered behind a single entry (like the rooms) — the whole list lives on
-// the subpage, so the landing page stays short and calm (library.md).
-const Fragesektion = () => (
-  <Section heading="Frågor">
-    <Link to="/bibliotek/fragor" className={styles.row}>
-      <Row title="Alla frågor" sub={questionCount(libraryQuestions(allQuestions).length)} />
-    </Link>
-  </Section>
-)
-
-const ThemeSection = () => {
-  const themes = libraryThemes(allThemes)
-  return (
-    <Section heading="Teman">
-      {themes.length === 0 ? (
-        <p className={styles.empty}>Inga teman ännu.</p>
-      ) : (
-        themes.map((theme) => (
-          <ToLink key={theme.id} to={{ kind: 'tema', slug: theme.slug }} className={styles.row}>
-            <Row title={theme.label} sub={roomCount(valbaraRoom(theme.id, allRooms).length)} />
-          </ToLink>
-        ))
-      )}
-    </Section>
-  )
-}
+import { Row, roomCount, Section } from './LibraryParts'
 
 // Paths are an optional, quiet entry (paths.md, Discoverability) — they
 // must not stand as an empty, promising section, so it's hidden until published
@@ -78,14 +45,6 @@ const PathSection = () => {
     </Section>
   )
 }
-
-const RoomSection = () => (
-  <Section heading="Rum">
-    <Link to="/bibliotek/rum" className={styles.row}>
-      <Row title="Alla rum" sub={roomCount(libraryRooms(allRooms).length)} />
-    </Link>
-  </Section>
-)
 
 const SourceSection = () => (
   <Section heading="Källor">
@@ -144,7 +103,9 @@ const Personsektion = () => {
  * The library's landing page (library.md) — the deliberate entry to
  * exploration. Secondary to the reading room; calm, finite, without engagement metrics.
  * Traditions and sources stand at the top as the library's calm frame (editor's
- * decision 2026-07-18), the questions gathered at the bottom. Saved is reached via the nav tab.
+ * decision 2026-07-18). The themes, rooms and questions sections are hidden from
+ * the landing (editor's decision 2026-07-21); the entries live on via their routes,
+ * themes still reach their rooms, and search still finds them. Saved is reached via the nav tab.
  */
 export const LibraryHomePage = () => {
   useDocumentTitle('Biblioteket')
@@ -153,17 +114,14 @@ export const LibraryHomePage = () => {
       <div className="kicker">Visdomsatlasen</div>
       <h1 className={styles.title}>Biblioteket</h1>
       <p className={styles.lede}>
-        För den som vill leta vidare på egen hand — bland traditioner, källor, teman och frågor.
+        För den som vill leta vidare på egen hand — bland traditioner, källor och vandringar.
                     </p>
       <Link to="/bibliotek/sok" className={styles.searchEntry}>
         Sök efter en fråga, tanke eller källa
                     </Link>
       <Traditionssektion />
       <SourceSection />
-      <ThemeSection />
       <PathSection />
-      <RoomSection />
-      <Fragesektion />
       <Personsektion />
     </div>
   )
