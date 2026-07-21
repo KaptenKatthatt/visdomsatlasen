@@ -18,22 +18,6 @@
   color: var(--soft-strong);
 }
 
-.dold {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
-.error {
-  font-size: 0.90625rem;
-  color: var(--soft-strong);
-  font-style: italic;
-  margin: 12px 0 0;
-}
-
 .rensning {
   margin-top: 22px;
 }

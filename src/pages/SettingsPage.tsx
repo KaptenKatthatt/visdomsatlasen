@@ -35,8 +35,8 @@ export const SettingsPage = () => {
       <div className={styles.section}>
         <h2 className="kicker sectionKicker">Dina data</h2>
         <p className={styles.dataLede}>
-          Dina anteckningar och sparade platser stannar på den här enheten. Exportera dem i öppet
-          format, importera tillbaka, eller rensa allt.
+          Dina anteckningar och sparade platser stannar på den här enheten. Exportera dem som text,
+          eller rensa allt.
         </p>
         <DinaData />
       </div>

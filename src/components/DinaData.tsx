@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { findTopic } from '../content/topics'
-import { readImport, toExport, toMarkdown, type PersonalExport } from '../lib/dataTransfer'
+import { toExport, toMarkdown, type PersonalExport } from '../lib/dataTransfer'
 import { findRoomById, findPathById } from '../lib/content'
 import type { Origin } from '../lib/personal'
 import { personalCollections, useAtlas } from '../lib/store'
@@ -24,14 +24,6 @@ const download = (content: string, filnamn: string, mediatyp: string): void => {
   // Defer the revoke: some browsers (Safari/mobile) abort the
   // download if the object URL is revoked synchronously before it's read.
   setTimeout(() => URL.revokeObjectURL(url), 0)
-}
-
-const readImportSafely = (text: string): PersonalExport | null => {
-  try {
-    return readImport(JSON.parse(text))
-  } catch {
-    return null
-  }
 }
 
 /** Clear local data: a simple confirmation that lists exactly what will disappear
@@ -69,27 +61,16 @@ const Rensning = ({ onClear }: { onClear: () => void }) => {
   )
 }
 
-/** Your data (notes-and-saved.md, Export/Import): export personal data in
- * open formats, import it back and clear it locally — the reader's reflections should
- * never be locked in. Personal data is never processed by AI and never leaves
- * the device except when the reader exports it themselves. */
+/** Your data (notes-and-saved.md): export personal data as text and clear it
+ * locally — the reader's reflections should never be locked in. Personal data is
+ * never processed by AI and never leaves the device except when the reader exports
+ * it themselves. */
 export const DinaData = () => {
   const store = useAtlas()
-  const [error, setFel] = useState<string | undefined>(undefined)
 
   const bygg = (): PersonalExport =>
     toExport(personalCollections(store), titleFor, new Date().toISOString())
   const stamp = new Date().toISOString().slice(0, 10)
-
-  const importera = async (fil: File): Promise<void> => {
-    const data = readImportSafely(await fil.text())
-    if (data === null) {
-      setFel('Filen kunde inte läsas.')
-      return
-    }
-    store.importPersonal(data)
-    setFel(undefined)
-  }
 
   return (
     <div>
@@ -97,32 +78,11 @@ export const DinaData = () => {
         <button
           type="button"
           className={styles.button}
-          onClick={() => download(JSON.stringify(bygg(), null, 2), `visdomsatlasen-${stamp}.json`, 'application/json')}
-        >
-          Exportera
-        </button>
-        <button
-          type="button"
-          className={styles.button}
           onClick={() => download(toMarkdown(bygg()), `visdomsatlasen-${stamp}.md`, 'text/markdown')}
         >
           Exportera som text
         </button>
-        <label className={styles.button}>
-          Importera
-          <input
-            type="file"
-            accept="application/json,.json"
-            className={styles.dold}
-            onChange={(event) => {
-              const fil = event.target.files?.[0]
-              event.target.value = ''
-              if (fil) void importera(fil)
-            }}
-          />
-        </label>
       </div>
-      {error !== undefined && <p className={styles.error}>{error}</p>}
       <Rensning onClear={store.clearPersonal} />
     </div>
   )
