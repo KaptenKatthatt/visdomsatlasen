@@ -32,26 +32,6 @@ const Metarad = ({ rooms }: { rooms: Room[] }) => {
   return <p className={styles.antal}>{parts.join(' · ')}</p>
 }
 
-/** A quiet save control (notes-and-saved.md, Saving): »Spara«/»Sparad«,
- * no celebratory feedback, no counter. A saved path only means
- * the reader wants to be able to return — never a commitment to finish. */
-const SavePath = ({ path }: { path: Path }) => {
-  const { savedPaths, toggleSavedPath } = useAtlas()
-  const saved = !!savedPaths[path.id]
-  return (
-    <div className={styles.save}>
-      <button
-        type="button"
-        className={styles.saveButton}
-        aria-pressed={saved}
-        onClick={() => toggleSavedPath(path.id)}
-      >
-        {saved ? 'Sparad' : 'Spara'}
-      </button>
-    </div>
-  )
-}
-
 /** The central question — the heart of the path. Shown only when it's published;
  * otherwise the draft question is reached via the library, not from here. */
 const Fragedel = ({ path }: { path: Path }) => {
@@ -111,7 +91,7 @@ const RoomPart = ({ path, rooms }: { path: Path; rooms: Room[] }) => {
 /** The path's overview (paths.md, Path Overview): title, introduction and the
  * central question land first — the human question the reader arrives at — then
  * the rooms in editorial order, and last a quiet footer with the source
- * traditions, the approximate total time and the save control. Nothing competes
+ * traditions and the approximate total time. Nothing competes
  * with the question at the top; the metadata never reads as a syllabus and there
  * are no progress metrics. The path is read in the reading room, one room at a
  * time — here you only choose where to step in. TopBar without onBack ⇒ history
@@ -129,7 +109,6 @@ export const PathPage = ({ slug }: { slug: string }) => {
       <RoomPart path={path} rooms={rooms} />
       <div className={styles.pathFooter}>
         <Metarad rooms={rooms} />
-        <SavePath path={path} />
       </div>
     </div>
   )
