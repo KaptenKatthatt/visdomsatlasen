@@ -155,7 +155,7 @@ export const SourcePostPage = ({ slug }: { slug: string }) => {
           </Link>
         </Section>
       )}
-      <Section heading="Rum ur denna source">
+      <Section heading="Rum ur denna källa">
         <RoomList
           rooms={roomsForSource(source.id, allRooms)}
           emptyMessage="Det finns inga färdiga rum ur källan ännu."

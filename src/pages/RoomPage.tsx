@@ -65,8 +65,8 @@ const sourceRow = (source: Source, reference: string | undefined): string => {
 // Translation Policy): edition and, for an in-house translation, the responsible hand.
 const editionRow = (passage: SourcePassage | undefined): string | undefined => {
   if (!passage?.edition) return undefined
-  const translation = passage.translator ? ` · translation ${passage.translator}` : ''
-  return `Edition: ${passage.edition}${translation}`
+  const translation = passage.translator ? ` · översättning ${passage.translator}` : ''
+  return `Utgåva: ${passage.edition}${translation}`
 }
 
 type SourceRelation = Room['sources'][number]

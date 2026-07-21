@@ -22,7 +22,7 @@ export const allSources: Source[] = [
     origin: 'ca 170 e.Kr, fältläger vid Donau',
     originShort: 'ca 170 e.Kr',
     lang: 'Grekiska',
-    trans: 'Fri translation',
+    trans: 'Fri översättning',
     note: 'Marcus Aurelius förde sina anteckningar på grekiska under fälttågen mot markomannerna. Titeln Självbetraktelser är senare — själv kallade han dem »Till sig själv«.',
     text: [
       'När du vaknar om morgonen, säg till dig själv: i dag ska jag möta människor som är påträngande, otacksamma, övermodiga, svekfulla, avundsjuka och osällskapliga. Sådana är de eftersom de inte kan skilja gott från ont.',
@@ -37,7 +37,7 @@ export const allSources: Source[] = [
     origin: 'ca 1550 f.Kr, Egypten',
     originShort: 'ca 1550 f.Kr',
     lang: 'Fornegyptiska',
-    trans: 'Fri translation',
+    trans: 'Fri översättning',
     note: 'Den negativa bekännelsen uttalades inför dödsrikets fyrtiotvå domare. Att bedyra sin oskuld — inte bekänna sin synd — var vägen genom domen.',
     text: [
       'Jag har inte gjort människor orätt.',
@@ -55,7 +55,7 @@ export const allSources: Source[] = [
     origin: 'ca 380 f.Kr, Aten',
     originShort: 'ca 380 f.Kr',
     lang: 'Grekiska',
-    trans: 'Fri translation',
+    trans: 'Fri översättning',
     note: 'Dialogen utspelar sig i Sokrates fängelsecell under hans sista timmar, våren 399 f.Kr. Platon låter honom argumentera för själens odödlighet — och tömma giftbägaren utan fruktan.',
     text: [
       'De som ägnar sig åt filosofin på rätt sätt övar sig i ingenting annat än att dö och att vara döda.',
@@ -85,7 +85,7 @@ export const allSources: Source[] = [
     origin: 'ca 100 f.Kr, nedtecknad på Sri Lanka',
     originShort: 'ca 100 f.Kr',
     lang: 'Pali',
-    trans: 'Fri translation',
+    trans: 'Fri översättning',
     note: 'Dhammapada, »sanningens väg«, är en samling av 423 verser ur Buddhas undervisning, nedtecknad på pali omkring vår tideräknings början.',
     text: [
       'Allt vad vi är är följden av vad vi har tänkt: det vilar på våra tankar, det är gjort av våra tankar.',

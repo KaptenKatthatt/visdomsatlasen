@@ -8,7 +8,7 @@ import styles from './PeoplePage.module.css'
 export const PeoplePage = () => (
   <div className="screenSub">
     <TopBar />
-    <h1 className={styles.title}>Personer &amp; traditions</h1>
+    <h1 className={styles.title}>Personer &amp; traditioner</h1>
     <div className={styles.section}>
       <div className="kicker sectionKicker">Personer</div>
       {allPeople.map((person) => (
