@@ -10,13 +10,17 @@ type Props = {
   title?: string
   onClose: () => void
   children: ReactNode
+  /** Show the "Klar" close button in the header. Default true; sheets whose own
+   * items dismiss the sheet (e.g. the menu, where tapping a link closes it) pass
+   * false — the scrim and Escape still close it. */
+  showDone?: boolean
 }
 
 /** Shared bottom sheet: scrim, slide-up frame and a header row with a "Klar" button.
  * Portaled into the shell element (.shell) so the sheet always sits as a sibling of
  * main and nav — that way the background can be inerted and fixed positioning isn't
  * affected by ancestors with backdrop-filter. Falls back to inline when there's no shell. */
-export const BottomSheet = ({ label, title, onClose, children }: Props) => {
+export const BottomSheet = ({ label, title, onClose, children, showDone = true }: Props) => {
   const arkRef = useRef<HTMLDivElement>(null)
   const shell = useShell()
   useDialogKeyboard(arkRef, onClose)
@@ -44,9 +48,11 @@ export const BottomSheet = ({ label, title, onClose, children }: Props) => {
               <div className="kicker">{label}</div>
               {title && <div className={styles.title}>{title}</div>}
             </div>
-            <button type="button" className={styles.done} onClick={onClose}>
-              Klar
-            </button>
+            {showDone && (
+              <button type="button" className={styles.done} onClick={onClose}>
+                Klar
+              </button>
+            )}
           </div>
           {children}
         </div>

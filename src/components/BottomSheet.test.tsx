@@ -76,6 +76,15 @@ describe('BottomSheet', () => {
     expect(onClose).toHaveBeenCalledTimes(2)
   })
 
+  it('döljer Klar-knappen när showDone är false', () => {
+    render(
+      <BottomSheet label="Meny" showDone={false} onClose={() => {}}>
+        <p>Innehåll</p>
+      </BottomSheet>,
+    )
+    expect(screen.queryByRole('button', { name: 'Klar' })).not.toBeInTheDocument()
+  })
+
   it('portalas till skalet och gör main och nav inerta medan det är öppet', () => {
     const { rerender } = render(<Skal sheetOpen={true} />)
     const skal = screen.getByTestId('skal')

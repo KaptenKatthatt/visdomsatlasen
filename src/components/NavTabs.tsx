@@ -71,7 +71,7 @@ export const NavTabs = () => {
         </button>
       </nav>
       {menuOpen && (
-        <BottomSheet label="Meny" onClose={() => setMenuOpen(false)}>
+        <BottomSheet label="Meny" showDone={false} onClose={() => setMenuOpen(false)}>
           <div className={styles.menuList}>
             {menuItems.map((item) => (
               <Link
