@@ -63,6 +63,20 @@
   margin: 8px 0 0;
 }
 
+/* Vandringsöversiktens lågmälda fot: traditioner, ungefärlig totaltid och Spara
+   samlas sist, tydligt åtskilda med luft och en hårfin linje så de aldrig
+   konkurrerar med frågan högst upp (paths.md, Path Overview — orientering, inte
+   kursstatistik). Samma stilla känsla som källpostens .metaBlock. */
+.pathFooter {
+  margin-top: 42px;
+  border-top: 1px solid var(--faint);
+  padding-top: 16px;
+}
+
+.pathFooter .antal {
+  margin-top: 0;
+}
+
 /* Spara-kontrollen på vandringsöversikten: stilla, aldrig framhävd. */
 .save {
   margin: 18px 0 0;

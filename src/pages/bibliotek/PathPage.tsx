@@ -108,11 +108,14 @@ const RoomPart = ({ path, rooms }: { path: Path; rooms: Room[] }) => {
   )
 }
 
-/** The path's overview (paths.md, Path Overview): title, quiet metadata,
- * introduction, central question and the rooms in editorial order. No
- * syllabus feel, no progress metrics. The path is read in the reading room, one room at
- * a time — here you only choose where to step in. TopBar without onBack ⇒
- * history step back, so the library location is preserved. */
+/** The path's overview (paths.md, Path Overview): title, introduction and the
+ * central question land first — the human question the reader arrives at — then
+ * the rooms in editorial order, and last a quiet footer with the source
+ * traditions, the approximate total time and the save control. Nothing competes
+ * with the question at the top; the metadata never reads as a syllabus and there
+ * are no progress metrics. The path is read in the reading room, one room at a
+ * time — here you only choose where to step in. TopBar without onBack ⇒ history
+ * step back, so the library location is preserved. */
 export const PathPage = ({ slug }: { slug: string }) => {
   const path = findPathBySlug(slug)
   if (!path) return <NotFoundNote subject="Vandringen" />
@@ -121,11 +124,13 @@ export const PathPage = ({ slug }: { slug: string }) => {
     <div className="screenSub">
       <TopBar />
       <Sidhuvud kicker="Vandring" title={path.title} status={path.status} />
-      <Metarad rooms={rooms} />
-      <SavePath path={path} />
       <Description text={path.introduction} />
       <Fragedel path={path} />
       <RoomPart path={path} rooms={rooms} />
+      <div className={styles.pathFooter}>
+        <Metarad rooms={rooms} />
+        <SavePath path={path} />
+      </div>
     </div>
   )
 }
