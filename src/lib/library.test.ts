@@ -12,7 +12,6 @@ import {
   roomsForQuestion,
   roomsForSource,
   roomsForPath,
-  traditionsForPath,
   pathReadingTime,
 } from './library'
 
@@ -282,45 +281,6 @@ describe('pathReadingTime', () => {
       room('c', 'published', { readingTimeMinutes: 3 }),
     ]
     expect(pathReadingTime(rooms)).toBe(10)
-  })
-})
-
-describe('traditionsForPath', () => {
-  const source = (id: string, traditions: string[]): Source => ({
-    id,
-    slug: id,
-    title: id,
-    type: 'book',
-    rights: 'public-domain',
-    traditions,
-    status: 'published',
-  })
-  const tradition = (name: string, status: Tradition['status'] = 'published'): Tradition => ({
-    id: `tradition-${name}`,
-    slug: name,
-    name,
-    status,
-  })
-
-  it('härleder unika publicerade traditioner ur rummens källor, i svensk ordning', () => {
-    const rooms = [
-      room('ett', 'published', { sources: [{ source: 'kalla-a', use: 'adaptation', primary: true }] }),
-      room('två', 'published', { sources: [{ source: 'kalla-b', use: 'quote', primary: true }] }),
-    ]
-    const sources = [
-      source('kalla-a', ['tradition-stoicism']),
-      source('kalla-b', ['tradition-buddhism', 'tradition-taoism']),
-    ]
-    const traditions = [
-      tradition('stoicism'),
-      tradition('buddhism'),
-      tradition('taoism', 'draft'),
-    ]
-    // taoism is a draft and drops out; stoicism and buddhism in Swedish order.
-    expect(traditionsForPath(rooms, sources, traditions).map((t) => t.name)).toEqual([
-      'buddhism',
-      'stoicism',
-    ])
   })
 })
 

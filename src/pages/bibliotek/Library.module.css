@@ -63,20 +63,6 @@
   margin: 8px 0 0;
 }
 
-/* Vandringsöversiktens lågmälda fot: traditioner, ungefärlig totaltid och Spara
-   samlas sist, tydligt åtskilda med luft och en hårfin linje så de aldrig
-   konkurrerar med frågan högst upp (paths.md, Path Overview — orientering, inte
-   kursstatistik). Samma stilla känsla som källpostens .metaBlock. */
-.pathFooter {
-  margin-top: 42px;
-  border-top: 1px solid var(--faint);
-  padding-top: 16px;
-}
-
-.pathFooter .antal {
-  margin-top: 0;
-}
-
 .empty {
   font-size: 1.03125rem;
   color: var(--soft-strong);
@@ -155,14 +141,6 @@
   display: block;
   padding: 15px 0;
   border-bottom: 1px solid var(--faint);
-}
-
-/* Vandringens rum som en semantiskt ordnad lista utan visuella pilar
-   (paths.md, Accessibility). Radstilen delas med resten av biblioteket. */
-.pathList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
 }
 
 /* Källpassager (source-and-context.md): källans ord som semantiskt blockcitat,
