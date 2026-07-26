@@ -7,9 +7,11 @@
 /* Ledens början äger sin skärm, precis som läsrummets .section: innehållet
    upptill, luften växer och prickarna vilar vid vecket. Ingen anhalts text möter
    ögat innan man valt att gå vidare. Till skillnad från läsrummet är den här
-   sidan inte navlös, så både toppraden (68px) och bottennaven (47px = 44px
-   flikhöjd + 1px vaddering över/under + 1px linje) räknas bort — annars hamnar
-   prickarna bakom naven. */
+   sidan inte navlös, så både toppraden och bottennaven räknas bort — annars
+   hamnar prickarna bakom naven. 115px = 60px topprad (uppmätt här: bara
+   bakåtknappen, ingen högerkontroll som läsrummets 68px) + 47px nav (44px
+   flikhöjd + 1px vaddering över/under + 1px linje) + 8px andrum, så prickarna
+   inte klistrar mot navens överkant. */
 .trailhead {
   min-height: calc(100svh - 115px);
   display: flex;
@@ -130,30 +132,21 @@
   text-wrap: pretty;
 }
 
+/* Tomlägen och sidhuvud delas med bibliotekets sidor — vandringarna lämnar
+   radspråket, inte husets röst. Composes i stället för kopior, så de aldrig
+   glider isär (jfr .artal i Library.module.css). */
 .empty {
-  font-size: 1.03125rem;
-  color: var(--soft-strong);
-  font-style: italic;
-  line-height: 1.55;
-  margin: 6px 0 0;
+  composes: empty from './Library.module.css';
 }
 
 /* Vandringslistan: flera ledstarter, inte en katalog. Samma huvudmått som
    bibliotekets landning, sedan luftiga block utan rader eller räknare. */
 .listTitle {
-  font-size: 2.0625rem;
-  font-weight: 500;
-  line-height: 1.16;
-  letter-spacing: -0.01em;
-  margin: 56px 0 0;
+  composes: title from './Library.module.css';
 }
 
 .listLede {
-  font-size: 1.0625rem;
-  color: var(--soft-strong);
-  font-style: italic;
-  margin: 8px 0 0;
-  line-height: 1.5;
+  composes: lede from './Library.module.css';
 }
 
 .paths {
@@ -165,11 +158,7 @@
 }
 
 .pathLink {
-  display: block;
-  padding: 6px 0;
-  min-height: 44px;
-  color: inherit;
-  text-decoration: none;
+  composes: stopLink;
 }
 
 .pathTitle {
@@ -179,12 +168,9 @@
   font-weight: 500;
 }
 
+/* Vandringens fråga bär samma dämpning som anhaltens tanke, men i frågans
+   kursiva röst. */
 .pathQuestion {
-  display: block;
-  font-size: calc(var(--rs) - 0.09375rem);
-  line-height: 1.7;
+  composes: stopSummary;
   font-style: italic;
-  color: color-mix(in srgb, var(--ink) 62%, var(--soft));
-  margin-top: 6px;
-  text-wrap: pretty;
 }

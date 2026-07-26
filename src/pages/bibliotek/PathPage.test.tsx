@@ -43,7 +43,13 @@ describe('PathPage', () => {
     expect(path).toBeDefined()
     if (path === undefined) return
     const titles = roomsForPath(path, allRooms).map((room) => room.title)
-    const stops = screen.getByRole('list').querySelectorAll('li')
+    const trail = screen.getByRole('list')
+    expect(trail.tagName).toBe('OL')
+    // Explicit role: list-style: none gör att WebKit tappar listsemantiken, och
+    // listan är det enda som bär sekvensen. jsdom härmar inte den strykningen, så
+    // attributet måste kontrolleras direkt.
+    expect(trail).toHaveAttribute('role', 'list')
+    const stops = trail.querySelectorAll('li')
     expect([...stops].map((stop) => stop.querySelector('a')?.textContent)).toEqual(
       titles.map((title) => expect.stringContaining(title)),
     )
@@ -58,6 +64,7 @@ describe('PathPage', () => {
   it('bär varje anhalts egen tanke som underrad', async () => {
     await renderPath(SLUG)
     const path = allPaths.find((candidate) => candidate.slug === SLUG)
+    expect(path).toBeDefined()
     if (path === undefined) return
     for (const room of roomsForPath(path, allRooms))
       expect(screen.getByText(room.summary)).toBeInTheDocument()
@@ -66,9 +73,11 @@ describe('PathPage', () => {
   // paths.md, Completion + Path Overview: the overview must not read as a syllabus.
   // No reading times, no totals, no counts — and (editor's decision 2026-07-26) no
   // »Fortsätt där du stannade« cue on the trail itself.
+  // Matcha formen »4 min«, inte ordet »min« — det senare är ett vanligt svenskt
+  // ord som skulle fälla grinden så fort en sammanfattning råkade innehålla det.
   it('visar ingen lästid, totaltid eller återupptagningsrad', async () => {
     await renderPath(SLUG)
-    expect(document.body.textContent).not.toMatch(/\bmin\b/)
+    expect(document.body.textContent).not.toMatch(/\d+\s*min\b/)
     expect(screen.queryByText(/Fortsätt där du stannade/)).not.toBeInTheDocument()
   })
 

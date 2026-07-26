@@ -41,12 +41,20 @@ const Trailhead = ({ path }: { path: Path }) => {
  * chevrons, no footer: the page ends where the trail ends. The sequence lives in
  * the `<ol>`, so it survives when the visual design is removed (Accessibility);
  * the trail line and its markers are pseudo-elements only. Every row opens the
- * room with the path as context. */
+ * room with the path as context.
+ *
+ * `role="list"` is not redundant here: `list-style: none` makes WebKit drop the
+ * list semantics, and VoiceOver then stops announcing »lista, 4 objekt«. With the
+ * rows, chevrons and reading times gone, this list is the only thing carrying the
+ * sequence, so it has to survive the styling. */
 const Trail = ({ path, rooms }: { path: Path; rooms: Room[] }) => {
   if (rooms.length === 0)
     return <p className={styles.empty}>Den här vandringen har inga rum ännu.</p>
   return (
-    <ol className={styles.trail}>
+    // Not redundant in practice: `list-style: none` makes WebKit drop the list
+    // semantics, and VoiceOver stops announcing »lista, 4 objekt«.
+    /* eslint-disable-next-line jsx-a11y/no-redundant-roles */
+    <ol className={styles.trail} role="list">
       {rooms.map((room) => (
         <li key={room.id} className={styles.stop}>
           <Link

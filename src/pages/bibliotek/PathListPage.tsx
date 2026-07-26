@@ -2,17 +2,16 @@ import { ToLink } from '../../components/ToLink'
 import type { Path } from '../../content/editorial/schema'
 import { libraryPaths, publishedThrough } from '../../lib/library'
 import { allPaths, findQuestion } from '../../lib/content'
-import { excerpt } from '../../lib/personal'
 import { useDocumentTitle } from '../../lib/useDocumentTitle'
 import styles from './Path.module.css'
 
-/** What the path asks. The central question says what you would be thinking
- * about; when it isn't published the introduction's opening stands in, so the
- * row never falls silent. */
-const opening = (path: Path): string => {
-  const [question] = publishedThrough([path.centralQuestion], findQuestion)
-  return question?.text ?? excerpt(path.introduction, 96)
-}
+/** What the path asks — the one line that says what you would be thinking about.
+ * The gate guarantees it for everything shown here: a published path may not link
+ * an unpublished central question (validate.ts), and only published paths reach
+ * this list. Nothing stands in if the reference ever drifts; a truncated piece of
+ * prose would read as a question without being one. */
+const centralQuestion = (path: Path): string | undefined =>
+  publishedThrough([path.centralQuestion], findQuestion)[0]?.text
 
 /** All published paths — several heads of trails, not a catalogue. The nav tab
  * »Vandringar« lands here, so the page carries its own screen (screenTab, no back
@@ -37,7 +36,7 @@ export const PathListPage = () => {
             <div key={path.id} className={styles.path}>
               <ToLink to={{ kind: 'vandring', slug: path.slug }} className={styles.pathLink}>
                 <span className={styles.pathTitle}>{path.title}</span>
-                <span className={styles.pathQuestion}>{opening(path)}</span>
+                <span className={styles.pathQuestion}>{centralQuestion(path)}</span>
               </ToLink>
             </div>
           ))
