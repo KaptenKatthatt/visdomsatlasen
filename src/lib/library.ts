@@ -117,25 +117,6 @@ export const roomsForPath = (path: Path, rooms: Room[]): Room[] =>
 export const pathReadingTime = (rooms: Room[]): number =>
   rooms.reduce((sum, room) => sum + room.readingTimeMinutes, 0)
 
-/** The path's traditions, quietly derived from the rooms' sources (paths.md,
- * source traditions shown quietly): room → source → traditions, published
- * only, unique, in Swedish name order. */
-export const traditionsForPath = (
-  pathRooms: Room[],
-  sources: Source[],
-  traditions: Tradition[],
-): Tradition[] => {
-  const sourceIds = new Set(
-    pathRooms.flatMap((room) => room.sources.map((relation) => relation.source)),
-  )
-  const traditionIds = new Set(
-    sources
-      .filter((source) => sourceIds.has(source.id))
-      .flatMap((source) => source.traditions ?? []),
-  )
-  return libraryTraditions(traditions.filter((tradition) => traditionIds.has(tradition.id)))
-}
-
 /** The source's published passages, in natural reference order (»avsnitt 5« before
  * »avsnitt 43«, not the reverse). Only published passages reach the library;
  * drafts are the editorial team's review view. */

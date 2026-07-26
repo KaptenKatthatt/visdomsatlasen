@@ -1,0 +1,190 @@
+/* Vandringarna — »Stigen«. Vandringsytan lämnar medvetet bibliotekets radspråk
+   (kantlinjer, chevroner, metadata) och lånar i stället läsrummets rytm: en zon
+   per skärm, luften växer fritt som restyta, och det sista ögat möter är ···.
+   Sidan ska gå att gå igenom, inte läsas av (paths.md, Core Principle — »a quiet
+   trail, not a curriculum«). */
+
+/* Ledens början äger sin skärm, precis som läsrummets .section: innehållet
+   upptill, luften växer och prickarna vilar vid vecket. Ingen anhalts text möter
+   ögat innan man valt att gå vidare. Till skillnad från läsrummet är den här
+   sidan inte navlös, så både toppraden (68px) och bottennaven (47px = 44px
+   flikhöjd + 1px vaddering över/under + 1px linje) räknas bort — annars hamnar
+   prickarna bakom naven. */
+.trailhead {
+  min-height: calc(100svh - 115px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Introduktionen är prosa, inte metadata — samma grad och radavstånd som
+   läsrummets brödtext, så den skalar med läsarens textstorlek. */
+.intro {
+  font-size: var(--rs);
+  line-height: 1.75;
+  margin: 18px 0 0;
+  text-wrap: pretty;
+}
+
+/* Den centrala frågan: ledens sista intryck innan man går vidare — det man bär
+   med sig in. Läsrummets .thought-röst (ensam, kursiv, centrerad). */
+.question {
+  font-size: calc(var(--rs) + 0.125rem);
+  line-height: 1.6;
+  font-style: italic;
+  text-align: center;
+  padding: 0 12px;
+  margin: 44px 0 0;
+  text-wrap: balance;
+}
+
+/* En dörr, inte en knapp: understrykningen är hårfin och långt ner, så länken
+   syns utan att ropa (vision: länkar ska kännas som dörrar). */
+.questionLink {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--faint);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+/* Prickarna trycks mot skärmens botten av luften ovanför. */
+.pause {
+  margin-top: auto;
+  padding: 40px 0 32px;
+}
+
+/* Stigen: en hårfin lodrät linje som löper genom anhalterna och tonar bort i
+   båda ändar — en led, inte en mätare. Sekvensen bärs semantiskt av <ol>;
+   linjen och markörerna är rena pseudoelement och når aldrig skärmläsaren
+   (paths.md, Accessibility). Bottenvadderingen låter linjen fortsätta förbi
+   sista anhalten i stället för att tvärt ta slut. */
+.trail {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 6px 0 104px 26px;
+}
+
+.trail::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--faint) 10%,
+    var(--faint) 72%,
+    transparent
+  );
+}
+
+/* Luft mellan anhalterna, aldrig avdelare. */
+.stop + .stop {
+  margin-top: 44px;
+}
+
+.stopLink {
+  display: block;
+  padding: 6px 0;
+  min-height: 44px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.stopTitle {
+  display: block;
+  position: relative;
+  font-size: calc(var(--rs) + 0.0625rem);
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+/* Markören på stigen. Alla markörer är identiska — ingen fylls i, bockas av
+   eller ändras av var läsaren senast var. Det får aldrig bli en stegindikator
+   (paths.md, Completion). 3,5px vänsterled = linjens mitt; -3.5px topplyft
+   centrerar mot titelns första rad. */
+.stopTitle::before {
+  content: '';
+  position: absolute;
+  left: -26px;
+  top: 0.65em;
+  margin-top: -3.5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  border: 1px solid var(--faint);
+  background: var(--paper);
+}
+
+/* Anhaltens sammanfattning: dämpad men läsbar, samma blandning mot bläcket som
+   läsrummets frågor — det är den man funderar över medan man går. */
+.stopSummary {
+  display: block;
+  font-size: calc(var(--rs) - 0.09375rem);
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--ink) 62%, var(--soft));
+  margin-top: 6px;
+  text-wrap: pretty;
+}
+
+.empty {
+  font-size: 1.03125rem;
+  color: var(--soft-strong);
+  font-style: italic;
+  line-height: 1.55;
+  margin: 6px 0 0;
+}
+
+/* Vandringslistan: flera ledstarter, inte en katalog. Samma huvudmått som
+   bibliotekets landning, sedan luftiga block utan rader eller räknare. */
+.listTitle {
+  font-size: 2.0625rem;
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: -0.01em;
+  margin: 56px 0 0;
+}
+
+.listLede {
+  font-size: 1.0625rem;
+  color: var(--soft-strong);
+  font-style: italic;
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+.paths {
+  margin-top: 44px;
+}
+
+.path + .path {
+  margin-top: 40px;
+}
+
+.pathLink {
+  display: block;
+  padding: 6px 0;
+  min-height: 44px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.pathTitle {
+  display: block;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.pathQuestion {
+  display: block;
+  font-size: calc(var(--rs) - 0.09375rem);
+  line-height: 1.7;
+  font-style: italic;
+  color: color-mix(in srgb, var(--ink) 62%, var(--soft));
+  margin-top: 6px;
+  text-wrap: pretty;
+}

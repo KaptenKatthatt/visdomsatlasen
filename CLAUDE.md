@@ -91,6 +91,15 @@ lugn` + tre nya rum ur Enchiridion, avsnitt 5/8/43) är **publicerat** — godk�
 redaktören Jonas Olson 2026-07-13 efter läsning av alla fyra texterna; vandringen och
 dess tre rum publicerade tillsammans.
 
+*Omdesign 2026-07-26 — »Stigen«.* Vandringsytan lämnade bibliotekets radspråk och lånar
+läsrummets rytm: `PathPage` är nu ledens början (egen skärm, `···` vid vecket) följd av
+anhalterna som en `<ol>` längs en hårfin stiglinje med identiska markörer — rumstitel +
+`summary`, inga lästider, chevroner eller sektionsrubriker. Metadataraden (traditioner,
+totaltid) och »Fortsätt där du stannade« är borta (redaktörens beslut); `pathPositions`
+lever kvar och läses av Sparat. `PathListPage` är navflikens egen skärm (`screenTab`,
+ingen bakåtpil): titel + central fråga per vandring, ingen räknare. Egen CSS-modul
+`Path.module.css`; `traditionsForPath` och `pathCount` togs bort som död kod.
+
 **Fas 8 — Källor och kontext (`docs/specs/source-and-context.md`) klar, mergad till
 `main` (#28).** Källpassager, skärpt publiceringsgrind (publicerad källa måste
 deklarera `upphov` och `datering`, källpassagers status valideras), källkontext i

@@ -147,6 +147,7 @@
   background: none;
   border: none;
   padding: 10px 4px;
+  min-height: 44px;
   cursor: pointer;
   font-family: inherit;
   font-size: calc(var(--rs) - 0.25rem);
