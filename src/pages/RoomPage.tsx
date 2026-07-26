@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { NotesSheet } from '../components/NotesSheet'
 import { ReadingSettingsButton } from '../components/ReadingSettingsButton'
@@ -202,46 +202,68 @@ const RoomEnding = ({ room }: { room: Room }) => {
   )
 }
 
+/** A neighbouring stop on the reader's stretch of the trail: the same marker,
+ * title and thought as the path overview, so the line reads as one trail
+ * continued rather than a next/previous control. Opens with the path kept as
+ * context. */
+const PathStop = ({ path, room }: { path: Path; room: Room }) => (
+  <li className={styles.pathStop}>
+    <Link
+      to="/rum/$slug"
+      params={{ slug: room.slug }}
+      search={{ vandring: path.slug }}
+      className={styles.pathStopLink}
+    >
+      <span className={styles.pathStopTitle}>{room.title}</span>
+      <span className={styles.pathStopSummary}>{room.summary}</span>
+    </Link>
+  </li>
+)
+
 /** The path's footer: shown only when the room is read within a path (the search
- * parameter `vandring`). Two equivalent, quiet choices — never autoplay, never a »rätt«
- * choice (paths.md, Moving Between Stops). The last room gets the optional closing
- * reflection instead, without congratulation or progress metric. */
+ * parameter `vandring`). After the room's text comes the fold, and under it the
+ * nearest stretch of the trail — the previous stop, where the reader is standing
+ * (filled marker, no link) and the next stop. In the first room only the next one
+ * has anything above it; in the last, only the previous. Never autoplay, and no
+ * »rätt« choice: going back is offered exactly as plainly as going on (paths.md,
+ * Moving Between Stops). The filled marker is orientation — »var är jag på
+ * leden« — never a step counter: nothing fills from having been somewhere, only
+ * from being there, and no room is ever ticked off (Completion). The last room
+ * carries the optional closing reflection before the fold, without
+ * congratulation or progress metric.
+ *
+ * `role="list"` is not redundant: `list-style: none` makes WebKit drop the list
+ * semantics, and the list is what carries the sequence for a screen reader. */
 const PathFooter = ({ path, room }: { path: Path; room: Room }) => {
-  const navigate = useNavigate()
   const order = roomsForPath(path, allRooms)
   const index = order.findIndex((candidate) => candidate.id === room.id)
   if (index === -1) return null
+  const previous = order[index - 1]
   const next = order[index + 1]
-  if (!next) {
-    if (path.closingReflection === undefined) return null
-    return (
-      <div className={styles.pathEnd}>
-        {paragraphs(path.closingReflection).map((paragraph, i) => (
-          <p key={i} className={styles.pathEndParagraph}>
-            {paragraph}
-          </p>
-        ))}
-      </div>
-    )
-  }
-  // »Stanna här« clears the path context: the footer disappears and the room becomes
-  // standalone again. The reader stays put — nothing is navigated away.
-  const stay = () =>
-    navigate({ to: '/rum/$slug', params: { slug: room.slug }, search: {}, replace: true })
   return (
-    <div className={styles.path}>
-      <Link
-        to="/rum/$slug"
-        params={{ slug: next.slug }}
-        search={{ vandring: path.slug }}
-        className={styles.pathAction}
-      >
-        Fortsätt vandringen
-      </Link>
-      <button type="button" className={styles.pathAction} onClick={stay}>
-        Stanna här
-      </button>
-    </div>
+    <>
+      {next === undefined && path.closingReflection !== undefined && (
+        <div className={styles.pathEnd}>
+          {paragraphs(path.closingReflection).map((paragraph, i) => (
+            <p key={i} className={styles.pathEndParagraph}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      )}
+      <div className={styles.path}>
+        <div className={`dots ${styles.pathPause}`}>···</div>
+        {/* eslint-disable-next-line jsx-a11y/no-redundant-roles */}
+        <ol className={styles.pathTrail} role="list">
+          {previous && <PathStop path={path} room={previous} />}
+          <li className={`${styles.pathStop} ${styles.pathHere}`} aria-current="true">
+            <span className={styles.pathHereTitle}>{room.title}</span>
+            <span className="srOnly">Här är du på vandringen</span>
+          </li>
+          {next && <PathStop path={path} room={next} />}
+        </ol>
+      </div>
+    </>
   )
 }
 

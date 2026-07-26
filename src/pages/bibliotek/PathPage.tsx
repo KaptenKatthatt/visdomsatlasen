@@ -12,17 +12,25 @@ import { Sidhuvud } from './LibraryParts'
  * last the central question — the thought carried into the walk. Owns its screen
  * the way the reading room's sections do, so the eye never meets a stop's text
  * before the reader chooses to go on. The question links to its own page when
- * published; a draft question is reached via the library, not from here. */
+ * published; a draft question is reached via the library, not from here.
+ *
+ * The air lives in `.opening`, so it grows above the question rather than
+ * between it and the ···: the question rests at the foot of the screen as the
+ * last thing read, the dots right under it as the fold. Without a published
+ * question the same air pushes the dots down instead — the screen keeps its
+ * shape either way. */
 const Trailhead = ({ path }: { path: Path }) => {
   const [question] = publishedThrough([path.centralQuestion], findQuestion)
   return (
     <section className={styles.trailhead}>
-      <Sidhuvud kicker="Vandring" title={path.title} status={path.status} />
-      {paragraphs(path.introduction).map((paragraph, i) => (
-        <p key={i} className={styles.intro}>
-          {paragraph}
-        </p>
-      ))}
+      <div className={styles.opening}>
+        <Sidhuvud kicker="Vandring" title={path.title} status={path.status} />
+        {paragraphs(path.introduction).map((paragraph, i) => (
+          <p key={i} className={styles.intro}>
+            {paragraph}
+          </p>
+        ))}
+      </div>
       {question && (
         <p className={styles.question}>
           <ToLink to={{ kind: 'fraga', slug: question.slug }} className={styles.questionLink}>

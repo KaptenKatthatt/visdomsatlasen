@@ -18,6 +18,14 @@
   flex-direction: column;
 }
 
+/* Titeln och introduktionen tar upp restytan, så luften växer under prosan i
+   stället för under frågan. Det är den som trycker ner frågan till skärmens
+   fot — och, om vandringens fråga är ett utkast och alltså inte visas, ner
+   prickarna i stället. */
+.opening {
+  flex: 1;
+}
+
 /* Introduktionen är prosa, inte metadata — samma grad och radavstånd som
    läsrummets brödtext, så den skalar med läsarens textstorlek. */
 .intro {
@@ -28,14 +36,17 @@
 }
 
 /* Den centrala frågan: ledens sista intryck innan man går vidare — det man bär
-   med sig in. Läsrummets .thought-röst (ensam, kursiv, centrerad). */
+   med sig in. Läsrummets .thought-röst (ensam, kursiv, centrerad). Den vilar
+   längst ner på skärmen, precis ovanför vecket, aldrig mitt i luften: allt
+   andrum ligger ovanför (.opening), 44px vaddering håller den fri från prosan
+   även på korta vandringar. */
 .question {
   font-size: calc(var(--rs) + 0.125rem);
   line-height: 1.6;
   font-style: italic;
   text-align: center;
-  padding: 0 12px;
-  margin: 44px 0 0;
+  padding: 44px 12px 0;
+  margin: 0;
   text-wrap: balance;
 }
 
@@ -49,10 +60,10 @@
   text-underline-offset: 6px;
 }
 
-/* Prickarna trycks mot skärmens botten av luften ovanför. */
+/* Vecket: prickarna ligger sist på skärmen, direkt under frågan. Luften ovanför
+   (.opening) är det som trycker ner dem. */
 .pause {
-  margin-top: auto;
-  padding: 40px 0 32px;
+  padding: 36px 0 32px;
 }
 
 /* Stigen: en hårfin lodrät linje som löper genom anhalterna och tonar bort i
@@ -104,8 +115,8 @@
   font-weight: 500;
 }
 
-/* Markören på stigen. Alla markörer är identiska — ingen fylls i, bockas av
-   eller ändras av var läsaren senast var. Det får aldrig bli en stegindikator
+/* Markören på stigen. På översikten är alla markörer identiska — ingen bockas
+   av, ingen ändras av var läsaren varit. Det får aldrig bli en stegindikator
    (paths.md, Completion). 3,5px vänsterled = linjens mitt; -3.5px topplyft
    centrerar mot titelns första rad. */
 .stopTitle::before {

@@ -100,6 +100,20 @@ lever kvar och läses av Sparat. `PathListPage` är navflikens egen skärm (`scr
 ingen bakåtpil): titel + central fråga per vandring, ingen räknare. Egen CSS-modul
 `Path.module.css`; `traditionsForPath` och `pathCount` togs bort som död kod.
 
+*Omdesign 2026-07-26 (forts.) — stigen in i läsrummet.* På `PathPage` bär `.opening`
+(titel + introduktion) restytan, så luften växer ovanför den centrala frågan i stället
+för under: frågan vilar längst ner på ledens första skärm med `···` direkt under sig
+(saknas publicerad fråga trycks prickarna ner i stället). Läsrummets `PathFooter` bytte
+de två knapparna (»Fortsätt vandringen«/»Stanna här«, borttagna — redaktörens beslut)
+mot samma stig: efter rummets text (och, i sista rummet, efter den avslutande
+reflektionen) kommer `···` och sedan föregående anhalt, rummet man står i och nästa
+anhalt på hårfin linje. Första rummet saknar föregående, sista saknar nästa. Den
+aktuella anhalten är olänkad, dämpad, `aria-current` + `srOnly`-text, och bär den enda
+ifyllda markören — orientering, aldrig avbockning (`paths.md`, Completion; översiktens
+markörer är fortsatt identiska). Måtten delas via `composes` från `Path.module.css`
+(`trail`/`stopLink`/`stopTitle`/`stopSummary`) så fot och översikt inte glider isär.
+Täckt av `src/pages/RoomPage.test.tsx`.
+
 **Fas 8 — Källor och kontext (`docs/specs/source-and-context.md`) klar, mergad till
 `main` (#28).** Källpassager, skärpt publiceringsgrind (publicerad källa måste
 deklarera `upphov` och `datering`, källpassagers status valideras), källkontext i

@@ -131,36 +131,75 @@
   color: var(--soft-strong);
 }
 
-/* Vandringsfoten: två likvärdiga, stilla val — ingen knapp är framhävd, ingen
-   pekar ut sig som det rätta (paths.md, Moving Between Stops). Ett tunt streck
-   ovanför skiljer den från rummets egna avslutshandlingar. */
+/* Vandringsfoten: stigen fortsätter in i läsrummet. Efter rummets text kommer
+   vecket (···) och sedan de närmaste anhalterna på samma hårfina linje som
+   översikten — så foten känns som samma led, inte som en navigeringsrad. Inget
+   streck ovanför: prickarna är husets avdelare (paths.md, Moving Between
+   Stops — ingen knapp pekar ut sig som det rätta, och tillbaka är lika
+   erbjudet som vidare). */
 .path {
-  border-top: 1px solid var(--faint);
-  display: flex;
-  gap: 28px;
-  justify-content: center;
-  margin: 40px 0 96px;
-  padding-top: 32px;
+  margin-top: 40px;
 }
 
-.pathAction {
-  background: none;
-  border: none;
-  padding: 10px 4px;
-  min-height: 44px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: calc(var(--rs) - 0.25rem);
+/* Vecket före stigen. Ingen luft under — linjen tar vid direkt. */
+.pathPause {
+  padding: 32px 0 0;
+}
+
+/* Stigen, markörerna och anhaltens röst delas med vandringsöversikten via
+   composes, så de aldrig glider isär: rör man måtten i Path.module.css följer
+   läsrummets fot med. */
+.pathTrail {
+  composes: trail from './bibliotek/Path.module.css';
+}
+
+/* Luft mellan anhalterna, aldrig avdelare — som på översikten, men tätare:
+   foten visar bara två eller tre anhalter och ska inte växa till en egen sida. */
+.pathStop + .pathStop {
+  margin-top: 36px;
+}
+
+.pathStopLink {
+  composes: stopLink from './bibliotek/Path.module.css';
+}
+
+.pathStopTitle {
+  composes: stopTitle from './bibliotek/Path.module.css';
+}
+
+.pathStopSummary {
+  composes: stopSummary from './bibliotek/Path.module.css';
+}
+
+/* Anhalten man står i: ingen länk, dämpad text och ifylld markör — enda syftet
+   är att visa var på leden man befinner sig. Vaddering som .stopLink, så
+   markörerna hamnar i samma rytm som de länkade anhalterna. */
+.pathHere {
+  padding: 6px 0;
   color: var(--soft-strong);
-  text-decoration: none;
+}
+
+.pathHereTitle {
+  composes: stopTitle from './bibliotek/Path.module.css';
+}
+
+/* Den ifyllda markören. Det är orientering — »var är jag på leden« — inte en
+   avbockning: ingenting fylls i av att man varit någonstans, bara av att man är
+   där, och översiktens markörer förblir orörda (paths.md, Completion). Skriven
+   som ättlingsväljare för att slå .stopTitle::before på specificitet, oberoende
+   av i vilken ordning modulerna hamnar i bygget. */
+.pathHere .pathHereTitle::before {
+  border-color: var(--ink);
+  background: var(--ink);
 }
 
 /* Den valfria avslutande reflektionen efter sista rummet: stilla prosa, inget
    avslut som firar. Egen prosaklass — inte kolofonens detaljrad — så rummets
-   eftertext och vandringens avslut kan röra sig oberoende. */
+   eftertext och vandringens avslut kan röra sig oberoende. Den hör till texten
+   och ligger därför före vecket. */
 .pathEnd {
   border-top: 1px solid var(--faint);
-  margin: 40px 0 96px;
+  margin: 40px 0 0;
   padding-top: 32px;
 }
 
