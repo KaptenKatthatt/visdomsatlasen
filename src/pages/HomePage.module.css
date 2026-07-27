@@ -3,14 +3,24 @@
 
 /* Egen skärmbehållare (i stället för globala .screenTab) så tröskeln får en
    knappare bottenmarginal — bara nav-klarhet, inte 130px. Tröskeln ska rymmas
-   på en skärm utan onödig scroll; behåller .screenTab:s intoning och sidmått. */
+   på en skärm utan onödig scroll; behåller .screenTab:s intoning och sidmått.
+
+   All luft mellan tröskelns delar är ett enda mått, --luft, som följer
+   skärmhöjden: full rytm på höga skärmar (30px från ~930px och uppåt, exakt
+   som förr) och sammandragen på korta, så att frågan och alla teman ryms utan
+   scroll ända ner till ~640px höjd. Bara luften krymper — text och träffytor
+   rörs inte (raderna stannar över 44px). Måttet läser svh, alltså höjden med
+   webbläsarens verktygsfält framme; det är det trånga läget som avgör.
+   Vid stor textförstoring växer texten som vanligt och skärmen får scrolla —
+   då behövs den. */
 .screen {
+  --luft: clamp(12px, calc(6svh - 26px), 30px);
   animation: vaFade 0.45s ease;
-  padding: 56px 28px 72px;
+  padding: calc(var(--luft) * 1.85) 28px 72px;
 }
 
 .hero {
-  margin-top: 48px;
+  margin-top: calc(var(--luft) * 1.6);
 }
 
 .question {
@@ -30,7 +40,7 @@
 }
 
 .themes {
-  margin-top: 30px;
+  margin-top: var(--luft);
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid var(--faint);
@@ -46,7 +56,7 @@
   background: none;
   border: 0;
   border-top: 1px solid var(--faint);
-  padding: 17px 2px 19px;
+  padding: calc(var(--luft) * 0.57) 2px calc(var(--luft) * 0.63);
   cursor: pointer;
 }
 

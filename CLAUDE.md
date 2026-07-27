@@ -232,6 +232,14 @@ temafilter skärpt till bara publicerade (i `troskeldata.ts` efter Fas 13).
 Personer är sökbara (granskningsfynd i PR #52): `Soktyp` »person« rankas
 sist, målet `personpost` i To/ToLink, `kortbeskrivning` bär sökunderraden.
 
+*Tröskeln 2026-07-27 — en skärm, ingen scroll.* Sju teman fick tröskeln att bli
+854 px hög och scrolla på alla telefoner utom de allra längsta. All luft mellan
+delarna (topppadding, hero, temalistan, radernas padding) är nu ett enda mått,
+`--luft: clamp(12px, 6svh - 26px, 30px)` i `HomePage.module.css`: oförändrad rytm
+från ~930 px skärmhöjd och uppåt, sammandragen därunder så hela tröskeln ryms ned
+till ~640 px. Bara luft krymper — teckengrader och 44px-träffytor rörs inte, och
+vid stor textförstoring scrollar skärmen som den ska.
+
 ## Kända skulder
 
 - Sandlådefällor: `getbible.net` ger 403 vid ingest (ofarligt, bara Bibeln);
