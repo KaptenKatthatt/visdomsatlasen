@@ -4,26 +4,13 @@
    Sidan ska gå att gå igenom, inte läsas av (paths.md, Core Principle — »a quiet
    trail, not a curriculum«). */
 
-/* Ledens början äger sin skärm, precis som läsrummets .section: innehållet
-   upptill, luften växer och prickarna vilar vid vecket. Ingen anhalts text möter
-   ögat innan man valt att gå vidare. Till skillnad från läsrummet är den här
-   sidan inte navlös, så både toppraden och bottennaven räknas bort — annars
-   hamnar prickarna bakom naven. 115px = 60px topprad (uppmätt här: bara
-   bakåtknappen, ingen högerkontroll som läsrummets 68px) + 47px nav (44px
-   flikhöjd + 1px vaddering över/under + 1px linje) + 8px andrum, så prickarna
-   inte klistrar mot navens överkant. */
+/* Ledens början tar bara den plats den behöver. Den ägde tidigare hela första
+   skärmen, men det sköt ner stigen under vecket: på en telefon med stor
+   lässtorlek fyllde introduktionen skärmen och man såg aldrig att vandringen
+   hade några anhalter. Nu följer stigen direkt efter prosan (redaktörens
+   beslut). */
 .trailhead {
-  min-height: calc(100svh - 115px);
-  display: flex;
-  flex-direction: column;
-}
-
-/* Titeln och introduktionen tar upp restytan, så luften växer under prosan i
-   stället för under frågan. Det är den som trycker ner frågan till skärmens
-   fot — och, om vandringens fråga är ett utkast och alltså inte visas, ner
-   prickarna i stället. */
-.opening {
-  flex: 1;
+  display: block;
 }
 
 /* Introduktionen är prosa, inte metadata — samma grad och radavstånd som
@@ -35,18 +22,16 @@
   text-wrap: pretty;
 }
 
-/* Den centrala frågan: ledens sista intryck innan man går vidare — det man bär
-   med sig in. Läsrummets .thought-röst (ensam, kursiv, centrerad). Den vilar
-   längst ner på skärmen, precis ovanför vecket, aldrig mitt i luften: allt
-   andrum ligger ovanför (.opening), 44px vaddering håller den fri från prosan
-   även på korta vandringar. */
+/* Den centrala frågan: sidans sista ord, efter anhalterna. Det är tanken man
+   lämnar leden med, inte en ingång till den — därför står ingenting under den.
+   Läsrummets .thought-röst (ensam, kursiv, centrerad). */
 .question {
   font-size: calc(var(--rs) + 0.125rem);
   line-height: 1.6;
   font-style: italic;
   text-align: center;
-  padding: 44px 12px 0;
-  margin: 0;
+  padding: 0 12px;
+  margin: 56px 0 0;
   text-wrap: balance;
 }
 
@@ -60,22 +45,23 @@
   text-underline-offset: 6px;
 }
 
-/* Vecket: prickarna ligger sist på skärmen, direkt under frågan. Luften ovanför
-   (.opening) är det som trycker ner dem. */
+/* Lite luft efter huvudtexten, sedan tar stigen vid. Vecket skiljer prosan från
+   leden — det ska kännas som ett andetag, inte som en skärm att bläddra förbi. */
 .pause {
-  padding: 36px 0 32px;
+  padding: 32px 0 12px;
 }
 
 /* Stigen: en hårfin lodrät linje som löper genom anhalterna och tonar bort i
    båda ändar — en led, inte en mätare. Sekvensen bärs semantiskt av <ol>;
    linjen och markörerna är rena pseudoelement och når aldrig skärmläsaren
    (paths.md, Accessibility). Bottenvadderingen låter linjen fortsätta förbi
-   sista anhalten i stället för att tvärt ta slut. */
+   sista anhalten i stället för att tvärt ta slut — och tonar ut innan sidans
+   sista ord, den centrala frågan. */
 .trail {
   position: relative;
   list-style: none;
   margin: 0;
-  padding: 6px 0 104px 26px;
+  padding: 6px 0 56px 26px;
 }
 
 .trail::before {

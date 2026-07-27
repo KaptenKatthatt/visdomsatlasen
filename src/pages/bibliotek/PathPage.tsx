@@ -9,38 +9,36 @@ import { NotFoundNote } from '../NotFoundNote'
 import styles from './Path.module.css'
 import { Sidhuvud } from './LibraryParts'
 
-/** The head of the trail: what the path is, why the rooms belong together, and
- * last the central question — the thought carried into the walk. Owns its screen
- * the way the reading room's sections do, so the eye never meets a stop's text
- * before the reader chooses to go on. The question links to its own page when
- * published; a draft question is reached via the library, not from here.
- *
- * The air lives in `.opening`, so it grows above the question rather than
- * between it and the ···: the question rests at the foot of the screen as the
- * last thing read, the dots right under it as the fold. Without a published
- * question the same air pushes the dots down instead — the screen keeps its
- * shape either way. */
-const Trailhead = ({ path }: { path: Path }) => {
+/** The head of the trail: what the path is and why the rooms belong together.
+ * A little air after the prose, then the ··· — and under it the trail starts
+ * straight away. No screen of its own: the reader should see the walk begin
+ * without having to scroll for it. */
+const Trailhead = ({ path }: { path: Path }) => (
+  <section className={styles.trailhead}>
+    <Sidhuvud kicker="Vandring" title={path.title} status={path.status} />
+    {paragraphs(path.introduction).map((paragraph, i) => (
+      <p key={i} className={styles.intro}>
+        {paragraph}
+      </p>
+    ))}
+    <div className={`dots ${styles.pause}`}>···</div>
+  </section>
+)
+
+/** The central question, last on the page — after the stops, with the walk
+ * already behind the eye. It is the thought one leaves with rather than an
+ * introduction to what follows, so nothing comes after it. The question links to
+ * its own page when published; a draft question is reached via the library, not
+ * from here. */
+const CentralQuestion = ({ path }: { path: Path }) => {
   const [question] = publishedThrough([path.centralQuestion], findQuestion)
+  if (!question) return null
   return (
-    <section className={styles.trailhead}>
-      <div className={styles.opening}>
-        <Sidhuvud kicker="Vandring" title={path.title} status={path.status} />
-        {paragraphs(path.introduction).map((paragraph, i) => (
-          <p key={i} className={styles.intro}>
-            {paragraph}
-          </p>
-        ))}
-      </div>
-      {question && (
-        <p className={styles.question}>
-          <ToLink to={{ kind: 'fraga', slug: question.slug }} className={styles.questionLink}>
-            {question.text}
-          </ToLink>
-        </p>
-      )}
-      <div className={`dots ${styles.pause}`}>···</div>
-    </section>
+    <p className={styles.question}>
+      <ToLink to={{ kind: 'fraga', slug: question.slug }} className={styles.questionLink}>
+        {question.text}
+      </ToLink>
+    </p>
   )
 }
 
@@ -74,9 +72,10 @@ const Stops = ({ path, rooms }: { path: Path; rooms: Room[] }) => {
 }
 
 /** The path's overview (paths.md, Path Overview) as a walk rather than a table of
- * contents: the head of the trail owns the first screen, then the trail unrolls.
- * Nothing competes with the question, nothing reads as a syllabus, and there are
- * no progress metrics — no reading times, no totals, no traditions, no »Fortsätt
+ * contents: the head of the trail, a pause, the trail itself, and last of all the
+ * central question — the page reads in the order one walks it, and ends on the
+ * thought one carries away. Nothing reads as a syllabus, and there are no
+ * progress metrics — no reading times, no totals, no traditions, no »Fortsätt
  * där du stannade« (editor's decision 2026-07-26; the remembered room lives on in
  * Sparat, where it is orientation for returning, not a cue on the trail itself).
  * The path is read in the reading room, one room at a time — here you only choose
@@ -90,6 +89,7 @@ export const PathPage = ({ slug }: { slug: string }) => {
       <TopBar />
       <Trailhead path={path} />
       <Stops path={path} rooms={roomsForPath(path, allRooms)} />
+      <CentralQuestion path={path} />
     </div>
   )
 }
