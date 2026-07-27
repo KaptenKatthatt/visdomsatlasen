@@ -298,11 +298,12 @@ A path overview may contain:
 
 The overview should not resemble a syllabus.
 
-**Implemented as (editor's decision 2026-07-26):** the introduction takes the
-slack on the first screen, so the central question rests at its foot with the
-fold (`···`) directly under it; where a path's central question is a draft and
-therefore not shown, the same air pushes the fold down instead. Then the stops
-unroll along the trail.
+**Implemented as (editor's decision 2026-07-27):** the page is read in the order
+one walks it. Title and introduction, a little air, the fold (`···`), and then
+the trail straight away — the head of the trail claims no screen of its own, so
+the walk is visible without scrolling for it. The central question comes **last
+of all**, after the stops: it is the thought one leaves with rather than an
+introduction to what follows, and nothing stands below it.
 
 Three things this list once allowed were removed rather than built: approximate
 total reading time, source traditions, and the last visited room. The first two

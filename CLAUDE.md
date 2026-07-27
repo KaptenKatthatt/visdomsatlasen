@@ -100,10 +100,7 @@ lever kvar och läses av Sparat. `PathListPage` är navflikens egen skärm (`scr
 ingen bakåtpil): titel + central fråga per vandring, ingen räknare. Egen CSS-modul
 `Path.module.css`; `traditionsForPath` och `pathCount` togs bort som död kod.
 
-*Omdesign 2026-07-26 (forts.) — stigen in i läsrummet.* På `PathPage` bär `.opening`
-(titel + introduktion) restytan, så luften växer ovanför den centrala frågan i stället
-för under: frågan vilar längst ner på ledens första skärm med `···` direkt under sig
-(saknas publicerad fråga trycks prickarna ner i stället). Läsrummets `PathFooter` bytte
+*Omdesign 2026-07-26 (forts.) — stigen in i läsrummet.* Läsrummets `PathFooter` bytte
 de två knapparna (»Fortsätt vandringen«/»Stanna här«, borttagna — redaktörens beslut)
 mot samma stig: efter rummets text (och, i sista rummet, efter den avslutande
 reflektionen) kommer `···` och sedan föregående anhalt, rummet man står i och nästa
@@ -120,6 +117,15 @@ och översikt inte glider isär; `<ol role="list">` med sin eslint-dispens bor i
 i `paths.md` (Moving Between Stops + Returning to a Path) i stället för att låtsas att
 stigen ersatte knappen. Täckt av `src/pages/RoomPage.test.tsx`; memory-routern som båda
 sidtesterna använder bor i `src/lib/testRouter.tsx`.
+
+*Omdesign 2026-07-27 — översikten läses i den ordning man går den.* `PathPage` har inte
+längre någon skärmhög ledstart: titel + introduktion, lite luft, `···`, och sedan tar
+stigen vid direkt. Den centrala frågan flyttade **sist på sidan**, efter anhalterna —
+det är tanken man lämnar leden med, inte en ingång till den, och ingenting står under
+den. Föregående försök la frågan längst ner på *första skärmen*, vilket på en telefon
+med stor lässtorlek både blev mitt på sidan (sidan scrollar) och tryckte ner hela stigen
+under vikten så vandringen såg tom ut. `.trailhead` är därför ett vanligt block igen
+(ingen `min-height: 100svh`, ingen `.opening`-restyta). Redaktörens beslut.
 
 **Fas 8 — Källor och kontext (`docs/specs/source-and-context.md`) klar, mergad till
 `main` (#28).** Källpassager, skärpt publiceringsgrind (publicerad källa måste
