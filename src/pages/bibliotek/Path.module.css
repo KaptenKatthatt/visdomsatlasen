@@ -99,9 +99,16 @@
   margin-top: 44px;
 }
 
-.stopLink {
+/* Anhaltens ruta: vadderingen som ger markörerna sin rytm längs linjen. Egen
+   klass för att läsrummets olänkade »här är du«-anhalt ska kunna ta samma mått
+   utan att låtsas vara en länk — annars driver de två isär. */
+.stopBox {
   display: block;
   padding: 6px 0;
+}
+
+.stopLink {
+  composes: stopBox;
   min-height: 44px;
   color: inherit;
   text-decoration: none;

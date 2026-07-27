@@ -108,11 +108,18 @@ de två knapparna (»Fortsätt vandringen«/»Stanna här«, borttagna — redak
 mot samma stig: efter rummets text (och, i sista rummet, efter den avslutande
 reflektionen) kommer `···` och sedan föregående anhalt, rummet man står i och nästa
 anhalt på hårfin linje. Första rummet saknar föregående, sista saknar nästa. Den
-aktuella anhalten är olänkad, dämpad, `aria-current` + `srOnly`-text, och bär den enda
-ifyllda markören — orientering, aldrig avbockning (`paths.md`, Completion; översiktens
-markörer är fortsatt identiska). Måtten delas via `composes` från `Path.module.css`
-(`trail`/`stopLink`/`stopTitle`/`stopSummary`) så fot och översikt inte glider isär.
-Täckt av `src/pages/RoomPage.test.tsx`.
+aktuella anhalten är olänkad, dämpad, `aria-current="page"` + `srOnly`-text, och bär den
+enda ifyllda markören — orientering, aldrig avbockning (`paths.md`, Completion;
+översiktens markörer är fortsatt identiska). Foten bär **bara titlar**: grannrummens
+sammanfattningar hör hemma på översikten, inne i läsrummet ska navigeringen dra sig undan
+(`paths.md`, One Stop at a Time). En vandring med en enda anhalt får ingen stig alls.
+Måtten delas via `composes` från `Path.module.css` (`trail`/`stopBox`/`stopTitle`) så fot
+och översikt inte glider isär; `<ol role="list">` med sin eslint-dispens bor i
+`src/components/Trail.tsx` och delas av båda ytorna. »Stanna här« har ingen efterträdare
+— man lämnar en vandring genom att navigera bort, inte via en kontroll i rummet; det står
+i `paths.md` (Moving Between Stops + Returning to a Path) i stället för att låtsas att
+stigen ersatte knappen. Täckt av `src/pages/RoomPage.test.tsx`; memory-routern som båda
+sidtesterna använder bor i `src/lib/testRouter.tsx`.
 
 **Fas 8 — Källor och kontext (`docs/specs/source-and-context.md`) klar, mergad till
 `main` (#28).** Källpassager, skärpt publiceringsgrind (publicerad källa måste
@@ -229,3 +236,9 @@ sist, målet `personpost` i To/ToLink, `kortbeskrivning` bär sökunderraden.
 
 - Sandlådefällor: `getbible.net` ger 403 vid ingest (ofarligt, bara Bibeln);
   bakgrunds-Vite/API dör mellan skalkommandon — starta om vid ECONNREFUSED.
+- `fallow dead-code` följer inte CSS-modulernas `composes` — varken mellan filer
+  eller inom samma fil. En klass som *bara* konsumeras via composes rapporteras
+  därför som oanvänd export trots att den används. `.fallowrc.json` har en smal
+  `ignoreExports` för `stopBox` (Path.module.css) av det skälet; lägg till fler
+  bara när samma blindfläck bevisligen är orsaken, aldrig för att tysta äkta
+  dödkod.

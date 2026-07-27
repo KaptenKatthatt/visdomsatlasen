@@ -146,17 +146,23 @@
   padding: 32px 0 0;
 }
 
-/* Stigen, markörerna och anhaltens röst delas med vandringsöversikten via
-   composes, så de aldrig glider isär: rör man måtten i Path.module.css följer
-   läsrummets fot med. */
+/* Stigen och markörerna delas med vandringsöversikten via composes, så de aldrig
+   glider isär: rör man måtten i Path.module.css följer läsrummets fot med.
+   Bottenvadderingen är översiktens (den håller linjen fri från navflikarna) och
+   skrivs över här — läsrummet är navlöst och .screenReader bär redan sin egen
+   luft, annars blir det nästan 200px linje efter sista anhalten. */
 .pathTrail {
   composes: trail from './bibliotek/Path.module.css';
+  padding-bottom: 8px;
 }
 
 /* Luft mellan anhalterna, aldrig avdelare — som på översikten, men tätare:
-   foten visar bara två eller tre anhalter och ska inte växa till en egen sida. */
+   foten visar bara två eller tre anhalter och ska inte växa till en egen sida.
+   Anhalterna bär bara sina titlar här; sammanfattningarna hör hemma på
+   översikten. Inne i läsrummet ska navigeringen dra sig undan, inte lägga nästa
+   rums prosa framför ögat (paths.md, One Stop at a Time). */
 .pathStop + .pathStop {
-  margin-top: 36px;
+  margin-top: 28px;
 }
 
 .pathStopLink {
@@ -167,15 +173,11 @@
   composes: stopTitle from './bibliotek/Path.module.css';
 }
 
-.pathStopSummary {
-  composes: stopSummary from './bibliotek/Path.module.css';
-}
-
 /* Anhalten man står i: ingen länk, dämpad text och ifylld markör — enda syftet
-   är att visa var på leden man befinner sig. Vaddering som .stopLink, så
-   markörerna hamnar i samma rytm som de länkade anhalterna. */
+   är att visa var på leden man befinner sig. Samma ruta som de länkade
+   anhalterna (composes), så markörerna hamnar i samma rytm. */
 .pathHere {
-  padding: 6px 0;
+  composes: stopBox from './bibliotek/Path.module.css';
   color: var(--soft-strong);
 }
 
