@@ -207,15 +207,32 @@ There must be no autoplay.
 
 The next room must never open automatically.
 
-After a room, the application may show one quiet option:
-
-> Fortsätt vandringen
-
-A second option should allow the user to stop:
-
-> Stanna här
-
 The user must never feel that continuing is the preferred or correct choice.
+
+**Implemented as (editor's decision 2026-07-26):** after the room's text — and,
+in the last room, after the closing reflection — comes the fold (`···`) and then
+the nearest stretch of the trail itself, on the same hairline as the path
+overview: the previous stop, the room the reader is standing in, and the next
+stop. In the first room there is no previous one; in the last, no next one. Only
+the stops' titles — a neighbour's own thought stays on the overview, so nothing
+puts the next room's prose in front of the eye (see One Stop at a Time).
+
+The two labelled buttons this section previously described are gone.
+
+»Fortsätt vandringen« is replaced by the trail: back and onward are offered in
+exactly the same voice, so neither can read as the correct choice, and neither
+is a call to action.
+
+»Stanna här« has no successor. It is not replaced by anything: leaving a path is
+done by navigating away — back to the overview, or out to another part of the
+app — not by a control inside the room. A room reached from within a path
+therefore keeps its path context for as long as it is open. The context governs
+this footer only; it never changes the room's own text, and no room can be read
+in two versions.
+
+The reader's own stop carries a filled marker and no link, so it is visible
+where on the trail one is standing. This is orientation, not a step counter —
+see Completion.
 
 ---
 
@@ -239,6 +256,11 @@ A path may remember the last room opened so the user can return without searchin
 
 This is orientation, not progress tracking.
 
+The same distinction governs the filled marker in the reading room's path footer
+(Moving Between Stops): a marker fills from the reader *being* somewhere, never
+from having been there. Nothing is ticked off, and the path overview's markers
+stay identical to one another.
+
 ---
 
 ## Returning to a Path
@@ -259,6 +281,10 @@ Do not use language such as:
 
 The user may also restart, choose another room or leave the path entirely.
 
+Leaving is done by navigating away, not by dismissing the path from inside a
+room (see Moving Between Stops). Nothing holds the reader in a path: no
+confirmation, no cost to leaving, and nothing that has to be finished first.
+
 ---
 
 ## Path Overview
@@ -268,12 +294,21 @@ A path overview may contain:
 - title
 - short introduction
 - central question
-- list of room titles
-- source traditions shown quietly
-- approximate total reading time
-- last visited room, if applicable
+- list of room titles, each with its own thought
 
 The overview should not resemble a syllabus.
+
+**Implemented as (editor's decision 2026-07-26):** the introduction takes the
+slack on the first screen, so the central question rests at its foot with the
+fold (`···`) directly under it; where a path's central question is a draft and
+therefore not shown, the same air pushes the fold down instead. Then the stops
+unroll along the trail.
+
+Three things this list once allowed were removed rather than built: approximate
+total reading time, source traditions, and the last visited room. The first two
+read as a syllabus; the third belongs in Sparat, where it is orientation for
+returning rather than a cue on the trail itself. The remembered room is still
+kept (see Completion) — it is simply not shown here.
 
 Room titles should be presented as places along a path, not tasks.
 

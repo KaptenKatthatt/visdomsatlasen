@@ -1,40 +1,21 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from 'vitest'
-import {
-  RouterProvider,
-  createMemoryHistory,
-  createRootRoute,
-  createRoute,
-  createRouter,
-} from '@tanstack/react-router'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { allPaths, allRooms } from '../../lib/content'
 import { roomsForPath } from '../../lib/library'
+import { renderWithRouter } from '../../lib/testRouter'
 import { PathPage } from './PathPage'
 
 afterEach(cleanup)
 
 const SLUG = 'vagen-mot-lugn'
 
-/** A minimal memory router: PathPage's links point at real routes, so the page
- * needs somewhere for them to resolve. Only the targets the page links to exist —
- * the walk itself is what's under test, not the routing. */
-const renderPath = async (slug: string): Promise<void> => {
-  const rootRoute = createRootRoute()
-  const routes = [
-    createRoute({ getParentRoute: () => rootRoute, path: '/', component: () => <PathPage slug={slug} /> }),
-    createRoute({ getParentRoute: () => rootRoute, path: '/rum/$slug', component: () => null }),
-    createRoute({ getParentRoute: () => rootRoute, path: '/bibliotek/fraga/$slug', component: () => null }),
-  ]
-  const router = createRouter({
-    routeTree: rootRoute.addChildren(routes),
-    history: createMemoryHistory({ initialEntries: ['/'] }),
+const renderPath = (slug: string): Promise<void> =>
+  renderWithRouter({
+    page: () => <PathPage slug={slug} />,
+    paths: ['/rum/$slug', '/bibliotek/fraga/$slug'],
   })
-  await router.load()
-  render(<RouterProvider router={router} />)
-  await screen.findByRole('heading', { level: 1 })
-}
 
 describe('PathPage', () => {
   it('visar anhalterna som en ordnad lista i redaktionell ordning', async () => {
