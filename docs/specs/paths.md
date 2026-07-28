@@ -34,19 +34,26 @@ The Reading Room remains the primary experience.
 
 A path does not replace it.
 
-Each stop in a path opens as a complete reflection room inside the Reading Room.
+Every stop must stand on its own: each room in a path remains a complete,
+freestanding reflection room, reached as ever from the threshold, the library,
+search and Sparat, with its ordinary ending (save, note).
+
+**Implemented as (editor's decision 2026-07-28, »Den långsamma rullen«):**
+within a path, the same texts are read in the path's own reading flow — one
+slow, continuous scroll (`/vandring/<slug>/las`) — never room by room in the
+Reading Room. The freestanding room page carries no path context at all.
 
 The user should never feel that a room is incomplete because it belongs to a larger path.
-
-Every stop must stand on its own.
 
 ---
 
 ## Relationship to the Library
 
-Paths may be discovered in the Library.
-
-They may also be offered as a quiet secondary option from the Reading Room.
+Paths are their own section beside the Library (editor's decision 2026-07-28):
+they live behind the »Vandringar« nav tab, at their own addresses —
+`/vandringar` (the list), `/vandring/<slug>` (the anteroom/overview) and
+`/vandring/<slug>/las` (the reading flow). The old `/bibliotek/…` addresses
+forward. Paths remain findable in the library's search.
 
 They must not dominate the home experience.
 
@@ -191,13 +198,19 @@ It should feel like one thought opening into another.
 
 ## One Stop at a Time
 
-When the user enters a path, only the current room should be presented.
+When the user reads a path, only the current room should be in front of the eye.
 
 The full path must not appear as a dense checklist beside the text.
 
 A quiet path overview may be available before entering or after leaving a room.
 
-Inside the Reading Room, navigation should recede.
+**Implemented as (editor's decision 2026-07-28):** the flow keeps this promise
+with silence rather than with pages: a full screen height of empty paper, with
+the fold (`···`) resting in the middle, separates each room from the next. The
+previous text is guaranteed out of view, and it takes a moment of scrolling
+through the quiet before the next title rises. Inside the flow, navigation
+recedes entirely — the only control is the bottom bar (see Moving Between
+Stops).
 
 ---
 
@@ -209,30 +222,28 @@ The next room must never open automatically.
 
 The user must never feel that continuing is the preferred or correct choice.
 
-**Implemented as (editor's decision 2026-07-26):** after the room's text — and,
-in the last room, after the closing reflection — comes the fold (`···`) and then
-the nearest stretch of the trail itself, on the same hairline as the path
-overview: the previous stop, the room the reader is standing in, and the next
-stop. In the first room there is no previous one; in the last, no next one. Only
-the stops' titles — a neighbour's own thought stays on the overview, so nothing
-puts the next room's prose in front of the eye (see One Stop at a Time).
+**Implemented as (editor's decision 2026-07-28, »Den långsamma rullen«):**
+there are no controls between rooms at all — no buttons, no arrows, no trail
+footer. One goes on by reading on: the next room follows after a full screen of
+silence (see One Stop at a Time), and going back is scrolling back. Continuing
+and stopping are therefore offered in exactly the same voice — none of them is
+a call to action, and feeling done in the middle is as good an ending as the
+last room.
 
-The two labelled buttons this section previously described are gone.
+The rooms in the flow are pure reading: no save button, no per-room actions,
+and a mute source line — just the work's name in caps, per room, with no
+unfolding and no link; the source apparatus lives in the library. After the
+last room come the closing reflection, the central question and a single
+»Skriv ner en tanke«, with air down toward the bottom bar.
 
-»Fortsätt vandringen« is replaced by the trail: back and onward are offered in
-exactly the same voice, so neither can read as the correct choice, and neither
-is a call to action.
+The bottom bar is the flow's only control: a still bar on a hairline, whose
+chevron always leads back to the path's anteroom (the overview). One must
+never feel trapped in the flow.
 
-»Stanna här« has no successor. It is not replaced by anything: leaving a path is
-done by navigating away — back to the overview, or out to another part of the
-app — not by a control inside the room. A room reached from within a path
-therefore keeps its path context for as long as it is open. The context governs
-this footer only; it never changes the room's own text, and no room can be read
-in two versions.
-
-The reader's own stop carries a filled marker and no link, so it is visible
-where on the trail one is standing. This is orientation, not a step counter —
-see Completion.
+Leaving a path is done by navigating away — the chevron, or out to another
+part of the app — never by a control inside the text. The trail footer that
+this section previously described (2026-07-26), and the two labelled buttons
+before it, are gone: the freestanding room page carries no path context.
 
 ---
 
@@ -256,10 +267,10 @@ A path may remember the last room opened so the user can return without searchin
 
 This is orientation, not progress tracking.
 
-The same distinction governs the filled marker in the reading room's path footer
-(Moving Between Stops): a marker fills from the reader *being* somewhere, never
-from having been there. Nothing is ticked off, and the path overview's markers
-stay identical to one another.
+In the flow, this memory follows the reading itself: the room whose beginning
+last passed the top of the screen is remembered (shown quietly in Sparat, never
+in the flow). Nothing is ticked off, and the path overview's markers stay
+identical to one another — a marker never fills from having been somewhere.
 
 ---
 
@@ -310,6 +321,10 @@ total reading time, source traditions, and the last visited room. The first two
 read as a syllabus; the third belongs in Sparat, where it is orientation for
 returning rather than a cue on the trail itself. The remembered room is still
 kept (see Completion) — it is simply not shown here.
+
+Each stop opens the path's reading flow at that room (the room's slug as the
+anchor), so the overview is where one chooses where to step in — the walk
+itself happens in the flow (2026-07-28).
 
 Room titles should be presented as places along a path, not tasks.
 
@@ -462,9 +477,10 @@ Do not display completion metrics.
 
 ## Notes
 
-Notes belong to individual rooms.
+Notes belong to individual rooms — written where a room is read freestanding.
 
-A path may optionally collect those notes into one private view.
+The flow offers a single »Skriv ner en tanke« at its very end, and that note
+belongs to the path itself (origin `path`), not to any one room (2026-07-28).
 
 The application should not prompt the user to write after every stop.
 

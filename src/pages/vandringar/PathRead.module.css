@@ -1,0 +1,97 @@
+/* Flödet — »Den långsamma rullen«. Vandringen läses som en enda sammanhängande
+   rullning: rummens text i läsrummets rytm (RoomText.module.css), en hel
+   skärmhöjd tomt papper mellan varje del, och en stilla bottenbar som enda
+   kontroll. Ingenting i flödet ska kännas som ett steg att avverka. */
+
+/* Samma yta som .screenReader men med plats för den fasta bottenbaren —
+   sista raden ska kunna rulla fri från baren, inte gömma sig bakom den. */
+.screen {
+  animation: vaFade 0.45s ease;
+  padding: 0 28px 150px;
+}
+
+/* Ledstarten: bara vandringens namn — introduktionen bor i förrummet, och
+   flödet ska börja i stillhet, inte repetera. Toppluften är skärmflikarnas. */
+.trailhead {
+  padding-top: 56px;
+}
+
+.title {
+  composes: title from '../../components/RoomText.module.css';
+}
+
+/* Uppehållet: en hel skärmhöjd tomt papper med vecket vilande i mitten.
+   Föregående text är garanterat ur bild; nästa rubrik stiger upp först när
+   man rullat genom tystnaden. svh (inte dvh) så inget hoppar när mobilens
+   adressfält viks in. */
+.rest {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Den stumma källraden: kolofonens typografiska röst men utan dess mekanik —
+   ingen knapp, ingen pil, ingen länk. Negativa toppmarginalen tar tillbaka det
+   mesta av frågornas bottenluft (96px i RoomText.module.css), så raden hör
+   ihop med rummet den avslutar i stället för att sväva fritt före uppehållet. */
+.sourceLine {
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--soft-strong);
+  margin: -64px 0 0;
+}
+
+/* Avslutets reflektion: stilla prosa, inget avslut som firar. */
+.reflection {
+  font-size: calc(var(--rs) - 0.0625rem);
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--ink) 70%, var(--soft));
+  margin: 0 0 14px;
+}
+
+/* Den centrala frågan och dess dörr: samma röst som förrummets sista ord. */
+.question {
+  composes: question from './Path.module.css';
+}
+
+.questionLink {
+  composes: questionLink from './Path.module.css';
+}
+
+/* Den ensamma handlingen sist: samma inåtvända knapp som läsrummets slut. */
+.noteRow {
+  display: flex;
+  justify-content: center;
+  margin: 72px 0 8px;
+}
+
+.noteAction {
+  composes: endingAction from '../RoomPage.module.css';
+}
+
+.empty {
+  composes: empty from './Path.module.css';
+}
+
+/* Bottenbaren: navradens stilla materia (samma bredd, bakgrund och hårfina
+   linje) men med bara två tysta kontroller — chevronen hem till förrummet och
+   läsinställningarna. Man ska aldrig känna sig fångad i flödet. */
+.bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 430px);
+  box-sizing: border-box;
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 20px calc(6px + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--faint);
+}

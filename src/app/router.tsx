@@ -2,6 +2,7 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
+  redirect,
 } from '@tanstack/react-router'
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 import type { ReadMode } from '../content/model'
@@ -40,9 +41,12 @@ const PersonPostPage = lazyPage(() =>
 )
 const RoomListPage = lazyPage(() => import('../pages/bibliotek/RoomListPage').then((m) => m.RoomListPage))
 const ThemePage = lazyPage(() => import('../pages/bibliotek/ThemePage').then((m) => m.ThemePage))
-const PathPage = lazyPage(() => import('../pages/bibliotek/PathPage').then((m) => m.PathPage))
+const PathPage = lazyPage(() => import('../pages/vandringar/PathPage').then((m) => m.PathPage))
 const PathListPage = lazyPage(() =>
-  import('../pages/bibliotek/PathListPage').then((m) => m.PathListPage),
+  import('../pages/vandringar/PathListPage').then((m) => m.PathListPage),
+)
+const PathReadPage = lazyPage(() =>
+  import('../pages/vandringar/PathReadPage').then((m) => m.PathReadPage),
 )
 const SearchLibraryPage = lazyPage(() =>
   import('../pages/bibliotek/SearchLibraryPage').then((m) => m.SearchLibraryPage),
@@ -206,20 +210,50 @@ const personPostRoute = createRoute({
   },
 })
 
+// The paths are their own section beside the library (editor's decision
+// 2026-07-28): the anteroom (overview), the list and the reading flow live
+// under /vandring…, not /bibliotek/….
 const pathRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/bibliotek/vandring/$slug',
+  path: '/vandring/$slug',
   component: function VandringRoute() {
     return <PathPage slug={pathRoute.useParams().slug} />
   },
 })
 
+// The path's own reading surface — the whole walk as one slow, continuous
+// reading. The static segment `las` can't collide with a path slug.
+const pathReadRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/vandring/$slug/las',
+  component: function VandringLasRoute() {
+    return <PathReadPage slug={pathReadRoute.useParams().slug} />
+  },
+})
+
 // All published paths — the reachable list behind the »Vandringar« nav tab.
-// A static segment (`vandringar`) that can't collide with `/bibliotek/vandring/$slug`.
+// A static segment (`vandringar`) that can't collide with `/vandring/$slug`.
 const vandringListRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/bibliotek/vandringar',
+  path: '/vandringar',
   component: PathListPage,
+})
+
+// The old library addresses forward, so testers' bookmarks survive the move.
+const legacyPathRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/vandring/$slug',
+  beforeLoad: ({ params }) => {
+    throw redirect({ to: '/vandring/$slug', params, replace: true })
+  },
+})
+
+const legacyPathListRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bibliotek/vandringar',
+  beforeLoad: () => {
+    throw redirect({ to: '/vandringar', replace: true })
+  },
 })
 
 // The work reader lives under the static segment `verk`, so the landing's
@@ -266,15 +300,13 @@ const chapterRoute = createRoute({
 })
 
 // The reading room (the remake, phase 3): rooms from the editorial content.
-// The `vandring` search param carries the only path context — without it the room
-// is read standalone, without path UI (paths.md, Relationship to the Library).
+// Always standalone — a path is read in its own flow (/vandring/$slug/las),
+// never room by room here (paths.md, Relationship to the Library).
 const roomRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/rum/$slug',
-  validateSearch: (search: Record<string, unknown>): { vandring?: string } =>
-    typeof search['vandring'] === 'string' ? { vandring: search['vandring'] } : {},
   component: function RumRoute() {
-    return <RoomPage slug={roomRoute.useParams().slug} pathSlug={roomRoute.useSearch().vandring} />
+    return <RoomPage slug={roomRoute.useParams().slug} />
   },
 })
 
@@ -331,7 +363,10 @@ const routeTree = rootRoute.addChildren([
   sourceItemRoute,
   personPostRoute,
   pathRoute,
+  pathReadRoute,
   vandringListRoute,
+  legacyPathRoute,
+  legacyPathListRoute,
   verklistaRoute,
   workRoute,
   bookRoute,

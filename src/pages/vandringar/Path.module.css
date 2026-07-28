@@ -140,17 +140,17 @@
    radspråket, inte husets röst. Composes i stället för kopior, så de aldrig
    glider isär (jfr .artal i Library.module.css). */
 .empty {
-  composes: empty from './Library.module.css';
+  composes: empty from '../bibliotek/Library.module.css';
 }
 
 /* Vandringslistan: flera ledstarter, inte en katalog. Samma huvudmått som
    bibliotekets landning, sedan luftiga block utan rader eller räknare. */
 .listTitle {
-  composes: title from './Library.module.css';
+  composes: title from '../bibliotek/Library.module.css';
 }
 
 .listLede {
-  composes: lede from './Library.module.css';
+  composes: lede from '../bibliotek/Library.module.css';
 }
 
 .paths {

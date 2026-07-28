@@ -7,7 +7,7 @@ import { publishedThrough, roomsForPath } from '../../lib/library'
 import { allRooms, findQuestion, findPathBySlug, paragraphs } from '../../lib/content'
 import { NotFoundNote } from '../NotFoundNote'
 import styles from './Path.module.css'
-import { Sidhuvud } from './LibraryParts'
+import { Sidhuvud } from '../bibliotek/LibraryParts'
 
 /** The head of the trail: what the path is and why the rooms belong together.
  * A little air after the prose, then the ··· — and under it the trail starts
@@ -48,7 +48,8 @@ const CentralQuestion = ({ path }: { path: Path }) => {
  * chevrons, no footer: the page ends where the trail ends. The sequence lives in
  * the `<ol>`, so it survives when the visual design is removed (Accessibility);
  * the trail line and its markers are pseudo-elements only. Every row opens the
- * room with the path as context. */
+ * path's reading flow at that stop (the room's slug as hash) — the path is read
+ * as one continuous scroll, never room by room. */
 const Stops = ({ path, rooms }: { path: Path; rooms: Room[] }) => {
   if (rooms.length === 0)
     return <p className={styles.empty}>Den här vandringen har inga rum ännu.</p>
@@ -57,9 +58,9 @@ const Stops = ({ path, rooms }: { path: Path; rooms: Room[] }) => {
       {rooms.map((room) => (
         <li key={room.id} className={styles.stop}>
           <Link
-            to="/rum/$slug"
-            params={{ slug: room.slug }}
-            search={{ vandring: path.slug }}
+            to="/vandring/$slug/las"
+            params={{ slug: path.slug }}
+            hash={room.slug}
             className={styles.stopLink}
           >
             <span className={styles.stopTitle}>{room.title}</span>
@@ -78,9 +79,9 @@ const Stops = ({ path, rooms }: { path: Path; rooms: Room[] }) => {
  * progress metrics — no reading times, no totals, no traditions, no »Fortsätt
  * där du stannade« (editor's decision 2026-07-26; the remembered room lives on in
  * Sparat, where it is orientation for returning, not a cue on the trail itself).
- * The path is read in the reading room, one room at a time — here you only choose
- * where to step in. TopBar without onBack ⇒ history step back, so the library
- * location is preserved. */
+ * The path is read in its own flow (PathReadPage), as one continuous scroll —
+ * here you only choose where to step in. TopBar without onBack ⇒ history step
+ * back, so the previous location is preserved. */
 export const PathPage = ({ slug }: { slug: string }) => {
   const path = findPathBySlug(slug)
   if (!path) return <NotFoundNote subject="Vandringen" />

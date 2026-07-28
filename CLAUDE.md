@@ -19,10 +19,12 @@ fas för fas enligt `docs/specs/implementation-roadmap.md`; visionen ligger i
 ## Arkitektur
 
 - **Router:** kod-först i `src/app/router.tsx` (TanStack Router). Sidor i `src/pages/`
-  (redaktionella bibliotekssidor i `src/pages/bibliotek/`, verkläsaren i
-  `src/pages/library/`). Navlöst styrs av `NAVLESS_PREFIXES` i `RootLayout.tsx`.
-- **Nav:** `src/components/NavTabs.tsx` — fyra flikar (Läsrummet · Biblioteket ·
-  Sparat · Inställningar). Aktiv flik = mörkare text + `aria-current="page"`.
+  (redaktionella bibliotekssidor i `src/pages/bibliotek/`, vandringssidorna i
+  `src/pages/vandringar/`, verkläsaren i `src/pages/library/`). Navlöst styrs av
+  `NAVLESS_PREFIXES` + `PATH_READ` i `RootLayout.tsx`.
+- **Nav:** `src/components/NavTabs.tsx` — tre flikar (Läsrummet · Biblioteket ·
+  Vandringar) + »Mer«-menyn (Sparat · Inställningar) i en bottensheet. Aktiv flik =
+  mörkare text + `aria-current="page"`.
 - **Store:** `src/lib/store.tsx` (React Context, localStorage-nyckel `visdomsatlasen`,
   fältvalidering vid inläsning). Fält: dark/font/textStep/bg, bookmarks,
   chapterBookmarks, notes, sparadeRum, lastRead, senastLastaRum.
@@ -32,10 +34,12 @@ fas för fas enligt `docs/specs/implementation-roadmap.md`; visionen ligger i
   traditioner/vandringar via `import.meta.glob`), `src/lib/bibliotek.ts` (urvalslogik —
   bara publicerat visas), `src/lib/rumsval.ts` (deterministiskt rumsval). Verkläsaren =
   Hono + SQLite (`server/`), klient i `src/lib/api.ts`.
-- **Vandringar (Fas 7):** läsrummet får vandringskontext via sökparametern
-  `?vandring=<slug>` på `/rum/$slug` (utan den läses rummet fristående, utan
-  vandrings-UI). Senast öppnade rum per vandring minns i store (`vandringsplatser`) —
-  bara orientering, aldrig förlopp.
+- **Vandringar (Fas 7, omgjord 2026-07-28):** egen sektion bredvid biblioteket —
+  `/vandringar` (lista), `/vandring/$slug` (förrum/översikt), `/vandring/$slug/las`
+  (flödet, »Den långsamma rullen«); gamla `/bibliotek/…`-adresser redirectar.
+  `/rum/$slug` är alltid fristående (ingen `?vandring`-parameter längre). Senast
+  lästa rum per vandring minns i store (`pathPositions`, skrivs av flödet via
+  IntersectionObserver) — bara orientering, aldrig förlopp.
 
 ## Redaktionell innehållspipeline
 
@@ -126,6 +130,21 @@ den. Föregående försök la frågan längst ner på *första skärmen*, vilket
 med stor lässtorlek både blev mitt på sidan (sidan scrollar) och tryckte ner hela stigen
 under vikten så vandringen såg tom ut. `.trailhead` är därför ett vanligt block igen
 (ingen `min-height: 100svh`, ingen `.opening`-restyta). Redaktörens beslut.
+
+*Omdesign 2026-07-28 — »Den långsamma rullen« (koncept 8).* Vandringen läses som en
+enda sammanhängande rullning: ny sida `PathReadPage` (`/vandring/$slug/las`, navlös,
+egen bottenbar med chevron till förrummet + läsinställningar) med ledstart, en hel
+skärmhöjd tystnad (`···`) före varje rum och före avslutet, rummens text via delade
+`RoomText` (`src/components/`, h1 fristående/h2 i flödet — utbruten ur `RoomPage`),
+stum källrad (bara verkens namn, ingen länk), och sist avslutande reflektion, central
+fråga och en ensam »Skriv ner en tanke« vars anteckning hör vandringen till (ursprung
+`path`). Ingen Spara-knapp i flödet. Förrummet (`PathPage`) behölls som det är men
+anhalterna öppnar flödet vid sitt rum (slug som hash); läsrummets vandringsfot
+(`PathFooter`/`PathTrail`/`PathStop` och `?vandring`) togs bort — `/rum/$slug` är
+alltid fristående. Vandringarna flyttade ut ur biblioteket: egna adresser under
+`/vandring…` (redirects från `/bibliotek/…`), filerna i `src/pages/vandringar/`.
+`pathPositions` skrivs nu av flödet (IntersectionObserver, bara publicerat) och läses
+av Sparat som förr. Redaktörens beslut, hela stycket.
 
 **Fas 8 — Källor och kontext (`docs/specs/source-and-context.md`) klar, mergad till
 `main` (#28).** Källpassager, skärpt publiceringsgrind (publicerad källa måste

@@ -8,11 +8,17 @@ import { useAtlas } from '../lib/store'
 
 const NAVLESS_PREFIXES = ['/las', '/kalla', '/sok', '/kapitel', '/bibliotek-sok', '/rum']
 
+// The path's reading flow is a reading surface and navless like the reading
+// room — but its anteroom and list share the /vandring prefix and keep the nav,
+// so the flow is matched exactly rather than by prefix.
+const PATH_READ = /^\/vandring\/[^/]+\/las$/
+
 export const RootLayout = () => {
   const { dark, font, textStep, bg } = useAtlas()
   const [shell, setShell] = useState<HTMLElement | null>(null)
   const pathname = useRouterState({ select: (s) => s.location.pathname })
-  const showNav = !NAVLESS_PREFIXES.some((prefix) => pathname.startsWith(prefix))
+  const showNav =
+    !NAVLESS_PREFIXES.some((prefix) => pathname.startsWith(prefix)) && !PATH_READ.test(pathname)
   return (
     <div
       className="desk"
