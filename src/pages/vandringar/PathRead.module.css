@@ -3,11 +3,12 @@
    skärmhöjd tomt papper mellan varje del, och en stilla bottenbar som enda
    kontroll. Ingenting i flödet ska kännas som ett steg att avverka. */
 
-/* Samma yta som .screenReader men med plats för den fasta bottenbaren —
-   sista raden ska kunna rulla fri från baren, inte gömma sig bakom den. */
+/* Läsrummets yta, men med plats för den fasta bottenbaren — sista raden ska
+   kunna rulla fri från baren, inte gömma sig bakom den. Composes i stället för
+   en kopia, så flödet följer med när läsytan ändras. */
 .screen {
-  animation: vaFade 0.45s ease;
-  padding: 0 28px 150px;
+  composes: screenReader from global;
+  padding-bottom: 150px;
 }
 
 /* Ledstarten: bara vandringens namn — introduktionen bor i förrummet, och
@@ -33,14 +34,16 @@
 
 /* Den stumma källraden: kolofonens typografiska röst men utan dess mekanik —
    ingen knapp, ingen pil, ingen länk. Negativa toppmarginalen tar tillbaka det
-   mesta av frågornas bottenluft (96px i RoomText.module.css), så raden hör
-   ihop med rummet den avslutar i stället för att sväva fritt före uppehållet. */
+   mesta av frågornas bottenluft (`--room-tail`, global.css) och lämnar 32px
+   kvar, så raden hör ihop med rummet den avslutar i stället för att sväva
+   fritt före uppehållet. Räknas ur måttet i stället för att gissa det, så den
+   följer med om rummets rytm ändras. */
 .sourceLine {
   font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--soft-strong);
-  margin: -64px 0 0;
+  margin: calc(32px - var(--room-tail)) 0 0;
 }
 
 /* Avslutets reflektion: stilla prosa, inget avslut som firar. */
@@ -49,15 +52,6 @@
   line-height: 1.7;
   color: color-mix(in srgb, var(--ink) 70%, var(--soft));
   margin: 0 0 14px;
-}
-
-/* Den centrala frågan och dess dörr: samma röst som förrummets sista ord. */
-.question {
-  composes: question from './Path.module.css';
-}
-
-.questionLink {
-  composes: questionLink from './Path.module.css';
 }
 
 /* Den ensamma handlingen sist: samma inåtvända knapp som läsrummets slut. */
@@ -76,22 +70,12 @@
 }
 
 /* Bottenbaren: navradens stilla materia (samma bredd, bakgrund och hårfina
-   linje) men med bara två tysta kontroller — chevronen hem till förrummet och
-   läsinställningarna. Man ska aldrig känna sig fångad i flödet. */
+   linje, delad via global `.bottomBar`) men med bara två tysta kontroller —
+   chevronen hem till förrummet och läsinställningarna. Man ska aldrig känna
+   sig fångad i flödet. */
 .bar {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(100%, 430px);
-  box-sizing: border-box;
-  z-index: 30;
-  display: flex;
+  composes: bottomBar from global;
   justify-content: space-between;
   align-items: center;
   padding: 6px 20px calc(6px + env(safe-area-inset-bottom));
-  background: color-mix(in srgb, var(--paper) 90%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid var(--faint);
 }

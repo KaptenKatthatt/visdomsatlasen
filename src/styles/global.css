@@ -2,6 +2,10 @@
 
 :root {
   --rs: 1.1875rem;
+  /* Rummets sista mått: luften under reflektionsfrågorna. Delas mellan
+     rumstexten (RoomText.module.css) och vandringsflödets källrad, som drar
+     tillbaka den för att lägga sig tätt intill rummet den avslutar. */
+  --room-tail: 96px;
 }
 
 * {
@@ -275,6 +279,25 @@ p {
   min-width: 44px;
   min-height: 44px;
   transform: translate(-50%, -50%);
+}
+
+/* Den fasta bottenbaren: navradens och vandringsflödets gemensamma materia —
+   skalets bredd, dimmigt papper och en hårfin linje mot texten. Moduler
+   ansluter via `composes: bottomBar from global` och lägger till bara sin egen
+   vaddering och innehållsfördelning, så barerna aldrig glider isär. */
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, 430px);
+  box-sizing: border-box;
+  z-index: 30;
+  display: flex;
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--faint);
 }
 
 .topbar {

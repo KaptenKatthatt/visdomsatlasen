@@ -236,9 +236,11 @@ unfolding and no link; the source apparatus lives in the library. After the
 last room come the closing reflection, the central question and a single
 »Skriv ner en tanke«, with air down toward the bottom bar.
 
-The bottom bar is the flow's only control: a still bar on a hairline, whose
-chevron always leads back to the path's anteroom (the overview). One must
-never feel trapped in the flow.
+The bottom bar carries the flow's only controls: a still bar on a hairline,
+whose chevron always leads back to the path's anteroom (the overview), beside
+the reading settings every reading surface offers (the flow has no top bar to
+put them in, and a long read must stay adjustable). One must never feel trapped
+in the flow.
 
 Leaving a path is done by navigating away — the chevron, or out to another
 part of the app — never by a control inside the text. The trail footer that

@@ -1,11 +1,11 @@
 import { Link } from '@tanstack/react-router'
-import { ToLink } from '../../components/ToLink'
 import { TopBar } from '../../components/TopBar'
 import { Trail } from '../../components/Trail'
 import type { Room, Path } from '../../content/editorial/schema'
-import { publishedThrough, roomsForPath } from '../../lib/library'
-import { allRooms, findQuestion, findPathBySlug, paragraphs } from '../../lib/content'
+import { roomsForPath } from '../../lib/library'
+import { allRooms, findPathBySlug, paragraphs } from '../../lib/content'
 import { NotFoundNote } from '../NotFoundNote'
+import { CentralQuestion } from './CentralQuestion'
 import styles from './Path.module.css'
 import { Sidhuvud } from '../bibliotek/LibraryParts'
 
@@ -24,23 +24,6 @@ const Trailhead = ({ path }: { path: Path }) => (
     <div className={`dots ${styles.pause}`}>···</div>
   </section>
 )
-
-/** The central question, last on the page — after the stops, with the walk
- * already behind the eye. It is the thought one leaves with rather than an
- * introduction to what follows, so nothing comes after it. The question links to
- * its own page when published; a draft question is reached via the library, not
- * from here. */
-const CentralQuestion = ({ path }: { path: Path }) => {
-  const [question] = publishedThrough([path.centralQuestion], findQuestion)
-  if (!question) return null
-  return (
-    <p className={styles.question}>
-      <ToLink to={{ kind: 'fraga', slug: question.slug }} className={styles.questionLink}>
-        {question.text}
-      </ToLink>
-    </p>
-  )
-}
 
 /** The stops as places along a trail, not tasks (paths.md, Path Overview). Each
  * one carries its own thought — the room's summary — so the walk is a sequence of

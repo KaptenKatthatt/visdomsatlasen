@@ -49,9 +49,11 @@
   margin: 0 0 64px;
 }
 
-/* Frågorna i stillhet: dämpade men läsbara, mitt emellan bläck och meta. */
+/* Frågorna i stillhet: dämpade men läsbara, mitt emellan bläck och meta.
+   Bottenluften är rummets sista mått (`--room-tail`, global.css) — flödets
+   källrad räknar mot samma variabel, så de aldrig glider isär. */
 .questions {
-  margin: 0 0 96px;
+  margin: 0 0 var(--room-tail);
 }
 
 .question {

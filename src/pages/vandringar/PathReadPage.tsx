@@ -1,34 +1,34 @@
-import { Link } from '@tanstack/react-router'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Link, useRouterState } from '@tanstack/react-router'
+import { Fragment, useEffect, useRef, useState, type RefObject } from 'react'
 import { BackIcon } from '../../components/Icons'
 import { NotesSheet } from '../../components/NotesSheet'
 import { ReadingSettingsButton } from '../../components/ReadingSettingsButton'
 import { RoomText } from '../../components/RoomText'
-import { ToLink } from '../../components/ToLink'
-import type { Path, Room, Source } from '../../content/editorial/schema'
-import { allRooms, findPathBySlug, findQuestion, findSource, paragraphs } from '../../lib/content'
-import { publishedThrough, roomsForPath } from '../../lib/library'
+import type { Path, Room as RoomPost, Source } from '../../content/editorial/schema'
+import { allRooms, findPathBySlug, findSource, paragraphs } from '../../lib/content'
+import { roomsForPath } from '../../lib/library'
 import { useAtlas } from '../../lib/store'
 import { useDocumentTitle } from '../../lib/useDocumentTitle'
 import { NotFoundNote } from '../NotFoundNote'
+import { CentralQuestion } from './CentralQuestion'
 import styles from './PathRead.module.css'
 
-/** Uppehållet mellan flödets delar: en hel skärmhöjd tomt papper med vecket i
- * mitten. Föregående text är garanterat ur bild, och det tar en liten stund att
- * rulla genom tystnaden innan nästa rubrik stiger upp — det är pausen som gör
- * läsningen långsam, inte någon kontroll. */
+/** The rest between the flow's parts: a full screen height of empty paper with
+ * the fold in the middle. The previous text is guaranteed out of view, and it
+ * takes a moment to scroll through the silence before the next heading rises —
+ * the pause is what makes the reading slow, not any control. */
 const Rest = () => (
   <div className={styles.rest}>
     <span className="dots">···</span>
   </div>
 )
 
-/** Den stumma källraden: bara verkens namn i versaler, per rum. Ingen
- * utfällning, ingen länk — källapparaten bor i biblioteket, och flödet ska
- * inte erbjuda någon väg bort mitt i läsningen. En avslutande parentesglossa i
- * titeln (»Enchiridion (Handboken)«) stryks: förklaringen hör källsidan till,
- * här ska bara verkets namn stå (redaktörens beslut). */
-const sourceLine = (room: Room): string =>
+/** The mute source line: the works' names only, in caps, per room. No
+ * unfolding, no link — the source apparatus lives in the library, and the flow
+ * must not offer a way out mid-reading. A trailing parenthetical gloss in the
+ * title (»Enchiridion (Handboken)«) is dropped: the explanation belongs on the
+ * source page, here only the work's name stands (editor's decision). */
+const sourceLine = (room: RoomPost): string =>
   [
     ...new Set(
       room.sources
@@ -38,15 +38,33 @@ const sourceLine = (room: Room): string =>
     ),
   ].join(' · ')
 
-/** Vandringens avslut: den avslutande reflektionen, den centrala frågan som
- * sista tanke och en ensam »Skriv ner en tanke«. Anteckningen hör vandringen
- * till (ursprunget `path`), inte något enskilt rum. Ingen gratulation, ingen
- * förloppsmätare — att känna sig nöjd och sluta mitt i är ett lika gott slut,
- * så slutet firar ingenting. */
+/** One room in the flow: its text, then the mute source line. `data-room`
+ * marks it for the orientation memory; the room's slug is the anchor the
+ * anteroom's stops open at. A draft room is labelled as such — the flow doubles
+ * as the editor's review view. */
+const Room = ({ room }: { room: RoomPost }) => {
+  const sources = sourceLine(room)
+  return (
+    <article data-room={room.id}>
+      <RoomText
+        room={room}
+        heading="h2"
+        anchor={room.slug}
+        {...(room.status === 'published' ? {} : { kicker: 'Utkast' })}
+      />
+      {sources !== '' && <p className={styles.sourceLine}>{sources}</p>}
+    </article>
+  )
+}
+
+/** The path's ending: the closing reflection, the central question as the last
+ * thought, and a single »Skriv ner en tanke«. The note belongs to the path
+ * (origin `path`), not to any one room. No congratulation, no progress metric —
+ * feeling done and stopping halfway is as good an ending, so the end celebrates
+ * nothing. */
 const Ending = ({ path }: { path: Path }) => {
   const { notes, setNote, removeNote } = useAtlas()
   const [noteOpen, setNoteOpen] = useState(false)
-  const [question] = publishedThrough([path.centralQuestion], findQuestion)
   return (
     <section className={styles.ending}>
       {path.closingReflection !== undefined &&
@@ -55,13 +73,7 @@ const Ending = ({ path }: { path: Path }) => {
             {paragraph}
           </p>
         ))}
-      {question && (
-        <p className={styles.question}>
-          <ToLink to={{ kind: 'fraga', slug: question.slug }} className={styles.questionLink}>
-            {question.text}
-          </ToLink>
-        </p>
-      )}
+      <CentralQuestion path={path} />
       <div className={styles.noteRow}>
         <button type="button" className={styles.noteAction} onClick={() => setNoteOpen(true)}>
           Skriv ner en tanke
@@ -80,13 +92,13 @@ const Ending = ({ path }: { path: Path }) => {
   )
 }
 
-/** Skriver vandringens orienteringsminne medan läsaren rullar: det rum vars
- * början senast passerat övre delen av skärmen. Bara orientering — »var var
- * jag« i Sparat — aldrig förlopp, och bara för publicerat innehåll (paths.md:
- * minnet är orientering, aldrig progress). Miljöer utan IntersectionObserver
- * (jsdom) lämnas tysta. */
+/** Writes the path's orientation memory as the reader scrolls: the room whose
+ * beginning last passed the top of the screen. Orientation only — »where was
+ * I« in Sparat — never progress, and only for published content (paths.md: the
+ * memory is orientation, never progress). Environments without
+ * IntersectionObserver (jsdom) are left silent. */
 const usePathPositionMemory = (
-  container: { current: HTMLDivElement | null },
+  container: RefObject<HTMLDivElement | null>,
   path: Path | undefined,
 ): void => {
   const { registerPathPosition } = useAtlas()
@@ -98,38 +110,40 @@ const usePathPositionMemory = (
       (entries) => {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue
-          const roomId = entry.target.getAttribute('data-rum')
+          const roomId = entry.target.getAttribute('data-room')
           if (roomId !== null) registerPathPosition(pathId, roomId)
         }
       },
-      // Bandet är skärmens övre femtedel: rummet »är« där man står när dess
-      // text ligger överst i bild, inte när det skymtar längst ner.
+      // The band is the screen's top fifth: a room is where you stand when its
+      // text is at the top of the view, not when it peeks in at the bottom.
       { rootMargin: '0px 0px -80% 0px' },
     )
-    for (const node of container.current.querySelectorAll('[data-rum]')) observer.observe(node)
+    for (const node of container.current.querySelectorAll('[data-room]')) observer.observe(node)
     return () => observer.disconnect()
   }, [container, pathId, registerPathPosition])
 }
 
-/** Öppnar flödet vid en viss anhalt: förrummets anhaltslänkar bär rummets slug
- * som hash, och sidan ställer sig där direkt — inget animerat hopp, läsningen
- * ska börja i stillhet där man klev på. */
+/** Opens the flow at a given stop: the anteroom's stop links carry the room's
+ * slug as the hash, and the page places itself there straight away — no
+ * animated jump, the reading should begin in stillness where one stepped on.
+ * Reads the hash from the router, so returning to another stop through history
+ * moves the page too. */
 const useHashEntry = (): void => {
+  const hash = useRouterState({ select: (s) => s.location.hash })
   useEffect(() => {
-    const slug = window.location.hash.slice(1)
-    if (slug === '') return
-    document.getElementById(slug)?.scrollIntoView({ behavior: 'auto', block: 'start' })
-  }, [])
+    if (hash === '') return
+    document.getElementById(hash)?.scrollIntoView({ behavior: 'auto', block: 'start' })
+  }, [hash])
 }
 
-/** Vandringens egen läsvy — »Den långsamma rullen« (paths.md): hela vandringen
- * som en enda sammanhängande, långsam läsning. Ledstarten (introduktionen bor i
- * förrummet), sedan rummen i redaktionell ordning med en skärmhöjd tystnad
- * mellan varje, och sist avslutet. Man går vidare genom att läsa vidare — inga
- * tryck eller pilar mellan rummen, ingen Spara-knapp i flödet. Bottenbaren är
- * enda kontrollen: chevronen leder alltid tillbaka till förrummet, så man
- * aldrig känner sig fångad i flödet. Rummen i flödet får ett »Utkast«-märke
- * bara när de inte är publicerade (redaktörens granskningsvy). */
+/** The path's own reading surface — »Den långsamma rullen« (paths.md): the
+ * whole path as one slow, continuous reading. The trailhead (the introduction
+ * lives in the anteroom), then the rooms in editorial order with a screen height
+ * of silence between each, and last the ending. One goes on by reading on — no
+ * taps or arrows between rooms, no save button in the flow. The bottom bar's
+ * chevron always leads back to the anteroom, so one is never trapped in the
+ * flow. The ending comes even when a path has no rooms yet: the walk ends where
+ * the text ends, not conditionally on there having been one. */
 export const PathReadPage = ({ slug }: { slug: string }) => {
   const container = useRef<HTMLDivElement | null>(null)
   const path = findPathBySlug(slug)
@@ -139,7 +153,7 @@ export const PathReadPage = ({ slug }: { slug: string }) => {
   if (!path) return <NotFoundNote subject="Vandringen" />
   const rooms = roomsForPath(path, allRooms)
   return (
-    <div ref={container} className={`screenReader ${styles.screen}`}>
+    <div ref={container} className={styles.screen}>
       <header className={styles.trailhead}>
         <div className="kicker">
           Vandring
@@ -147,28 +161,17 @@ export const PathReadPage = ({ slug }: { slug: string }) => {
         </div>
         <h1 className={styles.title}>{path.title}</h1>
       </header>
-      {rooms.length === 0 ? (
+      {rooms.length === 0 && (
         <p className={styles.empty}>Den här vandringen har inga rum ännu.</p>
-      ) : (
-        <>
-          {rooms.map((room) => (
-            <Fragment key={room.id}>
-              <Rest />
-              <article data-rum={room.id}>
-                <RoomText
-                  room={room}
-                  heading="h2"
-                  anchor={room.slug}
-                  {...(room.status === 'published' ? {} : { kicker: 'Utkast' })}
-                />
-                {sourceLine(room) !== '' && <p className={styles.sourceLine}>{sourceLine(room)}</p>}
-              </article>
-            </Fragment>
-          ))}
-          <Rest />
-          <Ending path={path} />
-        </>
       )}
+      {rooms.map((room) => (
+        <Fragment key={room.id}>
+          <Rest />
+          <Room room={room} />
+        </Fragment>
+      ))}
+      <Rest />
+      <Ending path={path} />
       <nav aria-label="Vandringen" className={styles.bar}>
         <Link
           to="/vandring/$slug"

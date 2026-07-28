@@ -2,11 +2,12 @@ import type { Room } from '../content/editorial/schema'
 import { paragraphs } from '../lib/content'
 import styles from './RoomText.module.css'
 
-/** Rummets prosa — rubrik, öppning, veck, kärna, veck, tanken att bära och
- * reflektionsfrågorna — delad mellan det fristående läsrummet och vandringens
- * flöde så de två ytorna aldrig glider isär. Rubriknivån följer ytan: h1 när
- * rummet äger sidan, h2 i flödet där vandringen gör det. `anchor` sätter id på
- * rummets första sektion så flödet kan öppnas vid en viss anhalt. */
+/** The room's prose — heading, opening, fold, core, fold, the thought to carry
+ * and the reflection questions — shared by the freestanding reading room and the
+ * path's flow so the two surfaces never drift apart. The heading level follows
+ * the surface: h1 when the room owns the page, h2 in the flow where the path
+ * does. `anchor` puts an id on the room's first section, so the flow can be
+ * opened at a given stop. */
 export const RoomText = ({
   room,
   heading,

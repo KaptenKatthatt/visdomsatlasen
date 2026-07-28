@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/vitest'
 import { allPaths, allRooms, findSource } from '../../lib/content'
 import { roomsForPath } from '../../lib/library'
@@ -119,6 +120,18 @@ describe('PathReadPage', () => {
     await renderFlow()
     const back = screen.getByRole('link', { name: 'Till vandringens översikt' })
     expect(back).toHaveAttribute('href', `/vandring/${SLUG}`)
+  })
+
+  // Anteckningen hör vandringen till, inte något rum — och Sparat måste kunna
+  // hitta tillbaka till vandringen från den (noteToCard i SavedParts).
+  it('skriver anteckningen med vandringen som ursprung', async () => {
+    await renderFlow()
+    await userEvent.click(screen.getByRole('button', { name: 'Skriv ner en tanke' }))
+    await userEvent.type(screen.getByRole('textbox'), 'En tanke')
+    const stored = JSON.parse(localStorage.getItem('visdomsatlasen') ?? '{}') as {
+      notes?: Record<string, { originType?: string; originId?: string }>
+    }
+    expect(stored.notes?.[path.id]).toMatchObject({ originType: 'path', originId: path.id })
   })
 
   it('säger ifrån stillsamt när vandringen inte finns', async () => {
