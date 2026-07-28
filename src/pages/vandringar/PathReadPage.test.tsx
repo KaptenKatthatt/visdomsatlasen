@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom/vitest'
-import { allPaths, allRooms, findSource } from '../../lib/content'
+import { allPaths, allRooms, findSource, workName } from '../../lib/content'
 import { roomsForPath } from '../../lib/library'
 import { AtlasProvider } from '../../lib/store'
 import { renderWithRouter } from '../../lib/testRouter'
@@ -87,7 +87,7 @@ describe('PathReadPage', () => {
     const source = primary ? findSource(primary.source) : undefined
     expect(source).toBeDefined()
     if (source === undefined) return
-    const name = source.title.replace(/\s*\([^)]*\)$/, '')
+    const name = workName(source)
     const line = screen.getAllByText(name, { exact: false })[0]
     expect(line).toBeDefined()
     if (line === undefined) return

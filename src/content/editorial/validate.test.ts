@@ -238,6 +238,24 @@ describe('valideraInnehall', () => {
     expect(draftQuestion).toEqual([])
   })
 
+  // shortTitle finns för att släppa en förklarande parentes där texten läses
+  // (source-and-context.md, Naming a Work Where It Is Read). Den får aldrig
+  // döpa om verket — rummet och biblioteket ska nämna samma bok.
+  it('kräver att shortTitle ingår i title och inte upprepar den', () => {
+    const identisk = validateContent(
+      grund({ sources: [source({ title: 'Källa A', shortTitle: 'Källa A' })] }),
+    )
+    expect(identisk.some((f) => f.includes('kalla-a') && f.includes('samma som title'))).toBe(true)
+    const frammande = validateContent(
+      grund({ sources: [source({ title: 'Källa A', shortTitle: 'Handboken' })] }),
+    )
+    expect(frammande.some((f) => f.includes('kalla-a') && f.includes('ingår inte'))).toBe(true)
+    const giltig = validateContent(
+      grund({ sources: [source({ title: 'Källa A (Boken)', shortTitle: 'Källa A' })] }),
+    )
+    expect(giltig.some((f) => f.includes('shortTitle'))).toBe(false)
+  })
+
   it('kräver att källors traditioner finns och hindrar publicerad källa från att länka opublicerad tradition', () => {
     const traditionen = { id: 'tradition-a', slug: 'tradition-a', name: 'Tradition A' }
     const unknown = validateContent(

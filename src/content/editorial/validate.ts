@@ -204,10 +204,25 @@ const sourceTraditionError = (source: Source, lookup: Lookup): string[] =>
     return []
   })
 
+// The short title exists to drop an explanatory gloss where a text is read
+// (»Enchiridion (Handboken)« → »Enchiridion«). One identical to the title says
+// nothing, and one that isn't part of the title renames the work behind the
+// reader's back — the library and the room must name the same thing.
+const shortTitleError = (source: Source): string[] => {
+  const short = source.shortTitle
+  if (short === undefined) return []
+  if (short === source.title)
+    return [`source ${source.id}: shortTitle är samma som title — utelämna den i stället`]
+  if (!source.title.includes(short))
+    return [`source ${source.id}: shortTitle "${short}" ingår inte i title "${source.title}"`]
+  return []
+}
+
 const sourceError = (set: ContentSet, lookup: Lookup): string[] =>
   set.sources.flatMap((source) => [
     ...sourceTraditionError(source, lookup),
     ...sourceUncertainty(source),
+    ...shortTitleError(source),
   ])
 
 const passageError = (set: ContentSet, lookup: Lookup): string[] =>

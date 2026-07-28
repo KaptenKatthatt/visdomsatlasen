@@ -461,6 +461,23 @@ They should not override stronger sources without a documented reason.
 
 ---
 
+## Naming a Work Where It Is Read
+
+A work's title may carry an explanatory gloss for the library's sake —
+»Enchiridion (Handboken)« names the same book twice, once for the reader who
+knows the Greek and once for the reader who does not.
+
+Inside a text, only the work's own name stands. A source record may therefore
+declare a `shortTitle`; reading surfaces use it, and everything in the library
+keeps the full title (2026-07-28).
+
+The short title must be part of the full title. It drops a gloss — it never
+renames the work, and a room and the library must never appear to cite two
+different books. A short title identical to the title says nothing and is
+rejected by the content gate.
+
+---
+
 ## Source Records
 
 Each source should have one canonical record.

@@ -5,7 +5,7 @@ import { NotesSheet } from '../../components/NotesSheet'
 import { ReadingSettingsButton } from '../../components/ReadingSettingsButton'
 import { RoomText } from '../../components/RoomText'
 import type { Path, Room as RoomPost, Source } from '../../content/editorial/schema'
-import { allRooms, findPathBySlug, findSource, paragraphs } from '../../lib/content'
+import { allRooms, findPathBySlug, findSource, paragraphs, workName } from '../../lib/content'
 import { roomsForPath } from '../../lib/library'
 import { useAtlas } from '../../lib/store'
 import { useDocumentTitle } from '../../lib/useDocumentTitle'
@@ -25,16 +25,16 @@ const Rest = () => (
 
 /** The mute source line: the works' names only, in caps, per room. No
  * unfolding, no link — the source apparatus lives in the library, and the flow
- * must not offer a way out mid-reading. A trailing parenthetical gloss in the
- * title (»Enchiridion (Handboken)«) is dropped: the explanation belongs on the
- * source page, here only the work's name stands (editor's decision). */
+ * must not offer a way out mid-reading. The name is the editorial one
+ * (`workName`), so a title's explanatory gloss stays on the source page where
+ * it belongs (editor's decision). */
 const sourceLine = (room: RoomPost): string =>
   [
     ...new Set(
       room.sources
         .map((relation) => findSource(relation.source))
         .filter((source): source is Source => source !== undefined)
-        .map((source) => source.title.replace(/\s*\([^)]*\)$/, '')),
+        .map(workName),
     ),
   ].join(' · ')
 
