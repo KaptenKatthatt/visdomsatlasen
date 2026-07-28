@@ -17,6 +17,6 @@
     "maxUnitSize": 50,
     "maxCrap": 999
   },
-  "ignoreExports": [{ "file": "src/pages/bibliotek/Path.module.css", "exports": ["stopBox"] }],
+  "ignoreExports": [{ "file": "src/pages/vandringar/Path.module.css", "exports": ["stopBox"] }],
   "rules": {}
 }

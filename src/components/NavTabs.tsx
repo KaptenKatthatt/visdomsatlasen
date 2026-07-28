@@ -6,11 +6,11 @@ import styles from './NavTabs.module.css'
 
 // The visible tabs. `match` is the prefix that marks the tab active — it defaults
 // to `to`, but Vandringar links to the list yet stays lit for a single path too
-// (`/bibliotek/vandring/$slug`), so its match is the shorter shared prefix.
+// (`/vandring/$slug`), so its match is the shorter shared prefix.
 const tabs = [
   { to: '/', label: 'Läsrummet' },
   { to: '/bibliotek', label: 'Biblioteket' },
-  { to: '/bibliotek/vandringar', label: 'Vandringar', match: '/bibliotek/vandring' },
+  { to: '/vandringar', label: 'Vandringar', match: '/vandring' },
 ] as const
 
 // Gathered behind the »Mer« menu — reached, not owned by a tab.

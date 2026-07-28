@@ -24,7 +24,7 @@ const LIBRARY_PATH = {
   kallpost: '/bibliotek/kalla/$slug',
   personpost: '/bibliotek/person/$slug',
   fraga: '/bibliotek/fraga/$slug',
-  vandring: '/bibliotek/vandring/$slug',
+  vandring: '/vandring/$slug',
 } as const
 
 type LibraryTo = Extract<To, { kind: keyof typeof LIBRARY_PATH }>

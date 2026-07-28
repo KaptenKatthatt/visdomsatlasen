@@ -5,15 +5,16 @@ import type { ReactNode } from 'react'
 import { ToLink } from '../components/ToLink'
 import type { Path } from '../content/editorial/schema'
 import { findTopic } from '../content/topics'
-import { findRoomById } from '../lib/content'
-import { dateLabel, excerpt, type Note } from '../lib/personal'
+import { findPathById, findRoomById } from '../lib/content'
+import { dateLabel, excerpt, type Note, type Origin } from '../lib/personal'
 import styles from './SavedParts.module.css'
 
-/** Where a note links back to: the reading room (rum) or the topic essay. A
- * subset of `To` — local so the Saved surface avoids co-importing the old
- * app types (model.ts) together with the editorial schema. */
+/** Where a note links back to: the reading room (rum), a path's anteroom or the
+ * topic essay. A subset of `To` — local so the Saved surface avoids
+ * co-importing the old app types (model.ts) together with the editorial schema. */
 export type NoteringsMal =
   | { kind: 'rum'; slug: string }
+  | { kind: 'vandring'; slug: string }
   | { kind: 'las'; id: string; mode: 'essa' }
 
 /** A note card's data: title, text, date and an optional origin target. */
@@ -25,20 +26,38 @@ export type Card = {
   to: NoteringsMal | undefined
 }
 
-// The note tied to its origin (spec Notes and Sources): rooms link
-// to the reading room, topic notes to the essay. If the origin isn't found the
-// text still renders — without a link, but never hidden. Shared by Saved and search.
+type NoteOrigin = { title: string; to: NoteringsMal }
+
+// Where each kind of note came from (spec Notes and Sources): rooms lead back to
+// the reading room, path notes — written at the end of a path's reading flow —
+// to the path's anteroom, topic notes to the essay. One entry per origin, so a
+// new origin is one line here rather than another branch.
+const ORIGIN: Record<Origin, (id: string) => NoteOrigin | undefined> = {
+  room: (id) => {
+    const room = findRoomById(id)
+    return room && { title: room.title, to: { kind: 'rum', slug: room.slug } }
+  },
+  path: (id) => {
+    const path = findPathById(id)
+    return path && { title: path.title, to: { kind: 'vandring', slug: path.slug } }
+  },
+  topic: (id) => {
+    const topic = findTopic(id)
+    return topic && { title: topic.title, to: { kind: 'las', id: topic.id, mode: 'essa' } }
+  },
+}
+
+// The note tied to its origin. If the origin can't be resolved the text still
+// renders — without a title or link, but never hidden. Shared by Saved and search.
 export const noteToCard = (note: Note): Card => {
-  const date = dateLabel(note.updated)
-  const bas = { key: note.originId, text: note.text, date }
-  if (note.originType === 'room') {
-    const room = findRoomById(note.originId)
-    const to = room ? ({ kind: 'rum', slug: room.slug } as const) : undefined
-    return { ...bas, title: room?.title ?? 'Sparad tanke', to }
+  const origin = ORIGIN[note.originType](note.originId)
+  return {
+    key: note.originId,
+    text: note.text,
+    date: dateLabel(note.updated),
+    title: origin?.title ?? 'Sparad tanke',
+    to: origin?.to,
   }
-  const topic = findTopic(note.originId)
-  const to = topic ? ({ kind: 'las', id: topic.id, mode: 'essa' } as const) : undefined
-  return { ...bas, title: topic?.title ?? 'Sparad tanke', to }
 }
 
 /** A group is shown only when it has content (spec Saved Section). */

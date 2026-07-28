@@ -1,0 +1,64 @@
+/* Rummets text — rytmen är kalibrerad mot skissen: EN sektion per mobilskärm.
+   Vid viloläget möter ögat aldrig nästa sektions text — det sista på skärmen
+   är alltid ···, en stilla tillåtelse att läsa vidare, inte en inbjudan.
+   Delas av det fristående läsrummet och vandringens flöde. */
+
+.head {
+  margin: 14px 0 26px;
+}
+
+.title {
+  font-size: 1.875rem;
+  line-height: 1.2;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+.stycke {
+  font-size: var(--rs);
+  line-height: 1.75;
+  margin: 0 0 16px;
+}
+
+/* Varje sektion äger sin skärm: innehållet upptill, luften växer fritt och
+   prickarna vilar längst ner. 100svh minus toppradens höjd gör att första
+   skärmen slutar exakt vid vecket vid inläsning — nästa sektion börjar under
+   det. svh (inte dvh) så att inget hoppar när mobilens adressfält viks in.
+   68px = toppradens uppmätta höjd (ikonrad 40px + 14px vaddering över/under);
+   flödets bottenbar är i samma härad, så måttet delas oförändrat. */
+.section {
+  min-height: calc(100svh - 68px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Pausen trycks mot sektionens botten av luften ovanför; lite andrum under
+   prickarna så de inte klistrar mot skärmkanten. */
+.pause {
+  margin-top: auto;
+  padding: 40px 0 32px;
+}
+
+/* Tanken att bära: står ensam, kursiv och centrerad — rummets kärnpunkt. */
+.thought {
+  font-size: calc(var(--rs) + 0.125rem);
+  line-height: 1.6;
+  font-style: italic;
+  text-align: center;
+  padding: 0 12px;
+  margin: 0 0 64px;
+}
+
+/* Frågorna i stillhet: dämpade men läsbara, mitt emellan bläck och meta.
+   Bottenluften är rummets sista mått (`--room-tail`, global.css) — flödets
+   källrad räknar mot samma variabel, så de aldrig glider isär. */
+.questions {
+  margin: 0 0 var(--room-tail);
+}
+
+.question {
+  font-size: calc(var(--rs) - 0.09375rem);
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--ink) 62%, var(--soft));
+  margin: 0 0 14px;
+}

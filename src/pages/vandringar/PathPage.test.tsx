@@ -14,7 +14,7 @@ const SLUG = 'vagen-mot-lugn'
 const renderPath = (slug: string): Promise<void> =>
   renderWithRouter({
     page: () => <PathPage slug={slug} />,
-    paths: ['/rum/$slug', '/bibliotek/fraga/$slug'],
+    paths: ['/vandring/$slug/las', '/bibliotek/fraga/$slug'],
   })
 
 describe('PathPage', () => {
@@ -36,10 +36,18 @@ describe('PathPage', () => {
     )
   })
 
-  it('öppnar varje anhalt med vandringen som sammanhang', async () => {
+  // Anhalterna öppnar flödet vid sitt rum (rummets slug som hash) — vandringen
+  // läses som en enda rullning, aldrig rum för rum.
+  it('öppnar varje anhalt i flödet, vid rätt rum', async () => {
     await renderPath(SLUG)
-    for (const link of screen.getByRole('list').querySelectorAll('a'))
-      expect(link.getAttribute('href')).toContain(`vandring=${SLUG}`)
+    const path = allPaths.find((candidate) => candidate.slug === SLUG)
+    expect(path).toBeDefined()
+    if (path === undefined) return
+    const slugs = roomsForPath(path, allRooms).map((room) => room.slug)
+    const links = [...screen.getByRole('list').querySelectorAll('a')]
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(
+      slugs.map((slug) => `/vandring/${SLUG}/las#${slug}`),
+    )
   })
 
   it('bär varje anhalts egen tanke som underrad', async () => {
