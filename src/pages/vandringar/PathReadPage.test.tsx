@@ -75,8 +75,9 @@ describe('PathReadPage', () => {
   })
 
   // Källraden är stum: verkets namn, ingen utfällning, ingen väg bort mitt i
-  // läsningen. Källapparaten bor i biblioteket.
-  it('visar verkets namn som stum källrad, utan länk eller knapp', async () => {
+  // läsningen. Källapparaten bor i biblioteket — dit hör också titelns
+  // parentesglossa (»Enchiridion (Handboken)«), som stryks här.
+  it('visar verkets namn som stum källrad, utan glossa, länk eller knapp', async () => {
     await renderFlow()
     const [first] = rooms
     expect(first).toBeDefined()
@@ -85,11 +86,13 @@ describe('PathReadPage', () => {
     const source = primary ? findSource(primary.source) : undefined
     expect(source).toBeDefined()
     if (source === undefined) return
-    const line = screen.getAllByText(source.title, { exact: false })[0]
+    const name = source.title.replace(/\s*\([^)]*\)$/, '')
+    const line = screen.getAllByText(name, { exact: false })[0]
     expect(line).toBeDefined()
     if (line === undefined) return
     expect(line.closest('a')).toBeNull()
     expect(line.closest('button')).toBeNull()
+    expect(document.body.textContent).not.toContain('(Handboken)')
     expect(screen.queryByText('Om texten')).not.toBeInTheDocument()
   })
 

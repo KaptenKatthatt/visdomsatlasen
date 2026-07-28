@@ -25,14 +25,16 @@ const Rest = () => (
 
 /** Den stumma källraden: bara verkens namn i versaler, per rum. Ingen
  * utfällning, ingen länk — källapparaten bor i biblioteket, och flödet ska
- * inte erbjuda någon väg bort mitt i läsningen. */
+ * inte erbjuda någon väg bort mitt i läsningen. En avslutande parentesglossa i
+ * titeln (»Enchiridion (Handboken)«) stryks: förklaringen hör källsidan till,
+ * här ska bara verkets namn stå (redaktörens beslut). */
 const sourceLine = (room: Room): string =>
   [
     ...new Set(
       room.sources
         .map((relation) => findSource(relation.source))
         .filter((source): source is Source => source !== undefined)
-        .map((source) => source.title),
+        .map((source) => source.title.replace(/\s*\([^)]*\)$/, '')),
     ),
   ].join(' · ')
 
