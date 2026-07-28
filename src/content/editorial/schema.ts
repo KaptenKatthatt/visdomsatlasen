@@ -152,6 +152,11 @@ export const sourceSchema = z.object({
   libraryWork: z.string().optional(),
   status: statusSchema,
   description: z.string().optional(),
+  // The work's plain name where a text is read, when the full title carries an
+  // explanatory gloss the reader does not need mid-reading: "Enchiridion
+  // (Handboken)" is read as "Enchiridion". The library keeps the full title —
+  // the gloss belongs where the source is studied, not where it is read.
+  shortTitle: z.string().min(1).optional(),
   // Alternative names for the source (search.md): original-language or translated
   // titles and established abbreviations, e.g. "Epictetus", "Handboken".
   alias: z.array(z.string().min(1)).optional(),

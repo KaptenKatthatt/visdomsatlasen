@@ -119,6 +119,12 @@ export const paragraphs = (text: string): string[] =>
 export const sourceName = (source: Source): string =>
   source.attributedAuthor ?? source.author ?? source.title
 
+/** The work's name as it meets the reader inside a text — the short title when
+ * the editor has given one, otherwise the full title. Reading surfaces name the
+ * work; the library names it in full, gloss and all (»Enchiridion« in a room,
+ * »Enchiridion (Handboken)« on the source page). */
+export const workName = (source: Source): string => source.shortTitle ?? source.title
+
 /** Honest uncertainty statements in plain text (source-and-context.md, Uncertainty):
  * hidden uncertainty weakens trust, not the source. Shared by the reading room and
  * the source page so the same wording meets the reader in both places. */

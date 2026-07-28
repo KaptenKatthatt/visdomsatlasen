@@ -2,6 +2,7 @@
 id: kalla-enchiridion
 slug: enchiridion
 title: Enchiridion (Handboken)
+shortTitle: Enchiridion
 originalTitle: Encheiridion
 type: book
 author: Arrianos
