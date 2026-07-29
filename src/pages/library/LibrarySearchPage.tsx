@@ -4,20 +4,24 @@ import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
 import { useDebounced } from '../../lib/useDebounced'
 import { searchLibrary, slugOfBook, type BookHit, type SearchHit } from '../../lib/api'
+import { withoutEmphasis } from '../../lib/emphasis'
 import styles from './Library.module.css'
 
-// Render the FTS snippet with ⟦…⟧ markers as highlighted hit words.
+// Render the FTS snippet with ⟦…⟧ markers as highlighted hit words. Källtexternas
+// kursivmarkering tas bort i stället för att tolkas — `…`-klippet kan skära mitt i ett par.
 const Snippet = ({ text }: { text: string }) => (
   <span className={styles.hitSnippet}>
-    {text.split(/⟦|⟧/).map((part, i) =>
-      i % 2 === 1 ? (
-        <mark key={i} className={styles.mark}>
-          {part}
-        </mark>
-      ) : (
-        <span key={i}>{part}</span>
-      ),
-    )}
+    {withoutEmphasis(text)
+      .split(/⟦|⟧/)
+      .map((part, i) =>
+        i % 2 === 1 ? (
+          <mark key={i} className={styles.mark}>
+            {part}
+          </mark>
+        ) : (
+          <span key={i}>{part}</span>
+        ),
+      )}
   </span>
 )
 

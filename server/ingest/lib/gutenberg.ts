@@ -8,3 +8,28 @@ export const gutenbergBody = (raw: string): string => {
   const to = endLine ? endLine.index : text.length
   return text.slice(from, to)
 }
+
+// Ett block fortsätter föregående mening när det börjar med gemen eller
+// parentes, eller när föregående block saknar slutskiljetecken.
+const continuesSentence = (prev: string, next: string): boolean =>
+  /^[a-zà-öø-ÿ(]/.test(next) || !/[.!?:;"”’)]$/.test(prev)
+
+/**
+ * Fogar ihop stycken som styckedelningen slet isär. Utgivarnas indragna
+ * förklaringar ligger mitt inne i löpande stycken (Giles i Zhuangzi); när de
+ * filtrerats bort står bitarna kvar som egna block, och ett stycke blir »The
+ * Emperor Yao« / »wished to abdicate in favour of Hsü Yu,« / »saying, …«. Var
+ * bit skulle sedan översättas för sig, som vore den en egen mening.
+ *
+ * Signalen är skiljetecken och versal, inte var förklaringen låg: av de par som
+ * skiljs åt av en indragen förklaring är de flesta äkta styckebrytningar.
+ */
+export const joinBrokenParagraphs = (blocks: string[]): string[] => {
+  const out: string[] = []
+  for (const block of blocks) {
+    const prev = out[out.length - 1]
+    if (prev !== undefined && continuesSentence(prev, block)) out[out.length - 1] = `${prev} ${block}`
+    else out.push(block)
+  }
+  return out
+}

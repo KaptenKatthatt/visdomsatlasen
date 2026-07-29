@@ -265,8 +265,27 @@ från ~930 px skärmhöjd och uppåt, sammandragen därunder så hela tröskeln 
 till ~640 px. Bara luft krymper — teckengrader och 44px-träffytor rörs inte, och
 vid stor textförstoring scrollar skärmen som den ska.
 
+*Verkläsaren 2026-07-29 — Gutenbergs kursiv.* Gutenbergs plaintext markerar kursiv
+med understreck (`_li_`), och markeringen bars orörd genom ingesten ned i databasen
+och renderades ordagrant i Zhuangzi. Redaktörens beslut: har författaren kursiverat
+ska vi också göra det. `src/lib/emphasis.ts` (`emphasisParts`/`withoutEmphasis`)
+tolkar balanserade par som `<em>` i läsrummet och släpper ensamma understreck —
+robustheten bor på rendersidan eftersom verstexten är maskinöversatt. Sökträffarnas
+snippets städas i stället för att kursiveras (`…`-klippet kan skära mitt i ett par).
+Samtidigt lagades ett andra fel i `server/ingest/zhuangzi/gutenberg.ts`: Giles'
+indragna förklaringar ligger *inuti* löpande stycken, så bitarna runt dem blev egna
+verser och översattes som lösryckta meningsfragment (2 396 verser, ~290 trasiga).
+`joinBrokenParagraphs` i `server/ingest/lib/gutenberg.ts` fogar ihop dem igen på
+skiljetecken och versal → 2 108 verser, 33 kapitel oförändrat. De HTML-baserade
+verken tappar fortfarande all kursiv i `cleanHtml` — att bevara den där kräver
+omöversättning av åtta verk och är inte gjort.
+
 ## Kända skulder
 
+- Zhuangzi behöver ominläsning på VPS:en för att styckesammanfogningen ska slå
+  igenom (`POST /api/ingest` med `{"works":["zhuangzi"]}` + INGEST_TOKEN);
+  `runMissingIngest` rör inte ett verk som redan är översatt. Kursiven syns utan
+  ominläsning — markeringen ligger redan i databasen.
 - Sandlådefällor: `getbible.net` ger 403 vid ingest (ofarligt, bara Bibeln);
   bakgrunds-Vite/API dör mellan skalkommandon — starta om vid ECONNREFUSED.
 - `fallow dead-code` följer inte CSS-modulernas `composes` — varken mellan filer

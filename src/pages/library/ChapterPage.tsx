@@ -5,6 +5,7 @@ import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
 import { useDocumentTitle } from '../../lib/useDocumentTitle'
 import { bookId, fetchChapter } from '../../lib/api'
+import { emphasisParts } from '../../lib/emphasis'
 import { chapterKey } from '../../lib/personal'
 import { useAtlas } from '../../lib/store'
 import { StateNote } from './StateNote'
@@ -39,6 +40,16 @@ const ChapterActions = ({
     </div>
   )
 }
+
+/** Verse text with the source's italics kept: Giles kursiverar främmande ord
+ * (»många tusen _li_«) och boktitlar, och den betoningen hör till texten. */
+const VerseText = ({ text }: { text: string }) => (
+  <>
+    {emphasisParts(text).map((part, i) =>
+      part.emphasis ? <em key={i}>{part.text}</em> : <span key={i}>{part.text}</span>,
+    )}
+  </>
+)
 
 const NavLink = ({
   workId,
@@ -100,7 +111,7 @@ export const ChapterPage = ({ workId, bookSlug, chapter }: Props) => {
         {data.verses.map((verse) => (
           <p key={verse.id} className={styles.verse}>
             <span className={styles.num}>{verse.verse}</span>
-            {verse.text}
+            <VerseText text={verse.text} />
           </p>
         ))}
       </div>
