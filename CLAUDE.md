@@ -268,10 +268,12 @@ vid stor textförstoring scrollar skärmen som den ska.
 *Verkläsaren 2026-07-29 — Gutenbergs kursiv.* Gutenbergs plaintext markerar kursiv
 med understreck (`_li_`), och markeringen bars orörd genom ingesten ned i databasen
 och renderades ordagrant i Zhuangzi. Redaktörens beslut: har författaren kursiverat
-ska vi också göra det. `src/lib/emphasis.ts` (`emphasisParts`/`withoutEmphasis`)
+ska vi också göra det. `src/lib/verseText.ts` (`emphasisParts`/`snippetParts`)
 tolkar balanserade par som `<em>` i läsrummet och släpper ensamma understreck —
 robustheten bor på rendersidan eftersom verstexten är maskinöversatt. Sökträffarnas
-snippets städas i stället för att kursiveras (`…`-klippet kan skära mitt i ett par).
+snippets städas i stället för att kursiveras (`…`-klippet kan skära mitt i ett par);
+`snippetParts` bär också delningen på serverns `⟦…⟧`-markörer, så verkläsarens och
+bibliotekets två sökytor delar en tolkning i stället för var sin kopia.
 Samtidigt lagades ett andra fel i `server/ingest/zhuangzi/gutenberg.ts`: Giles'
 indragna förklaringar ligger *inuti* löpande stycken, så bitarna runt dem blev egna
 verser och översattes som lösryckta meningsfragment (2 396 verser, ~290 trasiga).

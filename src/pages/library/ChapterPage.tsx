@@ -5,8 +5,8 @@ import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
 import { useDocumentTitle } from '../../lib/useDocumentTitle'
 import { bookId, fetchChapter } from '../../lib/api'
-import { emphasisParts } from '../../lib/emphasis'
 import { chapterKey } from '../../lib/personal'
+import { emphasisParts } from '../../lib/verseText'
 import { useAtlas } from '../../lib/store'
 import { StateNote } from './StateNote'
 import styles from './ChapterPage.module.css'
@@ -41,8 +41,8 @@ const ChapterActions = ({
   )
 }
 
-/** Verse text with the source's italics kept: Giles kursiverar främmande ord
- * (»många tusen _li_«) och boktitlar, och den betoningen hör till texten. */
+/** Verse text with the source's own italics kept: Giles italicises foreign words
+ * ("many thousand _li_") and book titles, and that emphasis belongs to the text. */
 const VerseText = ({ text }: { text: string }) => (
   <>
     {emphasisParts(text).map((part, i) =>

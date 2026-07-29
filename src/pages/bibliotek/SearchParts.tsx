@@ -5,10 +5,10 @@ import { Link } from '@tanstack/react-router'
 import { useState, type ReactNode } from 'react'
 import { ToLink } from '../../components/ToLink'
 import { slugOfBook, type BookHit, type SearchHit } from '../../lib/api'
-import { withoutEmphasis } from '../../lib/emphasis'
 import type { Note } from '../../lib/personal'
 import { SEARCH_TYPES, type SearchType } from '../../lib/searchIndex'
 import { MAX_VISIBLE_PER_GROUP, HEADINGS, type SearchResult, type VisibleGroup } from '../../lib/searchLogic'
+import { snippetParts } from '../../lib/verseText'
 import { NoteCard, noteToCard } from '../SavedParts'
 import styles from './Search.module.css'
 
@@ -82,22 +82,19 @@ const NoteGroupSearch = ({ notes }: { notes: Note[] }) => {
   )
 }
 
-// Renders the FTS snippet with ⟦…⟧ markers as highlighted hit words (accessible
-// markup, not color alone). Källtexternas kursivmarkering tas bort i stället för
-// att tolkas — `…`-klippet kan skära mitt i ett par.
+// Renders the FTS snippet with its hit words highlighted (accessible markup, not
+// color alone).
 const Snippet = ({ text }: { text: string }) => (
   <span className={styles.snippet}>
-    {withoutEmphasis(text)
-      .split(/⟦|⟧/)
-      .map((part, i) =>
-        i % 2 === 1 ? (
-          <mark key={i} className={styles.mark}>
-            {part}
-          </mark>
-        ) : (
-          <span key={i}>{part}</span>
-        ),
-      )}
+    {snippetParts(text).map((part, i) =>
+      part.hit ? (
+        <mark key={i} className={styles.mark}>
+          {part.text}
+        </mark>
+      ) : (
+        <span key={i}>{part.text}</span>
+      ),
+    )}
   </span>
 )
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { emphasisParts, withoutEmphasis } from './emphasis'
+import { emphasisParts, snippetParts } from './verseText'
 
-describe('kursivdelar', () => {
+describe('emphasisParts', () => {
   it('plockar ut ett par som kursiv bit', () => {
     expect(emphasisParts('många tusen _li_ i storlek')).toEqual([
       { text: 'många tusen ', emphasis: false },
@@ -47,14 +47,24 @@ describe('kursivdelar', () => {
   })
 })
 
-describe('utan kursiv', () => {
-  it('tar bort markeringen men behåller orden', () => {
-    expect(withoutEmphasis('många tusen _li_ i storlek')).toBe('många tusen li i storlek')
+describe('snippetParts', () => {
+  it('delar på serverns träffmarkörer', () => {
+    expect(snippetParts('en fisk, kallad ⟦Leviathan⟧, många tusen')).toEqual([
+      { text: 'en fisk, kallad ', hit: false },
+      { text: 'Leviathan', hit: true },
+      { text: ', många tusen', hit: false },
+    ])
+  })
+
+  it('tar bort kursivmarkeringen men behåller orden', () => {
+    expect(snippetParts('många tusen _li_ i storlek')).toEqual([
+      { text: 'många tusen li i storlek', hit: false },
+    ])
   })
 
   it('städar bort ett avhugget pars ensamma understreck', () => {
-    expect(withoutEmphasis('… tusen _li_ bred. Med en _mäktig')).toBe(
-      '… tusen li bred. Med en mäktig',
-    )
+    expect(snippetParts('… tusen _li_ bred. Med en _mäktig')).toEqual([
+      { text: '… tusen li bred. Med en mäktig', hit: false },
+    ])
   })
 })

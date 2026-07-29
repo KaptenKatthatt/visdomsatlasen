@@ -13,9 +13,9 @@ const HEADER = /^CHAPTER [IVXLCM]+\.\s*$/m
 // Reduce a chapter to body-text paragraphs. Indented blocks are Giles' glosses/
 // footnotes (incl. "_Argument_") and are skipped; bracketed editorial likewise;
 // footnote references ([12]) are removed; the first paragraph (the title) is discarded.
-// Glosserna ligger mitt inne i löpande stycken, så bitarna runt dem fogas ihop
-// igen — annars översätts halva meningar var för sig. Giles kursivmarkering
-// (`_li_`) lämnas kvar: den tolkas i läsaren.
+// The glosses sit inside running paragraphs, so the pieces around them are joined
+// back up — otherwise half-sentences get translated on their own. Giles' italics
+// markup (`_li_`) is left in place: the reader interprets it.
 const chapterVerses = (chunk: string): string[] => {
   const blocks = chunk
     .split(/\n\s*\n/)
