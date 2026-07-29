@@ -4,18 +4,19 @@ import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
 import { useDebounced } from '../../lib/useDebounced'
 import { searchLibrary, slugOfBook, type BookHit, type SearchHit } from '../../lib/api'
+import { snippetParts } from '../../lib/verseText'
 import styles from './Library.module.css'
 
-// Render the FTS snippet with ⟦…⟧ markers as highlighted hit words.
+// Render the FTS snippet with its hit words highlighted.
 const Snippet = ({ text }: { text: string }) => (
   <span className={styles.hitSnippet}>
-    {text.split(/⟦|⟧/).map((part, i) =>
-      i % 2 === 1 ? (
+    {snippetParts(text).map((part, i) =>
+      part.hit ? (
         <mark key={i} className={styles.mark}>
-          {part}
+          {part.text}
         </mark>
       ) : (
-        <span key={i}>{part}</span>
+        <span key={i}>{part.text}</span>
       ),
     )}
   </span>

@@ -1,5 +1,5 @@
 import { fetchText } from '../../lib/fetchText'
-import { gutenbergBody } from '../lib/gutenberg'
+import { gutenbergBody, joinBrokenParagraphs } from '../lib/gutenberg'
 import { buildTranslatedWork, type RawChapter } from '../lib/chapters'
 import type { NormalizedWork, WorkMeta } from '../model'
 
@@ -13,13 +13,16 @@ const HEADER = /^CHAPTER [IVXLCM]+\.\s*$/m
 // Reduce a chapter to body-text paragraphs. Indented blocks are Giles' glosses/
 // footnotes (incl. "_Argument_") and are skipped; bracketed editorial likewise;
 // footnote references ([12]) are removed; the first paragraph (the title) is discarded.
+// The glosses sit inside running paragraphs, so the pieces around them are joined
+// back up — otherwise half-sentences get translated on their own. Giles' italics
+// markup (`_li_`) is left in place: the reader interprets it.
 const chapterVerses = (chunk: string): string[] => {
-  const verses = chunk
+  const blocks = chunk
     .split(/\n\s*\n/)
     .filter((block) => !/^[ \t]/.test(block))
     .map((block) => block.replace(/\[\d+\]/g, '').replace(/\s+/g, ' ').trim())
     .filter((text) => text.length > 0 && !/^\[.*\]$/.test(text))
-  return verses.slice(1)
+  return joinBrokenParagraphs(blocks.slice(1))
 }
 
 const parseZhuangzi = (raw: string): RawChapter[] => {

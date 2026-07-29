@@ -6,6 +6,7 @@ import { useAsync } from '../../lib/useAsync'
 import { useDocumentTitle } from '../../lib/useDocumentTitle'
 import { bookId, fetchChapter } from '../../lib/api'
 import { chapterKey } from '../../lib/personal'
+import { emphasisParts } from '../../lib/verseText'
 import { useAtlas } from '../../lib/store'
 import { StateNote } from './StateNote'
 import styles from './ChapterPage.module.css'
@@ -39,6 +40,16 @@ const ChapterActions = ({
     </div>
   )
 }
+
+/** Verse text with the source's own italics kept: Giles italicises foreign words
+ * ("many thousand _li_") and book titles, and that emphasis belongs to the text. */
+const VerseText = ({ text }: { text: string }) => (
+  <>
+    {emphasisParts(text).map((part, i) =>
+      part.emphasis ? <em key={i}>{part.text}</em> : <span key={i}>{part.text}</span>,
+    )}
+  </>
+)
 
 const NavLink = ({
   workId,
@@ -100,7 +111,7 @@ export const ChapterPage = ({ workId, bookSlug, chapter }: Props) => {
         {data.verses.map((verse) => (
           <p key={verse.id} className={styles.verse}>
             <span className={styles.num}>{verse.verse}</span>
-            {verse.text}
+            <VerseText text={verse.text} />
           </p>
         ))}
       </div>

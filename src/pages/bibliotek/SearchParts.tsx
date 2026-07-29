@@ -8,6 +8,7 @@ import { slugOfBook, type BookHit, type SearchHit } from '../../lib/api'
 import type { Note } from '../../lib/personal'
 import { SEARCH_TYPES, type SearchType } from '../../lib/searchIndex'
 import { MAX_VISIBLE_PER_GROUP, HEADINGS, type SearchResult, type VisibleGroup } from '../../lib/searchLogic'
+import { snippetParts } from '../../lib/verseText'
 import { NoteCard, noteToCard } from '../SavedParts'
 import styles from './Search.module.css'
 
@@ -81,17 +82,17 @@ const NoteGroupSearch = ({ notes }: { notes: Note[] }) => {
   )
 }
 
-// Renders the FTS snippet with ⟦…⟧ markers as highlighted hit words (accessible
-// markup, not color alone).
+// Renders the FTS snippet with its hit words highlighted (accessible markup, not
+// color alone).
 const Snippet = ({ text }: { text: string }) => (
   <span className={styles.snippet}>
-    {text.split(/⟦|⟧/).map((part, i) =>
-      i % 2 === 1 ? (
+    {snippetParts(text).map((part, i) =>
+      part.hit ? (
         <mark key={i} className={styles.mark}>
-          {part}
+          {part.text}
         </mark>
       ) : (
-        <span key={i}>{part}</span>
+        <span key={i}>{part.text}</span>
       ),
     )}
   </span>
