@@ -1,8 +1,10 @@
+import { useRef } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { BookmarkButton } from '../../components/BookmarkButton'
 import { ReadingSettingsButton } from '../../components/ReadingSettingsButton'
 import { TopBar } from '../../components/TopBar'
 import { useAsync } from '../../lib/useAsync'
+import { useChapterSwipe } from '../../lib/useChapterSwipe'
 import { useDocumentTitle } from '../../lib/useDocumentTitle'
 import { bookId, fetchChapter } from '../../lib/api'
 import { chapterKey } from '../../lib/personal'
@@ -78,47 +80,71 @@ export const ChapterPage = ({ workId, bookSlug, chapter }: Props) => {
   const n = Number(chapter)
   const id = bookId(workId, bookSlug)
   const navigate = useNavigate()
+  const rootRef = useRef<HTMLDivElement>(null)
   const goUp = () =>
     navigate({ to: '/bibliotek/verk/$workId/$bookSlug', params: { workId, bookSlug } })
+  const goChapter = (target: number) =>
+    navigate({
+      to: '/kapitel/$workId/$bookSlug/$chapter',
+      params: { workId, bookSlug, chapter: String(target) },
+    })
   const { data, loading, error } = useAsync(() => fetchChapter(id, n), [id, n])
   useDocumentTitle(data ? `${data.book.name} ${data.chapter}` : undefined)
-  if (!data) {
-    return (
-      <div className="screenReader">
-        <TopBar right={<ReadingSettingsButton />} onBack={goUp} />
-        <StateNote loading={loading} error={error} />
-      </div>
-    )
-  }
+  useChapterSwipe(rootRef, {
+    prev: data?.prev ?? null,
+    next: data?.next ?? null,
+    onNavigate: goChapter,
+  })
   return (
-    <div className="screenReader">
-      <TopBar
-        right={
-          <ChapterActions
-            workId={workId}
-            bookSlug={bookSlug}
-            chapter={n}
-            bookName={data.book.name}
+    <div ref={rootRef} className="screenReader">
+      {!data ? (
+        <>
+          <TopBar right={<ReadingSettingsButton />} onBack={goUp} />
+          <StateNote loading={loading} error={error} />
+        </>
+      ) : (
+        <>
+          <TopBar
+            right={
+              <ChapterActions
+                workId={workId}
+                bookSlug={bookSlug}
+                chapter={n}
+                bookName={data.book.name}
+              />
+            }
+            onBack={goUp}
           />
-        }
-        onBack={goUp}
-      />
-      <header className={styles.head}>
-        <div className="kicker">{data.book.name}</div>
-        <h1 className={styles.chapterTitle}>Kapitel {data.chapter}</h1>
-      </header>
-      <div className={styles.verses}>
-        {data.verses.map((verse) => (
-          <p key={verse.id} className={styles.verse}>
-            <span className={styles.num}>{verse.verse}</span>
-            <VerseText text={verse.text} />
-          </p>
-        ))}
-      </div>
-      <div className={styles.nav}>
-        <NavLink workId={workId} bookSlug={bookSlug} target={data.prev} label="‹ Föregående" />
-        <NavLink workId={workId} bookSlug={bookSlug} target={data.next} label="Nästa ›" />
-      </div>
+          <div key={n} className={styles.chapterEnter}>
+            <header className={styles.head}>
+              <div className="kicker">{data.book.name}</div>
+              <h1 className={styles.chapterTitle}>Kapitel {data.chapter}</h1>
+            </header>
+            <div className={styles.verses}>
+              {data.verses.map((verse) => (
+                <p key={verse.id} className={styles.verse}>
+                  <span className={styles.num}>{verse.verse}</span>
+                  <VerseText text={verse.text} />
+                </p>
+              ))}
+            </div>
+            <div className={styles.nav}>
+              <NavLink
+                workId={workId}
+                bookSlug={bookSlug}
+                target={data.prev}
+                label="‹ Föregående"
+              />
+              <NavLink
+                workId={workId}
+                bookSlug={bookSlug}
+                target={data.next}
+                label="Nästa ›"
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
