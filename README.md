@@ -133,7 +133,8 @@ BIBLE_SOURCE=fixture npm run ingest   # från fixture-filen
 Fler traditioner läggs till genom att registrera en builder i
 `server/ingest/run.ts`. Icke-svenska public domain-texter översätts till svenska
 med Ollama vid ingest (`server/ingest/translate.ts`); sätt `TRANSLATE=off` för
-att hoppa över översättningen vid lokal verifiering.
+att hoppa över översättningen vid lokal verifiering. I Docker pekar standard-
+URL:en på `host.docker.internal` (Hermes på hosten); override via `OLLAMA_URL`.
 
 Inlagda verk:
 

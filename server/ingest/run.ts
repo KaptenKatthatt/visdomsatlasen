@@ -99,10 +99,20 @@ export const runIngest = (only?: string[]): Promise<IngestResult[]> => {
  * newly added work is filled in automatically and a work stuck in the source language
  * (Ollama down) is filled in next time without re-running already translated works.
  */
-export const runMissingIngest = (): Promise<IngestResult[]> => {
+export const runMissingIngest = async (): Promise<IngestResult[]> => {
   const status = workTranslatedById()
   const targets = WORK_BUILDERS.filter(
     (w) => !status.has(w.id) || (w.translatable && status.get(w.id) === false),
   )
-  return ingestBuilders(targets)
+  const results = await ingestBuilders(targets)
+  const after = workTranslatedById()
+  for (const builder of WORK_BUILDERS) {
+    if (!builder.translatable) continue
+    if (after.get(builder.id) === false) {
+      console.warn(
+        `[auto-ingest] ${builder.id} ligger kvar oöversatt — kontrollera att Ollama nås (OLLAMA_URL)`,
+      )
+    }
+  }
+  return results
 }

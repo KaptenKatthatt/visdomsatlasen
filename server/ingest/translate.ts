@@ -2,7 +2,9 @@
 // newsAggs llm.ts. Set TRANSLATE=off to skip it (e.g. local
 // verification without Ollama) — the source text is then stored unchanged.
 
-const ollamaUrl = (): string => process.env['OLLAMA_URL'] ?? 'http://127.0.0.1:11434/api/generate'
+import { defaultOllamaUrl } from './ollamaUrl'
+
+const ollamaUrl = (): string => defaultOllamaUrl()
 const ollamaModel = (): string => process.env['OLLAMA_MODEL'] ?? 'gemma4:31b-cloud'
 
 const translationEnabled = (): boolean => process.env['TRANSLATE'] !== 'off'
@@ -45,8 +47,18 @@ const translateBlock = async (lines: string[]): Promise<string[] | null> => {
       .split('\n')
       .map((line) => line.replace(/^\s*\d+[.)]\s?/, '').trim())
       .filter((line) => line.length > 0)
-    return out.length === lines.length ? out : null
-  } catch {
+    if (out.length !== lines.length) {
+      console.error(
+        `[translate] fel antal rader från Ollama: fick ${out.length}, väntade ${lines.length}`,
+      )
+      return null
+    }
+    return out
+  } catch (error) {
+    console.error(
+      '[translate] Ollama-anrop misslyckades:',
+      error instanceof Error ? error.message : String(error),
+    )
     return null
   }
 }
