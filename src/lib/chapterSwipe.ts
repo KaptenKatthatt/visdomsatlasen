@@ -1,5 +1,5 @@
 /** Minimum horizontal travel (px) before a swipe counts as chapter navigation. */
-export const CHAPTER_SWIPE_THRESHOLD = 56
+const CHAPTER_SWIPE_THRESHOLD = 56
 
 export type ChapterSwipeInput = {
   dx: number
