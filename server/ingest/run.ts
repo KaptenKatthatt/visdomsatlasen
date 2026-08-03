@@ -13,6 +13,7 @@ import { poeticEdda } from './edda/poetic'
 import { proseEdda } from './edda/prose'
 import { analects } from './analects/standardebooks'
 import { platoApology } from './plato/apology'
+import { isWorkLocked, parseForceRetranslate } from './lock'
 import type { NormalizedWork } from './model'
 
 export type IngestResult = {
@@ -50,7 +51,14 @@ const WORK_BUILDERS: WorkBuilder[] = [
 ]
 
 // One work at a time; an error on one work does not bring down the others but is logged.
+// Already-translated works (and the Swedish Bible) are skipped unless FORCE_RETRANSLATE lists them.
 const ingestOne = async (builder: WorkBuilder): Promise<IngestResult | null> => {
+  const status = workTranslatedById()
+  const force = parseForceRetranslate(process.env['FORCE_RETRANSLATE'])
+  if (isWorkLocked(builder.id, status, force)) {
+    console.warn(`[ingest] hoppar över ${builder.id} (låst — redan översatt eller svensk källa)`)
+    return null
+  }
   try {
     const work = await builder.build()
     const verses = storeWork(work)

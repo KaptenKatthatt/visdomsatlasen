@@ -1,4 +1,5 @@
 import { mapPool } from '../../lib/concurrency'
+import { isTranslatedEnough } from '../coverage'
 import { translateMany } from '../translate'
 import type { NormalizedVerse, NormalizedWork, WorkMeta } from '../model'
 
@@ -46,9 +47,8 @@ export const buildTranslatedWork = async (
   concurrency = 4,
 ): Promise<NormalizedWork> => {
   const { verses, translatedVerses, totalVerses } = await translateChapters(chapters, concurrency)
-  // Count the work as translated if at least half of the verses were translated; the
-  // exact coverage is reported separately in stats for verification.
-  const translated = totalVerses > 0 && translatedVerses * 2 >= totalVerses
+  // Count the work as translated at ≥90 % coverage; stats still report the exact count.
+  const translated = isTranslatedEnough(translatedVerses, totalVerses)
   return { meta: metaFor(translated), books: [{ ...book, verses }], stats: { translatedVerses } }
 }
 
@@ -68,6 +68,6 @@ export const buildTranslatedMultiBook = async (
     translatedVerses += built.translatedVerses
     totalVerses += built.totalVerses
   }
-  const translated = totalVerses > 0 && translatedVerses * 2 >= totalVerses
+  const translated = isTranslatedEnough(translatedVerses, totalVerses)
   return { meta: metaFor(translated), books: out, stats: { translatedVerses } }
 }
