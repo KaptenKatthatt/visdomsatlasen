@@ -13,6 +13,7 @@ import { poeticEdda } from './edda/poetic'
 import { proseEdda } from './edda/prose'
 import { analects } from './analects/standardebooks'
 import { platoApology } from './plato/apology'
+import { isWorkLocked, parseForceRetranslate } from './lock'
 import type { NormalizedWork } from './model'
 
 export type IngestResult = {
@@ -50,7 +51,14 @@ const WORK_BUILDERS: WorkBuilder[] = [
 ]
 
 // One work at a time; an error on one work does not bring down the others but is logged.
+// Already-translated works (and the Swedish Bible) are skipped unless FORCE_RETRANSLATE lists them.
 const ingestOne = async (builder: WorkBuilder): Promise<IngestResult | null> => {
+  const status = workTranslatedById()
+  const force = parseForceRetranslate(process.env['FORCE_RETRANSLATE'])
+  if (isWorkLocked(builder.id, status, force)) {
+    console.warn(`[ingest] hoppar över ${builder.id} (låst — redan översatt eller svensk källa)`)
+    return null
+  }
   try {
     const work = await builder.build()
     const verses = storeWork(work)
@@ -99,10 +107,20 @@ export const runIngest = (only?: string[]): Promise<IngestResult[]> => {
  * newly added work is filled in automatically and a work stuck in the source language
  * (Ollama down) is filled in next time without re-running already translated works.
  */
-export const runMissingIngest = (): Promise<IngestResult[]> => {
+export const runMissingIngest = async (): Promise<IngestResult[]> => {
   const status = workTranslatedById()
   const targets = WORK_BUILDERS.filter(
     (w) => !status.has(w.id) || (w.translatable && status.get(w.id) === false),
   )
-  return ingestBuilders(targets)
+  const results = await ingestBuilders(targets)
+  const after = workTranslatedById()
+  for (const builder of WORK_BUILDERS) {
+    if (!builder.translatable) continue
+    if (after.get(builder.id) === false) {
+      console.warn(
+        `[auto-ingest] ${builder.id} ligger kvar oöversatt — kontrollera att Ollama nås (OLLAMA_URL)`,
+      )
+    }
+  }
+  return results
 }

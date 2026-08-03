@@ -125,15 +125,17 @@ har två adaptrar för samma verk:
 Kör ingest via CLI (som newsAggs `update-news.ts`, lämpligt för cron på hosten):
 
 ```bash
-npm run ingest                 # alla verk
-npm run ingest bibel-1917      # bara Bibeln
-BIBLE_SOURCE=fixture npm run ingest   # från fixture-filen
+npm run ingest forsvarstalet   # kräver minst ett verk-id
+npm run ingest bibel-1917      # hoppas över om Bibeln finns (låst) om inte FORCE_RETRANSLATE
+BIBLE_SOURCE=fixture npm run ingest bibel-1917
 ```
 
-Fler traditioner läggs till genom att registrera en builder i
-`server/ingest/run.ts`. Icke-svenska public domain-texter översätts till svenska
-med Ollama vid ingest (`server/ingest/translate.ts`); sätt `TRANSLATE=off` för
-att hoppa över översättningen vid lokal verifiering.
+Bar `npm run ingest` utan id är avstängt (skyddar redan svenska verk). Icke-svenska
+public domain-texter översätts till svenska med Ollama vid ingest
+(`server/ingest/translate.ts`); sätt `TRANSLATE=off` för att hoppa över översättningen
+vid lokal verifiering. I Docker pekar standard-URL:en på `host.docker.internal`
+(Hermes på hosten); override via `OLLAMA_URL`. Redan översatta verk (`translated=1`)
+och Bibeln skrivs inte över utan `FORCE_RETRANSLATE=<id>`.
 
 Inlagda verk:
 
