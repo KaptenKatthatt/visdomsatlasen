@@ -20,7 +20,7 @@
   padding: 2px 6px;
   transition:
     color var(--motion) ease,
-    filter var(--motion) ease;
+    filter var(--motion-press) ease;
   text-decoration: none;
   min-height: 44px;
   min-width: 44px;

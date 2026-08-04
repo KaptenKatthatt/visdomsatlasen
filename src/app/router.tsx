@@ -385,6 +385,8 @@ export const router = createRouter({
   // Soft page change on every Link/navigate: document.startViewTransition with
   // the app's --motion crossfade (global.css). Browsers without support fall
   // back to an immediate swap; screen containers still carry vaFade there.
+  // Callers that navigate after a lazy import (Home → room) should preloadRoute
+  // first so the crossfade lands on the page, not the Suspense ··· state.
   defaultViewTransition: true,
 })
 
