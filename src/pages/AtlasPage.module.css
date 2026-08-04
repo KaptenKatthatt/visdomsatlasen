@@ -1,6 +1,12 @@
 .screen {
-  animation: vaFade 0.45s ease;
+  animation: vaFade var(--motion) ease;
   padding: 56px 24px 130px;
+}
+
+@supports (view-transition-name: none) {
+  .screen {
+    animation: none;
+  }
 }
 
 .text {

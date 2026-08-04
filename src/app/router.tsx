@@ -382,6 +382,10 @@ export const router = createRouter({
   // Preload a route's chunk already on hover/touch intent, so navigation feels
   // instant despite the code splitting (phase 13).
   defaultPreload: 'intent',
+  // Soft page change on every Link/navigate: document.startViewTransition with
+  // the app's --motion crossfade (global.css). Browsers without support fall
+  // back to an immediate swap; screen containers still carry vaFade there.
+  defaultViewTransition: true,
 })
 
 declare module '@tanstack/react-router' {

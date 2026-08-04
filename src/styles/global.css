@@ -6,10 +6,38 @@
      rumstexten (RoomText.module.css) och vandringsflödets källrad, som drar
      tillbaka den för att lägga sig tätt intill rummet den avslutar. */
   --room-tail: 96px;
+  /* Appens lugna rörelsetakt — samma som skärmarnas vaFade. Sidövergångar,
+     tryckfeedback på länkar och övrig motion håller sig hit (inte snabbare). */
+  --motion: 0.45s;
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Ingen systemblå tap-ruta på mobil — feedbacken är i stället en ljusare ton
+   av elementets egen färg (:active + brightness nedan). */
+a,
+button,
+[role='button'],
+summary,
+label {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Mjuk tryckfeedback på alla länkar och knappar: brightness upp, aldrig blått. */
+a,
+button:not(:disabled) {
+  transition:
+    color var(--motion) ease,
+    filter var(--motion) ease,
+    opacity var(--motion) ease,
+    background-color var(--motion) ease;
+}
+
+a:active,
+button:not(:disabled):active {
+  filter: brightness(1.35);
 }
 
 /* 100 % av läsarens grundstorlek — rem-skalan följer webbläsarens
@@ -122,12 +150,36 @@ p {
   }
 }
 
+/* Sidövergång via View Transitions (defaultViewTransition i routern): lugn
+   crossfade i appens --motion, i stället för omedelbart byte. Webbläsare utan
+   stöd hoppar över och behåller skärmarnas vaFade nedan. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--motion);
+  animation-timing-function: ease;
+}
+
+/* När View Transitions finns får skärmarna inte tonas in en gång till ovanpå
+   crossfaden — det skulle kännas dubbelt och korta av den mjuka övergången. */
+@supports (view-transition-name: none) {
+  .screenTab,
+  .screenSub,
+  .screenReader {
+    animation: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms !important;
   }
 }
 
@@ -220,17 +272,17 @@ p {
 /* Screen containers */
 
 .screenTab {
-  animation: vaFade 0.45s ease;
+  animation: vaFade var(--motion) ease;
   padding: 56px 28px 130px;
 }
 
 .screenSub {
-  animation: vaFade 0.45s ease;
+  animation: vaFade var(--motion) ease;
   padding: 0 28px 130px;
 }
 
 .screenReader {
-  animation: vaFade 0.45s ease;
+  animation: vaFade var(--motion) ease;
   padding: 0 28px 90px;
 }
 
