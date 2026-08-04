@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import type { Theme } from '../content/editorial/schema'
 import { selectRoom } from '../lib/roomSelection'
@@ -15,10 +15,13 @@ import styles from './HomePage.module.css'
  * Performance (phase 13): the home screen loads only the themes (troskeldata.ts),
  * never the whole content collection. The rooms — body text, sources, all of it —
  * are fetched only when a theme is chosen, via a dynamic import. The chunk is
- * usually already precached by the service worker; the reading room shares it. */
+ * usually already precached by the service worker; the reading room shares it.
+ * Before navigate we also preload the room route so View Transitions crossfade
+ * into the room itself, not into the Suspense ··· placeholder. */
 export const HomePage = () => {
   useDocumentTitle('Läsrummet')
   const navigate = useNavigate()
+  const router = useRouter()
   const { recentRooms } = useAtlas()
   const [emptyChoice, setTomtVal] = useState(false)
   const [selecting, setSelecting] = useState(false)
@@ -30,7 +33,9 @@ export const HomePage = () => {
       const { allRooms } = await import('../lib/content')
       const room = selectRoom(theme, allRooms, recentRooms)
       if (room) {
-        void navigate({ to: '/rum/$slug', params: { slug: room.slug } })
+        const dest = { to: '/rum/$slug' as const, params: { slug: room.slug } }
+        await router.preloadRoute(dest)
+        void navigate(dest)
         return
       }
       setTomtVal(true)

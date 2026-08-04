@@ -15,8 +15,15 @@
    då behövs den. */
 .screen {
   --luft: clamp(12px, calc(6svh - 26px), 30px);
-  animation: vaFade 0.45s ease;
+  animation: vaFade var(--motion) ease;
   padding: calc(var(--luft) * 1.85) 28px 72px;
+}
+
+/* View Transitions bär sidbytet; undvik dubbel intoning när de finns. */
+@supports (view-transition-name: none) {
+  .screen {
+    animation: none;
+  }
 }
 
 .hero {
@@ -46,7 +53,8 @@
   border-bottom: 1px solid var(--faint);
 }
 
-/* Jämn vikt: ingen etikett är utvald, rekommenderad eller större än en annan. */
+/* Jämn vikt: ingen etikett är utvald, rekommenderad eller större än en annan.
+   Tryckfeedback via global :active-brightness (ingen systemblå tap-ruta). */
 .theme {
   font-family: inherit;
   font-size: 1.5rem;

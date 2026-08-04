@@ -9,6 +9,13 @@
   animation: vaFade 180ms ease-out;
 }
 
+/* View Transitions bär sidbytet — undvik dubbel intoning när de finns. */
+@supports (view-transition-name: none) {
+  .chapterEnter {
+    animation: none;
+  }
+}
+
 .head {
   margin-top: 30px;
   text-align: center;
