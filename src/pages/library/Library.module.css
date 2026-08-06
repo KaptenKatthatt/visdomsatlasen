@@ -43,7 +43,7 @@
 
 .rowSub {
   display: block;
-  font-size: 0.84375rem;
+  font-size: 1rem;
   color: var(--soft-strong);
   margin-top: 3px;
 }
@@ -56,8 +56,8 @@
 
 .badge {
   display: inline-block;
-  font-size: 0.65625rem;
-  letter-spacing: 0.08em;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--accent);
   border: 1px solid var(--accsoft);
@@ -123,7 +123,7 @@
   border: none;
   border-radius: 999px;
   padding: 9px 18px;
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   cursor: pointer;
 }
 
@@ -139,7 +139,7 @@
   border: 1px solid var(--faint);
   border-radius: 999px;
   padding: 9px 18px;
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   cursor: pointer;
 }
 
@@ -149,7 +149,7 @@
 }
 
 .offlineText {
-  font-size: 0.84375rem;
+  font-size: 1rem;
   color: var(--soft-strong);
   margin: 0 0 12px;
   line-height: 1.5;
@@ -162,7 +162,7 @@
 }
 
 .metaLine {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--soft-strong);
   font-style: italic;
   margin-top: 6px;
@@ -192,7 +192,7 @@
 }
 
 .hitRef {
-  font-size: 0.78125rem;
+  font-size: 1rem;
   letter-spacing: 0.04em;
   color: var(--accent);
 }

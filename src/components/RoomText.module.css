@@ -57,7 +57,7 @@
 }
 
 .question {
-  font-size: calc(var(--rs) - 0.09375rem);
+  font-size: max(1rem, calc(var(--rs) - 0.09375rem));
   line-height: 1.7;
   color: color-mix(in srgb, var(--ink) 62%, var(--soft));
   margin: 0 0 14px;

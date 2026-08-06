@@ -282,6 +282,24 @@ skiljetecken och versal → 2 108 verser, 33 kapitel oförändrat. De HTML-baser
 verken tappar fortfarande all kursiv i `cleanHtml` — att bevara den där kräver
 omöversättning av åtta verk och är inte gjort.
 
+*Textgolvet 2026-08-06 — ingen text under 16px.* Appen bar en lång svans småstilar
+på 10,5–15,5px (etiketter, meta, kickers, versnummer, navflikar). Alla är höjda till
+ett golv på **1rem** och skalan under brödtexten är nu bara två grader: `1rem` för
+etiketter/meta/versaler och `1.0625rem` för sekundär prosa. Nedräkningar från `--rs`
+kläms med `max(1rem, calc(…))` så de inte faller under golvet vid minsta
+lässtorlekssteget; `.endingAction` låg dessutom under golvet redan vid standard.
+Tre layouter höll inte 16px-versaler och gjordes om i stället för att undantas:
+navflikarna tappade versalerna och spärrningen (fyra spärrade versaletiketter ryms
+inte i 430px), och metadatarubrikerna i källposten/verket lämnade sin smala
+vänsterkolumn för egen rad ovanför värdet. Tidslinjens årtal följer innehållets egna
+gemener och kolumnen blev 96px. Versnumret i verkläsaren tappade `vertical-align:
+super` — `'sups'` sköter höjdläget ensam nu. Grinden `scripts/textstorlek.test.ts`
+läser all CSS under `src/` och fäller bygget om en `font-size` under 1rem smyger
+tillbaka in (vitest-includen utökad med `scripts/**/*.test.ts`; testet läser filerna
+från disk eftersom vitest lämnar ut CSS-moduler som klassnamnsobjekt, inte källtext).
+E2E-verifierat: 33 rutter × minsta/största lässtorlek + 200 % zoom på 430/834/1280 —
+ingen text under 16px, ingen horisontell scroll.
+
 ## Kända skulder
 
 - Zhuangzi behöver ominläsning på VPS:en för att styckesammanfogningen ska slå

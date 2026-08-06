@@ -12,16 +12,21 @@
   padding: 0;
 }
 
+/* Statusraden och raderingen. På textgolvet blir bekräftelsen (»Ta bort
+   anteckningen? · Ta bort · Avbryt«) bred nog att behöva bryta rad på smala
+   telefoner — den får wrappa i stället för att tryckas ihop. */
 .fot {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
   min-height: 24px;
   margin-top: 18px;
 }
 
 .status {
-  font-size: 0.84375rem;
+  font-size: 1rem;
   color: var(--soft-strong);
   font-style: italic;
 }
@@ -33,7 +38,7 @@
   padding: 4px 2px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 0.84375rem;
+  font-size: 1rem;
   color: var(--soft-strong);
 }
 
@@ -44,7 +49,7 @@
 }
 
 .confirmQuestion {
-  font-size: 0.84375rem;
+  font-size: 1rem;
   color: var(--ink);
 }
 
@@ -55,7 +60,7 @@
   padding: 4px 2px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 0.84375rem;
+  font-size: 1rem;
   color: var(--ink);
   font-weight: 500;
 }

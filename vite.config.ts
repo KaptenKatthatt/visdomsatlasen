@@ -7,7 +7,8 @@ export default defineConfig({
   // (server/** kräver det); komponent-/hook-tester väljer jsdom per fil via
   // docblock-pragmat `// @vitest-environment jsdom`.
   test: {
-    include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.ts'],
+    // scripts/** rymmer grindar som läser källfilerna från disk (textgolvet).
+    include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.ts', 'scripts/**/*.test.ts'],
     environment: 'node',
   },
   server: {

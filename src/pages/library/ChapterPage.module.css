@@ -39,10 +39,14 @@
   text-wrap: pretty;
 }
 
+/* Versnumret. Det låg på 12px och dessutom höjt med vertical-align ovanpå
+   typsnittets egna superiora siffror — dubbelt upphöjt och långt under
+   textgolvet. Nu står numret på golvet (1rem) och låter 'sups' ensam sköta
+   höjdläget; saknar typsnittet superiora siffror landar det på baslinjen som
+   ett vanligt versnummer i stället för att sväva. */
 .num {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: var(--accsoft);
-  vertical-align: super;
   margin-right: 6px;
   font-feature-settings: 'sups';
 }
