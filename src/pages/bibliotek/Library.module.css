@@ -58,7 +58,7 @@
 }
 
 .antal {
-  font-size: 0.84375rem;
+  font-size: 1rem;
   color: var(--soft-strong);
   margin: 8px 0 0;
 }
@@ -72,7 +72,7 @@
 }
 
 .originalTitle {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--soft-strong);
   font-style: italic;
   margin: 6px 0 0;
@@ -91,16 +91,19 @@
 }
 
 .metaRow {
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   line-height: 1.5;
-  margin: 8px 0 0;
+  margin: 14px 0 0;
 }
 
+/* Etiketten stod förr som en 110px bred kolumn till vänster om värdet. På
+   textgolvet är »ORIGINALSPRÅK« bredare än så, så etiketten lägger sig i
+   stället på egen rad ovanför värdet — ingen etikett kan svämma över och
+   knuffa sitt värde ur led. */
 .metaLabel {
-  display: inline-block;
-  min-width: 110px;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
+  display: block;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--soft-strong);
 }
@@ -125,7 +128,7 @@
 
 .rowSub {
   display: block;
-  font-size: 0.9375rem;
+  font-size: 1.0625rem;
   color: var(--soft-strong);
   margin-top: 3px;
 }
@@ -158,8 +161,8 @@
 }
 
 .passageRef {
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--soft-strong);
   margin: 0;
@@ -184,7 +187,7 @@
 }
 
 .passageMeta {
-  font-size: 0.84375rem;
+  font-size: 1rem;
   color: var(--soft-strong);
   margin: 10px 0 0;
   line-height: 1.5;
@@ -192,7 +195,7 @@
 
 .passageLink {
   display: inline-block;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--accent);
   margin: 8px 0 0;
   text-underline-offset: 3px;

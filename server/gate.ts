@@ -55,14 +55,14 @@ const codePage = (hasError: boolean): string => `<!doctype html>
   main { width: 100%; max-width: 22rem }
   h1 { font-size: 1.35rem; font-weight: 600; margin: 0 0 .25rem }
   p { margin: 0 0 1.5rem; color: #6b6b6b }
-  label { display: block; font-size: .85rem; margin-bottom: .4rem }
+  label { display: block; font-size: 1rem; margin-bottom: .4rem }
   input { width: 100%; padding: .75rem; font-size: 1rem; border: 1px solid #bbb;
     border-radius: .5rem; background: transparent; color: inherit }
   button { width: 100%; margin-top: .9rem; padding: .8rem; font-size: 1rem;
     font-weight: 600; border: 0; border-radius: .5rem; background: #1a1a1a;
     color: #fff; cursor: pointer }
   @media (prefers-color-scheme: dark) { button { background: #ece8df; color: #14130f } }
-  .error { margin: 0 0 1rem; color: #b3261e; font-size: .9rem }
+  .error { margin: 0 0 1rem; color: #b3261e; font-size: 1rem }
 </style>
 </head>
 <body>

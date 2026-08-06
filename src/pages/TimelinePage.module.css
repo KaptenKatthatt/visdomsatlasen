@@ -20,21 +20,22 @@
 
 .event {
   display: grid;
-  grid-template-columns: 82px 15px 1fr;
+  grid-template-columns: 96px 15px 1fr;
   gap: 0 14px;
   cursor: pointer;
   text-decoration: none;
   color: inherit;
 }
 
+/* Årtalet är nowrap i en smal kolumn. På textgolvet ryms »ca 1550 f.Kr« inte
+   som spärrade versaler — och årtalen är redan skrivna i gemener i innehållet
+   (`src/content/timeline.ts`), så versalerna tillför inget. */
 .year {
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 1rem;
   color: var(--soft-strong);
   font-weight: 500;
   text-align: right;
-  padding-top: 5px;
+  padding-top: 3px;
   white-space: nowrap;
 }
 

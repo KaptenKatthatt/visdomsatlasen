@@ -19,8 +19,8 @@
   min-height: 44px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 0.75rem;
-  letter-spacing: 0.14em;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--soft-strong);
   display: block;
@@ -32,7 +32,7 @@
 }
 
 .detailRow {
-  font-size: calc(var(--rs) - 0.1875rem);
+  font-size: max(1rem, calc(var(--rs) - 0.1875rem));
   line-height: 1.7;
   color: color-mix(in srgb, var(--ink) 55%, var(--soft));
   margin: 0 0 10px;
@@ -48,7 +48,7 @@
 
 .detailLink {
   display: inline-block;
-  font-size: calc(var(--rs) - 0.1875rem);
+  font-size: max(1rem, calc(var(--rs) - 0.1875rem));
   color: var(--soft-strong);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -70,6 +70,8 @@
   min-height: 44px;
   cursor: pointer;
   font-family: inherit;
-  font-size: calc(var(--rs) - 0.25rem);
+  /* Låg förr 4px under brödtexten och hamnade därmed under textgolvet redan
+     vid standardstorleken. Nu samma grad som källdetaljen, aldrig under 1rem. */
+  font-size: max(1rem, calc(var(--rs) - 0.1875rem));
   color: var(--soft-strong);
 }

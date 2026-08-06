@@ -52,7 +52,19 @@ button:not(:disabled):active {
 }
 
 /* 100 % av läsarens grundstorlek — rem-skalan följer webbläsarens
-   teckenstorleksinställning (text-only-zoom), inte bara sidzoom. */
+   teckenstorleksinställning (text-only-zoom), inte bara sidzoom.
+
+   TEXTGOLVET: ingen text i appen går under 1rem (16px vid webbläsarens
+   standard). Det gäller allt — etiketter, meta, kickers, knappar, sifferrader
+   — inte bara brödtexten. Småstilar som förr låg på 10–15px är höjda till
+   golvet; se `src/styles/textstorlek.test.ts`, som fäller bygget om en
+   font-size under 1rem smyger tillbaka in i en CSS-modul.
+
+   Två storlekar under brödtexten (--rs) räcker för hela appen:
+     1rem      (16px) — etiketter, meta, versaler, korta knappar
+     1.0625rem (17px) — sekundär prosa: underrader, hjälptexter, tomlägen
+   Uttryck som räknar ned från --rs kläms med max(1rem, …) så de aldrig faller
+   under golvet vid det minsta lässtorlekssteget. */
 html {
   font-size: 100%;
 }
@@ -138,7 +150,7 @@ p {
   border-radius: 999px;
   box-shadow: 0 2px 12px rgba(30, 22, 10, 0.18);
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 @keyframes vaFade {
@@ -299,9 +311,12 @@ p {
 
 /* Shared primitives */
 
+/* Sektionsetiketten. På textgolvet (1rem) bär versalerna sig själva — den
+   tidigare vida spärrningen (0.16em) hörde till 11,5px-graden och gör raden
+   onödigt bred nu, så den är dämpad till 0.1em. */
 .kicker {
-  font-size: 0.71875rem;
-  letter-spacing: 0.16em;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--soft-strong);
   font-weight: 500;
@@ -310,7 +325,7 @@ p {
 .dots {
   color: var(--soft);
   letter-spacing: 0.6em;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   text-align: center;
   padding-left: 0.6em;
 }

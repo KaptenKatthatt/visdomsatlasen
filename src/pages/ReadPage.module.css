@@ -18,7 +18,7 @@
 }
 
 .min {
-  font-size: 0.90625rem;
+  font-size: 1.0625rem;
   color: var(--soft-strong);
   font-style: italic;
   margin-top: 8px;
@@ -64,7 +64,7 @@
 }
 
 .notesHint {
-  font-size: 0.90625rem;
+  font-size: 1.0625rem;
   color: var(--soft-strong);
   font-style: italic;
   max-width: 55%;
