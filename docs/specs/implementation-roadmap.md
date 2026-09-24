@@ -1201,6 +1201,33 @@ To do when this is picked up:
 
 ---
 
+# Export to Hackytel (the E Ink reader)
+
+Decided 2026-09-24. Visdomsatlasen is also read on Hackytel, Jonas's
+6-inch E Ink reader (`KaptenKatthatt/hackyytel`), as a page inside that
+app, fully offline after one sync. The spec and the plan live in that repo:
+`docs/superpowers/specs/2026-09-24-visdomsatlasen-design.md` and
+`docs/superpowers/plans/2026-09-24-visdomsatlasen.md`, with a clickable
+mockup under `docs/mockup/visdomsatlasen/`.
+
+This repo's share is small and comes first (plan PR 1):
+
+- `npm run export:content` at build time writes `dist/atlas-content.json`
+  from the published editorial content, read with `fs` and parsed with the
+  same functions as `scripts/validate-content.ts` (Vite's `import.meta.glob`
+  is not available under tsx)
+- `POST /api/export/hackytel`, behind `INGEST_TOKEN`, adds works, books and
+  verses from SQLite, zips the bundle and sends it to
+  `HACKYTEL_PUBLISH_URL` with `HACKYTEL_PUBLISH_TOKEN`; unset variables mean
+  `skipped`, never a failed deploy
+- the deploy job calls that endpoint after the container is up
+
+Nothing personal leaves the device on either side: saved rooms and notes on
+the reader stay on the reader. Syncing them with the phone remains deferred,
+see the list below.
+
+---
+
 # Deferred Features
 
 The following should remain deferred until a demonstrated need exists:
