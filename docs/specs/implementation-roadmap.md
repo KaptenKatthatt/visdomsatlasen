@@ -1201,6 +1201,27 @@ To do when this is picked up:
 
 ---
 
+# Export to Hackytel
+
+Decided 2026-09-24 (spec in the Hackytel repo:
+`KaptenKatthatt/hackyytel`, `docs/superpowers/specs/2026-09-24-visdomsatlasen-design.md`):
+Visdomsatlasen is also read offline on Hackytel's E Ink tablet, and this app is
+where its content comes from.
+
+- `npm run build` ends with `npm run export:content`, which writes the published
+  editorial content (themes, questions, traditions, sources, passages, rooms,
+  paths; prose already split into paragraphs, editorial metadata left out) to
+  `dist/atlas-content.json`. Same selection as the app: published only.
+- `POST /api/export/hackytel` (behind `INGEST_TOKEN`) adds the works, their
+  books and every verse from the database, packs a zip with `manifest.json` and
+  one `verses/<bookId>.json` per book, and sends it to `HACKYTEL_PUBLISH_URL`.
+  The deploy job calls it after each deploy; without the two Hackytel variables
+  it is skipped.
+- Nothing personal is exported, and nothing flows back: bookmarks and notes on
+  the tablet stay on the tablet, as they stay in the browser here.
+
+---
+
 # Deferred Features
 
 The following should remain deferred until a demonstrated need exists:

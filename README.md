@@ -190,6 +190,17 @@ Samma modell som newsAgg:
    verk översätts om. Vill du köra manuellt (eller om-ingesta ett verk) går det
    fortfarande via `npm run ingest [verk-id]` eller `POST /api/ingest` med
    `INGEST_TOKEN`. Texterna är statiska och behöver ingen löpande uppdatering.
+5. **Export till Hackytel-plattan:** efter varje deploy anropar jobbet
+   `POST /api/export/hackytel` med `INGEST_TOKEN`. Endpointen packar det
+   publicerade innehållet (skrivet vid bygget till `dist/atlas-content.json`)
+   och verken ur databasen till ett paket och skickar det till Hackytel-servern,
+   som lägger det på E Ink-plattan nästa gång atlasen öppnas med nät. Två
+   variabler i `/opt/visdomsatlasen/.env` styr det: `HACKYTEL_PUBLISH_URL` och
+   `HACKYTEL_PUBLISH_TOKEN` (samma som `ATLAS_PUBLISH_TOKEN` på Hackytel).
+   Saknas någon av dem hoppas exporten över med en loggrad, och ett fel från
+   Hackytel stoppar aldrig deployen. Första publiceringen, och en ny efter att
+   auto-ingest fyllt på ett verk, görs för hand från VPS:en:
+   `curl -fsS -X POST http://127.0.0.1:3001/api/export/hackytel -H "Authorization: Bearer <INGEST_TOKEN>"`.
 
 Nödvändiga GitHub-secrets (som newsAgg): `TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`,
 `HETZNER_TS_IP`, `HETZNER_USER`, `HETZNER_SSH_KEY`.
