@@ -108,12 +108,8 @@ export const findPathById = (id: string): Path | undefined =>
 export const findPassage = (id: string): SourcePassage | undefined =>
   allPassages.find((passage) => passage.id === id)
 
-/** Splits prose text into paragraphs on blank lines — the rooms' sections are plain prose. */
-export const paragraphs = (text: string): string[] =>
-  text
-    .split(/\n\s*\n/)
-    .map((paragraph) => paragraph.replace(/\s*\n\s*/g, ' ').trim())
-    .filter((paragraph) => paragraph.length > 0)
+// The rooms' sections are plain prose; the splitter is shared with the build-time export.
+export { paragraphs } from '../content/editorial/paragraphs'
 
 /** The name in the colophon: the attributed voice before the recorder before the work. */
 export const sourceName = (source: Source): string =>
