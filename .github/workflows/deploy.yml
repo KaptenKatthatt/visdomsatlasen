@@ -67,6 +67,8 @@ jobs:
               curl -s -o /dev/null http://127.0.0.1:3001/robots.txt && break
               sleep 1
             done
-            TOKEN=$(grep -E '^(INGEST_TOKEN|UPDATE_TOKEN)=' /opt/visdomsatlasen/.env | head -1 | cut -d= -f2- || true)
+            # Same precedence as server/config.ts: INGEST_TOKEN, else newsAgg's UPDATE_TOKEN.
+            TOKEN=$(grep -E '^INGEST_TOKEN=' /opt/visdomsatlasen/.env | head -1 | cut -d= -f2- || true)
+            [ -n "$TOKEN" ] || TOKEN=$(grep -E '^UPDATE_TOKEN=' /opt/visdomsatlasen/.env | head -1 | cut -d= -f2- || true)
             curl -fsS -X POST http://127.0.0.1:3001/api/export/hackytel \
               -H "Authorization: Bearer $TOKEN" || echo "atlas export failed, deploy continues"
