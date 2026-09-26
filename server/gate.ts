@@ -10,6 +10,7 @@ import { accessCookieValue, verifyAccessCode, verifyAccessCookie } from './auth'
 const COOKIE = 'va_access'
 const LOGIN_PATH = '/api/access'
 const INGEST_PATH = '/api/ingest'
+const EXPORT_PATH = '/api/export/hackytel'
 const ONE_MONTH = 60 * 60 * 24 * 30
 
 /**
@@ -115,15 +116,15 @@ const isPwaAsset = (path: string): boolean =>
 
 /**
  * Paths that bypass the cookie: robots.txt (it says Disallow: / anyway),
- * GET for the PWA install files above, and POST /api/ingest — ingest carries
- * its own protection (INGEST_TOKEN in the router) and must be callable by
- * cron/CI without a browser cookie. Only POST passes; a GET would otherwise
- * fall through to the SPA fallback and leak the shell.
+ * GET for the PWA install files above, and POST /api/ingest and
+ * POST /api/export/hackytel — both carry their own protection (INGEST_TOKEN in
+ * the router) and must be callable by cron/CI without a browser cookie. Only POST
+ * passes; a GET would otherwise fall through to the SPA fallback and leak the shell.
  */
 const openPath = (c: Context): boolean =>
   c.req.path === '/robots.txt' ||
   (c.req.method === 'GET' && isPwaAsset(c.req.path)) ||
-  (c.req.method === 'POST' && c.req.path === INGEST_PATH)
+  (c.req.method === 'POST' && (c.req.path === INGEST_PATH || c.req.path === EXPORT_PATH))
 
 /**
  * Builds gate middleware for a given code. Handles the login POST, checks
