@@ -82,6 +82,15 @@ describe('createAccessGate', () => {
     expect(get.status).toBe(401)
   })
 
+  it('släpper förbi POST /api/export/hackytel (eget token-skydd) men inte GET', async () => {
+    const app = byggApp()
+    app.post('/api/export/hackytel', (c) => c.json({ skipped: 'not_configured' }))
+    const post = await app.request('/api/export/hackytel', { method: 'POST' })
+    expect(post.status).toBe(200)
+    const get = await app.request('/api/export/hackytel')
+    expect(get.status).toBe(401)
+  })
+
   it('släpper alltid igenom robots.txt', async () => {
     const app = byggApp()
     app.get('/robots.txt', (c) => c.text('User-agent: *\nDisallow: /'))

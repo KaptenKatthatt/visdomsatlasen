@@ -5,6 +5,7 @@
     "server/index.ts",
     "scripts/ingest.ts",
     "scripts/validate-content.ts",
+    "scripts/export-content.ts",
     "scripts/zen-experiment/run.ts",
     "scripts/zen-oversatt/run.ts"
   ],

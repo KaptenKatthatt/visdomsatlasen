@@ -18,4 +18,10 @@ export const config = {
   // Shared access code that hides the whole app behind a code page (tester mode).
   // Omitted ⇒ gate off (dev + Tailscale-only is open as before).
   accessCode: process.env['ACCESS_CODE'],
+  // Hackytel's atlas endpoint and its token: POST /api/export/hackytel sends the
+  // bundle for the E Ink tablet there. Either one omitted ⇒ the export is skipped.
+  hackytelPublishUrl: process.env['HACKYTEL_PUBLISH_URL'],
+  hackytelPublishToken: process.env['HACKYTEL_PUBLISH_TOKEN'],
+  // The commit the image was built from (deploy.yml passes it); the bundle's version starts with it.
+  gitSha: process.env['GIT_SHA'] ?? 'dev',
 } as const

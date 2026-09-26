@@ -6,6 +6,9 @@ import { Hono } from 'hono'
 import { config } from './config'
 import { libraryRouter } from './api/library'
 import { ingestRouter } from './api/ingest'
+import { createExportRouter } from './api/export'
+import { verifyIngestToken } from './auth'
+import { sqlite } from './db'
 import { mountAccessGate } from './gate'
 import { runMissingIngest } from './ingest/run'
 
@@ -28,9 +31,26 @@ mountAccessGate(app, config.accessCode)
 // No login beyond the tester code: all content is public domain and no
 // personal data lives on the server (bookmarks and notes live in the browser's
 // localStorage). The only writing endpoint, POST /api/ingest, is protected separately
-// by INGEST_TOKEN in the ingest router.
+// by INGEST_TOKEN in the ingest router; POST /api/export/hackytel, which sends the
+// atlas bundle to Hackytel's tablet, carries the same token.
 app.route('/api/library', libraryRouter)
 app.route('/api/ingest', ingestRouter)
+app.route(
+  '/api/export/hackytel',
+  createExportRouter({
+    db: sqlite,
+    contentPath: path.join(config.staticDir, 'atlas-content.json'),
+    url: config.hackytelPublishUrl,
+    token: config.hackytelPublishToken,
+    gitSha: config.gitSha,
+    fetch,
+    now: () => new Date(),
+    verify: verifyIngestToken,
+    log: (line) => {
+      console.log(line)
+    },
+  }),
+)
 
 // Static SPA files, with a fallback to index.html for client routes.
 const staticRoot = path.relative(process.cwd(), config.staticDir) || '.'

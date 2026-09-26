@@ -58,4 +58,17 @@ jobs:
               -p 3001:8080 \
               -v /opt/visdomsatlasen/data:/app/data \
               --env-file /opt/visdomsatlasen/.env \
+              -e GIT_SHA=${{ github.sha }} \
               ${{ env.IMAGE }}
+            # Send the atlas bundle to Hackytel's E Ink tablet. Wait for the server to
+            # answer (robots.txt passes the access gate), then call the export with the
+            # ingest token. A failure here is logged and never stops the deploy.
+            for i in $(seq 1 60); do
+              curl -s -o /dev/null http://127.0.0.1:3001/robots.txt && break
+              sleep 1
+            done
+            # Same precedence as server/config.ts: INGEST_TOKEN, else newsAgg's UPDATE_TOKEN.
+            TOKEN=$(grep -E '^INGEST_TOKEN=' /opt/visdomsatlasen/.env | head -1 | cut -d= -f2- || true)
+            [ -n "$TOKEN" ] || TOKEN=$(grep -E '^UPDATE_TOKEN=' /opt/visdomsatlasen/.env | head -1 | cut -d= -f2- || true)
+            curl -fsS -X POST http://127.0.0.1:3001/api/export/hackytel \
+              -H "Authorization: Bearer $TOKEN" || echo "atlas export failed, deploy continues"
